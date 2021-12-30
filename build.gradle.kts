@@ -44,6 +44,8 @@ dependencies {
     // LibMultiPart dependency
     val lmpVersion: String by project
     modImplementation("alexiil.mc.lib:libmultipart-all:$lmpVersion")
+    // JIJs LMP, LNS, & LBA Core
+    include("alexiil.mc.lib:libmultipart-all:$lmpVersion")
 
     //
     // Optional Mod Dependencies
