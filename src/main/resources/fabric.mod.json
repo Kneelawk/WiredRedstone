@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "wiredredstone",
+  "version": "${version}",
+  "name": "Wired Redstone",
+  "description": "Adds redstone wires",
+  "authors": [
+    "Kneelawk"
+  ],
+  "contact": {
+    "homepage": "https://github.com/Kneelawk/WiredRedstone",
+    "issues": "https://github.com/Kneelawk/WiredRedstone/issues",
+    "sources": "https://github.com/Kneelawk/WiredRedstone"
+  },
+  "license": "MIT",
+  "icon": "assets/wiredredstone/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      {
+        "adapter": "kotlin",
+        "value": "com.kneelawk.wiredredstone.WiredRedstoneModKt::init"
+      }
+    ]
+  },
+  "mixins": [
+    "wiredredstone.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.12.12",
+    "fabric": "*",
+    "fabric-language-kotlin": ">=1.7.1+kotlin.1.6.10",
+    "minecraft": "1.18.x",
+    "java": ">=17"
+  }
+}
