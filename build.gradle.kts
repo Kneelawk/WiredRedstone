@@ -23,6 +23,10 @@ repositories {
         name = "BuildCraft"
         url = URI("https://mod-buildcraft.com/maven")
     }
+    maven {
+        name = "TerraformersMC"
+        url = URI("https://maven.terraformersmc.com/releases/")
+    }
 }
 
 dependencies {
@@ -40,6 +44,14 @@ dependencies {
     // LibMultiPart dependency
     val lmpVersion: String by project
     modImplementation("alexiil.mc.lib:libmultipart-all:$lmpVersion")
+
+    //
+    // Optional Mod Dependencies
+    //
+
+    // Mod Menu
+    val modMenuVersion: String by project
+    modRuntimeOnly("com.terraformersmc:modmenu:$modMenuVersion")
 }
 
 tasks {
