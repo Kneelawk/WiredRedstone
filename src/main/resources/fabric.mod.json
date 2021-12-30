@@ -18,8 +18,12 @@
   "entrypoints": {
     "main": [
       {
-        "adapter": "kotlin",
         "value": "com.kneelawk.wiredredstone.WiredRedstoneModKt::init"
+      }
+    ],
+    "client": [
+      {
+        "value": "com.kneelawk.wiredredstone.client.WiredRedstoneClientModKt::init"
       }
     ]
   },
