@@ -12,4 +12,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = "LibMultiPart"
+rootProject.name = "WiredRedstone"

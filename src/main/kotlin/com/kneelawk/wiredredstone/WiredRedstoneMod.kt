@@ -1,5 +1,10 @@
 package com.kneelawk.wiredredstone
 
-fun init() {
+import com.kneelawk.wiredredstone.item.WRItems
+import com.kneelawk.wiredredstone.part.WRParts
 
+@Suppress("unused")
+fun init() {
+    WRParts.init()
+    WRItems.init()
 }
