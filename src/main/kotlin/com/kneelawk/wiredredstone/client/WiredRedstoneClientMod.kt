@@ -1,5 +1,6 @@
 package com.kneelawk.wiredredstone.client
 
+import com.kneelawk.wiredredstone.client.render.WRSprites
 import com.kneelawk.wiredredstone.client.render.part.WRPartRenderers
 
 @Suppress("unused")

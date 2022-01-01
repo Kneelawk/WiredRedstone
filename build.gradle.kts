@@ -43,7 +43,9 @@ dependencies {
 
     // LibMultiPart dependency
     val lmpVersion: String by project
-    modImplementation("alexiil.mc.lib:libmultipart-all:$lmpVersion")
+    modImplementation("alexiil.mc.lib:libmultipart-all:$lmpVersion") {
+        exclude("net.fabricmc.fabric-api")
+    }
     // JIJs LMP, LNS, & LBA Core
     include("alexiil.mc.lib:libmultipart-all:$lmpVersion")
 
@@ -53,7 +55,9 @@ dependencies {
 
     // Mod Menu
     val modMenuVersion: String by project
-    modRuntimeOnly("com.terraformersmc:modmenu:$modMenuVersion")
+    modRuntimeOnly("com.terraformersmc:modmenu:$modMenuVersion") {
+        exclude("net.fabricmc.fabric-api")
+    }
 }
 
 tasks {
