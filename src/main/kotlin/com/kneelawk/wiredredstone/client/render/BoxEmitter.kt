@@ -40,7 +40,12 @@ class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Fl
     private var material: RenderMaterial? = null
 
     // If I need sided sprites, I can implement that later.
-    private var sprite: Sprite? = null
+    private var downSprite: Sprite? = null
+    private var upSprite: Sprite? = null
+    private var northSprite: Sprite? = null
+    private var southSprite: Sprite? = null
+    private var westSprite: Sprite? = null
+    private var eastSprite: Sprite? = null
 
     private var downTexCoords: TexCoords = TexCoords.LockUV
     private var upTexCoords: TexCoords = TexCoords.LockUV
@@ -62,7 +67,42 @@ class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Fl
     }
 
     fun sprite(sprite: Sprite?): BoxEmitter {
-        this.sprite = sprite
+        downSprite = sprite
+        upSprite = sprite
+        northSprite = sprite
+        southSprite = sprite
+        westSprite = sprite
+        eastSprite = sprite
+        return this
+    }
+
+    fun downSprite(sprite: Sprite?): BoxEmitter {
+        downSprite = sprite
+        return this
+    }
+
+    fun upSprite(sprite: Sprite?): BoxEmitter {
+        upSprite = sprite
+        return this
+    }
+
+    fun northSprite(sprite: Sprite?): BoxEmitter {
+        northSprite = sprite
+        return this
+    }
+
+    fun southSprite(sprite: Sprite?): BoxEmitter {
+        southSprite = sprite
+        return this
+    }
+
+    fun westSprite(sprite: Sprite?): BoxEmitter {
+        westSprite = sprite
+        return this
+    }
+
+    fun eastSprite(sprite: Sprite?): BoxEmitter {
+        eastSprite = sprite
         return this
     }
 
@@ -108,57 +148,69 @@ class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Fl
     }
 
     fun emit(emitter: QuadEmitter) {
-        // down
-        emitter.nominalFace(Direction.DOWN)
-        emitter.pos(0, minX, minY, maxZ)
-        emitter.pos(1, minX, minY, minZ)
-        emitter.pos(2, maxX, minY, minZ)
-        emitter.pos(3, maxX, minY, maxZ)
-        finishFace(emitter, downTexCoords, downCullFace)
+        downSprite?.let {
+            // down
+            emitter.nominalFace(Direction.DOWN)
+            emitter.pos(0, minX, minY, maxZ)
+            emitter.pos(1, minX, minY, minZ)
+            emitter.pos(2, maxX, minY, minZ)
+            emitter.pos(3, maxX, minY, maxZ)
+            finishFace(emitter, downTexCoords, downCullFace, it)
+        }
 
-        // up
-        emitter.nominalFace(Direction.UP)
-        emitter.pos(0, minX, maxY, minZ)
-        emitter.pos(1, minX, maxY, maxZ)
-        emitter.pos(2, maxX, maxY, maxZ)
-        emitter.pos(3, maxX, maxY, minZ)
-        finishFace(emitter, upTexCoords, upCullFace)
+        downSprite?.let {
+            // up
+            emitter.nominalFace(Direction.UP)
+            emitter.pos(0, minX, maxY, minZ)
+            emitter.pos(1, minX, maxY, maxZ)
+            emitter.pos(2, maxX, maxY, maxZ)
+            emitter.pos(3, maxX, maxY, minZ)
+            finishFace(emitter, upTexCoords, upCullFace, it)
+        }
 
-        // north
-        emitter.nominalFace(Direction.NORTH)
-        emitter.pos(0, maxX, maxY, minZ)
-        emitter.pos(1, maxX, minY, minZ)
-        emitter.pos(2, minX, minY, minZ)
-        emitter.pos(3, minX, maxY, minZ)
-        finishFace(emitter, northTexCoords, northCullFace)
+        downSprite?.let {
+            // north
+            emitter.nominalFace(Direction.NORTH)
+            emitter.pos(0, maxX, maxY, minZ)
+            emitter.pos(1, maxX, minY, minZ)
+            emitter.pos(2, minX, minY, minZ)
+            emitter.pos(3, minX, maxY, minZ)
+            finishFace(emitter, northTexCoords, northCullFace, it)
+        }
 
-        // south
-        emitter.nominalFace(Direction.SOUTH)
-        emitter.pos(0, minX, maxY, maxZ)
-        emitter.pos(1, minX, minY, maxZ)
-        emitter.pos(2, maxX, minY, maxZ)
-        emitter.pos(3, maxX, maxY, maxZ)
-        finishFace(emitter, southTexCoords, southCullFace)
+        downSprite?.let {
+            // south
+            emitter.nominalFace(Direction.SOUTH)
+            emitter.pos(0, minX, maxY, maxZ)
+            emitter.pos(1, minX, minY, maxZ)
+            emitter.pos(2, maxX, minY, maxZ)
+            emitter.pos(3, maxX, maxY, maxZ)
+            finishFace(emitter, southTexCoords, southCullFace, it)
+        }
 
-        // west
-        emitter.nominalFace(Direction.WEST)
-        emitter.pos(0, minX, maxY, minZ)
-        emitter.pos(1, minX, minY, minZ)
-        emitter.pos(2, minX, minY, maxZ)
-        emitter.pos(3, minX, maxY, maxZ)
-        finishFace(emitter, westTexCoords, westCullFace)
+        downSprite?.let {
+            // west
+            emitter.nominalFace(Direction.WEST)
+            emitter.pos(0, minX, maxY, minZ)
+            emitter.pos(1, minX, minY, minZ)
+            emitter.pos(2, minX, minY, maxZ)
+            emitter.pos(3, minX, maxY, maxZ)
+            finishFace(emitter, westTexCoords, westCullFace, it)
+        }
 
-        // east
-        emitter.nominalFace(Direction.EAST)
-        emitter.pos(0, maxX, maxY, maxZ)
-        emitter.pos(1, maxX, minY, maxZ)
-        emitter.pos(2, maxX, minY, minZ)
-        emitter.pos(3, maxX, maxY, minZ)
-        finishFace(emitter, eastTexCoords, eastCullFace)
+        downSprite?.let {
+            // east
+            emitter.nominalFace(Direction.EAST)
+            emitter.pos(0, maxX, maxY, maxZ)
+            emitter.pos(1, maxX, minY, maxZ)
+            emitter.pos(2, maxX, minY, minZ)
+            emitter.pos(3, maxX, maxY, minZ)
+            finishFace(emitter, eastTexCoords, eastCullFace, it)
+        }
     }
 
-    private fun finishFace(emitter: QuadEmitter, texCoords: TexCoords, cullFace: Direction?) {
-        sprite?.let { texCoords.spriteBake(emitter, it) }
+    private fun finishFace(emitter: QuadEmitter, texCoords: TexCoords, cullFace: Direction?, sprite: Sprite) {
+        texCoords.spriteBake(emitter, sprite)
         emitter.spriteColor(0, -1, -1, -1, -1)
         material?.let { emitter.material(it) }
         emitter.cullFace(cullFace)
