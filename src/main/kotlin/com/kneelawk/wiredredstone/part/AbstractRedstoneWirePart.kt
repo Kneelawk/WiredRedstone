@@ -110,7 +110,7 @@ abstract class AbstractRedstoneWirePart : AbstractWirePart {
             val pos = getPos()
             val state = world.getBlockState(pos)
             val offset1 = pos.offset(side)
-            world.updateNeighbor(offset1, state.block, offset1)
+            world.updateNeighbors(pos, state.block)
 
             Direction.values()
                 .filter { it != side.opposite }
