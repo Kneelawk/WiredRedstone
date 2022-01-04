@@ -1,15 +1,18 @@
 package com.kneelawk.wiredredstone.part
 
-import alexiil.mc.lib.multipart.api.AbstractPart
+import alexiil.mc.lib.multipart.api.MultipartEventBus
 import alexiil.mc.lib.multipart.api.MultipartHolder
 import alexiil.mc.lib.multipart.api.PartDefinition
+import alexiil.mc.lib.multipart.api.event.PartRedstonePowerEvent
 import alexiil.mc.lib.multipart.api.render.PartModelKey
 import alexiil.mc.lib.net.IMsgReadCtx
-import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
 import com.kneelawk.wiredredstone.part.key.RedAlloyWirePartKey
+import com.kneelawk.wiredredstone.partext.RedAlloyWirePartExt
+import com.kneelawk.wiredredstone.util.RedstoneLogic
 import com.kneelawk.wiredredstone.util.RotationUtils
-import net.minecraft.block.BlockState
+import com.kneelawk.wiredredstone.util.getPos
+import com.kneelawk.wiredredstone.util.getWorld
 import net.minecraft.block.Blocks
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.util.math.Box
@@ -18,9 +21,7 @@ import net.minecraft.util.shape.VoxelShape
 import net.minecraft.util.shape.VoxelShapes
 import java.util.*
 
-class RedAlloyWirePart(definition: PartDefinition, holder: MultipartHolder, val side: Direction) :
-    AbstractPart(definition, holder) {
-
+class RedAlloyWirePart : AbstractRedstoneWirePart {
     companion object {
         private val CONFLICT_SHAPES = EnumMap<Direction, VoxelShape>(Direction::class.java)
 
@@ -33,43 +34,53 @@ class RedAlloyWirePart(definition: PartDefinition, holder: MultipartHolder, val 
         }
     }
 
-    constructor(definition: PartDefinition, holder: MultipartHolder, tag: NbtCompound) : this(
-        definition, holder, Direction.byId(tag.getByte("side").toInt())
+    constructor(
+        definition: PartDefinition, holder: MultipartHolder, side: Direction, connections: UByte, powered: Boolean
+    ) : super(definition, holder, side, connections, powered)
+
+    constructor(definition: PartDefinition, holder: MultipartHolder, tag: NbtCompound) : super(definition, holder, tag)
+
+    constructor(definition: PartDefinition, holder: MultipartHolder, buffer: NetByteBuf, ctx: IMsgReadCtx) : super(
+        definition, holder, buffer, ctx
     )
 
-    constructor(definition: PartDefinition, holder: MultipartHolder, buffer: NetByteBuf, ctx: IMsgReadCtx) : this(
-        definition, holder, Direction.byId(buffer.readByte().toInt())
-    )
+    override val partExtType = RedAlloyWirePartExt.Type
 
-    override fun toTag(): NbtCompound {
-        val tag = super.toTag()
-        tag.putByte("side", side.id.toByte())
-        return tag
+    override fun onAdded(bus: MultipartEventBus) {
+        super.onAdded(bus)
+
+        bus.addListener(this, PartRedstonePowerEvent.PartStrongRedstonePowerEvent::class.java) { e ->
+            // Fix comparator side input
+            if (getWorld().getBlockState(getPos().offset(e.side)).block == Blocks.COMPARATOR) {
+                e.set(getWeakRedstonePower(e.side))
+            } else {
+                e.set(getStrongRedstonePower(e.side))
+            }
+        }
+
+        bus.addListener(this, PartRedstonePowerEvent.PartWeakRedstonePowerEvent::class.java) { e ->
+            e.set(getWeakRedstonePower(e.side))
+        }
     }
 
-    override fun writeCreationData(buffer: NetByteBuf, ctx: IMsgWriteCtx) {
-        super.writeCreationData(buffer, ctx)
-        buffer.writeByte(side.id)
+    private fun getStrongRedstonePower(powerSide: Direction): Int {
+        return if (RedstoneLogic.wiresGivePower && powered && powerSide == side) 15 else 0
+    }
+
+    private fun getWeakRedstonePower(powerSide: Direction): Int {
+        return if (RedstoneLogic.wiresGivePower && powered && powerSide != side) 15 else 0
+    }
+
+    override fun isReceivingPower(): Boolean {
+        return RedstoneLogic.isReceivingPower(getWorld(), getSidedPos(), connections, true)
     }
 
     override fun getShape(): VoxelShape {
         return CONFLICT_SHAPES[side]!!
     }
 
-    override fun getCollisionShape(): VoxelShape {
-        return VoxelShapes.empty()
-    }
-
     override fun getModelKey(): PartModelKey {
-        return RedAlloyWirePartKey(side)
-    }
-
-    override fun getClosestBlockState(): BlockState {
-        return Blocks.REDSTONE_BLOCK.defaultState
-    }
-
-    override fun getCullingShape(): VoxelShape {
-        return VoxelShapes.empty()
+        return RedAlloyWirePartKey(side, connections, powered)
     }
 
     override fun getOutlineShape(): VoxelShape {

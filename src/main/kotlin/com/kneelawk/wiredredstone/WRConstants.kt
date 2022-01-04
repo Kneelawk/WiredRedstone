@@ -8,4 +8,8 @@ object WRConstants {
     fun id(path: String): Identifier {
         return Identifier(MOD_ID, path)
     }
+
+    fun str(path: String): String {
+        return "$MOD_ID:$path"
+    }
 }

@@ -10,9 +10,21 @@ object RedAlloyWirePartBaker : PartModelBaker<RedAlloyWirePartKey> {
     override fun emitQuads(key: RedAlloyWirePartKey, ctx: PartRenderContext) {
         ctx.pushTransform(SideQuadTransform(key.side))
 
+        val sprite = if (key.powered) {
+            WRSprites.RED_ALLOY_WIRE_POWERED_ID
+        } else {
+            WRSprites.RED_ALLOY_WIRE_UNPOWERED_ID
+        }
+
+        val material = if (key.powered) {
+            WRMaterials.POWERED_MATERIAL
+        } else {
+            WRMaterials.UNPOWERED_MATERIAL
+        }
+
         BoxEmitter.onGroundPixels(6f, 7f, 10f, 9f, 2f)
-            .sprite(RenderUtils.getBlockSprite(WRSprites.RED_ALLOY_WIRE_POWERED_ID))
-            .material(WRMaterials.POWERED_MATERIAL)
+            .sprite(RenderUtils.getBlockSprite(sprite))
+            .material(material)
             .downCullFace(Direction.DOWN)
             .sideTexCoordsCustomV(7f / 16f)
             .emit(ctx.emitter)

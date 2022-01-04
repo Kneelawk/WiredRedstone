@@ -38,6 +38,9 @@ object RotationUtils {
         }
     }
 
+    /**
+     * Rotates a given direction so that if it had been pointing `DOWN` before, it now points in the direction of `to`.
+     */
     fun rotatedDirection(to: Direction, direction: Direction): Direction {
         return when (to) {
             DOWN -> direction
@@ -80,6 +83,55 @@ object RotationUtils {
                 SOUTH -> DOWN
                 WEST -> NORTH
                 EAST -> SOUTH
+            }
+        }
+    }
+
+    /**
+     * Rotates a given direction so that if it were pointing in the `from` direction before, it now points `DOWN`.
+     */
+    fun unrotatedDirection(from: Direction, direction: Direction): Direction {
+        return when (from) {
+            DOWN -> direction
+            UP -> when (direction) {
+                DOWN -> UP
+                UP -> DOWN
+                NORTH -> SOUTH
+                SOUTH -> NORTH
+                WEST -> WEST
+                EAST -> EAST
+            }
+            NORTH -> when (direction) {
+                DOWN -> SOUTH
+                UP -> NORTH
+                NORTH -> DOWN
+                SOUTH -> UP
+                WEST -> WEST
+                EAST -> EAST
+            }
+            SOUTH -> when (direction) {
+                DOWN -> SOUTH
+                UP -> NORTH
+                NORTH -> UP
+                SOUTH -> DOWN
+                WEST -> EAST
+                EAST -> WEST
+            }
+            WEST -> when (direction) {
+                DOWN -> SOUTH
+                UP -> NORTH
+                NORTH -> EAST
+                SOUTH -> WEST
+                WEST -> DOWN
+                EAST -> UP
+            }
+            EAST -> when (direction) {
+                DOWN -> SOUTH
+                UP -> NORTH
+                NORTH -> WEST
+                SOUTH -> EAST
+                WEST -> UP
+                EAST -> DOWN
             }
         }
     }

@@ -16,9 +16,10 @@ class RedAlloyWireItem(settings: Settings) : Item(settings) {
         }
 
         val creator = { holder: MultipartHolder ->
-            RedAlloyWirePart(WRParts.RED_ALLOY_WIRE, holder, context.side.opposite)
+            RedAlloyWirePart(WRParts.RED_ALLOY_WIRE, holder, context.side.opposite, 0u, false)
         }
 
+        // TODO: Fix non-solid placement issue
         val offer = MultipartUtil.offerNewPart(world, context.blockPos, creator)
             ?: MultipartUtil.offerNewPart(world, context.blockPos.offset(context.side), creator)
             ?: return ActionResult.FAIL

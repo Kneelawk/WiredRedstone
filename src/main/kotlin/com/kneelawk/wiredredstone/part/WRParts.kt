@@ -6,7 +6,9 @@ import com.kneelawk.wiredredstone.WRConstants
 object WRParts {
     val RED_ALLOY_WIRE by lazy { definition("red_alloy_wire", ::RedAlloyWirePart, ::RedAlloyWirePart) }
 
-    private fun definition(path: String, reader: PartDefinition.IPartNbtReader, loader: PartDefinition.IPartNetLoader): PartDefinition {
+    private fun definition(
+        path: String, reader: PartDefinition.IPartNbtReader, loader: PartDefinition.IPartNetLoader
+    ): PartDefinition {
         return PartDefinition(WRConstants.id(path), reader, loader)
     }
 
