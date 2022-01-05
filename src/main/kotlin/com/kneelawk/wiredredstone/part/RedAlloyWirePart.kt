@@ -15,23 +15,13 @@ import net.minecraft.block.Blocks
 import net.minecraft.item.ItemStack
 import net.minecraft.loot.context.LootContext
 import net.minecraft.nbt.NbtCompound
-import net.minecraft.util.math.Box
 import net.minecraft.util.math.Direction
 import net.minecraft.util.shape.VoxelShape
-import net.minecraft.util.shape.VoxelShapes
-import java.util.*
 
 class RedAlloyWirePart : AbstractRedstoneWirePart {
     companion object {
-        private val CONFLICT_SHAPES = EnumMap<Direction, VoxelShape>(Direction::class.java)
-
-        init {
-            for (dir in Direction.values()) {
-                CONFLICT_SHAPES[dir] = VoxelShapes.cuboid(
-                    RotationUtils.rotatedBox(dir, Box(7.0 / 16.0, 0.0, 7.0 / 16.0, 9.0 / 16.0, 2.0 / 16.0, 9.0 / 16.0))
-                )
-            }
-        }
+        private val CONFLICT_SHAPES = BoundingBoxUtils.getWireConflictShapes(2.0, 2.0)
+        private val OUTLINE_SHAPES = BoundingBoxUtils.getWireOutlineShapes(10.0, 2.0)
     }
 
     constructor(
@@ -84,7 +74,7 @@ class RedAlloyWirePart : AbstractRedstoneWirePart {
     }
 
     override fun getOutlineShape(): VoxelShape {
-        return CONFLICT_SHAPES[side]!!
+        return OUTLINE_SHAPES[BoundingBoxUtils.ShapeKey(side, connections)]
     }
 
     override fun getPickStack(): ItemStack {

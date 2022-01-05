@@ -26,7 +26,7 @@ abstract class AbstractWirePart : AbstractSidedPart {
             NET_ID.subType(AbstractWirePart::class.java, str("abstract_wire_part"))
 
         private val NET_REDRAW: NetIdSignalK<AbstractWirePart> = NET_PARENT.idSignal("redraw").setRecv {
-            redrawIfChanged()
+            redraw()
         }
 
         fun getWire(world: BlockView, pos: SidedPos): AbstractWirePart? {
@@ -85,6 +85,7 @@ abstract class AbstractWirePart : AbstractSidedPart {
             sendNetworkUpdate(this, NET_RENDER_DATA)
             sendNetworkUpdate(this, NET_REDRAW)
         }
+        holder.container.recalculateShape()
     }
 
     override fun getCollisionShape(): VoxelShape {
@@ -111,5 +112,10 @@ abstract class AbstractWirePart : AbstractSidedPart {
     fun updateConnections(connections: UByte) {
         this.connections = connections
         getBlockEntity().markDirty()
+
+        val pos = getPos()
+        val world = getWorld()
+        val state = world.getBlockState(pos)
+        world.updateListeners(pos, state, state, 3)
     }
 }
