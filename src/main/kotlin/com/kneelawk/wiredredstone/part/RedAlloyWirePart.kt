@@ -7,13 +7,13 @@ import alexiil.mc.lib.multipart.api.event.PartRedstonePowerEvent
 import alexiil.mc.lib.multipart.api.render.PartModelKey
 import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.NetByteBuf
+import com.kneelawk.wiredredstone.item.WRItems
 import com.kneelawk.wiredredstone.part.key.RedAlloyWirePartKey
 import com.kneelawk.wiredredstone.partext.RedAlloyWirePartExt
-import com.kneelawk.wiredredstone.util.RedstoneLogic
-import com.kneelawk.wiredredstone.util.RotationUtils
-import com.kneelawk.wiredredstone.util.getPos
-import com.kneelawk.wiredredstone.util.getWorld
+import com.kneelawk.wiredredstone.util.*
 import net.minecraft.block.Blocks
+import net.minecraft.item.ItemStack
+import net.minecraft.loot.context.LootContext
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.util.math.Box
 import net.minecraft.util.math.Direction
@@ -85,5 +85,13 @@ class RedAlloyWirePart : AbstractRedstoneWirePart {
 
     override fun getOutlineShape(): VoxelShape {
         return CONFLICT_SHAPES[side]!!
+    }
+
+    override fun getPickStack(): ItemStack {
+        return ItemStack(WRItems.RED_ALLOY_WIRE)
+    }
+
+    override fun addDrops(target: ItemDropTarget, context: LootContext) {
+        LootTableUtil.addPartDrops(getWorld(), target, context, WRParts.RED_ALLOY_WIRE.identifier)
     }
 }

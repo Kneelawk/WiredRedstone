@@ -7,6 +7,7 @@ import com.kneelawk.wiredredstone.WRConstants.str
 import com.kneelawk.wiredredstone.util.*
 import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
+import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.util.math.Direction
 import net.minecraft.util.shape.VoxelShape
@@ -92,6 +93,11 @@ abstract class AbstractWirePart : AbstractSidedPart {
 
     override fun getClosestBlockState(): BlockState {
         return Blocks.REDSTONE_BLOCK.defaultState
+    }
+
+    override fun calculateBreakingDelta(player: PlayerEntity): Float {
+        // Break wires instantly like redstone wire
+        return super.calculateBreakingDelta(player, Blocks.REDSTONE_WIRE)
     }
 
     override fun getCullingShape(): VoxelShape {
