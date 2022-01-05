@@ -1,10 +1,13 @@
 package com.kneelawk.wiredredstone.part
 
+import alexiil.mc.lib.multipart.api.MultipartEventBus
 import alexiil.mc.lib.multipart.api.MultipartHolder
 import alexiil.mc.lib.multipart.api.PartDefinition
+import alexiil.mc.lib.multipart.api.event.NeighbourUpdateEvent
 import alexiil.mc.lib.net.*
 import com.kneelawk.wiredredstone.WRConstants.str
 import com.kneelawk.wiredredstone.util.*
+import net.minecraft.block.Block
 import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
 import net.minecraft.entity.player.PlayerEntity
@@ -54,8 +57,6 @@ abstract class AbstractWirePart : AbstractSidedPart {
     ) {
         connections = buffer.readByte().toUByte()
     }
-
-    // TODO: Detect dependant blocks breaking or becoming non-solid
 
     override fun toTag(): NbtCompound {
         val tag = super.toTag()
@@ -113,9 +114,10 @@ abstract class AbstractWirePart : AbstractSidedPart {
         this.connections = connections
         getBlockEntity().markDirty()
 
+        // Not really sure if this is necessary
         val pos = getPos()
         val world = getWorld()
         val state = world.getBlockState(pos)
-        world.updateListeners(pos, state, state, 3)
+        world.updateListeners(pos, state, state, Block.NOTIFY_ALL)
     }
 }

@@ -10,6 +10,7 @@ import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
 import com.kneelawk.wiredredstone.util.*
+import net.minecraft.block.Block
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.Direction
@@ -111,7 +112,8 @@ abstract class AbstractRedstoneWirePart : AbstractWirePart {
             val state = world.getBlockState(pos)
             val offset1 = pos.offset(side)
 
-            world.updateListeners(pos, state, state, 3)
+            // Not really sure if this is necessary
+            world.updateListeners(pos, state, state, Block.NOTIFY_ALL)
 
             world.updateNeighbors(pos, state.block)
 
