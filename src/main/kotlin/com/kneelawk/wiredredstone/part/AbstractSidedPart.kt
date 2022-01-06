@@ -82,6 +82,7 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
         val state = world.getBlockState(pos)
         val origin = Vec3d.of(pos).add(shape.boundingBox.center)
 
+        playBreakSound()
         sendNetworkUpdate(this, NET_SPAWN_BREAK_PARTICLES)
 
         val context = LootContext.Builder(world).random(world.random)

@@ -1,9 +1,7 @@
 package com.kneelawk.wiredredstone.part
 
-import alexiil.mc.lib.multipart.api.MultipartEventBus
 import alexiil.mc.lib.multipart.api.MultipartHolder
 import alexiil.mc.lib.multipart.api.PartDefinition
-import alexiil.mc.lib.multipart.api.event.NeighbourUpdateEvent
 import alexiil.mc.lib.net.*
 import com.kneelawk.wiredredstone.WRConstants.str
 import com.kneelawk.wiredredstone.util.*
@@ -28,7 +26,7 @@ abstract class AbstractWirePart : AbstractSidedPart {
         private val NET_PARENT: ParentNetIdSingle<AbstractWirePart> =
             NET_ID.subType(AbstractWirePart::class.java, str("abstract_wire_part"))
 
-        private val NET_REDRAW: NetIdSignalK<AbstractWirePart> = NET_PARENT.idSignal("redraw").setRecv {
+        private val NET_REDRAW: NetIdSignalK<AbstractWirePart> = NET_PARENT.idSignal("redraw").toClientOnly().setRecv {
             redraw()
         }
 
