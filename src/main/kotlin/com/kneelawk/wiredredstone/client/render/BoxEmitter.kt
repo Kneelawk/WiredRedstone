@@ -16,23 +16,13 @@ class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Fl
         }
     }
 
-    private sealed class TexCoords {
-        abstract fun spriteBake(emitter: QuadEmitter, sprite: Sprite)
-
-        object LockUV : TexCoords() {
-            override fun spriteBake(emitter: QuadEmitter, sprite: Sprite) {
-                emitter.spriteBake(0, sprite, QuadEmitter.BAKE_LOCK_UV)
-            }
-        }
-
-        class CustomUV(val minU: Float, val minV: Float, val maxU: Float, val maxV: Float) : TexCoords() {
-            override fun spriteBake(emitter: QuadEmitter, sprite: Sprite) {
-                emitter.sprite(0, 0, minU, minV)
-                emitter.sprite(1, 0, minU, maxV)
-                emitter.sprite(2, 0, maxU, maxV)
-                emitter.sprite(3, 0, maxU, minV)
-                emitter.spriteBake(0, sprite, QuadEmitter.BAKE_NORMALIZED)
-            }
+    private class TexCoords(var minU: Float, var minV: Float, var maxU: Float, var maxV: Float) {
+        fun spriteBake(emitter: QuadEmitter, sprite: Sprite) {
+            emitter.sprite(0, 0, minU, minV)
+            emitter.sprite(1, 0, minU, maxV)
+            emitter.sprite(2, 0, maxU, maxV)
+            emitter.sprite(3, 0, maxU, minV)
+            emitter.spriteBake(0, sprite, QuadEmitter.BAKE_NORMALIZED)
         }
     }
 
@@ -47,12 +37,12 @@ class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Fl
     private var westSprite: Sprite? = null
     private var eastSprite: Sprite? = null
 
-    private var downTexCoords: TexCoords = TexCoords.LockUV
-    private var upTexCoords: TexCoords = TexCoords.LockUV
-    private var northTexCoords: TexCoords = TexCoords.LockUV
-    private var southTexCoords: TexCoords = TexCoords.LockUV
-    private var westTexCoords: TexCoords = TexCoords.LockUV
-    private var eastTexCoords: TexCoords = TexCoords.LockUV
+    private var downTexCoords: TexCoords = TexCoords(minX, 1f - maxZ, maxX, 1f - minZ)
+    private var upTexCoords: TexCoords = TexCoords(minX, minZ, maxX, maxZ)
+    private var northTexCoords: TexCoords = TexCoords(1f - maxX, minY, 1f - minX, maxY)
+    private var southTexCoords: TexCoords = TexCoords(minX, minY, maxX, maxY)
+    private var westTexCoords: TexCoords = TexCoords(minZ, minY, maxZ, maxY)
+    private var eastTexCoords: TexCoords = TexCoords(1f - maxZ, minY, 1f - minZ, maxY)
 
     private var downCullFace: Direction? = null
     private var upCullFace: Direction? = null
@@ -106,14 +96,66 @@ class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Fl
         return this
     }
 
-    fun sideTexCoordsCustomV(v: Float): BoxEmitter {
+    fun setSideTexCoordsV(v: Float): BoxEmitter {
         val v2 = v + maxY - minY
 
-        northTexCoords = TexCoords.CustomUV(1f - maxX, v, 1f - minX, v2)
-        southTexCoords = TexCoords.CustomUV(minX, v, maxX, v2)
-        westTexCoords = TexCoords.CustomUV(minZ, v, maxZ, v2)
-        eastTexCoords = TexCoords.CustomUV(1f - maxZ, v, 1f - minZ, v2)
+        northTexCoords.minV = v
+        northTexCoords.maxV = v2
+        southTexCoords.minV = v
+        southTexCoords.maxV = v2
+        westTexCoords.minV = v
+        westTexCoords.maxV = v2
+        eastTexCoords.minV = v
+        eastTexCoords.maxV = v2
 
+        return this
+    }
+
+    fun translateDownTexCoords(u: Float, v: Float): BoxEmitter {
+        downTexCoords.minU += u
+        downTexCoords.maxU += u
+        downTexCoords.minV += v
+        downTexCoords.maxV += v
+        return this
+    }
+
+    fun translateUpTexCoords(u: Float, v: Float): BoxEmitter {
+        upTexCoords.minU += u
+        upTexCoords.maxU += u
+        upTexCoords.minV += v
+        upTexCoords.maxV += v
+        return this
+    }
+
+    fun translateNorthTexCoords(u: Float, v: Float): BoxEmitter {
+        northTexCoords.minU += u
+        northTexCoords.maxU += u
+        northTexCoords.minV += v
+        northTexCoords.maxV += v
+        return this
+    }
+
+    fun translateSouthTexCoords(u: Float, v: Float): BoxEmitter {
+        southTexCoords.minU += u
+        southTexCoords.maxU += u
+        southTexCoords.minV += v
+        southTexCoords.maxV += v
+        return this
+    }
+
+    fun translateWestTexCoords(u: Float, v: Float): BoxEmitter {
+        westTexCoords.minU += u
+        westTexCoords.maxU += u
+        westTexCoords.minV += v
+        westTexCoords.maxV += v
+        return this
+    }
+
+    fun translateEastTexCoords(u: Float, v: Float): BoxEmitter {
+        eastTexCoords.minU += u
+        eastTexCoords.maxU += u
+        eastTexCoords.minV += v
+        eastTexCoords.maxV += v
         return this
     }
 
@@ -158,7 +200,7 @@ class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Fl
             finishFace(emitter, downTexCoords, downCullFace, it)
         }
 
-        downSprite?.let {
+        upSprite?.let {
             // up
             emitter.nominalFace(Direction.UP)
             emitter.pos(0, minX, maxY, minZ)
@@ -168,7 +210,7 @@ class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Fl
             finishFace(emitter, upTexCoords, upCullFace, it)
         }
 
-        downSprite?.let {
+        northSprite?.let {
             // north
             emitter.nominalFace(Direction.NORTH)
             emitter.pos(0, maxX, maxY, minZ)
@@ -178,7 +220,7 @@ class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Fl
             finishFace(emitter, northTexCoords, northCullFace, it)
         }
 
-        downSprite?.let {
+        southSprite?.let {
             // south
             emitter.nominalFace(Direction.SOUTH)
             emitter.pos(0, minX, maxY, maxZ)
@@ -188,7 +230,7 @@ class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Fl
             finishFace(emitter, southTexCoords, southCullFace, it)
         }
 
-        downSprite?.let {
+        westSprite?.let {
             // west
             emitter.nominalFace(Direction.WEST)
             emitter.pos(0, minX, maxY, minZ)
@@ -198,7 +240,7 @@ class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Fl
             finishFace(emitter, westTexCoords, westCullFace, it)
         }
 
-        downSprite?.let {
+        eastSprite?.let {
             // east
             emitter.nominalFace(Direction.EAST)
             emitter.pos(0, maxX, maxY, maxZ)

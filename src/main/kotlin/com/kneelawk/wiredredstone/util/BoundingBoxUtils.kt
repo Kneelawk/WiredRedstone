@@ -75,9 +75,7 @@ object BoundingBoxUtils {
     ): Pair<Boolean, Double> {
         return if (ConnectionUtils.isInternal(connections, cardinal)) {
             Pair(true, if ((axis == specialAxis) == axisIsLarger) externalEnd else internalEnd)
-        } else if (ConnectionUtils.isExternal(connections, cardinal)) {
-            Pair(true, externalEnd)
-        } else if (ConnectionUtils.isCorner(connections, cardinal)) {
+        } else if (ConnectionUtils.isExternal(connections, cardinal) || ConnectionUtils.isCorner(connections, cardinal)) {
             Pair(true, externalEnd)
         } else {
             Pair(

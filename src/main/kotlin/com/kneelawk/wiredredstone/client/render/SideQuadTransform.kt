@@ -32,7 +32,10 @@ class SideQuadTransform(val side: Direction) : RenderContext.QuadTransform {
             quad.cullFace(rotatedDirection(side, cullFace))
         }
 
-
+        val nominalFace = quad.nominalFace()
+        if (nominalFace != null) {
+            quad.nominalFace(rotatedDirection(side, nominalFace))
+        }
 
         // keep this quad
         return true
