@@ -4,8 +4,11 @@ import com.kneelawk.wiredredstone.part.AbstractWirePart
 import com.kneelawk.wiredredstone.wirenet.SidedPartExt
 import com.kneelawk.wiredredstone.wirenet.WirePartExt
 import com.kneelawk.wiredredstone.wirenet.getWireNetworkState
+import net.minecraft.block.BlockState
 import net.minecraft.server.world.ServerWorld
+import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
+import net.minecraft.world.BlockView
 
 object WireUtils {
     enum class ConnectionType {
@@ -62,5 +65,12 @@ object WireUtils {
 
         part.updateConnections(newConnections)
         part.redraw()
+    }
+
+    /**
+     * Checks whether a side of a block is valid to have a wire on.
+     */
+    fun isValidFace(state: BlockState, world: BlockView, pos: BlockPos, side: Direction): Boolean {
+        return state.isSideSolidFullSquare(world, pos, side)
     }
 }

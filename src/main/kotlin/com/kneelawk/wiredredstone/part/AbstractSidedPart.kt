@@ -6,6 +6,7 @@ import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
 import com.kneelawk.wiredredstone.util.*
+import com.kneelawk.wiredredstone.util.WireUtils.isValidFace
 import com.kneelawk.wiredredstone.wirenet.NetNodeContainer
 import com.kneelawk.wiredredstone.wirenet.SidedPartExtType
 import com.kneelawk.wiredredstone.wirenet.getWireNetworkState
@@ -73,7 +74,7 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
         val world = getWorld()
         val offset = getPos().offset(side)
         val state = world.getBlockState(offset)
-        return !state.isSideSolidFullSquare(world, offset, side.opposite)
+        return !isValidFace(state, world, offset, side.opposite)
     }
 
     fun removeAndDrop() {
