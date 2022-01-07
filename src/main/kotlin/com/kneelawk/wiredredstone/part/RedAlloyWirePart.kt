@@ -35,6 +35,8 @@ class RedAlloyWirePart : AbstractRedstoneWirePart {
     )
 
     override val partExtType = RedAlloyWirePartExt.Type
+    override val wireWidth = 2.0
+    override val wireHeight = 2.0
 
     override fun onAdded(bus: MultipartEventBus) {
         super.onAdded(bus)

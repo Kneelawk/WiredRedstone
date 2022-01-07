@@ -75,7 +75,10 @@ object BoundingBoxUtils {
     ): Pair<Boolean, Double> {
         return if (ConnectionUtils.isInternal(connections, cardinal)) {
             Pair(true, if ((axis == specialAxis) == axisIsLarger) externalEnd else internalEnd)
-        } else if (ConnectionUtils.isExternal(connections, cardinal) || ConnectionUtils.isCorner(connections, cardinal)) {
+        } else if (ConnectionUtils.isExternal(connections, cardinal) || ConnectionUtils.isCorner(
+                connections, cardinal
+            )
+        ) {
             Pair(true, externalEnd)
         } else {
             Pair(
@@ -102,5 +105,45 @@ object BoundingBoxUtils {
             )
         }
         return map
+    }
+
+    fun getWireInsideConnectionShape(
+        side: Direction, inDirection: Direction, wireWidth: Double, wireHeight: Double
+    ): Box? {
+        val cardinal = RotationUtils.unrotatedDirection(side, inDirection)
+        if (cardinal.axis == Direction.Axis.Y) {
+            return null
+        }
+
+        return RotationUtils.rotatedBox(
+            side, RotationUtils.cardinalRotatedBox(
+                cardinal, Box(
+                    0.5 - wireWidth / 32.0, 0.0, 0.0, 0.5 + wireWidth / 32.0, wireHeight / 16.0, 0.5 - wireWidth / 32.0
+                )
+            )
+        )
+    }
+
+    fun getWireOutsideConnectionShape(
+        side: Direction, inDirection: Direction, wireWidth: Double, wireHeight: Double, shouldBeInsideBlock: Boolean
+    ): Box? {
+        val cardinal = RotationUtils.unrotatedDirection(side, inDirection)
+        if (cardinal.axis == Direction.Axis.Y) {
+            return null
+        }
+
+        return RotationUtils.rotatedBox(
+            side, RotationUtils.cardinalRotatedBox(
+                cardinal, if (shouldBeInsideBlock) {
+                    Box(
+                        0.5 - wireWidth / 32.0, 0.0, 1.0 - wireHeight / 16.0, 0.5 + wireWidth / 32.0, wireHeight, 1.0
+                    )
+                } else {
+                    Box(
+                        0.5 - wireWidth / 32.0, 0.0, -wireHeight / 16.0, 0.5 + wireWidth / 32.0, wireHeight, 0.0
+                    )
+                }
+            )
+        )
     }
 }

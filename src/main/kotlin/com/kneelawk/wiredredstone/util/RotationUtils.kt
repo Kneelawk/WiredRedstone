@@ -146,4 +146,17 @@ object RotationUtils {
             EAST -> Box(1.0 - box.minY, 1.0 - box.minZ, box.minX, 1.0 - box.maxY, 1.0 - box.maxZ, box.maxX)
         }
     }
+
+    /**
+     * Rotates a box from NORTH to the given cardinal direction.
+     */
+    fun cardinalRotatedBox(to: Direction, box: Box): Box {
+        return when (to) {
+            NORTH -> box
+            SOUTH -> Box(1.0 - box.minX, box.minY, 1.0 - box.minZ, 1.0 - box.maxX, box.maxY, 1.0 - box.maxZ)
+            WEST -> Box(box.minZ, box.minY, 1.0 - box.minX, box.maxZ, box.maxY, 1.0 - box.maxX)
+            EAST -> Box(1.0 - box.minZ, box.minY, box.minX, 1.0 - box.maxZ, box.maxY, box.maxX)
+            else -> throw IllegalArgumentException("$to is not a cardinal direction")
+        }
+    }
 }

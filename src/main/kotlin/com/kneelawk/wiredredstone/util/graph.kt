@@ -81,6 +81,16 @@ class Graph<N, L> {
         return link
     }
 
+    fun unlink(node1: Node<N, L>, node2: Node<N, L>, data: L) {
+        // could be either way
+        val link = Link(node1, node2, data)
+        val link2 = Link(node2, node1, data)
+        node1.onUnlink(link)
+        node2.onUnlink(link)
+        node1.onUnlink(link2)
+        node2.onUnlink(link2)
+    }
+
     operator fun contains(node: Node<N, L>) = node in nodes
 }
 
@@ -96,6 +106,10 @@ data class Node<N, L>(val data: N) {
 
     fun onLink(link: Link<N, L>) {
         connections += link
+    }
+
+    fun onUnlink(link: Link<N, L>) {
+        connections -= link
     }
 }
 

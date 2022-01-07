@@ -2,7 +2,6 @@ package com.kneelawk.wiredredstone.wirenet
 
 import alexiil.mc.lib.multipart.api.MultipartUtil
 import com.google.common.collect.HashMultimap
-import com.kneelawk.wiredredstone.part.AbstractSidedPart
 import com.kneelawk.wiredredstone.util.SidedPos
 import net.fabricmc.fabric.api.util.NbtType
 import net.minecraft.nbt.NbtCompound
@@ -70,9 +69,7 @@ class WireNetworkController(val world: ServerWorld, val changeListener: () -> Un
 
             if (net != null) {
                 net.rebuildRefs()
-                net.getNodes()
-                    .onEach { nodesToNetworks[it] = net.id }
-                    .map { it.data.pos }.toSet()
+                net.getNodes().onEach { nodesToNetworks[it] = net.id }.map { it.data.pos }.toSet()
                     .forEach { networksInPos.put(it, net) }
             }
         }
@@ -145,16 +142,20 @@ class WireNetworkController(val world: ServerWorld, val changeListener: () -> Un
         }
     }
 
+    fun updateConnections(world: ServerWorld, pos: SidedPos) {
+        getNodesAt(pos).forEach { updateNodeConnections(world, it) }
+    }
+
     fun updateNodeConnections(world: ServerWorld, node: NetNode) {
         changeListener()
         val nodeNetId = getNetIdForNode(node)
 
         val nv = NodeView(world)
+        val oldConnections = node.connections.map { it.other(node) }.toSet()
         val ids = node.data.ext.tryConnect(node, world, node.data.pos, nv)
-        val oldConnections = node.connections.map { it.other(node) }
-        val potentialNewConnections = ids.filter { getNetIdForNode(it) != nodeNetId || it !in oldConnections }
-        val newConnections =
-            potentialNewConnections.filter { node in it.data.ext.tryConnect(it, world, it.data.pos, nv) }
+        val returnedConnections = ids.filter { node in it.data.ext.tryConnect(it, world, it.data.pos, nv) }.toSet()
+        val newConnections = returnedConnections.filter { getNetIdForNode(it) != nodeNetId || it !in oldConnections }
+        val removedConnections = oldConnections.filter { it !in returnedConnections }
 
         for (other in newConnections) {
             val net = networks.getValue(nodeNetId)
@@ -165,6 +166,16 @@ class WireNetworkController(val world: ServerWorld, val changeListener: () -> Un
 
             net.link(node, other)
         }
+
+        val net = networks.getValue(nodeNetId)
+        for (other in removedConnections) {
+
+            net.unlink(node, other)
+        }
+
+        net.split().forEach { rebuildRefs(it.id) }
+        if (net.getNodes().isEmpty()) destroyNetwork(net.id)
+        rebuildRefs(net.id)
     }
 
     fun getNetIdForNode(node: NetNode) = nodesToNetworks.getValue(node)

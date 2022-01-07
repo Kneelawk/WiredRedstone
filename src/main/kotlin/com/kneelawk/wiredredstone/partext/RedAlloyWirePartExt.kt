@@ -11,9 +11,10 @@ import net.minecraft.nbt.NbtElement
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
+import net.minecraft.world.BlockView
 import net.minecraft.world.World
 
-data class RedAlloyWirePartExt(override val side: Direction) : WirePartExt, RedstoneCarrierPartExt {
+data class RedAlloyWirePartExt(override val side: Direction) : ConnectablePartExt, RedstoneCarrierPartExt {
     override val type = Type
 
     override val redstoneType = RedstoneWireType.RedAlloy
@@ -42,11 +43,15 @@ data class RedAlloyWirePartExt(override val side: Direction) : WirePartExt, Reds
 
     override fun onChanged(self: NetNode, world: ServerWorld, pos: BlockPos) {
         RedstoneLogic.scheduleUpdate(world, pos)
-        WireUtils.updateClientWire(world, SidedPos(pos, side))
+        ConnectableUtils.updateClientWire(world, SidedPos(pos, side))
     }
 
     override fun toTag(): NbtElement? {
         return NbtByte.of(side.id.toByte())
+    }
+
+    override fun canConnectAt(world: BlockView, pos: BlockPos, inDirection: Direction, type: ConnectionType): Boolean {
+        return ConnectableUtils.canWireConnect(world, pos, inDirection, type, side, 2.0, 2.0)
     }
 
     object Type : SidedPartExtType {

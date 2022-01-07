@@ -6,13 +6,8 @@ import alexiil.mc.lib.net.*
 import com.kneelawk.wiredredstone.WRConstants.str
 import com.kneelawk.wiredredstone.util.*
 import net.minecraft.block.Block
-import net.minecraft.block.BlockState
-import net.minecraft.block.Blocks
-import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.util.math.Direction
-import net.minecraft.util.shape.VoxelShape
-import net.minecraft.util.shape.VoxelShapes
 import net.minecraft.world.BlockView
 
 /**
@@ -20,18 +15,19 @@ import net.minecraft.world.BlockView
  *
  * Subtypes for this could be redstone wires, bundle cables, or ribbon cables.
  */
-abstract class AbstractWirePart : AbstractSidedPart {
+abstract class AbstractConnectablePart : AbstractSidedPart {
 
     companion object {
-        private val NET_PARENT: ParentNetIdSingle<AbstractWirePart> =
-            NET_ID.subType(AbstractWirePart::class.java, str("abstract_wire_part"))
+        private val NET_PARENT: ParentNetIdSingle<AbstractConnectablePart> =
+            NET_ID.subType(AbstractConnectablePart::class.java, str("abstract_wire_part"))
 
-        private val NET_REDRAW: NetIdSignalK<AbstractWirePart> = NET_PARENT.idSignal("redraw").toClientOnly().setRecv {
-            redraw()
-        }
+        private val NET_REDRAW: NetIdSignalK<AbstractConnectablePart> =
+            NET_PARENT.idSignal("redraw").toClientOnly().setRecv {
+                redraw()
+            }
 
-        fun getWire(world: BlockView, pos: SidedPos): AbstractWirePart? {
-            return getPart(world, pos) as? AbstractWirePart
+        fun getWire(world: BlockView, pos: SidedPos): AbstractConnectablePart? {
+            return getPart(world, pos) as? AbstractConnectablePart
         }
     }
 
@@ -85,23 +81,6 @@ abstract class AbstractWirePart : AbstractSidedPart {
             sendNetworkUpdate(this, NET_REDRAW)
         }
         holder.container.recalculateShape()
-    }
-
-    override fun getCollisionShape(): VoxelShape {
-        return VoxelShapes.empty()
-    }
-
-    override fun getClosestBlockState(): BlockState {
-        return Blocks.REDSTONE_BLOCK.defaultState
-    }
-
-    override fun calculateBreakingDelta(player: PlayerEntity): Float {
-        // Break wires instantly like redstone wire
-        return super.calculateBreakingDelta(player, Blocks.REDSTONE_WIRE)
-    }
-
-    override fun getCullingShape(): VoxelShape {
-        return VoxelShapes.empty()
     }
 
     open fun overrideConnections(connections: UByte): UByte {

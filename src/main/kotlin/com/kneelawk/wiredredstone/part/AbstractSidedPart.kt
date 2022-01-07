@@ -2,11 +2,16 @@ package com.kneelawk.wiredredstone.part
 
 import alexiil.mc.lib.multipart.api.*
 import alexiil.mc.lib.multipart.api.event.NeighbourUpdateEvent
+import alexiil.mc.lib.multipart.api.event.PartAddedEvent
+import alexiil.mc.lib.multipart.api.event.PartRemovedEvent
 import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
-import com.kneelawk.wiredredstone.util.*
-import com.kneelawk.wiredredstone.util.WireUtils.isValidFace
+import com.kneelawk.wiredredstone.util.ConnectableUtils.isValidFace
+import com.kneelawk.wiredredstone.util.SidedPos
+import com.kneelawk.wiredredstone.util.SimpleItemDropTarget
+import com.kneelawk.wiredredstone.util.getPos
+import com.kneelawk.wiredredstone.util.getWorld
 import com.kneelawk.wiredredstone.wirenet.NetNodeContainer
 import com.kneelawk.wiredredstone.wirenet.SidedPartExtType
 import com.kneelawk.wiredredstone.wirenet.getWireNetworkState
@@ -64,8 +69,36 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
         ctx!!.setPart(side, this)
 
         bus.addListener(this, NeighbourUpdateEvent::class.java) {
-            if (!isClientSide() && shouldBreak()) {
-                removeAndDrop()
+            val world = getWorld()
+            if (world is ServerWorld) {
+                if (shouldBreak()) {
+                    removeAndDrop()
+                } else {
+                    // Something could be blocking our connection
+                    world.getWireNetworkState().controller.updateConnections(world, getSidedPos())
+                }
+            }
+        }
+
+        bus.addListener(this, PartAddedEvent::class.java) { e ->
+            // TODO: Must change this if networkable part functionality is moved
+            if (e.part !is AbstractSidedPart) {
+                // Something could be blocking our connection
+                val world = getWorld()
+                if (world is ServerWorld) {
+                    world.getWireNetworkState().controller.updateConnections(world, getSidedPos())
+                }
+            }
+        }
+
+        bus.addListener(this, PartRemovedEvent::class.java) { e ->
+            // TODO: Must change this if networkable part functionality is moved
+            if (e.removed !is AbstractSidedPart) {
+                // Something could be blocking our connection or could have just stopped
+                val world = getWorld()
+                if (world is ServerWorld) {
+                    world.getWireNetworkState().controller.updateConnections(world, getSidedPos())
+                }
             }
         }
     }
@@ -100,7 +133,6 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
 
         holder.remove()
     }
-
 
     override fun onPlacedBy(player: PlayerEntity?, hand: Hand?) {
         val world = getWorld()

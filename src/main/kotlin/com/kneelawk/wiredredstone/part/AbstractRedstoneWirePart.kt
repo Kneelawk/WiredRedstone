@@ -5,19 +5,29 @@ import alexiil.mc.lib.multipart.api.MultipartHolder
 import alexiil.mc.lib.multipart.api.MultipartUtil
 import alexiil.mc.lib.multipart.api.PartDefinition
 import alexiil.mc.lib.multipart.api.event.NeighbourUpdateEvent
+import alexiil.mc.lib.multipart.api.event.PartAddedEvent
+import alexiil.mc.lib.multipart.api.event.PartRemovedEvent
 import alexiil.mc.lib.multipart.api.property.MultipartProperties
 import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
 import com.kneelawk.wiredredstone.util.*
 import net.minecraft.block.Block
+import net.minecraft.block.BlockState
+import net.minecraft.block.Blocks
+import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.Direction
+import net.minecraft.util.shape.VoxelShape
+import net.minecraft.util.shape.VoxelShapes
 
-abstract class AbstractRedstoneWirePart : AbstractWirePart {
+abstract class AbstractRedstoneWirePart : AbstractConnectablePart {
     var powered: Boolean
         private set
+
+    abstract val wireWidth: Double
+    abstract val wireHeight: Double
 
     constructor(
         definition: PartDefinition, holder: MultipartHolder, side: Direction, connections: UByte, powered: Boolean
@@ -65,35 +75,84 @@ abstract class AbstractRedstoneWirePart : AbstractWirePart {
         getProperties().setValue(this, MultipartProperties.CAN_EMIT_REDSTONE, true)
 
         bus.addListener(this, NeighbourUpdateEvent::class.java) {
-            val world = getWorld()
-            if (world is ServerWorld) {
-                WireUtils.updateClientWire(world, getSidedPos())
-                RedstoneLogic.wiresGivePower = false
-                if (isReceivingPower() != powered) {
-                    RedstoneLogic.scheduleUpdate(world, getPos())
-                }
-                RedstoneLogic.wiresGivePower = true
+            updateConnections()
+        }
+
+        bus.addListener(this, PartAddedEvent::class.java) { e ->
+            // TODO: Must change this if networkable part functionality is moved
+            if (e.part !is AbstractSidedPart) {
+                updateConnections()
+            }
+        }
+
+        bus.addListener(this, PartRemovedEvent::class.java) { e ->
+            // TODO: Must change this if networkable part functionality is moved
+            if (e.removed !is AbstractSidedPart) {
+                updateConnections()
             }
         }
     }
 
-    override fun overrideConnections(connections: UByte): UByte {
+    private fun updateConnections() {
         val world = getWorld()
+        if (world is ServerWorld) {
+            ConnectableUtils.updateClientWire(world, getSidedPos())
+            RedstoneLogic.wiresGivePower = false
+            if (isReceivingPower() != powered) {
+                RedstoneLogic.scheduleUpdate(world, getPos())
+            }
+            RedstoneLogic.wiresGivePower = true
+        }
+    }
+
+    override fun getCollisionShape(): VoxelShape {
+        return VoxelShapes.empty()
+    }
+
+    override fun getClosestBlockState(): BlockState {
+        return Blocks.REDSTONE_BLOCK.defaultState
+    }
+
+    override fun calculateBreakingDelta(player: PlayerEntity): Float {
+        // Break wires instantly like redstone wire
+        return super.calculateBreakingDelta(player, Blocks.REDSTONE_WIRE)
+    }
+
+    override fun getCullingShape(): VoxelShape {
+        return VoxelShapes.empty()
+    }
+
+    override fun overrideConnections(connections: UByte): UByte {
+        println("> overrideConnections($connections)")
+        val world = getWorld()
+        val pos = getPos()
         var newConn = connections
 
         for (cardinal in DirectionUtils.HORIZONTALS) {
-            if (ConnectionUtils.isDisconnected(connections, cardinal)) {
-                val edge = RotationUtils.rotatedDirection(side, cardinal)
-                val offset = getPos().offset(edge)
+            val edge = RotationUtils.rotatedDirection(side, cardinal)
+
+            if (ConnectionUtils.isDisconnected(newConn, cardinal)) {
+                println("Wire is currently disconnected")
+                val offset = pos.offset(edge)
                 val otherPart = MultipartUtil.get(world, offset)
                 if (otherPart != null) {
                     // TODO: implement multipart redstone connection
                 } else {
                     val state = world.getBlockState(offset)
+                    println("state: $state")
                     if (state.emitsRedstonePower()) {
+                        println("emitsRedstonePower(): true, connecting external")
                         newConn = ConnectionUtils.setExternal(newConn, cardinal)
                     }
                 }
+            }
+
+            println("checking cardinal: $cardinal")
+            val inside =
+                BoundingBoxUtils.getWireInsideConnectionShape(side, edge, wireWidth, wireHeight) ?: continue
+            if (ConnectableUtils.checkInside(world, pos, inside)) {
+                println("checkInside(): true, disconnecting")
+                newConn = ConnectionUtils.setDisconnected(newConn, cardinal)
             }
         }
 

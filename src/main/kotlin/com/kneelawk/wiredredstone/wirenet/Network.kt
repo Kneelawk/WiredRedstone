@@ -106,6 +106,12 @@ class Network(val controller: WireNetworkController, val id: UUID) {
         controller.scheduleUpdate(node2)
     }
 
+    fun unlink(node1: NetNode, node2: NetNode) {
+        graph.unlink(node1, node2, null)
+        controller.scheduleUpdate(node1)
+        controller.scheduleUpdate(node2)
+    }
+
     fun merge(other: Network) {
         controller.changeListener()
         if (other.id != id) {
