@@ -4,6 +4,7 @@ plugins {
     id("fabric-loom")
     val kotlinVersion: String by System.getProperties()
     kotlin("jvm").version(kotlinVersion)
+    id("io.github.juuxel.loom-quiltflower-mini")
 }
 
 base {
@@ -19,14 +20,9 @@ group = mavenGroup
 minecraft {}
 
 repositories {
-    maven {
-        name = "BuildCraft"
-        url = URI("https://mod-buildcraft.com/maven")
-    }
-    maven {
-        name = "TerraformersMC"
-        url = URI("https://maven.terraformersmc.com/releases/")
-    }
+    maven("https://mod-buildcraft.com/maven") { name = "BuildCraft" }
+    maven("https://maven.terraformersmc.com/releases/") { name = "TerraformersMC" }
+    maven("https://maven.quiltmc.org/repository/release") { name = "QuiltMC" }
 }
 
 dependencies {
@@ -58,6 +54,11 @@ dependencies {
     modRuntimeOnly("com.terraformersmc:modmenu:$modMenuVersion") {
         exclude("net.fabricmc.fabric-api")
     }
+
+    // Quiltflower
+    // Probably best to just use the IDEA plugin instead
+//    val quiltflowerVersion: String by project
+//    runtimeOnly("org.quiltmc:quiltflower:$quiltflowerVersion")
 }
 
 tasks {
