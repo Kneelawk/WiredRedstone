@@ -123,7 +123,6 @@ abstract class AbstractRedstoneWirePart : AbstractConnectablePart {
     }
 
     override fun overrideConnections(connections: UByte): UByte {
-        println("> overrideConnections($connections)")
         val world = getWorld()
         val pos = getPos()
         var newConn = connections
@@ -132,26 +131,21 @@ abstract class AbstractRedstoneWirePart : AbstractConnectablePart {
             val edge = RotationUtils.rotatedDirection(side, cardinal)
 
             if (ConnectionUtils.isDisconnected(newConn, cardinal)) {
-                println("Wire is currently disconnected")
                 val offset = pos.offset(edge)
                 val otherPart = MultipartUtil.get(world, offset)
                 if (otherPart != null) {
                     // TODO: implement multipart redstone connection
                 } else {
                     val state = world.getBlockState(offset)
-                    println("state: $state")
                     if (state.emitsRedstonePower()) {
-                        println("emitsRedstonePower(): true, connecting external")
                         newConn = ConnectionUtils.setExternal(newConn, cardinal)
                     }
                 }
             }
 
-            println("checking cardinal: $cardinal")
             val inside =
                 BoundingBoxUtils.getWireInsideConnectionShape(side, edge, wireWidth, wireHeight) ?: continue
             if (ConnectableUtils.checkInside(world, pos, inside)) {
-                println("checkInside(): true, disconnecting")
                 newConn = ConnectionUtils.setDisconnected(newConn, cardinal)
             }
         }
