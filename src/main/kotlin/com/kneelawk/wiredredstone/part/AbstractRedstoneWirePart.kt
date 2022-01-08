@@ -132,11 +132,14 @@ abstract class AbstractRedstoneWirePart : AbstractConnectablePart {
 
             if (ConnectionUtils.isDisconnected(newConn, cardinal)) {
                 val offset = pos.offset(edge)
+                val state = world.getBlockState(offset)
                 val otherPart = MultipartUtil.get(world, offset)
                 if (otherPart != null) {
-                    // TODO: implement multipart redstone connection
+                    // TODO: implement better multipart redstone connection
+                    if (state.emitsRedstonePower() && otherPart.allParts.none { it is AbstractConnectablePart }) {
+                        newConn = ConnectionUtils.setExternal(newConn, cardinal)
+                    }
                 } else {
-                    val state = world.getBlockState(offset)
                     if (state.emitsRedstonePower()) {
                         newConn = ConnectionUtils.setExternal(newConn, cardinal)
                     }
