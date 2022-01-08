@@ -10,6 +10,7 @@ import net.minecraft.util.math.Direction
 import net.minecraft.util.registry.RegistryKey
 import net.minecraft.world.World
 import java.util.*
+import kotlin.math.max
 
 object RedstoneLogic {
     var scheduled = mapOf<RegistryKey<World>, Set<UUID>>()
@@ -32,19 +33,23 @@ object RedstoneLogic {
     }
 
     fun updateState(world: World, network: Network) {
-        val isOn = try {
+        val power = try {
             wiresGivePower = false
-            network.getNodes().any { (it.data.ext as RedstoneCarrierPartExt).getInput(world, it) }
+            network.getNodes()
+                .constrainedMaxOfOrNull(0, 15) { (it.data.ext as RedstoneCarrierPartExt).getInput(world, it) }
         } finally {
             wiresGivePower = true
         }
         for (node in network.getNodes()) {
             val ext = node.data.ext as RedstoneCarrierPartExt
-            ext.setState(world, node, isOn)
+            ext.setState(world, node, power)
         }
     }
 
-    fun isReceivingPower(world: World, pos: SidedPos, connections: UByte, receiveFromBottom: Boolean, blockage: UByte = 0u): Boolean {
+    fun getReceivingPower(
+        world: World, pos: SidedPos, connections: UByte, receiveFromBottom: Boolean,
+        blockage: UByte = BlockageUtils.UNBLOCKED
+    ): Int {
         val offsetPos = pos.pos.offset(pos.side)
         val weakSides = Direction.values().filter { a ->
             val cardinal = RotationUtils.unrotatedDirection(pos.side, a)
@@ -52,18 +57,20 @@ object RedstoneLogic {
                     && ConnectionUtils.isExternal(connections, cardinal)
                     && !BlockageUtils.isBlocked(blockage, cardinal)
         }
-        return weakSides.map {
-            val otherPos = pos.pos.offset(it)
-            val otherState = world.getBlockState(otherPos)
-            if (otherState.block == Blocks.REDSTONE_WIRE) {
-                0
-            } else if (otherState.isSolidBlock(world, otherPos)) {
-                otherState.getStrongRedstonePower(world, otherPos, it)
-            } else {
-                otherState.getWeakRedstonePower(world, otherPos, it)
-            }
-        }.any { it > 0 } || (receiveFromBottom
-                && world.getBlockState(offsetPos).block != Blocks.REDSTONE_WIRE
-                && world.getEmittedRedstonePower(offsetPos, pos.side) > 0)
+        return max(
+            weakSides.constrainedMaxOfOrNull(0, 15) {
+                val otherPos = pos.pos.offset(it)
+                val otherState = world.getBlockState(otherPos)
+                if (otherState.block == Blocks.REDSTONE_WIRE) {
+                    0
+                } else if (otherState.isSolidBlock(world, otherPos)) {
+                    otherState.getStrongRedstonePower(world, otherPos, it)
+                } else {
+                    otherState.getWeakRedstonePower(world, otherPos, it)
+                }
+            },
+            if (receiveFromBottom && world.getBlockState(offsetPos).block != Blocks.REDSTONE_WIRE)
+                world.getEmittedRedstonePower(offsetPos, pos.side) else 0
+        )
     }
 }

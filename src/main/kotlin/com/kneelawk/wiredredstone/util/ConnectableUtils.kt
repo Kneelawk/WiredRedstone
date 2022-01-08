@@ -21,7 +21,7 @@ object ConnectableUtils {
     data class Connection(val edge: Direction, val type: ConnectionType) {
         fun setForSide(side: Direction, connections: UByte, blockage: UByte = BlockageUtils.UNBLOCKED): UByte {
             val cardinal = RotationUtils.unrotatedDirection(side, edge)
-            if (!DirectionUtils.isValid(cardinal) || BlockageUtils.isBlocked(blockage, cardinal)) {
+            if (!DirectionUtils.isHorizontal(cardinal) || BlockageUtils.isBlocked(blockage, cardinal)) {
                 // A blockage or a vertical connection means we shouldn't set anything
                 return connections
             }

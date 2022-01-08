@@ -28,9 +28,9 @@ class RedAlloyWirePart : AbstractRedstoneWirePart {
     }
 
     constructor(
-        definition: PartDefinition, holder: MultipartHolder, side: Direction, connections: UByte, powered: Boolean,
+        definition: PartDefinition, holder: MultipartHolder, side: Direction, connections: UByte, power: Int,
         blockage: UByte
-    ) : super(definition, holder, side, connections, powered, blockage)
+    ) : super(definition, holder, side, connections, power, blockage)
 
     constructor(definition: PartDefinition, holder: MultipartHolder, tag: NbtCompound) : super(definition, holder, tag)
 
@@ -60,17 +60,17 @@ class RedAlloyWirePart : AbstractRedstoneWirePart {
     }
 
     private fun getStrongRedstonePower(powerSide: Direction): Int {
-        return if (RedstoneLogic.wiresGivePower && powered && powerSide == side) 15 else 0
+        return if (RedstoneLogic.wiresGivePower && powerSide == side) power else 0
     }
 
     private fun getWeakRedstonePower(powerSide: Direction): Int {
         val cardinal = RotationUtils.unrotatedDirection(side, powerSide)
-        val blocked = if (DirectionUtils.isValid(cardinal)) BlockageUtils.isBlocked(blockage, cardinal) else false
-        return if (RedstoneLogic.wiresGivePower && powered && powerSide != side && !blocked) 15 else 0
+        val blocked = if (DirectionUtils.isHorizontal(cardinal)) BlockageUtils.isBlocked(blockage, cardinal) else false
+        return if (RedstoneLogic.wiresGivePower && powerSide != side && !blocked) power else 0
     }
 
-    override fun isReceivingPower(): Boolean {
-        return RedstoneLogic.isReceivingPower(getWorld(), getSidedPos(), connections, true, blockage)
+    override fun getReceivingPower(): Int {
+        return RedstoneLogic.getReceivingPower(getWorld(), getSidedPos(), connections, true, blockage)
     }
 
     override fun getShape(): VoxelShape {
@@ -78,7 +78,7 @@ class RedAlloyWirePart : AbstractRedstoneWirePart {
     }
 
     override fun getModelKey(): PartModelKey {
-        return RedAlloyWirePartKey(side, connections, powered)
+        return RedAlloyWirePartKey(side, connections, power != 0)
     }
 
     override fun getOutlineShape(): VoxelShape {

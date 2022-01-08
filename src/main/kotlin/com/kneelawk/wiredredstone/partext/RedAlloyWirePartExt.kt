@@ -24,22 +24,22 @@ data class RedAlloyWirePartExt(override val side: Direction) : ConnectablePartEx
         return find(ConnectionDiscoverers.WIRE, RedstoneCarrierFilter, self, world, pos, nv)
     }
 
-    override fun getState(world: World, self: NetNode): Boolean {
-        val part = SidedPart.getPart(world, SidedPos(self.data.pos, side)) as? RedAlloyWirePart ?: return false
-        return part.powered
+    override fun getState(world: World, self: NetNode): Int {
+        val part = SidedPart.getPart(world, SidedPos(self.data.pos, side)) as? RedAlloyWirePart ?: return 0
+        return part.power
     }
 
-    override fun setState(world: World, self: NetNode, state: Boolean) {
+    override fun setState(world: World, self: NetNode, state: Int) {
         val part = SidedPart.getPart(world, SidedPos(self.data.pos, side)) as? RedAlloyWirePart ?: return
         // Updating neighbors is handled by updatePowered()
-        part.updatePowered(state)
+        part.updatePower(state)
         part.redraw()
     }
 
-    override fun getInput(world: World, self: NetNode): Boolean {
+    override fun getInput(world: World, self: NetNode): Int {
         val pos = SidedPos(self.data.pos, side)
-        val part = SidedPart.getPart(world, pos) as? RedAlloyWirePart ?: return false
-        return RedstoneLogic.isReceivingPower(world, pos, part.connections, true, part.blockage)
+        val part = SidedPart.getPart(world, pos) as? RedAlloyWirePart ?: return 0
+        return RedstoneLogic.getReceivingPower(world, pos, part.connections, true, part.blockage)
     }
 
     override fun onChanged(self: NetNode, world: ServerWorld, pos: BlockPos) {

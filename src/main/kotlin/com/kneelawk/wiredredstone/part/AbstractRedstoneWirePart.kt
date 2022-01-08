@@ -13,7 +13,6 @@ import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
 import com.kneelawk.wiredredstone.util.*
 import com.kneelawk.wiredredstone.wirenet.NetNodeContainer
-import net.minecraft.block.Block
 import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
 import net.minecraft.entity.player.PlayerEntity
@@ -23,8 +22,8 @@ import net.minecraft.util.math.Direction
 import net.minecraft.util.shape.VoxelShape
 import net.minecraft.util.shape.VoxelShapes
 
-abstract class AbstractRedstoneWirePart : AbstractConnectablePart, BlockablePart {
-    var powered: Boolean
+abstract class AbstractRedstoneWirePart : AbstractConnectablePart, BlockablePart, PowerablePart {
+    var power: Int
         private set
 
     /**
@@ -37,50 +36,50 @@ abstract class AbstractRedstoneWirePart : AbstractConnectablePart, BlockablePart
     abstract val wireHeight: Double
 
     constructor(
-        definition: PartDefinition, holder: MultipartHolder, side: Direction, connections: UByte, powered: Boolean,
+        definition: PartDefinition, holder: MultipartHolder, side: Direction, connections: UByte, power: Int,
         blockage: UByte
     ) : super(definition, holder, side, connections) {
-        this.powered = powered
+        this.power = power
         this.blockage = blockage
     }
 
     constructor(definition: PartDefinition, holder: MultipartHolder, tag: NbtCompound) : super(
         definition, holder, tag
     ) {
-        powered = tag.maybeGetByte("powered") == 1.toByte()
+        power = tag.maybeGetByte("power")?.toInt() ?: if (tag.maybeGetByte("powered") == 1.toByte()) 15 else 0
         blockage = tag.maybeGetByte("blockage")?.toUByte() ?: BlockageUtils.UNBLOCKED
     }
 
     constructor(definition: PartDefinition, holder: MultipartHolder, buffer: NetByteBuf, ctx: IMsgReadCtx) : super(
         definition, holder, buffer, ctx
     ) {
-        powered = buffer.readBoolean()
+        power = buffer.readByte().toInt()
         // There is currently no real use for blockage on the client
         blockage = BlockageUtils.UNBLOCKED
     }
 
-    abstract fun isReceivingPower(): Boolean
+    abstract fun getReceivingPower(): Int
 
     override fun toTag(): NbtCompound {
         val tag = super.toTag()
-        tag.putByte("powered", if (powered) 1.toByte() else 0.toByte())
+        tag.putByte("power", power.toByte())
         tag.putByte("blockage", blockage.toByte())
         return tag
     }
 
     override fun writeCreationData(buffer: NetByteBuf, ctx: IMsgWriteCtx) {
         super.writeCreationData(buffer, ctx)
-        buffer.writeBoolean(powered)
+        buffer.writeByte(power)
     }
 
     override fun writeRenderData(buffer: NetByteBuf, ctx: IMsgWriteCtx) {
         super.writeRenderData(buffer, ctx)
-        buffer.writeBoolean(powered)
+        buffer.writeByte(power)
     }
 
     override fun readRenderData(buffer: NetByteBuf, ctx: IMsgReadCtx) {
         super.readRenderData(buffer, ctx)
-        powered = buffer.readBoolean()
+        power = buffer.readByte().toInt()
     }
 
     override fun onAdded(bus: MultipartEventBus) {
@@ -111,7 +110,7 @@ abstract class AbstractRedstoneWirePart : AbstractConnectablePart, BlockablePart
         if (world is ServerWorld) {
             ConnectableUtils.updateBlockageAndConnections(world, getSidedPos(), wireWidth, wireHeight)
             RedstoneLogic.wiresGivePower = false
-            if (isReceivingPower() != powered) {
+            if (getReceivingPower() != power) {
                 RedstoneLogic.scheduleUpdate(world, getPos())
             }
             RedstoneLogic.wiresGivePower = true
@@ -168,9 +167,9 @@ abstract class AbstractRedstoneWirePart : AbstractConnectablePart, BlockablePart
         getBlockEntity().markDirty()
     }
 
-    fun updatePowered(powered: Boolean) {
-        val changed = this.powered != powered
-        this.powered = powered
+    override fun updatePower(power: Int) {
+        val changed = this.power != power
+        this.power = power
         getBlockEntity().markDirty()
 
         if (changed) {

@@ -27,7 +27,7 @@ class RedAlloyWireItem(settings: Settings) : Item(settings) {
 
     private fun creator(side: Direction): ((MultipartHolder) -> RedAlloyWirePart) {
         return { holder ->
-            RedAlloyWirePart(WRParts.RED_ALLOY_WIRE, holder, side, 0u, false, BlockageUtils.UNBLOCKED)
+            RedAlloyWirePart(WRParts.RED_ALLOY_WIRE, holder, side, 0u, 0, BlockageUtils.UNBLOCKED)
         }
     }
 }

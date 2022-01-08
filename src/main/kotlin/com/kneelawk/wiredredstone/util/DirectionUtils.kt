@@ -8,7 +8,7 @@ object DirectionUtils {
     /**
      * Checks if the given direction is a valid cardinal direction (NORTH, SOUTH, WEST, EAST).
      */
-    fun isValid(dir: Direction): Boolean {
+    fun isHorizontal(dir: Direction): Boolean {
         return dir.horizontal >= 0
     }
 }
