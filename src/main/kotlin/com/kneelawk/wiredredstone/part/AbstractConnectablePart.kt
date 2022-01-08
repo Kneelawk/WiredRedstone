@@ -89,11 +89,5 @@ abstract class AbstractConnectablePart : AbstractSidedPart, ConnectablePart, Red
     override fun updateConnections(connections: UByte) {
         this.connections = connections
         getBlockEntity().markDirty()
-
-        // Not really sure if this is necessary
-        val pos = getPos()
-        val world = getWorld()
-        val state = world.getBlockState(pos)
-        world.updateListeners(pos, state, state, Block.NOTIFY_ALL)
     }
 }

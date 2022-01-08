@@ -180,9 +180,6 @@ abstract class AbstractRedstoneWirePart : AbstractConnectablePart, BlockablePart
             val state = world.getBlockState(pos)
             val offset1 = pos.offset(side)
 
-            // Not really sure if this is necessary
-            world.updateListeners(pos, state, state, Block.NOTIFY_ALL)
-
             world.updateNeighbors(pos, state.block)
 
             Direction.values()
