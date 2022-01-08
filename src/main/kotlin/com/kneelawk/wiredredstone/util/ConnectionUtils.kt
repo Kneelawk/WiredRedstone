@@ -4,13 +4,6 @@ import net.minecraft.util.math.Direction
 
 object ConnectionUtils {
     /**
-     * Checks if the given direction is a valid cardinal direction (NORTH, SOUTH, WEST, EAST).
-     */
-    fun isValid(dir: Direction): Boolean {
-        return dir.horizontal >= 0
-    }
-
-    /**
      * Gets the bitshift for a given direction of the four cardinal directions.
      */
     private fun shiftFor(dir: Direction): Int {

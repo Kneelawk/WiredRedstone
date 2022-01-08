@@ -3,6 +3,7 @@ package com.kneelawk.wiredredstone.item
 import alexiil.mc.lib.multipart.api.MultipartHolder
 import com.kneelawk.wiredredstone.part.RedAlloyWirePart
 import com.kneelawk.wiredredstone.part.WRParts
+import com.kneelawk.wiredredstone.util.BlockageUtils
 import com.kneelawk.wiredredstone.util.PlacementUtils
 import net.minecraft.block.Blocks
 import net.minecraft.item.Item
@@ -26,7 +27,7 @@ class RedAlloyWireItem(settings: Settings) : Item(settings) {
 
     private fun creator(side: Direction): ((MultipartHolder) -> RedAlloyWirePart) {
         return { holder ->
-            RedAlloyWirePart(WRParts.RED_ALLOY_WIRE, holder, side, 0u, false)
+            RedAlloyWirePart(WRParts.RED_ALLOY_WIRE, holder, side, 0u, false, BlockageUtils.UNBLOCKED)
         }
     }
 }

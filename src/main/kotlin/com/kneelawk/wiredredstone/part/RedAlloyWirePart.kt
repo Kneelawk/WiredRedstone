@@ -20,13 +20,17 @@ import net.minecraft.util.shape.VoxelShape
 
 class RedAlloyWirePart : AbstractRedstoneWirePart {
     companion object {
-        private val CONFLICT_SHAPES = BoundingBoxUtils.getWireConflictShapes(2.0, 2.0)
-        private val OUTLINE_SHAPES = BoundingBoxUtils.getWireOutlineShapes(10.0, 2.0)
+        const val WIRE_WIDTH = 2.0
+        const val WIRE_HEIGHT = 2.0
+
+        private val CONFLICT_SHAPES = BoundingBoxUtils.getWireConflictShapes(WIRE_WIDTH, WIRE_HEIGHT)
+        private val OUTLINE_SHAPES = BoundingBoxUtils.getWireOutlineShapes(10.0, WIRE_HEIGHT)
     }
 
     constructor(
-        definition: PartDefinition, holder: MultipartHolder, side: Direction, connections: UByte, powered: Boolean
-    ) : super(definition, holder, side, connections, powered)
+        definition: PartDefinition, holder: MultipartHolder, side: Direction, connections: UByte, powered: Boolean,
+        blockage: UByte
+    ) : super(definition, holder, side, connections, powered, blockage)
 
     constructor(definition: PartDefinition, holder: MultipartHolder, tag: NbtCompound) : super(definition, holder, tag)
 
@@ -60,11 +64,13 @@ class RedAlloyWirePart : AbstractRedstoneWirePart {
     }
 
     private fun getWeakRedstonePower(powerSide: Direction): Int {
-        return if (RedstoneLogic.wiresGivePower && powered && powerSide != side) 15 else 0
+        val cardinal = RotationUtils.unrotatedDirection(side, powerSide)
+        val blocked = if (DirectionUtils.isValid(cardinal)) BlockageUtils.isBlocked(blockage, cardinal) else false
+        return if (RedstoneLogic.wiresGivePower && powered && powerSide != side && !blocked) 15 else 0
     }
 
     override fun isReceivingPower(): Boolean {
-        return RedstoneLogic.isReceivingPower(getWorld(), getSidedPos(), connections, true)
+        return RedstoneLogic.isReceivingPower(getWorld(), getSidedPos(), connections, true, blockage)
     }
 
     override fun getShape(): VoxelShape {

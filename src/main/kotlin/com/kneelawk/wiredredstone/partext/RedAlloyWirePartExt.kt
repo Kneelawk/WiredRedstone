@@ -2,6 +2,7 @@ package com.kneelawk.wiredredstone.partext
 
 import com.kneelawk.wiredredstone.part.AbstractSidedPart
 import com.kneelawk.wiredredstone.part.RedAlloyWirePart
+import com.kneelawk.wiredredstone.part.SidedPart
 import com.kneelawk.wiredredstone.util.*
 import com.kneelawk.wiredredstone.wirenet.*
 import com.kneelawk.wiredredstone.wirenet.conn.ConnectionDiscoverers
@@ -24,12 +25,12 @@ data class RedAlloyWirePartExt(override val side: Direction) : ConnectablePartEx
     }
 
     override fun getState(world: World, self: NetNode): Boolean {
-        val part = AbstractSidedPart.getPart(world, SidedPos(self.data.pos, side)) as? RedAlloyWirePart ?: return false
+        val part = SidedPart.getPart(world, SidedPos(self.data.pos, side)) as? RedAlloyWirePart ?: return false
         return part.powered
     }
 
     override fun setState(world: World, self: NetNode, state: Boolean) {
-        val part = AbstractSidedPart.getPart(world, SidedPos(self.data.pos, side)) as? RedAlloyWirePart ?: return
+        val part = SidedPart.getPart(world, SidedPos(self.data.pos, side)) as? RedAlloyWirePart ?: return
         // Updating neighbors is handled by updatePowered()
         part.updatePowered(state)
         part.redraw()
@@ -37,13 +38,15 @@ data class RedAlloyWirePartExt(override val side: Direction) : ConnectablePartEx
 
     override fun getInput(world: World, self: NetNode): Boolean {
         val pos = SidedPos(self.data.pos, side)
-        val part = AbstractSidedPart.getPart(world, pos) as? RedAlloyWirePart ?: return false
-        return RedstoneLogic.isReceivingPower(world, pos, part.connections, true)
+        val part = SidedPart.getPart(world, pos) as? RedAlloyWirePart ?: return false
+        return RedstoneLogic.isReceivingPower(world, pos, part.connections, true, part.blockage)
     }
 
     override fun onChanged(self: NetNode, world: ServerWorld, pos: BlockPos) {
         RedstoneLogic.scheduleUpdate(world, pos)
-        ConnectableUtils.updateClientWire(world, SidedPos(pos, side))
+        ConnectableUtils.updateBlockageAndConnections(
+            world, SidedPos(pos, side), RedAlloyWirePart.WIRE_WIDTH, RedAlloyWirePart.WIRE_HEIGHT
+        )
     }
 
     override fun toTag(): NbtElement? {

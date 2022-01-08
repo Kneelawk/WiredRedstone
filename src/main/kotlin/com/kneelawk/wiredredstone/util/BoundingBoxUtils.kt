@@ -108,10 +108,9 @@ object BoundingBoxUtils {
     }
 
     fun getWireInsideConnectionShape(
-        side: Direction, inDirection: Direction, wireWidth: Double, wireHeight: Double
+        side: Direction, cardinal: Direction, wireWidth: Double, wireHeight: Double
     ): Box? {
-        val cardinal = RotationUtils.unrotatedDirection(side, inDirection)
-        if (cardinal.axis == Direction.Axis.Y) {
+        if (cardinal.horizontal < 0) {
             return null
         }
 
@@ -125,9 +124,8 @@ object BoundingBoxUtils {
     }
 
     fun getWireOutsideConnectionShape(
-        side: Direction, inDirection: Direction, wireWidth: Double, wireHeight: Double, shouldBeInsideBlock: Boolean
+        side: Direction, cardinal: Direction, wireWidth: Double, wireHeight: Double, shouldBeInsideBlock: Boolean
     ): Box? {
-        val cardinal = RotationUtils.unrotatedDirection(side, inDirection)
         if (cardinal.axis == Direction.Axis.Y) {
             return null
         }

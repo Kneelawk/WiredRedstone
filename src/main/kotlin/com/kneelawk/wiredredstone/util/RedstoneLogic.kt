@@ -44,12 +44,13 @@ object RedstoneLogic {
         }
     }
 
-    fun isReceivingPower(world: World, pos: SidedPos, connections: UByte, receiveFromBottom: Boolean): Boolean {
+    fun isReceivingPower(world: World, pos: SidedPos, connections: UByte, receiveFromBottom: Boolean, blockage: UByte = 0u): Boolean {
         val offsetPos = pos.pos.offset(pos.side)
         val weakSides = Direction.values().filter { a ->
-            a.axis != pos.side.axis && ConnectionUtils.isExternal(
-                connections, RotationUtils.unrotatedDirection(pos.side, a)
-            )
+            val cardinal = RotationUtils.unrotatedDirection(pos.side, a)
+            a.axis != pos.side.axis
+                    && ConnectionUtils.isExternal(connections, cardinal)
+                    && !BlockageUtils.isBlocked(blockage, cardinal)
         }
         return weakSides.map {
             val otherPos = pos.pos.offset(it)

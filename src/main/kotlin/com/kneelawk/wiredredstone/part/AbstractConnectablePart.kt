@@ -8,14 +8,13 @@ import com.kneelawk.wiredredstone.util.*
 import net.minecraft.block.Block
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.util.math.Direction
-import net.minecraft.world.BlockView
 
 /**
  * A part that is some kind of wire. It can have connections that are visible on the client.
  *
  * Subtypes for this could be redstone wires, bundle cables, or ribbon cables.
  */
-abstract class AbstractConnectablePart : AbstractSidedPart {
+abstract class AbstractConnectablePart : AbstractSidedPart, ConnectablePart, RedrawablePart {
 
     companion object {
         private val NET_PARENT: ParentNetIdSingle<AbstractConnectablePart> =
@@ -25,12 +24,12 @@ abstract class AbstractConnectablePart : AbstractSidedPart {
             NET_PARENT.idSignal("redraw").toClientOnly().setRecv {
                 redraw()
             }
-
-        fun getWire(world: BlockView, pos: SidedPos): AbstractConnectablePart? {
-            return getPart(world, pos) as? AbstractConnectablePart
-        }
     }
 
+    /**
+     * Connections serves two functions. First, this is the data sent to the client so wires will actually render their
+     * connections. Second, this data controls which sides wires can accept external redstone signals from.
+     */
     var connections: UByte
         private set
 
@@ -73,7 +72,7 @@ abstract class AbstractConnectablePart : AbstractSidedPart {
         connections = buffer.readByte().toUByte()
     }
 
-    fun redraw() {
+    override fun redraw() {
         if (isClientSide()) {
             redrawIfChanged()
         } else {
@@ -83,11 +82,11 @@ abstract class AbstractConnectablePart : AbstractSidedPart {
         holder.container.recalculateShape()
     }
 
-    open fun overrideConnections(connections: UByte): UByte {
+    override fun overrideConnections(connections: UByte): UByte {
         return connections
     }
 
-    fun updateConnections(connections: UByte) {
+    override fun updateConnections(connections: UByte) {
         this.connections = connections
         getBlockEntity().markDirty()
 

@@ -12,6 +12,7 @@ import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
 import com.kneelawk.wiredredstone.util.*
+import com.kneelawk.wiredredstone.wirenet.NetNodeContainer
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
@@ -22,29 +23,40 @@ import net.minecraft.util.math.Direction
 import net.minecraft.util.shape.VoxelShape
 import net.minecraft.util.shape.VoxelShapes
 
-abstract class AbstractRedstoneWirePart : AbstractConnectablePart {
+abstract class AbstractRedstoneWirePart : AbstractConnectablePart, BlockablePart {
     var powered: Boolean
+        private set
+
+    /**
+     * Blockage cache. This is for helping in determining in which directions to emit a redstone signal.
+     */
+    var blockage: UByte
         private set
 
     abstract val wireWidth: Double
     abstract val wireHeight: Double
 
     constructor(
-        definition: PartDefinition, holder: MultipartHolder, side: Direction, connections: UByte, powered: Boolean
+        definition: PartDefinition, holder: MultipartHolder, side: Direction, connections: UByte, powered: Boolean,
+        blockage: UByte
     ) : super(definition, holder, side, connections) {
         this.powered = powered
+        this.blockage = blockage
     }
 
     constructor(definition: PartDefinition, holder: MultipartHolder, tag: NbtCompound) : super(
         definition, holder, tag
     ) {
         powered = tag.maybeGetByte("powered") == 1.toByte()
+        blockage = tag.maybeGetByte("blockage")?.toUByte() ?: BlockageUtils.UNBLOCKED
     }
 
     constructor(definition: PartDefinition, holder: MultipartHolder, buffer: NetByteBuf, ctx: IMsgReadCtx) : super(
         definition, holder, buffer, ctx
     ) {
         powered = buffer.readBoolean()
+        // There is currently no real use for blockage on the client
+        blockage = BlockageUtils.UNBLOCKED
     }
 
     abstract fun isReceivingPower(): Boolean
@@ -52,6 +64,7 @@ abstract class AbstractRedstoneWirePart : AbstractConnectablePart {
     override fun toTag(): NbtCompound {
         val tag = super.toTag()
         tag.putByte("powered", if (powered) 1.toByte() else 0.toByte())
+        tag.putByte("blockage", blockage.toByte())
         return tag
     }
 
@@ -79,15 +92,15 @@ abstract class AbstractRedstoneWirePart : AbstractConnectablePart {
         }
 
         bus.addListener(this, PartAddedEvent::class.java) { e ->
-            // TODO: Must change this if networkable part functionality is moved
-            if (e.part !is AbstractSidedPart) {
+            // NetNodeContainers update our connections directly when changed
+            if (e.part !is NetNodeContainer) {
                 updateConnections()
             }
         }
 
         bus.addListener(this, PartRemovedEvent::class.java) { e ->
-            // TODO: Must change this if networkable part functionality is moved
-            if (e.removed !is AbstractSidedPart) {
+            // NetNodeContainers update our connections directly when changed
+            if (e.removed !is NetNodeContainer) {
                 updateConnections()
             }
         }
@@ -96,7 +109,7 @@ abstract class AbstractRedstoneWirePart : AbstractConnectablePart {
     private fun updateConnections() {
         val world = getWorld()
         if (world is ServerWorld) {
-            ConnectableUtils.updateClientWire(world, getSidedPos())
+            ConnectableUtils.updateBlockageAndConnections(world, getSidedPos(), wireWidth, wireHeight)
             RedstoneLogic.wiresGivePower = false
             if (isReceivingPower() != powered) {
                 RedstoneLogic.scheduleUpdate(world, getPos())
@@ -128,9 +141,9 @@ abstract class AbstractRedstoneWirePart : AbstractConnectablePart {
         var newConn = connections
 
         for (cardinal in DirectionUtils.HORIZONTALS) {
-            val edge = RotationUtils.rotatedDirection(side, cardinal)
-
-            if (ConnectionUtils.isDisconnected(newConn, cardinal)) {
+            // Blockage gets updated before this gets called, so checking blockage here is ok
+            if (ConnectionUtils.isDisconnected(newConn, cardinal) && !BlockageUtils.isBlocked(blockage, cardinal)) {
+                val edge = RotationUtils.rotatedDirection(side, cardinal)
                 val offset = pos.offset(edge)
                 val state = world.getBlockState(offset)
                 val otherPart = MultipartUtil.get(world, offset)
@@ -145,15 +158,14 @@ abstract class AbstractRedstoneWirePart : AbstractConnectablePart {
                     }
                 }
             }
-
-            val inside =
-                BoundingBoxUtils.getWireInsideConnectionShape(side, edge, wireWidth, wireHeight) ?: continue
-            if (ConnectableUtils.checkInside(world, pos, inside)) {
-                newConn = ConnectionUtils.setDisconnected(newConn, cardinal)
-            }
         }
 
         return newConn
+    }
+
+    override fun updateBlockage(blockage: UByte) {
+        this.blockage = blockage
+        getBlockEntity().markDirty()
     }
 
     fun updatePowered(powered: Boolean) {
