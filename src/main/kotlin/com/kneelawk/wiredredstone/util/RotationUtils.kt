@@ -148,6 +148,66 @@ object RotationUtils {
     }
 
     /**
+     * Rotates X values from NORTH to the given direction.
+     */
+    fun cardinalRotatedX(to: Direction, x: Float, z: Float): Float {
+        return when (to) {
+            NORTH -> x
+            SOUTH -> 1f - x
+            WEST -> z
+            EAST -> 1f - z
+            else -> throw IllegalArgumentException("$to is not a cardinal direction")
+        }
+    }
+
+    /**
+     * Rotates Z values from NORTH to the given direction.
+     */
+    fun cardinalRotatedZ(to: Direction, x: Float, z: Float): Float {
+        return when (to) {
+            NORTH -> z
+            SOUTH -> 1f - z
+            WEST -> 1f - x
+            EAST -> x
+            else -> throw IllegalArgumentException("$to is not a cardinal direction")
+        }
+    }
+
+    /**
+     * Rotates a direction around the Y-axis so that if it had been pointing NORTH, it now points in the given direction.
+     */
+    fun cardinalRotatedDirection(to: Direction, direction: Direction): Direction {
+        return when (to) {
+            NORTH -> direction
+            SOUTH -> when (direction) {
+                DOWN -> DOWN
+                UP -> UP
+                NORTH -> SOUTH
+                SOUTH -> NORTH
+                WEST -> EAST
+                EAST -> WEST
+            }
+            WEST -> when (direction) {
+                DOWN -> DOWN
+                UP -> UP
+                NORTH -> WEST
+                SOUTH -> EAST
+                WEST -> SOUTH
+                EAST -> NORTH
+            }
+            EAST -> when (direction) {
+                DOWN -> DOWN
+                UP -> UP
+                NORTH -> EAST
+                SOUTH -> WEST
+                WEST -> NORTH
+                EAST -> SOUTH
+            }
+            else -> throw IllegalArgumentException("$to is not a cardinal direction")
+        }
+    }
+
+    /**
      * Rotates a box from NORTH to the given cardinal direction.
      */
     fun cardinalRotatedBox(to: Direction, box: Box): Box {

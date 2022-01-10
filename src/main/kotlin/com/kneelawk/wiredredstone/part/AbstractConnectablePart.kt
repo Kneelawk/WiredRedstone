@@ -73,6 +73,9 @@ abstract class AbstractConnectablePart : AbstractSidedPart, ConnectablePart, Red
     }
 
     override fun redraw() {
+        // Sometimes this gets called after a part has already been removed
+        if (!holder.isPresent) return
+
         if (isClientSide()) {
             redrawIfChanged()
         } else {

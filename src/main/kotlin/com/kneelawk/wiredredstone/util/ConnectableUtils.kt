@@ -39,10 +39,9 @@ object ConnectableUtils {
      *
      * This expects the part at the given side-pos to be a `BlockablePart`.
      */
-    fun updateBlockageAndConnections(world: ServerWorld, pos: SidedPos, wireWidth: Double, wireHeight: Double) {
-        val blockPos = pos.pos
-        val side = pos.side
-        val part = SidedPart.getPart(world, pos) as? BlockablePart ?: return
+    fun updateBlockageAndConnections(world: ServerWorld, part: BlockablePart, wireWidth: Double, wireHeight: Double) {
+        val blockPos = part.getPos()
+        val side = part.side
         val net = world.getWireNetworkState().controller
 
         val blockage = DirectionUtils.HORIZONTALS.fold(0u.toUByte()) { blockage, cardinal ->
@@ -57,26 +56,27 @@ object ConnectableUtils {
 
         part.updateBlockage(blockage)
 
-        updateConnectionsImpl(pos, side, part, net, blockage)
+        updateConnectionsImpl(part, net, blockage)
     }
 
     /**
      * Updates connections of the LMP part and asking it to update the client.
      */
-    fun updateConnections(world: ServerWorld, pos: SidedPos) {
-        val side = pos.side
-        val part = SidedPart.getPart(world, pos) as? ConnectablePart ?: return
+    fun updateConnections(world: ServerWorld, part: ConnectablePart) {
         val net = world.getWireNetworkState().controller
 
-        updateConnectionsImpl(pos, side, part, net, BlockageUtils.UNBLOCKED)
+        updateConnectionsImpl(part, net, BlockageUtils.UNBLOCKED)
     }
 
     /**
      * Updates visual connections, updating the LMP part and asking it to update the client.
      */
     private fun updateConnectionsImpl(
-        pos: SidedPos, side: Direction, part: ConnectablePart, net: WireNetworkController, blockage: UByte
+        part: ConnectablePart, net: WireNetworkController, blockage: UByte
     ) {
+        val side = part.side
+        val pos = part.getSidedPos()
+
         val nodes1 = net.getNodesAt(pos).filter { it.data.ext is ConnectablePartExt }
             // The flatMap here causes entire parts to visually connect, even if only one of their network-nodes is
             // actually connected.

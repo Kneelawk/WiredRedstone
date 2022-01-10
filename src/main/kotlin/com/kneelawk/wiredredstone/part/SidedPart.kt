@@ -2,9 +2,10 @@ package com.kneelawk.wiredredstone.part
 
 import alexiil.mc.lib.multipart.api.MultipartUtil
 import com.kneelawk.wiredredstone.util.SidedPos
+import net.minecraft.util.math.Direction
 import net.minecraft.world.BlockView
 
-interface SidedPart {
+interface SidedPart : WRPart {
     companion object {
         fun getPart(world: BlockView, pos: SidedPos): SidedPart? {
             val container = MultipartUtil.get(world, pos.pos) ?: return null
@@ -12,5 +13,11 @@ interface SidedPart {
         }
     }
 
+    val side: Direction
+
     fun getSidedContext(): SidedPartContext
+
+    fun getSidedPos(): SidedPos {
+        return SidedPos(getPos().toImmutable(), side)
+    }
 }

@@ -1,6 +1,5 @@
 package com.kneelawk.wiredredstone.partext
 
-import com.kneelawk.wiredredstone.part.AbstractSidedPart
 import com.kneelawk.wiredredstone.part.RedAlloyWirePart
 import com.kneelawk.wiredredstone.part.SidedPart
 import com.kneelawk.wiredredstone.util.*
@@ -20,33 +19,35 @@ data class RedAlloyWirePartExt(override val side: Direction) : ConnectablePartEx
 
     override val redstoneType = RedstoneWireType.RedAlloy
 
+    private fun getPart(world: BlockView, pos: BlockPos): RedAlloyWirePart? {
+        return SidedPart.getPart(world, SidedPos(pos, side)) as? RedAlloyWirePart
+    }
+
     override fun tryConnect(self: NetNode, world: ServerWorld, pos: BlockPos, nv: NodeView): Set<NetNode> {
         return find(ConnectionDiscoverers.WIRE, RedstoneCarrierFilter, self, world, pos, nv)
     }
 
     override fun getState(world: World, self: NetNode): Int {
-        val part = SidedPart.getPart(world, SidedPos(self.data.pos, side)) as? RedAlloyWirePart ?: return 0
+        val part = getPart(world, self.data.pos) ?: return 0
         return part.power
     }
 
     override fun setState(world: World, self: NetNode, state: Int) {
-        val part = SidedPart.getPart(world, SidedPos(self.data.pos, side)) as? RedAlloyWirePart ?: return
+        val part = getPart(world, self.data.pos) ?: return
         // Updating neighbors is handled by updatePowered()
         part.updatePower(state)
         part.redraw()
     }
 
     override fun getInput(world: World, self: NetNode): Int {
+        val part = getPart(world, self.data.pos) ?: return 0
         val pos = SidedPos(self.data.pos, side)
-        val part = SidedPart.getPart(world, pos) as? RedAlloyWirePart ?: return 0
         return RedstoneLogic.getReceivingPower(world, pos, part.connections, true, part.blockage)
     }
 
     override fun onChanged(self: NetNode, world: ServerWorld, pos: BlockPos) {
         RedstoneLogic.scheduleUpdate(world, pos)
-        ConnectableUtils.updateBlockageAndConnections(
-            world, SidedPos(pos, side), RedAlloyWirePart.WIRE_WIDTH, RedAlloyWirePart.WIRE_HEIGHT
-        )
+        getPart(world, pos)?.updateConnections()
     }
 
     override fun toTag(): NbtElement? {
@@ -63,7 +64,7 @@ data class RedAlloyWirePartExt(override val side: Direction) : ConnectablePartEx
             return RedAlloyWirePartExt(Direction.byId(byte.intValue()))
         }
 
-        override fun createExtsForPart(world: World, pos: SidedPos, part: AbstractSidedPart): Set<PartExt> {
+        override fun createExtsForPart(world: World, pos: SidedPos, part: SidedPart): Set<PartExt> {
             return setOf(RedAlloyWirePartExt(pos.side))
         }
     }

@@ -7,14 +7,14 @@ import com.google.common.cache.CacheLoader
 import com.google.common.cache.LoadingCache
 import com.kneelawk.wiredredstone.client.render.*
 import com.kneelawk.wiredredstone.part.key.RedAlloyWirePartKey
-import com.kneelawk.wiredredstone.util.requireNotNull
+import com.kneelawk.wiredredstone.util.requireNonNull
 import com.kneelawk.wiredredstone.util.threadLocal
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh
 
 object RedAlloyWirePartBaker : PartModelBaker<RedAlloyWirePartKey> {
     private val builder by threadLocal {
-        RendererAccess.INSTANCE.renderer.requireNotNull("Renderer is null").meshBuilder()
+        RendererAccess.INSTANCE.renderer.requireNonNull("Renderer is null").meshBuilder()
     }
 
     private val cache: LoadingCache<RedAlloyWirePartKey, Mesh> =

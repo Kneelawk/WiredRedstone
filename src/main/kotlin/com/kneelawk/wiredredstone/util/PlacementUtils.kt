@@ -1,5 +1,6 @@
 package com.kneelawk.wiredredstone.util
 
+import alexiil.mc.lib.multipart.api.AbstractPart
 import alexiil.mc.lib.multipart.api.MultipartContainer
 import alexiil.mc.lib.multipart.api.MultipartHolder
 import alexiil.mc.lib.multipart.api.MultipartUtil
@@ -47,8 +48,8 @@ object PlacementUtils {
         }
     }
 
-    fun tryPlace(
-        context: ItemUsageContext, creatorFactory: (Direction) -> ((MultipartHolder) -> RedAlloyWirePart)
+    fun tryPlaceWire(
+        context: ItemUsageContext, creatorFactory: (Direction) -> ((MultipartHolder) -> AbstractPart)
     ): MultipartContainer.PartOffer? {
         val world = context.world
         val pos = context.blockPos
@@ -76,9 +77,26 @@ object PlacementUtils {
         }
     }
 
+    fun tryPlaceGate(
+        context: ItemUsageContext, creatorFactory: (Direction, Direction) -> (MultipartHolder) -> AbstractPart
+    ): MultipartContainer.PartOffer? {
+        val world = context.world
+        val pos = context.blockPos
+        val side = context.side
+        val hitPos = context.hitPos.subtract(Vec3d.ofCenter(pos))
+        val offsetPos = pos.offset(side)
+        val state = world.getBlockState(pos)
+        val sideSide = closestSideSide(hitPos, side)
+        val direction = DirectionUtils.makeHorizontal(RotationUtils.unrotatedDirection(side.opposite, sideSide))
+
+        return if (ConnectableUtils.isValidFace(state, world, pos, side)) {
+            MultipartUtil.offerNewPart(world, offsetPos, creatorFactory(side.opposite, direction))
+        } else null
+    }
+
     private fun tryOffsetSide(
         offsetPos: BlockPos, sideSide: Direction,
-        world: World, creatorFactory: (Direction) -> ((MultipartHolder) -> RedAlloyWirePart)
+        world: World, creatorFactory: (Direction) -> ((MultipartHolder) -> AbstractPart)
     ): MultipartContainer.PartOffer? {
         val sidePos = offsetPos.offset(sideSide)
         val sideState = world.getBlockState(sidePos)

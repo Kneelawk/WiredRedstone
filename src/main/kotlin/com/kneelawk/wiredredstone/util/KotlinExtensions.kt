@@ -1,9 +1,9 @@
 package com.kneelawk.wiredredstone.util
 
-import java.util.*
-
-fun <T> T?.requireNotNull(msg: String): T {
-    return Objects.requireNonNull(this, msg)!!
+fun <T> T?.requireNonNull(msg: String): T {
+    if (this == null)
+        throw NullPointerException(msg)
+    return this
 }
 
 /**

@@ -1,5 +1,3 @@
-import java.net.URI
-
 plugins {
     id("fabric-loom")
     val kotlinVersion: String by System.getProperties()
@@ -23,6 +21,7 @@ repositories {
     maven("https://mod-buildcraft.com/maven") { name = "BuildCraft" }
     maven("https://maven.terraformersmc.com/releases/") { name = "TerraformersMC" }
     maven("https://maven.quiltmc.org/repository/release") { name = "QuiltMC" }
+    maven("https://maven.vram.io/") { name = "VRAM" }
 }
 
 dependencies {
@@ -44,6 +43,25 @@ dependencies {
     }
     // JIJs LMP, LNS, & LBA Core
     include("alexiil.mc.lib:libmultipart-all:$lmpVersion")
+
+    // vram stuff
+    val vramExtension: String by project
+
+    // FREX dependency because I like frex
+    val frexVersion: String by project
+    modImplementation("io.vram:frex-fabric-$vramExtension:$frexVersion:fat") {
+        exclude("net.fabricmc.fabric-api")
+    }
+    // JIJs FREX
+    include("io.vram:frex-fabric-$vramExtension:$frexVersion:fat")
+
+    // JMX dependency because it means I can make stuff glow using model json
+    val jmxVersion: String by project
+    modImplementation("io.vram:jmx-fabric-$vramExtension:$jmxVersion") {
+        exclude("net.fabricmc.fabric-api")
+    }
+    // JIJs JMX
+    include("io.vram:jmx-fabric-$vramExtension:$jmxVersion")
 
     //
     // Optional Mod Dependencies

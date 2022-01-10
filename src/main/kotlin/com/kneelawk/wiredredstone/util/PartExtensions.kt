@@ -7,13 +7,6 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
 /**
- * Shortcut for [MultipartContainer.getMultipartPos()][alexiil.mc.lib.multipart.api.MultipartContainer.getMultipartPos]
- */
-fun AbstractPart.getPos(): BlockPos {
-    return holder.container.multipartPos
-}
-
-/**
  * Shortcut for [MultipartContainer.getMultipartWorld()][alexiil.mc.lib.multipart.api.MultipartContainer.getMultipartWorld]
  */
 fun AbstractPart.getWorld(): World {

@@ -37,7 +37,12 @@ data class NetworkPart<T : PartExt>(var pos: BlockPos, val ext: T) {
             val pos = BlockPos(tag.getInt("x"), tag.getInt("y"), tag.getInt("z"))
 
             val extTag = tag["ext"]
-            val ext = type.createExtFromTag(extTag) ?: return null
+            val ext = type.createExtFromTag(extTag)
+
+            if (ext == null) {
+                WRLog.warn("Unable to decode wirenet part with type: $typeId")
+                return null
+            }
 
             return NetworkPart(pos, ext)
         }

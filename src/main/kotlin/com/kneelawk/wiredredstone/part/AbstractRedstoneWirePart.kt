@@ -13,6 +13,7 @@ import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
 import com.kneelawk.wiredredstone.util.*
 import com.kneelawk.wiredredstone.wirenet.NetNodeContainer
+import com.kneelawk.wiredredstone.wirenet.getWireNetworkState
 import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
 import net.minecraft.entity.player.PlayerEntity
@@ -46,14 +47,15 @@ abstract class AbstractRedstoneWirePart : AbstractConnectablePart, BlockablePart
     constructor(definition: PartDefinition, holder: MultipartHolder, tag: NbtCompound) : super(
         definition, holder, tag
     ) {
-        power = tag.maybeGetByte("power")?.toInt() ?: if (tag.maybeGetByte("powered") == 1.toByte()) 15 else 0
+        power = tag.maybeGetByte("power")?.toInt()?.coerceIn(0..15)
+            ?: if (tag.maybeGetByte("powered") == 1.toByte()) 15 else 0
         blockage = tag.maybeGetByte("blockage")?.toUByte() ?: BlockageUtils.UNBLOCKED
     }
 
     constructor(definition: PartDefinition, holder: MultipartHolder, buffer: NetByteBuf, ctx: IMsgReadCtx) : super(
         definition, holder, buffer, ctx
     ) {
-        power = buffer.readByte().toInt()
+        power = buffer.readByte().toInt().coerceIn(0..15)
         // There is currently no real use for blockage on the client
         blockage = BlockageUtils.UNBLOCKED
     }
@@ -79,7 +81,7 @@ abstract class AbstractRedstoneWirePart : AbstractConnectablePart, BlockablePart
 
     override fun readRenderData(buffer: NetByteBuf, ctx: IMsgReadCtx) {
         super.readRenderData(buffer, ctx)
-        power = buffer.readByte().toInt()
+        power = buffer.readByte().toInt().coerceIn(0..15)
     }
 
     override fun onAdded(bus: MultipartEventBus) {
@@ -87,33 +89,43 @@ abstract class AbstractRedstoneWirePart : AbstractConnectablePart, BlockablePart
         getProperties().setValue(this, MultipartProperties.CAN_EMIT_REDSTONE, true)
 
         bus.addListener(this, NeighbourUpdateEvent::class.java) {
-            updateConnections()
+            handleUpdates()
         }
 
         bus.addListener(this, PartAddedEvent::class.java) { e ->
             // NetNodeContainers update our connections directly when changed
             if (e.part !is NetNodeContainer) {
-                updateConnections()
+                handleUpdates()
             }
         }
 
         bus.addListener(this, PartRemovedEvent::class.java) { e ->
             // NetNodeContainers update our connections directly when changed
             if (e.removed !is NetNodeContainer) {
-                updateConnections()
+                handleUpdates()
             }
         }
     }
 
-    private fun updateConnections() {
+    private fun handleUpdates() {
         val world = getWorld()
         if (world is ServerWorld) {
-            ConnectableUtils.updateBlockageAndConnections(world, getSidedPos(), wireWidth, wireHeight)
+            // Something could be blocking our connection
+            world.getWireNetworkState().controller.updateConnections(world, getSidedPos())
+
+            updateConnections()
             RedstoneLogic.wiresGivePower = false
             if (getReceivingPower() != power) {
                 RedstoneLogic.scheduleUpdate(world, getPos())
             }
             RedstoneLogic.wiresGivePower = true
+        }
+    }
+
+    fun updateConnections() {
+        val world = getWorld()
+        if (world is ServerWorld) {
+            ConnectableUtils.updateBlockageAndConnections(world, this, wireWidth, wireHeight)
         }
     }
 
@@ -176,15 +188,7 @@ abstract class AbstractRedstoneWirePart : AbstractConnectablePart, BlockablePart
             // update neighbors
             val world = getWorld()
             val pos = getPos()
-            val state = world.getBlockState(pos)
-            val offset1 = pos.offset(side)
-
-            world.updateNeighbors(pos, state.block)
-
-            Direction.values()
-                .filter { it != side.opposite }
-                .map { offset1.offset(it) }
-                .forEach { world.updateNeighbor(it, state.block, pos) }
+            WorldUtils.strongUpdateNeighbors(world, pos, side)
         }
     }
 }

@@ -13,6 +13,7 @@ import net.minecraft.util.math.Vec3f
 import org.lwjgl.system.MemoryStack
 import java.util.*
 
+@Deprecated("Use FREX's QuadSink.withTransformQuad")
 sealed class TransformingQuadEmitter(private val emitter: QuadEmitter) : QuadEmitter {
     companion object {
         private val DEFAULT_MATERIAL by lazy {

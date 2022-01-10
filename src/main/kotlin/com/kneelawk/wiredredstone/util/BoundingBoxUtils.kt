@@ -92,19 +92,21 @@ object BoundingBoxUtils {
         return CacheBuilder.newBuilder().build(CacheLoader.from { key -> getWireShape(wireWidth, wireHeight, key) })
     }
 
-    fun getWireConflictShapes(wireWidth: Double, wireHeight: Double): EnumMap<Direction, VoxelShape> {
+    fun getRotatedShapes(base: Box): EnumMap<Direction, VoxelShape> {
         val map = EnumMap<Direction, VoxelShape>(Direction::class.java)
         for (dir in Direction.values()) {
-            map[dir] = VoxelShapes.cuboid(
-                RotationUtils.rotatedBox(
-                    dir, Box(
-                        0.5 - wireWidth / 32.0, 0.0, 0.5 - wireWidth / 32.0, 0.5 + wireWidth / 32.0, wireHeight / 16.0,
-                        0.5 + wireWidth / 32.0
-                    )
-                )
-            )
+            map[dir] = VoxelShapes.cuboid(RotationUtils.rotatedBox(dir, base))
         }
         return map
+    }
+
+    fun getWireConflictShapes(wireWidth: Double, wireHeight: Double): EnumMap<Direction, VoxelShape> {
+        return getRotatedShapes(
+            Box(
+                0.5 - wireWidth / 32.0, 0.0, 0.5 - wireWidth / 32.0,
+                0.5 + wireWidth / 32.0, wireHeight / 16.0, 0.5 + wireWidth / 32.0
+            )
+        )
     }
 
     fun getWireInsideConnectionShape(

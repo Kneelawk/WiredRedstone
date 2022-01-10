@@ -11,4 +11,19 @@ object DirectionUtils {
     fun isHorizontal(dir: Direction): Boolean {
         return dir.horizontal >= 0
     }
+
+    /**
+     * Checks if the given direction is horizontal, throwing an exception if not.
+     */
+    fun assertHorizontal(dir: Direction) {
+        if (!isHorizontal(dir))
+            throw IllegalArgumentException("$dir is not a horizontal direction")
+    }
+
+    /**
+     * If the [dir] is horizontal, this returns [dir], otherwise, this returns [Direction.NORTH].
+     */
+    fun makeHorizontal(dir: Direction): Direction {
+        return if (isHorizontal(dir)) dir else Direction.NORTH
+    }
 }

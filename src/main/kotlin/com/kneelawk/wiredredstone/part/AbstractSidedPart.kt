@@ -2,13 +2,13 @@ package com.kneelawk.wiredredstone.part
 
 import alexiil.mc.lib.multipart.api.*
 import alexiil.mc.lib.multipart.api.event.NeighbourUpdateEvent
-import alexiil.mc.lib.multipart.api.event.PartAddedEvent
-import alexiil.mc.lib.multipart.api.event.PartRemovedEvent
 import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
-import com.kneelawk.wiredredstone.util.*
 import com.kneelawk.wiredredstone.util.ConnectableUtils.isValidFace
+import com.kneelawk.wiredredstone.util.SimpleItemDropTarget
+import com.kneelawk.wiredredstone.util.getWorld
+import com.kneelawk.wiredredstone.util.requireNonNull
 import com.kneelawk.wiredredstone.wirenet.NetNodeContainer
 import com.kneelawk.wiredredstone.wirenet.SidedPartExtType
 import com.kneelawk.wiredredstone.wirenet.getWireNetworkState
@@ -19,6 +19,7 @@ import net.minecraft.loot.context.LootContextParameters
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.Hand
+import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Vec3d
 
@@ -27,7 +28,7 @@ import net.minecraft.util.math.Vec3d
  *
  * Subtypes of this could be parts for wires, bundle cables, or gates.
  */
-abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHolder, val side: Direction) :
+abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHolder, override val side: Direction) :
     AbstractPart(definition, holder), NetNodeContainer, SidedPart {
 
     private var ctx: SidedPartContext? = null
@@ -54,7 +55,7 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
     }
 
     override fun getSidedContext(): SidedPartContext {
-        return ctx.requireNotNull("SidedPartContext is still null (onAdded must not have been called yet)")
+        return ctx.requireNonNull("SidedPartContext is still null (onAdded must not have been called yet)")
     }
 
     override fun onAdded(bus: MultipartEventBus) {
@@ -66,31 +67,6 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
             if (world is ServerWorld) {
                 if (shouldBreak()) {
                     removeAndDrop()
-                } else {
-                    // Something could be blocking our connection
-                    world.getWireNetworkState().controller.updateConnections(world, getSidedPos())
-                }
-            }
-        }
-
-        bus.addListener(this, PartAddedEvent::class.java) { e ->
-            // NetNodeContainers update our connections directly when changed
-            if (e.part !is NetNodeContainer) {
-                // Something could be blocking our connection
-                val world = getWorld()
-                if (world is ServerWorld) {
-                    world.getWireNetworkState().controller.updateConnections(world, getSidedPos())
-                }
-            }
-        }
-
-        bus.addListener(this, PartRemovedEvent::class.java) { e ->
-            // NetNodeContainers update our connections directly when changed
-            if (e.removed !is NetNodeContainer) {
-                // Something could be blocking our connection or could have just stopped
-                val world = getWorld()
-                if (world is ServerWorld) {
-                    world.getWireNetworkState().controller.updateConnections(world, getSidedPos())
                 }
             }
         }
@@ -143,7 +119,7 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
         }
     }
 
-    fun getSidedPos(): SidedPos {
-        return SidedPos(getPos().toImmutable(), side)
+    override fun getPos(): BlockPos {
+        return holder.container.multipartPos
     }
 }

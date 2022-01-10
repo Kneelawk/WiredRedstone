@@ -1,81 +1,64 @@
 {
-	"credit": "Made with Blockbench",
-	"parent": "minecraft:block/block",
-	"textures": {
-		"particle": "wiredredstone:block/red_alloy_wire_powered",
-		"wire": "wiredredstone:block/red_alloy_wire_powered"
-	},
-	"display": {
-		"thirdperson_righthand": {
-			"rotation": [ 75, 45, 0 ],
-			"translation": [ 0, 2.5, 4.0],
-			"scale": [ 0.375, 0.375, 0.375 ]
-		},
-		"firstperson_righthand": {
-			"rotation": [ 0, 45, 0 ],
-			"translation": [ 0, 4.0, 0 ],
-			"scale": [ 0.40, 0.40, 0.40 ]
-		},
-		"firstperson_lefthand": {
-			"rotation": [ 0, 225, 0 ],
-			"translation": [ 0, 4.0, 0 ],
-			"scale": [ 0.40, 0.40, 0.40 ]
-		}
-	},
-	"elements": [
-		{
-			"from": [7, 0, 7],
-			"to": [9, 2, 9],
-			"faces": {
-				"up": {"uv": [7, 7, 9, 9], "texture": "#wire"},
-				"down": {"uv": [7, 7, 9, 9], "texture": "#wire"}
-			}
-		},
-		{
-			"from": [0, 0, 7],
-			"to": [7, 2, 9],
-			"faces": {
-				"north": {"uv": [9, 7, 16, 9], "texture": "#wire"},
-				"south": {"uv": [0, 7, 7, 9], "texture": "#wire"},
-				"west": {"uv": [7, 7, 9, 9], "texture": "#wire"},
-				"up": {"uv": [0, 7, 7, 9], "texture": "#wire"},
-				"down": {"uv": [0, 7, 7, 9], "texture": "#wire"}
-			}
-		},
-		{
-			"from": [9, 0, 7],
-			"to": [16, 2, 9],
-			"faces": {
-				"north": {"uv": [0, 7, 7, 9], "texture": "#wire"},
-				"east": {"uv": [7, 7, 9, 9], "texture": "#wire"},
-				"south": {"uv": [9, 7, 16, 9], "texture": "#wire"},
-				"up": {"uv": [9, 7, 16, 9], "texture": "#wire"},
-				"down": {"uv": [9, 7, 16, 9], "texture": "#wire"}
-			}
-		},
-		{
-			"from": [7, 0, 0],
-			"to": [9, 2, 7],
-			"faces": {
-				"north": {"uv": [7, 7, 9, 9], "texture": "#wire"},
-				"east": {"uv": [9, 7, 16, 9], "texture": "#wire"},
-				"south": {"uv": [0, 0, 2, 2], "texture": "#wire"},
-				"west": {"uv": [0, 7, 7, 9], "texture": "#wire"},
-				"up": {"uv": [7, 0, 9, 7], "texture": "#wire"},
-				"down": {"uv": [7, 9, 9, 16], "texture": "#wire"}
-			}
-		},
-		{
-			"from": [7, 0, 9],
-			"to": [9, 2, 16],
-			"faces": {
-				"north": {"uv": [0, 0, 2, 2], "texture": "#wire"},
-				"east": {"uv": [0, 7, 7, 9], "texture": "#wire"},
-				"south": {"uv": [7, 7, 9, 9], "texture": "#wire"},
-				"west": {"uv": [9, 7, 16, 9], "texture": "#wire"},
-				"up": {"uv": [7, 9, 9, 16], "texture": "#wire"},
-				"down": {"uv": [7, 0, 9, 7], "texture": "#wire"}
-			}
-		}
-	]
+  "credit": "Made with Blockbench",
+  "parent": "wiredredstone:block/flat",
+  "textures": {
+    "particle": "wiredredstone:block/red_alloy_wire_powered",
+    "wire": "wiredredstone:block/red_alloy_wire_powered"
+  },
+  "elements": [
+    {
+      "from": [ 7, 0, 7 ],
+      "to": [ 9, 2, 9 ],
+      "faces": {
+        "up": { "uv": [ 7, 7, 9, 9 ], "texture": "#wire" },
+        "down": { "uv": [ 7, 7, 9, 9 ], "texture": "#wire" }
+      }
+    },
+    {
+      "from": [ 0, 0, 7 ],
+      "to": [ 7, 2, 9 ],
+      "faces": {
+        "north": { "uv": [ 9, 7, 16, 9 ], "texture": "#wire" },
+        "south": { "uv": [ 0, 7, 7, 9 ], "texture": "#wire" },
+        "west": { "uv": [ 7, 7, 9, 9 ], "texture": "#wire" },
+        "up": { "uv": [ 0, 7, 7, 9 ], "texture": "#wire" },
+        "down": { "uv": [ 0, 7, 7, 9 ], "texture": "#wire" }
+      }
+    },
+    {
+      "from": [ 9, 0, 7 ],
+      "to": [ 16, 2, 9 ],
+      "faces": {
+        "north": { "uv": [ 0, 7, 7, 9 ], "texture": "#wire" },
+        "east": { "uv": [ 7, 7, 9, 9 ], "texture": "#wire" },
+        "south": { "uv": [ 9, 7, 16, 9 ], "texture": "#wire" },
+        "up": { "uv": [ 9, 7, 16, 9 ], "texture": "#wire" },
+        "down": { "uv": [ 9, 7, 16, 9 ], "texture": "#wire" }
+      }
+    },
+    {
+      "from": [ 7, 0, 0 ],
+      "to": [ 9, 2, 7 ],
+      "faces": {
+        "north": { "uv": [ 7, 7, 9, 9 ], "texture": "#wire" },
+        "east": { "uv": [ 9, 7, 16, 9 ], "texture": "#wire" },
+        "south": { "uv": [ 0, 0, 2, 2 ], "texture": "#wire" },
+        "west": { "uv": [ 0, 7, 7, 9 ], "texture": "#wire" },
+        "up": { "uv": [ 7, 0, 9, 7 ], "texture": "#wire" },
+        "down": { "uv": [ 7, 9, 9, 16 ], "texture": "#wire" }
+      }
+    },
+    {
+      "from": [ 7, 0, 9 ],
+      "to": [ 9, 2, 16 ],
+      "faces": {
+        "north": { "uv": [ 0, 0, 2, 2 ], "texture": "#wire" },
+        "east": { "uv": [ 0, 7, 7, 9 ], "texture": "#wire" },
+        "south": { "uv": [ 7, 7, 9, 9 ], "texture": "#wire" },
+        "west": { "uv": [ 9, 7, 16, 9 ], "texture": "#wire" },
+        "up": { "uv": [ 7, 9, 9, 16 ], "texture": "#wire" },
+        "down": { "uv": [ 7, 0, 9, 7 ], "texture": "#wire" }
+      }
+    }
+  ]
 }

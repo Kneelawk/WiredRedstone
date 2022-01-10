@@ -1,15 +1,17 @@
 package com.kneelawk.wiredredstone.client.render
 
-import com.kneelawk.wiredredstone.WRLog
 import com.kneelawk.wiredredstone.util.ConnectionUtils.isCorner
 import com.kneelawk.wiredredstone.util.ConnectionUtils.isExternal
 import com.kneelawk.wiredredstone.util.ConnectionUtils.isInternal
+import net.fabricmc.fabric.api.client.model.BakedModelManagerHelper
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView
 import net.minecraft.client.MinecraftClient
+import net.minecraft.client.render.model.BakedModel
 import net.minecraft.client.texture.Sprite
 import net.minecraft.client.texture.SpriteAtlasTexture
+import net.minecraft.client.util.ModelIdentifier
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Direction.*
@@ -19,6 +21,11 @@ import kotlin.math.sqrt
 object RenderUtils {
     fun getBlockSprite(id: Identifier): Sprite {
         return MinecraftClient.getInstance().getSpriteAtlas(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE).apply(id)
+    }
+
+    fun getModel(id: Identifier): BakedModel {
+        val manager = MinecraftClient.getInstance().bakedModelManager
+        return BakedModelManagerHelper.getModel(manager, id) ?: manager.missingModel
     }
 
     fun emitWire(
