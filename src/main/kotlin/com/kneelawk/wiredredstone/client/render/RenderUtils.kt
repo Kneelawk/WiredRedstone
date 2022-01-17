@@ -3,7 +3,12 @@ package com.kneelawk.wiredredstone.client.render
 import com.kneelawk.wiredredstone.util.ConnectionUtils.isCorner
 import com.kneelawk.wiredredstone.util.ConnectionUtils.isExternal
 import com.kneelawk.wiredredstone.util.ConnectionUtils.isInternal
+import com.kneelawk.wiredredstone.util.requireNonNull
+import com.kneelawk.wiredredstone.util.threadLocal
+import io.vram.frex.api.mesh.MeshBuilder
+import io.vram.frex.api.renderer.Renderer
 import net.fabricmc.fabric.api.client.model.BakedModelManagerHelper
+import net.fabricmc.fabric.api.renderer.v1.RendererAccess
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView
@@ -19,6 +24,10 @@ import net.minecraft.util.math.Vec3f
 import kotlin.math.sqrt
 
 object RenderUtils {
+    val MESH_BUILDER: MeshBuilder by threadLocal {
+        Renderer.get().meshBuilder()
+    }
+
     fun getBlockSprite(id: Identifier): Sprite {
         return MinecraftClient.getInstance().getSpriteAtlas(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE).apply(id)
     }
