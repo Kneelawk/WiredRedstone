@@ -5,7 +5,9 @@ import alexiil.mc.lib.multipart.api.render.PartRenderContext
 import com.kneelawk.wiredredstone.client.render.*
 import com.kneelawk.wiredredstone.part.key.GateDiodePartKey
 import io.vram.frex.api.model.BlockItemModel
+import io.vram.frex.base.renderer.util.BakedModelTranscoder
 import io.vram.frex.fabric.compat.FabricMesh
+import net.minecraft.client.render.model.BasicBakedModel
 
 object GateDiodePartBaker : PartModelBaker<GateDiodePartKey> {
     override fun emitQuads(key: GateDiodePartKey, ctx: PartRenderContext) {
@@ -18,16 +20,16 @@ object GateDiodePartBaker : PartModelBaker<GateDiodePartKey> {
             WRModels.GATE_DIODE_OFF
         }
 
-        val model = RenderUtils.getModel(modelId) as BlockItemModel
-
-        println("key: $key")
-        println("model class: ${model.javaClass}")
-        println("model: $model")
+        val model = RenderUtils.getModel(modelId)
 
         val builder = RenderUtils.MESH_BUILDER
         val emitter = builder.emitter
 
-        model.renderAsBlock(AbsentBlockInputContext, emitter)
+        if (model is BasicBakedModel) {
+            BakedModelTranscoder.accept(model, AbsentBlockInputContext, emitter)
+        } else {
+            (model as BlockItemModel).renderAsBlock(AbsentBlockInputContext, emitter)
+        }
 
         val mesh = builder.build()
 
