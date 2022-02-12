@@ -1,7 +1,7 @@
 package com.kneelawk.wiredredstone.client.render
 
-import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter
+import io.vram.frex.api.buffer.QuadEmitter
+import io.vram.frex.api.material.RenderMaterial
 import net.minecraft.client.texture.Sprite
 import net.minecraft.util.math.Direction
 import kotlin.math.max
@@ -18,11 +18,11 @@ class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Fl
 
     private class TexCoords(var minU: Float, var minV: Float, var maxU: Float, var maxV: Float) {
         fun spriteBake(emitter: QuadEmitter, sprite: Sprite) {
-            emitter.sprite(0, 0, minU, minV)
-            emitter.sprite(1, 0, minU, maxV)
-            emitter.sprite(2, 0, maxU, maxV)
-            emitter.sprite(3, 0, maxU, minV)
-            emitter.spriteBake(0, sprite, QuadEmitter.BAKE_NORMALIZED)
+            emitter.uv(0, minU, minV)
+            emitter.uv(1, minU, maxV)
+            emitter.uv(2, maxU, maxV)
+            emitter.uv(3, maxU, minV)
+            emitter.spriteBake(sprite, QuadEmitter.BAKE_NORMALIZED)
         }
     }
 
@@ -253,7 +253,7 @@ class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Fl
 
     private fun finishFace(emitter: QuadEmitter, texCoords: TexCoords, cullFace: Direction?, sprite: Sprite) {
         texCoords.spriteBake(emitter, sprite)
-        emitter.spriteColor(0, -1, -1, -1, -1)
+        emitter.vertexColor(-1, -1, -1, -1)
         material?.let { emitter.material(it) }
         emitter.cullFace(cullFace)
         emitter.emit()

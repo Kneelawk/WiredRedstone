@@ -1,16 +1,16 @@
 package com.kneelawk.wiredredstone.client.render
 
-import net.fabricmc.fabric.api.renderer.v1.RendererAccess
-import net.fabricmc.fabric.api.renderer.v1.material.BlendMode
-import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial
+import io.vram.frex.api.material.MaterialConstants
+import io.vram.frex.api.material.RenderMaterial
+import io.vram.frex.api.renderer.Renderer
 
 object WRMaterials {
     val POWERED_MATERIAL: RenderMaterial by lazy {
-        RendererAccess.INSTANCE.renderer!!.materialFinder().blendMode(0, BlendMode.CUTOUT).emissive(0, true)
-            .disableAo(0, true).find()
+        Renderer.get().materials().materialFinder().preset(MaterialConstants.PRESET_CUTOUT).emissive(true)
+            .disableAo(true).find()
     }
 
     val UNPOWERED_MATERIAL: RenderMaterial by lazy {
-        RendererAccess.INSTANCE.renderer!!.materialFinder().blendMode(0, BlendMode.CUTOUT).find()
+        Renderer.get().materials().materialFinder().preset(MaterialConstants.PRESET_CUTOUT).find()
     }
 }

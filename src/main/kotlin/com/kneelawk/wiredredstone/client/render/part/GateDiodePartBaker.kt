@@ -11,9 +11,6 @@ import net.minecraft.client.render.model.BasicBakedModel
 
 object GateDiodePartBaker : PartModelBaker<GateDiodePartKey> {
     override fun emitQuads(key: GateDiodePartKey, ctx: PartRenderContext) {
-        ctx.pushTransform(SideQuadTransform(key.side))
-        ctx.pushTransform(RotateQuadTransform(key.direction))
-
         val modelId = if (key.powered) {
             WRModels.GATE_DIODE_ON
         } else {
@@ -24,6 +21,8 @@ object GateDiodePartBaker : PartModelBaker<GateDiodePartKey> {
 
         val builder = RenderUtils.MESH_BUILDER
         val emitter = builder.emitter
+            .withTransformQuad(AbsentBlockInputContext, SideQuadTransform(key.side))
+            .withTransformQuad(AbsentBlockInputContext, RotateQuadTransform(key.direction))
 
         if (model is BasicBakedModel) {
             BakedModelTranscoder.accept(model, AbsentBlockInputContext, emitter)
@@ -34,8 +33,5 @@ object GateDiodePartBaker : PartModelBaker<GateDiodePartKey> {
         val mesh = builder.build()
 
         ctx.meshConsumer().accept(FabricMesh.of(mesh))
-
-        ctx.popTransform()
-        ctx.popTransform()
     }
 }
