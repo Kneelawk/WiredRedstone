@@ -1,7 +1,7 @@
 package com.kneelawk.wiredredstone.client.render
 
 import com.kneelawk.wiredredstone.util.ConnectionUtils.isCorner
-import com.kneelawk.wiredredstone.util.ConnectionUtils.isExternal
+import com.kneelawk.wiredredstone.util.ConnectionUtils.isDisconnected
 import com.kneelawk.wiredredstone.util.ConnectionUtils.isInternal
 import com.kneelawk.wiredredstone.util.threadLocal
 import io.vram.frex.api.buffer.QuadEmitter
@@ -21,6 +21,8 @@ import net.minecraft.util.math.Vec3f
 import kotlin.math.sqrt
 
 object RenderUtils {
+    private const val WIRE_CLEARANCE = 0.001f
+
     val MESH_BUILDER: MeshBuilder by threadLocal {
         Renderer.get().meshBuilder()
     }
@@ -51,23 +53,27 @@ object RenderUtils {
                 .setSideTexCoordsV(sideV)
                 .emit(emitter)
         } else {
-            val (doZNeg, zNegEnd) = calculateConnection(
-                conn, axis, wireWidth, NORTH, wireHeight, 0f, Axis.Y, true
-            )
-            val (doXNeg, xNegEnd) = calculateConnection(
-                conn, axis, wireWidth, WEST, wireHeight, 0f, Axis.X, false
-            )
-            val (doZPos, zPosEnd) = calculateConnection(
-                conn, axis, wireWidth, SOUTH, 16f - wireHeight, 16f, Axis.Y, true
-            )
-            val (doXPos, xPosEnd) = calculateConnection(
-                conn, axis, wireWidth, EAST, 16f - wireHeight, 16f, Axis.X, false
-            )
+            val (doZNeg, zNegEnd) = calculateConnection(conn, wireWidth, NORTH, 0f)
+            val (doXNeg, xNegEnd) = calculateConnection(conn, wireWidth, WEST, 0f)
+            val (doZPos, zPosEnd) = calculateConnection(conn, wireWidth, SOUTH, 16f)
+            val (doXPos, xPosEnd) = calculateConnection(conn, wireWidth, EAST, 16f)
+
+            // We want wires along some axis to be slightly thinner so that they don't overlap
+            val halfXWireWidth = if (axis != Axis.X) {
+                wireWidth / 2f
+            } else {
+                wireWidth / 2f - WIRE_CLEARANCE
+            }
+            val halfZWireWidth = if (axis == Axis.Y) {
+                wireWidth / 2f
+            } else {
+                wireWidth / 2f - WIRE_CLEARANCE
+            }
 
             // Emit wire boxes
 
             if (doXNeg || doXPos) {
-                BoxEmitter.onGroundPixels(xNegEnd, 8f - wireWidth / 2f, xPosEnd, 8f + wireWidth / 2f, wireHeight)
+                BoxEmitter.onGroundPixels(xNegEnd, 8f - halfXWireWidth, xPosEnd, 8f + halfXWireWidth, wireHeight)
                     .sprite(baseSprite)
                     .westSprite(
                         if (isInternal(conn, WEST)) baseSprite else if (isCorner(conn, WEST)) null else endSprite
@@ -82,7 +88,7 @@ object RenderUtils {
             }
 
             if (doZNeg || doZPos) {
-                BoxEmitter.onGroundPixels(8f - wireWidth / 2f, zNegEnd, 8f + wireWidth / 2f, zPosEnd, wireHeight)
+                BoxEmitter.onGroundPixels(8f - halfZWireWidth, zNegEnd, 8f + halfZWireWidth, zPosEnd, wireHeight)
                     .sprite(baseSprite)
                     .northSprite(
                         if (isInternal(conn, NORTH)) baseSprite else if (isCorner(conn, NORTH)) null else endSprite
@@ -98,8 +104,8 @@ object RenderUtils {
 
             // emit corner boxes
 
-            if (isCorner(conn, NORTH) && axis == Axis.Y) {
-                BoxEmitter.onGroundPixels(8f - wireWidth / 2f, -wireHeight, 8f + wireWidth / 2f, 0f, wireHeight)
+            if (isCorner(conn, NORTH)) {
+                BoxEmitter.onGroundPixels(8f - halfZWireWidth, -wireHeight, 8f + halfZWireWidth, 0f, wireHeight)
                     .sprite(baseSprite)
                     .downSprite(null)
                     .southSprite(null)
@@ -112,8 +118,8 @@ object RenderUtils {
                     .emit(emitter)
             }
 
-            if (isCorner(conn, SOUTH) && axis == Axis.Y) {
-                BoxEmitter.onGroundPixels(8f - wireWidth / 2f, 16f, 8f + wireWidth / 2f, 16f + wireHeight, wireHeight)
+            if (isCorner(conn, SOUTH)) {
+                BoxEmitter.onGroundPixels(8f - halfZWireWidth, 16f, 8f + halfZWireWidth, 16f + wireHeight, wireHeight)
                     .sprite(baseSprite)
                     .downSprite(null)
                     .northSprite(null)
@@ -126,8 +132,8 @@ object RenderUtils {
                     .emit(emitter)
             }
 
-            if (isCorner(conn, WEST) && axis != Axis.X) {
-                BoxEmitter.onGroundPixels(-wireHeight, 8f - wireWidth / 2f, 0f, 8f + wireWidth / 2f, wireHeight)
+            if (isCorner(conn, WEST)) {
+                BoxEmitter.onGroundPixels(-wireHeight, 8f - halfXWireWidth, 0f, 8f + halfXWireWidth, wireHeight)
                     .sprite(baseSprite)
                     .downSprite(null)
                     .eastSprite(null)
@@ -140,8 +146,8 @@ object RenderUtils {
                     .emit(emitter)
             }
 
-            if (isCorner(conn, EAST) && axis != Axis.X) {
-                BoxEmitter.onGroundPixels(16f, 8f - wireWidth / 2f, 16f + wireHeight, 8f + wireWidth / 2f, wireHeight)
+            if (isCorner(conn, EAST)) {
+                BoxEmitter.onGroundPixels(16f, 8f - halfXWireWidth, 16f + wireHeight, 8f + halfXWireWidth, wireHeight)
                     .sprite(baseSprite)
                     .downSprite(null)
                     .westSprite(null)
@@ -157,12 +163,9 @@ object RenderUtils {
     }
 
     private fun calculateConnection(
-        conn: UByte, axis: Axis, wireWidth: Float, cardinal: Direction, internalEnd: Float, externalEnd: Float,
-        specialAxis: Axis, axisIsLarger: Boolean
+        conn: UByte, wireWidth: Float, cardinal: Direction, externalEnd: Float
     ): Pair<Boolean, Float> {
-        return if (isInternal(conn, cardinal)) {
-            Pair(true, if ((axis == specialAxis) == axisIsLarger) externalEnd else internalEnd)
-        } else if (isExternal(conn, cardinal) || isCorner(conn, cardinal)) {
+        return if (!isDisconnected(conn, cardinal)) {
             Pair(true, externalEnd)
         } else {
             Pair(false, 8f + if (cardinal == NORTH || cardinal == WEST) -wireWidth / 2f else wireWidth / 2f)
