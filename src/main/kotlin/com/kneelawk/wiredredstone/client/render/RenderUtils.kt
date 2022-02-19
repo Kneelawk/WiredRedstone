@@ -105,7 +105,9 @@ object RenderUtils {
             // emit corner boxes
 
             if (isCorner(conn, NORTH)) {
-                BoxEmitter.onGroundPixels(8f - halfZWireWidth, -wireHeight, 8f + halfZWireWidth, 0f, wireHeight)
+                BoxEmitter.onGroundPixels(
+                    8f - halfZWireWidth, -wireHeight + WIRE_CLEARANCE, 8f + halfZWireWidth, 0f, wireHeight
+                )
                     .sprite(baseSprite)
                     .downSprite(null)
                     .southSprite(null)
@@ -119,7 +121,9 @@ object RenderUtils {
             }
 
             if (isCorner(conn, SOUTH)) {
-                BoxEmitter.onGroundPixels(8f - halfZWireWidth, 16f, 8f + halfZWireWidth, 16f + wireHeight, wireHeight)
+                BoxEmitter.onGroundPixels(
+                    8f - halfZWireWidth, 16f, 8f + halfZWireWidth, 16f + wireHeight - WIRE_CLEARANCE, wireHeight
+                )
                     .sprite(baseSprite)
                     .downSprite(null)
                     .northSprite(null)
@@ -133,7 +137,9 @@ object RenderUtils {
             }
 
             if (isCorner(conn, WEST)) {
-                BoxEmitter.onGroundPixels(-wireHeight, 8f - halfXWireWidth, 0f, 8f + halfXWireWidth, wireHeight)
+                BoxEmitter.onGroundPixels(
+                    -wireHeight + WIRE_CLEARANCE, 8f - halfXWireWidth, 0f, 8f + halfXWireWidth, wireHeight
+                )
                     .sprite(baseSprite)
                     .downSprite(null)
                     .eastSprite(null)
@@ -147,7 +153,9 @@ object RenderUtils {
             }
 
             if (isCorner(conn, EAST)) {
-                BoxEmitter.onGroundPixels(16f, 8f - halfXWireWidth, 16f + wireHeight, 8f + halfXWireWidth, wireHeight)
+                BoxEmitter.onGroundPixels(
+                    16f, 8f - halfXWireWidth, 16f + wireHeight - WIRE_CLEARANCE, 8f + halfXWireWidth, wireHeight
+                )
                     .sprite(baseSprite)
                     .downSprite(null)
                     .westSprite(null)
