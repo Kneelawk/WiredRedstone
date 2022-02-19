@@ -40,3 +40,10 @@ fun AbstractPart.isClientSide(): Boolean {
 fun AbstractPart.redrawIfChanged() {
     holder.container.redrawIfChanged()
 }
+
+/**
+ * Checks to see if a given part has been removed.
+ */
+fun AbstractPart.isRemoved(): Boolean {
+    return holder.container.getFirstPart { it === this } == null
+}

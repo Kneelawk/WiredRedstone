@@ -89,6 +89,9 @@ abstract class AbstractRedstoneWirePart : AbstractConnectablePart, BlockablePart
         getProperties().setValue(this, MultipartProperties.CAN_EMIT_REDSTONE, true)
 
         bus.addListener(this, NeighbourUpdateEvent::class.java) {
+            // Sometimes this gets called after this part has been removed already
+            if (isRemoved()) return@addListener
+
             handleUpdates()
         }
 

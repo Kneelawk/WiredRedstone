@@ -117,6 +117,9 @@ class GateDiodePart : AbstractRotatedPart {
         }
 
         bus.addListener(this, NeighbourUpdateEvent::class.java) {
+            // Sometimes this gets called after this part has been removed already
+            if (isRemoved()) return@addListener
+
             val world = getWorld()
             if (world is ServerWorld) {
                 // Something could be blocking our connection
