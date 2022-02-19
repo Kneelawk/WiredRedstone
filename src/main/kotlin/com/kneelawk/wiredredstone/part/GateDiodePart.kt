@@ -31,9 +31,9 @@ class GateDiodePart : AbstractRotatedPart {
         const val CONNECTION_WIDTH = 2.0
         const val CONNECTION_HEIGHT = 2.0
 
-        val CONFLICT_SHAPES =
+        val CONNECTION_BLOCKING_SHAPES =
             BoundingBoxUtils.getRotatedShapes(Box(4.0 / 16.0, 0.0, 4.0 / 16.0, 12.0 / 16.0, 2.0 / 16.0, 12.0 / 16.0))
-        val OUTLINE_SHAPES = BoundingBoxUtils.getRotatedShapes(Box(0.0, 0.0, 0.0, 1.0, 2.0 / 16.0, 1.0))
+        val SHAPES = BoundingBoxUtils.getRotatedShapes(Box(0.0, 0.0, 0.0, 1.0, 2.0 / 16.0, 1.0))
     }
 
     override val partExtType = GateDiodePartExt.Type
@@ -177,11 +177,11 @@ class GateDiodePart : AbstractRotatedPart {
     }
 
     override fun getShape(): VoxelShape {
-        return CONFLICT_SHAPES[side]!!
+        return SHAPES[side]!!
     }
 
-    override fun getOutlineShape(): VoxelShape {
-        return OUTLINE_SHAPES[side]!!
+    override fun getConnectionBlockingShape(): VoxelShape {
+        return CONNECTION_BLOCKING_SHAPES[side]!!
     }
 
     override fun getModelKey(): PartModelKey {

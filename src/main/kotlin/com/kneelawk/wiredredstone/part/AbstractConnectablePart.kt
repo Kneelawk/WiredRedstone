@@ -5,9 +5,9 @@ import alexiil.mc.lib.multipart.api.PartDefinition
 import alexiil.mc.lib.net.*
 import com.kneelawk.wiredredstone.WRConstants.str
 import com.kneelawk.wiredredstone.util.*
-import net.minecraft.block.Block
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.util.math.Direction
+import net.minecraft.util.shape.VoxelShape
 
 /**
  * A part that is some kind of wire. It can have connections that are visible on the client.
@@ -92,5 +92,9 @@ abstract class AbstractConnectablePart : AbstractSidedPart, ConnectablePart, Red
     override fun updateConnections(connections: UByte) {
         this.connections = connections
         getBlockEntity().markDirty()
+    }
+
+    override fun getConnectionBlockingShape(): VoxelShape {
+        return shape
     }
 }

@@ -4,7 +4,6 @@ import alexiil.mc.lib.multipart.api.MultipartUtil
 import com.kneelawk.wiredredstone.part.BlockablePart
 import com.kneelawk.wiredredstone.part.ConnectablePart
 import com.kneelawk.wiredredstone.part.RedrawablePart
-import com.kneelawk.wiredredstone.part.SidedPart
 import com.kneelawk.wiredredstone.wirenet.ConnectablePartExt
 import com.kneelawk.wiredredstone.wirenet.SidedPartExt
 import com.kneelawk.wiredredstone.wirenet.WireNetworkController
@@ -141,7 +140,14 @@ object ConnectableUtils {
      * @return True if the shape **does** conflict with anything.
      */
     fun checkInside(world: BlockView, pos: BlockPos, shape: Box): Boolean {
-        return MultipartUtil.get(world, pos)?.allParts?.any { isCollidingWith(it.shape, shape) } ?: false
+        return MultipartUtil.get(world, pos)?.allParts?.any {
+            val blocking = if (it is ConnectablePart) {
+                it.getConnectionBlockingShape()
+            } else {
+                it.shape
+            }
+            isCollidingWith(blocking, shape)
+        } ?: false
     }
 
     /**
@@ -157,7 +163,14 @@ object ConnectableUtils {
     fun checkOutside(world: BlockView, pos: BlockPos, shape: Box): Boolean {
         val multipart = MultipartUtil.get(world, pos)
         return if (multipart != null) {
-            multipart.allParts.any { isCollidingWith(it.shape, shape) }
+            multipart.allParts.any {
+                val blocking = if (it is ConnectablePart) {
+                    it.getConnectionBlockingShape()
+                } else {
+                    it.shape
+                }
+                isCollidingWith(blocking, shape)
+            }
         } else {
             val state = world.getBlockState(pos)
             val outlineShape = state.getOutlineShape(world, pos)
