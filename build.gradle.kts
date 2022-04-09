@@ -20,6 +20,7 @@ repositories {
     maven("https://maven.terraformersmc.com/releases/") { name = "TerraformersMC" }
     maven("https://maven.quiltmc.org/repository/release") { name = "QuiltMC" }
     maven("https://maven.vram.io/") { name = "VRAM" }
+    maven("https://maven.shedaniel.me/") { name = "shedaniel" }
 }
 
 dependencies {
@@ -68,6 +69,11 @@ dependencies {
     // Mod Menu
     val modMenuVersion: String by project
     modRuntimeOnly("com.terraformersmc:modmenu:$modMenuVersion") {
+        exclude("net.fabricmc.fabric-api")
+    }
+
+    val canvasVersion: String by project
+    modRuntimeOnly("io.vram:canvas-fabric-$vramExtension:$canvasVersion") {
         exclude("net.fabricmc.fabric-api")
     }
 
