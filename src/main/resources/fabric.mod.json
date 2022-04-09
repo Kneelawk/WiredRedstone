@@ -3,8 +3,9 @@
   "id": "wiredredstone",
   "version": "${version}",
   "name": "Wired Redstone",
-  "description": "Adds redstone wires",
+  "description": "Adds redstone wires and stuff.",
   "authors": [
+    "2xsaiko",
     "Kneelawk"
   ],
   "contact": {
@@ -33,7 +34,7 @@
   "depends": {
     "fabricloader": ">=0.12.12",
     "fabric": "*",
-    "fabric-language-kotlin": ">=1.7.1+kotlin.1.6.10",
+    "fabric-language-kotlin": ">=1.7.2+kotlin.1.6.20",
     "minecraft": "1.18.x",
     "java": ">=17"
   }

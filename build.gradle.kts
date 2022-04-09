@@ -2,7 +2,7 @@ plugins {
     id("fabric-loom")
     val kotlinVersion: String by System.getProperties()
     kotlin("jvm").version(kotlinVersion)
-    id("io.github.juuxel.loom-quiltflower-mini")
+    id("io.github.juuxel.loom-quiltflower")
 }
 
 base {
@@ -14,8 +14,6 @@ val modVersion: String by project
 version = modVersion
 val mavenGroup: String by project
 group = mavenGroup
-
-minecraft {}
 
 repositories {
     maven("https://mod-buildcraft.com/maven") { name = "BuildCraft" }

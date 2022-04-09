@@ -10,8 +10,8 @@ pluginManagement {
         id("fabric-loom").version(loomVersion)
         val kotlinVersion: String by System.getProperties()
         kotlin("jvm").version(kotlinVersion)
-        val loomQuiltflowerMiniVersion: String by settings
-        id("io.github.juuxel.loom-quiltflower-mini").version(loomQuiltflowerMiniVersion)
+        val loomQuiltflowerVersion: String by settings
+        id("io.github.juuxel.loom-quiltflower").version(loomQuiltflowerVersion)
     }
 }
 

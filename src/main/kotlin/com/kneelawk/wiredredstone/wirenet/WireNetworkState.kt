@@ -3,7 +3,6 @@ package com.kneelawk.wiredredstone.wirenet
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.world.PersistentState
-import net.minecraft.world.dimension.DimensionType
 
 // This is almost completely copied from 2xsaiko's HCTM-Base.
 
@@ -15,7 +14,6 @@ class WireNetworkState(world: ServerWorld) : PersistentState() {
             return state
         }
 
-        fun nameFor(dimension: DimensionType) = "wiredredstone_wirenet${dimension.suffix}"
     }
 
     var controller = WireNetworkController(world, ::markDirty)
@@ -26,10 +24,9 @@ class WireNetworkState(world: ServerWorld) : PersistentState() {
 }
 
 fun ServerWorld.getWireNetworkState(): WireNetworkState {
-    val dimension = dimension
     return persistentStateManager.getOrCreate(
         { WireNetworkState.load(it, this) },
         { WireNetworkState(this) },
-        WireNetworkState.nameFor(dimension)
+        "wiredredstone_wirenet"
     )
 }

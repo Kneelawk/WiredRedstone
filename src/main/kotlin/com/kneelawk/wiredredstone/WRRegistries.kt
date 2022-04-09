@@ -20,7 +20,7 @@ object WRRegistries {
     fun init() {
         EXT_PART_TYPE = Registry.register(
             Registry.REGISTRIES as Registry<Registry<*>>, EXT_PART_TYPE_IDENTIFIER,
-            SimpleRegistry(EXT_PART_TYPE_KEY, Lifecycle.experimental())
+            SimpleRegistry(EXT_PART_TYPE_KEY, Lifecycle.experimental(), null)
         )
     }
 }
