@@ -24,20 +24,8 @@
       "from": [ 0, 0, 0 ],
       "to": [ 16, 2, 16 ],
       "faces": {
-        "up": { "uv": [ 0, 0, 16, 16 ], "texture": "#redstone", "jmx_material": "#redstone" }
+        "up": { "uv": [ 0, 0, 16, 16 ], "texture": "#redstone" }
       }
     }
-  ],
-  "jmx": {
-    "materials": {
-      "redstone": {
-        "layers": [
-          {
-            "emissive": true,
-            "ambient_occlusion": false
-          }
-        ]
-      }
-    }
-  }
+  ]
 }
