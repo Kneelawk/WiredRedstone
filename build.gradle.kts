@@ -53,12 +53,21 @@ dependencies {
         exclude("net.fabricmc.fabric-api")
     }
 
-    // vram stuff
-    val vramExtension: String by project
+    // Select a renderer
+    val renderer = System.getProperty("com.kneelawk.wiredredstone.renderer", "indigo").toLowerCase()
 
-    val canvasVersion: String by project
-    modRuntimeOnly("io.vram:canvas-fabric-$vramExtension:$canvasVersion") {
-        exclude("net.fabricmc.fabric-api")
+    if (renderer == "canvas") {
+        println("Using 'Canvas' renderer.")
+
+        val vramExtension: String by project
+        val canvasVersion: String by project
+        modRuntimeOnly("io.vram:canvas-fabric-$vramExtension:$canvasVersion") {
+            exclude("net.fabricmc.fabric-api")
+        }
+    }
+
+    if (renderer == "indigo") {
+        println("Using 'Indigo' renderer.")
     }
 
     // Quiltflower
