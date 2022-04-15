@@ -1,44 +1,46 @@
 package com.kneelawk.wiredredstone.client.render
 
 import com.kneelawk.wiredredstone.util.RotationUtils.rotatedDirection
-import com.kneelawk.wiredredstone.util.RotationUtils.rotatedX
-import com.kneelawk.wiredredstone.util.RotationUtils.rotatedY
-import com.kneelawk.wiredredstone.util.RotationUtils.rotatedZ
-import io.vram.frex.api.buffer.QuadEmitter
-import io.vram.frex.api.buffer.QuadTransform
-import io.vram.frex.api.mesh.QuadView
-import io.vram.frex.api.model.InputContext
+import com.kneelawk.wiredredstone.util.RotationUtils.rotatedNormX
+import com.kneelawk.wiredredstone.util.RotationUtils.rotatedNormY
+import com.kneelawk.wiredredstone.util.RotationUtils.rotatedNormZ
+import com.kneelawk.wiredredstone.util.RotationUtils.rotatedPosX
+import com.kneelawk.wiredredstone.util.RotationUtils.rotatedPosY
+import com.kneelawk.wiredredstone.util.RotationUtils.rotatedPosZ
+import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView
+import net.fabricmc.fabric.api.renderer.v1.render.RenderContext
 import net.minecraft.util.math.Direction
-import net.minecraft.util.math.Vec3f
 
 /**
  * Transforms quads of something on the DOWN-side into something on the given side.
  */
-class SideQuadTransform(val side: Direction) : QuadTransform {
-    override fun transform(context: InputContext, input: QuadView, output: QuadEmitter) {
-        input.copyTo(output)
-
+class SideQuadTransform(val side: Direction) : RenderContext.QuadTransform {
+    override fun transform(quad: MutableQuadView): Boolean {
         for (i in 0 until 4) {
-            val x = input.x(i)
-            val y = input.y(i)
-            val z = input.z(i)
-            output.pos(i, rotatedX(side, x, y), rotatedY(side, y, z), rotatedZ(side, x, y, z))
+            val x = quad.x(i)
+            val y = quad.y(i)
+            val z = quad.z(i)
+            quad.pos(i, rotatedPosX(side, x, y), rotatedPosY(side, y, z), rotatedPosZ(side, x, y, z))
 
-            if (input.hasNormal(i)) {
-                val n = Vec3f()
-                input.copyNormal(i, n)
-                output.normal(i, rotatedX(side, n.x, n.y), rotatedY(side, n.y, n.z), rotatedZ(side, n.x, n.y, n.z))
+            if (quad.hasNormal(i)) {
+                val nx = quad.normalX(i)
+                val ny = quad.normalY(i)
+                val nz = quad.normalZ(i)
+                quad.normal(i, rotatedNormX(side, nx, ny), rotatedNormY(side, ny, nz), rotatedNormZ(side, nx, ny, nz))
             }
         }
 
-        input.cullFace()?.let { cullFace ->
-            output.cullFace(rotatedDirection(side, cullFace))
+        val cullFace = quad.cullFace()
+        if (cullFace != null) {
+            quad.cullFace(rotatedDirection(side, cullFace))
         }
 
-        input.nominalFace()?.let { nominalFace ->
-            output.nominalFace(rotatedDirection(side, nominalFace))
+        val nominalFace = quad.nominalFace()
+        if (nominalFace != null) {
+            quad.nominalFace(rotatedDirection(side, nominalFace))
         }
 
-        output.emit()
+        // keep this quad
+        return true
     }
 }

@@ -1,43 +1,44 @@
 package com.kneelawk.wiredredstone.client.render
 
 import com.kneelawk.wiredredstone.util.RotationUtils.cardinalRotatedDirection
-import com.kneelawk.wiredredstone.util.RotationUtils.cardinalRotatedX
-import com.kneelawk.wiredredstone.util.RotationUtils.cardinalRotatedZ
-import io.vram.frex.api.buffer.QuadEmitter
-import io.vram.frex.api.buffer.QuadTransform
-import io.vram.frex.api.mesh.QuadView
-import io.vram.frex.api.model.InputContext
+import com.kneelawk.wiredredstone.util.RotationUtils.cardinalRotatedNormX
+import com.kneelawk.wiredredstone.util.RotationUtils.cardinalRotatedNormZ
+import com.kneelawk.wiredredstone.util.RotationUtils.cardinalRotatedPosX
+import com.kneelawk.wiredredstone.util.RotationUtils.cardinalRotatedPosZ
+import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView
+import net.fabricmc.fabric.api.renderer.v1.render.RenderContext
 import net.minecraft.util.math.Direction
-import net.minecraft.util.math.Vec3f
 
 /**
  * Transforms a model by rotating it around the Y-axis to point in the given direction.
  */
-class RotateQuadTransform(val direction: Direction) : QuadTransform {
-    override fun transform(context: InputContext, input: QuadView, output: QuadEmitter) {
-        input.copyTo(output)
-
+class RotateQuadTransform(val direction: Direction) : RenderContext.QuadTransform {
+    override fun transform(quad: MutableQuadView): Boolean {
         for (i in 0 until 4) {
-            val x = input.x(i)
-            val y = input.y(i)
-            val z = input.z(i)
-            output.pos(i, cardinalRotatedX(direction, x, z), y, cardinalRotatedZ(direction, x, z))
+            val x = quad.x(i)
+            val y = quad.y(i)
+            val z = quad.z(i)
+            quad.pos(i, cardinalRotatedPosX(direction, x, z), y, cardinalRotatedPosZ(direction, x, z))
 
-            if (input.hasNormal(i)) {
-                val n = Vec3f()
-                input.copyNormal(i, n)
-                output.normal(i, cardinalRotatedX(direction, n.x, n.z), n.y, cardinalRotatedZ(direction, n.x, n.z))
+            if (quad.hasNormal(i)) {
+                val nx = quad.normalX(i)
+                val ny = quad.normalY(i)
+                val nz = quad.normalZ(i)
+                quad.normal(i, cardinalRotatedNormX(direction, nx, nz), ny, cardinalRotatedNormZ(direction, nx, nz))
             }
         }
 
-        input.cullFace()?.let { cullFace ->
-            output.cullFace(cardinalRotatedDirection(direction, cullFace))
+        val cullFace = quad.cullFace()
+        if (cullFace != null) {
+            quad.cullFace(cardinalRotatedDirection(direction, cullFace))
         }
 
-        input.nominalFace()?.let { nominalFace ->
-            output.nominalFace(cardinalRotatedDirection(direction, nominalFace))
+        val nominalFace = quad.nominalFace()
+        if (nominalFace != null) {
+            quad.nominalFace(cardinalRotatedDirection(direction, nominalFace))
         }
 
-        output.emit()
+        // keep this quad
+        return true
     }
 }

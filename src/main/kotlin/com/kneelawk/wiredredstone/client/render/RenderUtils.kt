@@ -3,13 +3,14 @@ package com.kneelawk.wiredredstone.client.render
 import com.kneelawk.wiredredstone.util.ConnectionUtils.isCorner
 import com.kneelawk.wiredredstone.util.ConnectionUtils.isDisconnected
 import com.kneelawk.wiredredstone.util.ConnectionUtils.isInternal
+import com.kneelawk.wiredredstone.util.requireNonNull
 import com.kneelawk.wiredredstone.util.threadLocal
-import io.vram.frex.api.buffer.QuadEmitter
-import io.vram.frex.api.material.RenderMaterial
-import io.vram.frex.api.mesh.MeshBuilder
-import io.vram.frex.api.mesh.QuadView
-import io.vram.frex.api.renderer.Renderer
 import net.fabricmc.fabric.api.client.model.BakedModelManagerHelper
+import net.fabricmc.fabric.api.renderer.v1.RendererAccess
+import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial
+import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.model.BakedModel
 import net.minecraft.client.texture.Sprite
@@ -18,13 +19,14 @@ import net.minecraft.util.Identifier
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Direction.*
 import net.minecraft.util.math.Vec3f
+import java.util.*
 import kotlin.math.sqrt
 
 object RenderUtils {
     private const val WIRE_CLEARANCE = 0.001f
 
     val MESH_BUILDER: MeshBuilder by threadLocal {
-        Renderer.get().meshBuilder()
+        RendererAccess.INSTANCE.renderer.requireNonNull("Renderer is null").meshBuilder()
     }
 
     fun getBlockSprite(id: Identifier): Sprite {
@@ -177,6 +179,24 @@ object RenderUtils {
             Pair(true, externalEnd)
         } else {
             Pair(false, 8f + if (cardinal == NORTH || cardinal == WEST) -wireWidth / 2f else wireWidth / 2f)
+        }
+    }
+
+    fun fromVanilla(from: BakedModel, to: QuadEmitter, material: RenderMaterial) {
+        val random = Random(42)
+
+        for (dir in Direction.values()) {
+            val quads = from.getQuads(null, dir, random)
+            for (quad in quads) {
+                to.fromVanilla(quad, material, dir)
+                to.emit()
+            }
+        }
+
+        val quads = from.getQuads(null, null, random)
+        for (quad in quads) {
+            to.fromVanilla(quad, material, null)
+            to.emit()
         }
     }
 

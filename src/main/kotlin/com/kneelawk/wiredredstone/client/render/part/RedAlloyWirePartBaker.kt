@@ -7,7 +7,6 @@ import com.google.common.cache.CacheLoader
 import com.google.common.cache.LoadingCache
 import com.kneelawk.wiredredstone.client.render.*
 import com.kneelawk.wiredredstone.part.key.RedAlloyWirePartKey
-import io.vram.frex.fabric.compat.FabricMesh
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh
 
 object RedAlloyWirePartBaker : PartModelBaker<RedAlloyWirePartKey> {
@@ -30,11 +29,11 @@ object RedAlloyWirePartBaker : PartModelBaker<RedAlloyWirePartKey> {
         }
 
         val builder = RenderUtils.MESH_BUILDER
-        val emitter = builder.emitter.withTransformQuad(AbsentBlockInputContext, SideQuadTransform(key.side))
+        val emitter = TransformingQuadEmitter.Single(builder.emitter, SideQuadTransform(key.side))
 
         RenderUtils.emitWire(key.connections, key.side.axis, 2f, 2f, sprite, sprite, 7f / 16f, material, emitter)
 
-        return FabricMesh.of(builder.build())
+        return builder.build()
     }
 
     override fun emitQuads(key: RedAlloyWirePartKey, ctx: PartRenderContext) {

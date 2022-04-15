@@ -7,39 +7,37 @@ import com.google.common.cache.CacheLoader
 import com.google.common.cache.LoadingCache
 import com.kneelawk.wiredredstone.client.render.*
 import com.kneelawk.wiredredstone.part.key.GateDiodePartKey
-import io.vram.frex.api.model.BlockItemModel
-import io.vram.frex.base.renderer.util.BakedModelTranscoder
-import io.vram.frex.fabric.compat.FabricMesh
-import net.minecraft.client.render.model.BasicBakedModel
-import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh as FAPIMesh
+import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh
 
 object GateDiodePartBaker : PartModelBaker<GateDiodePartKey> {
-    private val cache: LoadingCache<GateDiodePartKey, FAPIMesh> =
+    private val cache: LoadingCache<GateDiodePartKey, Mesh> =
         CacheBuilder.newBuilder().build(CacheLoader.from(::makeMesh))
 
-    private fun makeMesh(key: GateDiodePartKey): FAPIMesh {
+    private fun makeMesh(key: GateDiodePartKey): Mesh {
         val modelId = if (key.powered) {
             WRModels.GATE_DIODE_ON
         } else {
             WRModels.GATE_DIODE_OFF
         }
 
-        val model = RenderUtils.getModel(modelId)
+        val backgroundModel = RenderUtils.getModel(WRModels.GATE_DIODE_BACKGROUND)
+        val redstoneModel = RenderUtils.getModel(modelId)
 
-        val builder = RenderUtils.MESH_BUILDER
-        val emitter = builder.emitter
-            .withTransformQuad(AbsentBlockInputContext, SideQuadTransform(key.side))
-            .withTransformQuad(AbsentBlockInputContext, RotateQuadTransform(key.direction))
-
-        if (model is BasicBakedModel) {
-            BakedModelTranscoder.accept(model, AbsentBlockInputContext, emitter)
+        val material = if (key.powered) {
+            WRMaterials.POWERED_MATERIAL
         } else {
-            (model as BlockItemModel).renderAsBlock(AbsentBlockInputContext, emitter)
+            WRMaterials.UNPOWERED_MATERIAL
         }
 
-        val mesh = builder.build()
+        val builder = RenderUtils.MESH_BUILDER
+        val emitter = TransformingQuadEmitter.Multi(
+            builder.emitter, arrayOf(RotateQuadTransform(key.direction), SideQuadTransform(key.side))
+        )
 
-        return FabricMesh.of(mesh)
+        RenderUtils.fromVanilla(backgroundModel, emitter, WRMaterials.UNPOWERED_MATERIAL)
+        RenderUtils.fromVanilla(redstoneModel, emitter, material)
+
+        return builder.build()
     }
 
     override fun emitQuads(key: GateDiodePartKey, ctx: PartRenderContext) {
