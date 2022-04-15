@@ -5,7 +5,7 @@ import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Direction.*
 
 object RotationUtils {
-    fun rotatedX(to: Direction, x: Float, y: Float): Float {
+    fun rotatedPosX(to: Direction, x: Float, y: Float): Float {
         return when (to) {
             DOWN -> x
             UP -> x
@@ -16,7 +16,7 @@ object RotationUtils {
         }
     }
 
-    fun rotatedY(to: Direction, y: Float, z: Float): Float {
+    fun rotatedPosY(to: Direction, y: Float, z: Float): Float {
         return when (to) {
             DOWN -> y
             UP -> 1.0f - y
@@ -27,13 +27,46 @@ object RotationUtils {
         }
     }
 
-    fun rotatedZ(to: Direction, x: Float, y: Float, z: Float): Float {
+    fun rotatedPosZ(to: Direction, x: Float, y: Float, z: Float): Float {
         return when (to) {
             DOWN -> z
             UP -> 1.0f - z
             NORTH -> y
             SOUTH -> 1.0f - y
             WEST -> 1.0f - x
+            EAST -> x
+        }
+    }
+
+    fun rotatedNormX(to: Direction, x: Float, y: Float): Float {
+        return when (to) {
+            DOWN -> x
+            UP -> x
+            NORTH -> x
+            SOUTH -> -x
+            WEST -> y
+            EAST -> -y
+        }
+    }
+
+    fun rotatedNormY(to: Direction, y: Float, z: Float): Float {
+        return when (to) {
+            DOWN -> y
+            UP -> -y
+            NORTH -> -z
+            SOUTH -> -z
+            WEST -> -z
+            EAST -> -z
+        }
+    }
+
+    fun rotatedNormZ(to: Direction, x: Float, y: Float, z: Float): Float {
+        return when (to) {
+            DOWN -> z
+            UP -> -z
+            NORTH -> y
+            SOUTH -> -y
+            WEST -> -x
             EAST -> x
         }
     }
@@ -150,7 +183,7 @@ object RotationUtils {
     /**
      * Rotates X values from NORTH to the given direction.
      */
-    fun cardinalRotatedX(to: Direction, x: Float, z: Float): Float {
+    fun cardinalRotatedPosX(to: Direction, x: Float, z: Float): Float {
         return when (to) {
             NORTH -> x
             SOUTH -> 1f - x
@@ -163,11 +196,37 @@ object RotationUtils {
     /**
      * Rotates Z values from NORTH to the given direction.
      */
-    fun cardinalRotatedZ(to: Direction, x: Float, z: Float): Float {
+    fun cardinalRotatedPosZ(to: Direction, x: Float, z: Float): Float {
         return when (to) {
             NORTH -> z
             SOUTH -> 1f - z
             WEST -> 1f - x
+            EAST -> x
+            else -> throw IllegalArgumentException("$to is not a cardinal direction")
+        }
+    }
+
+    /**
+     * Gets the rotated normal X value for a rotation from NORTH to the given direction.
+     */
+    fun cardinalRotatedNormX(to: Direction, x: Float, z: Float): Float {
+        return when (to) {
+            NORTH -> x
+            SOUTH -> -x
+            WEST -> z
+            EAST -> -z
+            else -> throw IllegalArgumentException("$to is not a cardinal direction")
+        }
+    }
+
+    /**
+     * Gets the rotated normal Z value for a rotation from NORTH to the given direction.
+     */
+    fun cardinalRotatedNormZ(to: Direction, x: Float, z: Float): Float {
+        return when (to) {
+            NORTH -> z
+            SOUTH -> -z
+            WEST -> -x
             EAST -> x
             else -> throw IllegalArgumentException("$to is not a cardinal direction")
         }

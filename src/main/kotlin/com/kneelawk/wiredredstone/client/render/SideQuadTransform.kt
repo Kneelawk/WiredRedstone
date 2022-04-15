@@ -1,9 +1,12 @@
 package com.kneelawk.wiredredstone.client.render
 
 import com.kneelawk.wiredredstone.util.RotationUtils.rotatedDirection
-import com.kneelawk.wiredredstone.util.RotationUtils.rotatedX
-import com.kneelawk.wiredredstone.util.RotationUtils.rotatedY
-import com.kneelawk.wiredredstone.util.RotationUtils.rotatedZ
+import com.kneelawk.wiredredstone.util.RotationUtils.rotatedNormX
+import com.kneelawk.wiredredstone.util.RotationUtils.rotatedNormY
+import com.kneelawk.wiredredstone.util.RotationUtils.rotatedNormZ
+import com.kneelawk.wiredredstone.util.RotationUtils.rotatedPosX
+import com.kneelawk.wiredredstone.util.RotationUtils.rotatedPosY
+import com.kneelawk.wiredredstone.util.RotationUtils.rotatedPosZ
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext
 import net.minecraft.util.math.Direction
@@ -17,13 +20,13 @@ class SideQuadTransform(val side: Direction) : RenderContext.QuadTransform {
             val x = quad.x(i)
             val y = quad.y(i)
             val z = quad.z(i)
-            quad.pos(i, rotatedX(side, x, y), rotatedY(side, y, z), rotatedZ(side, x, y, z))
+            quad.pos(i, rotatedPosX(side, x, y), rotatedPosY(side, y, z), rotatedPosZ(side, x, y, z))
 
             if (quad.hasNormal(i)) {
                 val nx = quad.normalX(i)
                 val ny = quad.normalY(i)
                 val nz = quad.normalZ(i)
-                quad.normal(i, rotatedX(side, nx, ny), rotatedY(side, ny, nz), rotatedZ(side, nx, ny, nz))
+                quad.normal(i, rotatedNormX(side, nx, ny), rotatedNormY(side, ny, nz), rotatedNormZ(side, nx, ny, nz))
             }
         }
 
