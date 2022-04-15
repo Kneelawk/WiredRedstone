@@ -43,25 +43,6 @@ dependencies {
     // JIJs LMP, LNS, & LBA Core
     include("alexiil.mc.lib:libmultipart-all:$lmpVersion")
 
-    // vram stuff
-    val vramExtension: String by project
-
-    // FREX dependency because I like frex
-    val frexVersion: String by project
-    modImplementation("io.vram:frex-fabric-$vramExtension:$frexVersion:fat") {
-        exclude("net.fabricmc.fabric-api")
-    }
-    // JIJs FREX
-//    include("io.vram:frex-fabric-$vramExtension:$frexVersion:fat")
-
-    // JMX dependency because it means I can make stuff glow using model json
-    val jmxVersion: String by project
-    modImplementation("io.vram:jmx-fabric-$vramExtension:$jmxVersion") {
-        exclude("net.fabricmc.fabric-api")
-    }
-    // JIJs JMX
-//    include("io.vram:jmx-fabric-$vramExtension:$jmxVersion")
-
     //
     // Optional Mod Dependencies
     //
@@ -72,10 +53,13 @@ dependencies {
         exclude("net.fabricmc.fabric-api")
     }
 
-//    val canvasVersion: String by project
-//    modRuntimeOnly("io.vram:canvas-fabric-$vramExtension:$canvasVersion") {
-//        exclude("net.fabricmc.fabric-api")
-//    }
+    // vram stuff
+    val vramExtension: String by project
+
+    val canvasVersion: String by project
+    modRuntimeOnly("io.vram:canvas-fabric-$vramExtension:$canvasVersion") {
+        exclude("net.fabricmc.fabric-api")
+    }
 
     // Quiltflower
     // Probably best to just use the IDEA plugin instead
