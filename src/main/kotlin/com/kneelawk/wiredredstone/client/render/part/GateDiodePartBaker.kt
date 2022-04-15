@@ -7,20 +7,21 @@ import com.google.common.cache.CacheLoader
 import com.google.common.cache.LoadingCache
 import com.kneelawk.wiredredstone.client.render.*
 import com.kneelawk.wiredredstone.part.key.GateDiodePartKey
-import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh as FAPIMesh
+import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh
 
 object GateDiodePartBaker : PartModelBaker<GateDiodePartKey> {
-    private val cache: LoadingCache<GateDiodePartKey, FAPIMesh> =
+    private val cache: LoadingCache<GateDiodePartKey, Mesh> =
         CacheBuilder.newBuilder().build(CacheLoader.from(::makeMesh))
 
-    private fun makeMesh(key: GateDiodePartKey): FAPIMesh {
+    private fun makeMesh(key: GateDiodePartKey): Mesh {
         val modelId = if (key.powered) {
             WRModels.GATE_DIODE_ON
         } else {
             WRModels.GATE_DIODE_OFF
         }
 
-        val model = RenderUtils.getModel(modelId)
+        val backgroundModel = RenderUtils.getModel(WRModels.GATE_DIODE_BACKGROUND)
+        val redstoneModel = RenderUtils.getModel(modelId)
 
         val material = if (key.powered) {
             WRMaterials.POWERED_MATERIAL
@@ -33,7 +34,8 @@ object GateDiodePartBaker : PartModelBaker<GateDiodePartKey> {
             builder.emitter, arrayOf(RotateQuadTransform(key.direction), SideQuadTransform(key.side))
         )
 
-        RenderUtils.fromVanilla(model, emitter, material)
+        RenderUtils.fromVanilla(backgroundModel, emitter, WRMaterials.UNPOWERED_MATERIAL)
+        RenderUtils.fromVanilla(redstoneModel, emitter, material)
 
         return builder.build()
     }
