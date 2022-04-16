@@ -66,7 +66,7 @@ class RedAlloyWirePart : AbstractRedstoneWirePart {
     private fun getWeakRedstonePower(powerSide: Direction): Int {
         val cardinal = RotationUtils.unrotatedDirection(side, powerSide)
         val blocked = if (DirectionUtils.isHorizontal(cardinal)) BlockageUtils.isBlocked(blockage, cardinal) else false
-        return if (RedstoneLogic.wiresGivePower && powerSide != side && !blocked) power else 0
+        return if (RedstoneLogic.wiresGivePower && !blocked) power else 0
     }
 
     override fun getReceivingPower(): Int {

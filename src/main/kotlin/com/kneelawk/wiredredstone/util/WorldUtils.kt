@@ -12,6 +12,7 @@ object WorldUtils {
         world.updateNeighbors(pos, state.block)
 
         Direction.values()
+            .asSequence()
             .filter { it != edge.opposite }
             .map { offset.offset(it) }
             .forEach { world.updateNeighbor(it, state.block, pos) }

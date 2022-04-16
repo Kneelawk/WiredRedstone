@@ -80,11 +80,11 @@ object RedstoneLogic {
                     otherState.getWeakRedstonePower(world, otherPos, it)
                 }
             },
-            // FIXME: This only checks if the block immediately below is redstone wire. This should be checking if any
-            //  of the blocks around that block are redstone wire. This is why redstone dust can power wire through
-            //  blocks.
-            if (receiveFromBottom && world.getBlockState(offsetPos).block != Blocks.REDSTONE_WIRE)
-                world.getEmittedRedstonePower(offsetPos, pos.side) else 0
+            if (receiveFromBottom && Direction.values()
+                    .none { world.getBlockState(offsetPos.offset(it)).block == Blocks.REDSTONE_WIRE }
+            ) {
+                world.getEmittedRedstonePower(offsetPos, pos.side)
+            } else 0
         )
     }
 }

@@ -132,6 +132,14 @@ abstract class AbstractRedstoneWirePart : AbstractConnectablePart, BlockablePart
         }
     }
 
+    override fun onRemoved() {
+        super.onRemoved()
+
+        if (!isClientSide()) {
+            WorldUtils.strongUpdateNeighbors(getWorld(), getPos(), side)
+        }
+    }
+
     override fun getCollisionShape(): VoxelShape {
         return VoxelShapes.empty()
     }
