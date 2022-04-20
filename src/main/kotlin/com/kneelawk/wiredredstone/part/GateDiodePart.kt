@@ -189,7 +189,7 @@ class GateDiodePart : AbstractRotatedPart {
     }
 
     override fun getModelKey(): PartModelKey {
-        return GateDiodePartKey(side, direction, outputPower != 0)
+        return GateDiodePartKey(side, direction, connections, outputPower != 0)
     }
 
     override fun getClosestBlockState(): BlockState {

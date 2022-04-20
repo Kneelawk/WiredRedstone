@@ -95,4 +95,14 @@ object ConnectionUtils {
         // corner mask is all 1's, so we don't need to worry about setting 0's
         return conn or maskForCorner(dir)
     }
+
+    /**
+     * Rotates a set of connections so that they appear from the rotated perspective of the cardinal direction.
+     *
+     * If cardinal is a rotation of NORTH -> EAST, then a connection that is actually on the EAST side will appear to be
+     * on the NORTH side.
+     */
+    fun unrotatedConnections(conn: UByte, cardinal: Direction): UByte {
+        return conn.rotateRight(RotationUtils.cardinalRotatedIndex(cardinal) shl 1)
+    }
 }

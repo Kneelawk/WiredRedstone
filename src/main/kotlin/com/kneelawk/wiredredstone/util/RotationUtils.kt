@@ -278,4 +278,11 @@ object RotationUtils {
             else -> throw IllegalArgumentException("$to is not a cardinal direction")
         }
     }
+
+    /**
+     * Gets the index of this cardinal direction with respective to the NORTH = no rotation convention.
+     */
+    fun cardinalRotatedIndex(dir: Direction): Int {
+        return (dir.horizontal + 2) % 4
+    }
 }

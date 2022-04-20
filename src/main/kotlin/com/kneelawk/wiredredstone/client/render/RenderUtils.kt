@@ -138,6 +138,42 @@ object RenderUtils {
         }
     }
 
+    fun emitNorthWireCorner(
+        conn: UByte, sideAxis: Axis, rotationAxis: Axis, wireHeight: Float, wireWidth: Float, sprite: Sprite, sideV: Float,
+        material: RenderMaterial, emitter: QuadEmitter
+    ) {
+        emitNorthWireCorner(
+            conn, wireHeight, if (rotationAxis == Axis.Z) halfZWireWidth(sideAxis, wireWidth) else halfXWireWidth(sideAxis, wireWidth), sprite, sprite, sprite, sprite, sideV, material, emitter
+        )
+    }
+
+    fun emitSouthWireCorner(
+        conn: UByte, sideAxis: Axis, rotationAxis: Axis, wireHeight: Float, wireWidth: Float, sprite: Sprite, sideV: Float,
+        material: RenderMaterial, emitter: QuadEmitter
+    ) {
+        emitSouthWireCorner(
+            conn, wireHeight, if (rotationAxis == Axis.Z) halfZWireWidth(sideAxis, wireWidth) else halfXWireWidth(sideAxis, wireWidth), sprite, sprite, sprite, sprite, sideV, material, emitter
+        )
+    }
+
+    fun emitWestWireCorner(
+        conn: UByte, sideAxis: Axis, rotationAxis: Axis, wireHeight: Float, wireWidth: Float, sprite: Sprite, sideV: Float,
+        material: RenderMaterial, emitter: QuadEmitter
+    ) {
+        emitWestWireCorner(
+            conn, wireHeight, if (rotationAxis == Axis.Z) halfXWireWidth(sideAxis, wireWidth) else halfZWireWidth(sideAxis, wireWidth), sprite, sprite, sprite, sprite, sideV, material, emitter
+        )
+    }
+
+    fun emitEastWireCorner(
+        conn: UByte, sideAxis: Axis, rotationAxis: Axis, wireHeight: Float, wireWidth: Float, sprite: Sprite, sideV: Float,
+        material: RenderMaterial, emitter: QuadEmitter
+    ) {
+        emitEastWireCorner(
+            conn, wireHeight, if (rotationAxis == Axis.Z) halfXWireWidth(sideAxis, wireWidth) else halfZWireWidth(sideAxis, wireWidth), sprite, sprite, sprite, sprite, sideV, material, emitter
+        )
+    }
+
     private fun emitNorthWireCorner(
         conn: UByte, wireHeight: Float, halfZWireWidth: Float, sideSprite: Sprite, topZSprite: Sprite,
         openEndSprite: Sprite, closedEndSprite: Sprite, sideV: Float, material: RenderMaterial, emitter: QuadEmitter

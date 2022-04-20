@@ -7,6 +7,7 @@ import com.google.common.cache.LoadingCache
 import com.kneelawk.wiredredstone.WRConstants
 import com.kneelawk.wiredredstone.client.render.*
 import com.kneelawk.wiredredstone.part.key.GateDiodePartKey
+import com.kneelawk.wiredredstone.util.ConnectionUtils
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh
 import net.minecraft.util.Identifier
 import java.util.function.Consumer
@@ -20,6 +21,14 @@ object GateDiodePartBaker : WRPartBaker<GateDiodePartKey> {
         CacheBuilder.newBuilder().build(CacheLoader.from(::makeMesh))
 
     private fun makeMesh(key: GateDiodePartKey): Mesh {
+        val wireSpriteId = if (key.powered) {
+            WRSprites.RED_ALLOY_WIRE_POWERED_ID
+        } else {
+            WRSprites.RED_ALLOY_WIRE_UNPOWERED_ID
+        }
+
+        val wireSprite = RenderUtils.getBlockSprite(wireSpriteId)
+
         val modelId = if (key.powered) {
             GATE_DIODE_ON
         } else {
@@ -42,6 +51,15 @@ object GateDiodePartBaker : WRPartBaker<GateDiodePartKey> {
 
         RenderUtils.fromVanilla(backgroundModel, emitter, WRMaterials.UNPOWERED_MATERIAL)
         RenderUtils.fromVanilla(redstoneModel, emitter, material)
+
+        // render outer wire connections
+        val conn = ConnectionUtils.unrotatedConnections(key.connections, key.direction)
+        RenderUtils.emitNorthWireCorner(
+            conn, key.side.axis, key.direction.axis, 2f, 2f, wireSprite, 7f / 16f, material, emitter
+        )
+        RenderUtils.emitSouthWireCorner(
+                conn, key.side.axis, key.direction.axis, 2f, 2f, wireSprite, 7f / 16f, material, emitter
+        )
 
         return builder.build()
     }

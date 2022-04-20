@@ -11,17 +11,14 @@ import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh
 
 object RedAlloyWirePartBaker : WRPartBaker<RedAlloyWirePartKey> {
-    private val RED_ALLOY_WIRE_POWERED_ID = WRConstants.id("block/red_alloy_wire_powered")
-    private val RED_ALLOY_WIRE_UNPOWERED_ID = WRConstants.id("block/red_alloy_wire_unpowered")
-
     private val cache: LoadingCache<RedAlloyWirePartKey, Mesh> =
         CacheBuilder.newBuilder().build(CacheLoader.from(::makeMesh))
 
     private fun makeMesh(key: RedAlloyWirePartKey): Mesh {
         val spriteId = if (key.powered) {
-            RED_ALLOY_WIRE_POWERED_ID
+            WRSprites.RED_ALLOY_WIRE_POWERED_ID
         } else {
-            RED_ALLOY_WIRE_UNPOWERED_ID
+            WRSprites.RED_ALLOY_WIRE_UNPOWERED_ID
         }
 
         val sprite = RenderUtils.getBlockSprite(spriteId)
@@ -51,10 +48,5 @@ object RedAlloyWirePartBaker : WRPartBaker<RedAlloyWirePartKey> {
 
     override fun emitQuads(key: RedAlloyWirePartKey, ctx: PartRenderContext) {
         ctx.meshConsumer().accept(cache[key])
-    }
-
-    override fun registerSprites(registry: ClientSpriteRegistryCallback.Registry) {
-        registry.register(RED_ALLOY_WIRE_POWERED_ID)
-        registry.register(RED_ALLOY_WIRE_UNPOWERED_ID)
     }
 }
