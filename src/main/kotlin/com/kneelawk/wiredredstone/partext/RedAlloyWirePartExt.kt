@@ -55,7 +55,9 @@ data class RedAlloyWirePartExt(override val side: Direction) : ConnectablePartEx
     }
 
     override fun canConnectAt(world: BlockView, pos: BlockPos, inDirection: Direction, type: ConnectionType): Boolean {
-        return ConnectableUtils.canWireConnect(world, pos, inDirection, type, side, 2.0, 2.0)
+        return ConnectableUtils.canWireConnect(
+            world, pos, inDirection, type, side, RedAlloyWirePart.WIRE_WIDTH, RedAlloyWirePart.WIRE_HEIGHT
+        )
     }
 
     object Type : SidedPartExtType {

@@ -22,6 +22,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.loot.context.LootContext
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.server.world.ServerWorld
+import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.Box
 import net.minecraft.util.math.Direction
 import net.minecraft.util.shape.VoxelShape
@@ -195,7 +196,7 @@ class GateDiodePart : AbstractRotatedPart {
         return Blocks.REPEATER.defaultState
     }
 
-    override fun getPickStack(): ItemStack {
+    override fun getPickStack(hit: BlockHitResult?): ItemStack {
         return ItemStack(WRItems.GATE_DIODE)
     }
 

@@ -1,5 +1,21 @@
 {
   "item.wiredredstone.gate_diode": "Redstone Diode",
   "item.wiredredstone.red_alloy_wire": "Red Alloy Wire",
+  "item.wiredredstone.white_insulated_wire": "White Insulated Wire",
+  "item.wiredredstone.orange_insulated_wire": "Orange Insulated Wire",
+  "item.wiredredstone.magenta_insulated_wire": "Magenta Insulated Wire",
+  "item.wiredredstone.light_blue_insulated_wire": "Light Blue Insulated Wire",
+  "item.wiredredstone.yellow_insulated_wire": "Yellow Insulated Wire",
+  "item.wiredredstone.lime_insulated_wire": "Lime Insulated Wire",
+  "item.wiredredstone.pink_insulated_wire": "Pink Insulated Wire",
+  "item.wiredredstone.gray_insulated_wire": "Gray Insulated Wire",
+  "item.wiredredstone.light_gray_insulated_wire": "Light Gray Insulated Wire",
+  "item.wiredredstone.cyan_insulated_wire": "Cyan Insulated Wire",
+  "item.wiredredstone.purple_insulated_wire": "Purple Insulated Wire",
+  "item.wiredredstone.blue_insulated_wire": "Blue Insulated Wire",
+  "item.wiredredstone.brown_insulated_wire": "Brown Insulated Wire",
+  "item.wiredredstone.green_insulated_wire": "Green Insulated Wire",
+  "item.wiredredstone.red_insulated_wire": "Red Insulated Wire",
+  "item.wiredredstone.black_insulated_wire": "Black Insulated Wire",
   "itemGroup.wiredredstone.wiredredstone": "Wired Redstone"
 }

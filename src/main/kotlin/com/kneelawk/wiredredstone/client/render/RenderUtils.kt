@@ -39,17 +39,20 @@ object RenderUtils {
     }
 
     fun emitWire(
-        conn: UByte, axis: Axis, wireHeight: Float, wireWidth: Float, baseSprite: Sprite, endSprite: Sprite,
-        sideV: Float, material: RenderMaterial, emitter: QuadEmitter
+        conn: UByte, axis: Axis, wireHeight: Float, wireWidth: Float, topCrossSprite: Sprite,
+        topXSprite: Sprite = topCrossSprite, topZSprite: Sprite = topCrossSprite, sideSprite: Sprite = topCrossSprite,
+        openEndSprite: Sprite = topZSprite, closedEndSprite: Sprite = topZSprite, sideV: Float,
+        material: RenderMaterial, emitter: QuadEmitter
     ) {
         if (conn == 0u.toUByte()) {
             // no connections
             BoxEmitter.onGroundPixels(
                 8f - wireWidth, 8f - wireWidth / 2f, 8f + wireWidth, 8f + wireWidth / 2f, wireHeight
             )
-                .sprite(baseSprite)
-                .westSprite(endSprite)
-                .eastSprite(endSprite)
+                .sprite(sideSprite)
+                .upSprite(topXSprite)
+                .westSprite(openEndSprite)
+                .eastSprite(openEndSprite)
                 .material(material)
                 .downCullFace(DOWN)
                 .setSideTexCoordsV(sideV)
@@ -61,27 +64,28 @@ object RenderUtils {
             val (doXPos, xPosEnd) = calculateConnection(conn, wireWidth, EAST, 16f)
 
             // We want wires along some axis to be slightly thinner so that they don't overlap
-            val halfXWireWidth = if (axis != Axis.X) {
-                wireWidth / 2f
-            } else {
-                wireWidth / 2f - WIRE_CLEARANCE
-            }
-            val halfZWireWidth = if (axis == Axis.Y) {
-                wireWidth / 2f
-            } else {
-                wireWidth / 2f - WIRE_CLEARANCE
-            }
+            val halfXWireWidth = halfXWireWidth(axis, wireWidth)
+            val halfZWireWidth = halfZWireWidth(axis, wireWidth)
 
             // Emit wire boxes
 
             if (doXNeg || doXPos) {
                 BoxEmitter.onGroundPixels(xNegEnd, 8f - halfXWireWidth, xPosEnd, 8f + halfXWireWidth, wireHeight)
-                    .sprite(baseSprite)
+                    .sprite(sideSprite)
+                    .upSprite(if (!(doZNeg || doZPos)) topXSprite else topCrossSprite)
                     .westSprite(
-                        if (isInternal(conn, WEST)) baseSprite else if (isCorner(conn, WEST)) null else endSprite
+                        if (isInternal(conn, WEST)) {
+                            sideSprite
+                        } else if (isCorner(conn, WEST) || (isDisconnected(conn, WEST) && (doZNeg || doZPos))) {
+                            null
+                        } else openEndSprite
                     )
                     .eastSprite(
-                        if (isInternal(conn, EAST)) baseSprite else if (isCorner(conn, EAST)) null else endSprite
+                        if (isInternal(conn, EAST)) {
+                            sideSprite
+                        } else if (isCorner(conn, EAST) || (isDisconnected(conn, EAST) && (doZNeg || doZPos))) {
+                            null
+                        } else openEndSprite
                     )
                     .material(material)
                     .downCullFace(DOWN)
@@ -91,12 +95,21 @@ object RenderUtils {
 
             if (doZNeg || doZPos) {
                 BoxEmitter.onGroundPixels(8f - halfZWireWidth, zNegEnd, 8f + halfZWireWidth, zPosEnd, wireHeight)
-                    .sprite(baseSprite)
+                    .sprite(sideSprite)
+                    .upSprite(if (!(doXNeg || doXPos)) topZSprite else topCrossSprite)
                     .northSprite(
-                        if (isInternal(conn, NORTH)) baseSprite else if (isCorner(conn, NORTH)) null else endSprite
+                        if (isInternal(conn, NORTH)) {
+                            sideSprite
+                        } else if (isCorner(conn, NORTH) || (isDisconnected(conn, NORTH) && (doXNeg || doXPos))) {
+                            null
+                        } else openEndSprite
                     )
                     .southSprite(
-                        if (isInternal(conn, SOUTH)) baseSprite else if (isCorner(conn, SOUTH)) null else endSprite
+                        if (isInternal(conn, SOUTH)) {
+                            sideSprite
+                        } else if (isCorner(conn, SOUTH) || (isDisconnected(conn, SOUTH) && (doXNeg || doXPos))) {
+                            null
+                        } else openEndSprite
                     )
                     .material(material)
                     .downCullFace(DOWN)
@@ -106,69 +119,117 @@ object RenderUtils {
 
             // emit corner boxes
 
-            if (isCorner(conn, NORTH)) {
-                BoxEmitter.onGroundPixels(
-                    8f - halfZWireWidth, -wireHeight + WIRE_CLEARANCE, 8f + halfZWireWidth, 0f, wireHeight
-                )
-                    .sprite(baseSprite)
-                    .downSprite(null)
-                    .southSprite(null)
-                    .material(material)
-                    .setSideTexCoordsV(sideV)
-                    .translateDownTexCoords(0f, -1f)
-                    .translateUpTexCoords(0f, 1f)
-                    .translateWestTexCoords(1f, 0f)
-                    .translateEastTexCoords(-1f, 0f)
-                    .emit(emitter)
-            }
+            emitNorthWireCorner(
+                conn, wireHeight, halfZWireWidth, sideSprite, topZSprite, openEndSprite, closedEndSprite, sideV,
+                material, emitter
+            )
+            emitSouthWireCorner(
+                conn, wireHeight, halfZWireWidth, sideSprite, topZSprite, openEndSprite, closedEndSprite, sideV,
+                material, emitter
+            )
+            emitWestWireCorner(
+                conn, wireHeight, halfXWireWidth, sideSprite, topXSprite, openEndSprite, closedEndSprite, sideV,
+                material, emitter
+            )
+            emitEastWireCorner(
+                conn, wireHeight, halfXWireWidth, sideSprite, topXSprite, openEndSprite, closedEndSprite, sideV,
+                material, emitter
+            )
+        }
+    }
 
-            if (isCorner(conn, SOUTH)) {
-                BoxEmitter.onGroundPixels(
-                    8f - halfZWireWidth, 16f, 8f + halfZWireWidth, 16f + wireHeight - WIRE_CLEARANCE, wireHeight
-                )
-                    .sprite(baseSprite)
-                    .downSprite(null)
-                    .northSprite(null)
-                    .material(material)
-                    .setSideTexCoordsV(sideV)
-                    .translateDownTexCoords(0f, 1f)
-                    .translateUpTexCoords(0f, -1f)
-                    .translateWestTexCoords(-1f, 0f)
-                    .translateEastTexCoords(1f, 0f)
-                    .emit(emitter)
-            }
+    private fun emitNorthWireCorner(
+        conn: UByte, wireHeight: Float, halfZWireWidth: Float, sideSprite: Sprite, topZSprite: Sprite,
+        openEndSprite: Sprite, closedEndSprite: Sprite, sideV: Float, material: RenderMaterial, emitter: QuadEmitter
+    ) {
+        if (isCorner(conn, NORTH)) {
+            BoxEmitter.onGroundPixels(
+                8f - halfZWireWidth, -wireHeight + WIRE_CLEARANCE, 8f + halfZWireWidth, 0f, wireHeight
+            )
+                .sprite(sideSprite)
+                .upSprite(topZSprite)
+                .northSprite(closedEndSprite)
+                .downSprite(openEndSprite)
+                .southSprite(null)
+                .material(material)
+                .setSideTexCoordsV(sideV)
+                .translateDownTexCoords(0f, sideV - 1f)
+                .translateUpTexCoords(0f, 1f)
+                .translateWestTexCoords(1f, 0f)
+                .translateEastTexCoords(-1f, 0f)
+                .downFlipV()
+                .emit(emitter)
+        }
+    }
 
-            if (isCorner(conn, WEST)) {
-                BoxEmitter.onGroundPixels(
-                    -wireHeight + WIRE_CLEARANCE, 8f - halfXWireWidth, 0f, 8f + halfXWireWidth, wireHeight
-                )
-                    .sprite(baseSprite)
-                    .downSprite(null)
-                    .eastSprite(null)
-                    .material(material)
-                    .setSideTexCoordsV(sideV)
-                    .translateDownTexCoords(1f, 0f)
-                    .translateUpTexCoords(1f, 0f)
-                    .translateNorthTexCoords(-1f, 0f)
-                    .translateSouthTexCoords(1f, 0f)
-                    .emit(emitter)
-            }
+    private fun emitSouthWireCorner(
+        conn: UByte, wireHeight: Float, halfZWireWidth: Float, sideSprite: Sprite, topZSprite: Sprite,
+        openEndSprite: Sprite, closedEndSprite: Sprite, sideV: Float, material: RenderMaterial, emitter: QuadEmitter
+    ) {
+        if (isCorner(conn, SOUTH)) {
+            BoxEmitter.onGroundPixels(
+                8f - halfZWireWidth, 16f, 8f + halfZWireWidth, 16f + wireHeight - WIRE_CLEARANCE, wireHeight
+            )
+                .sprite(sideSprite)
+                .upSprite(topZSprite)
+                .southSprite(closedEndSprite)
+                .downSprite(openEndSprite)
+                .northSprite(null)
+                .material(material)
+                .setSideTexCoordsV(sideV)
+                .translateDownTexCoords(0f, sideV + wireHeight / 16f)
+                .translateUpTexCoords(0f, -1f)
+                .translateWestTexCoords(-1f, 0f)
+                .translateEastTexCoords(1f, 0f)
+                .emit(emitter)
+        }
+    }
 
-            if (isCorner(conn, EAST)) {
-                BoxEmitter.onGroundPixels(
-                    16f, 8f - halfXWireWidth, 16f + wireHeight - WIRE_CLEARANCE, 8f + halfXWireWidth, wireHeight
-                )
-                    .sprite(baseSprite)
-                    .downSprite(null)
-                    .westSprite(null)
-                    .material(material)
-                    .setSideTexCoordsV(sideV)
-                    .translateDownTexCoords(-1f, 0f)
-                    .translateUpTexCoords(-1f, 0f)
-                    .translateNorthTexCoords(1f, 0f)
-                    .translateSouthTexCoords(-1f, 0f)
-                    .emit(emitter)
-            }
+    private fun emitWestWireCorner(
+        conn: UByte, wireHeight: Float, halfXWireWidth: Float, sideSprite: Sprite, topXSprite: Sprite,
+        openEndSprite: Sprite, closedEndSprite: Sprite, sideV: Float, material: RenderMaterial, emitter: QuadEmitter
+    ) {
+        if (isCorner(conn, WEST)) {
+            BoxEmitter.onGroundPixels(
+                -wireHeight + WIRE_CLEARANCE, 8f - halfXWireWidth, 0f, 8f + halfXWireWidth, wireHeight
+            )
+                .sprite(sideSprite)
+                .upSprite(topXSprite)
+                .westSprite(closedEndSprite)
+                .downSprite(openEndSprite)
+                .eastSprite(null)
+                .material(material)
+                .setSideTexCoordsV(sideV)
+                .downTexCoords(0.5f - halfXWireWidth / 16f, sideV)
+                .translateUpTexCoords(1f, 0f)
+                .translateNorthTexCoords(-1f, 0f)
+                .translateSouthTexCoords(1f, 0f)
+                .downRotation(BoxEmitter.Rotation.DEGREES_270)
+                .emit(emitter)
+        }
+    }
+
+    private fun emitEastWireCorner(
+        conn: UByte, wireHeight: Float, halfXWireWidth: Float, sideSprite: Sprite, topXSprite: Sprite,
+        openEndSprite: Sprite, closedEndSprite: Sprite, sideV: Float, material: RenderMaterial, emitter: QuadEmitter
+    ) {
+        if (isCorner(conn, EAST)) {
+            BoxEmitter.onGroundPixels(
+                16f, 8f - halfXWireWidth, 16f + wireHeight - WIRE_CLEARANCE, 8f + halfXWireWidth, wireHeight
+            )
+                .sprite(sideSprite)
+                .upSprite(topXSprite)
+                .eastSprite(closedEndSprite)
+                .downSprite(openEndSprite)
+                .westSprite(null)
+                .material(material)
+                .setSideTexCoordsV(sideV)
+                .downTexCoords(0.5f - halfXWireWidth / 16f, sideV)
+                .translateUpTexCoords(-1f, 0f)
+                .translateNorthTexCoords(1f, 0f)
+                .translateSouthTexCoords(-1f, 0f)
+                .downRotation(BoxEmitter.Rotation.DEGREES_90)
+                .emit(emitter)
         }
     }
 
@@ -181,6 +242,20 @@ object RenderUtils {
             Pair(false, 8f + if (cardinal == NORTH || cardinal == WEST) -wireWidth / 2f else wireWidth / 2f)
         }
     }
+
+    private fun halfZWireWidth(axis: Axis, wireWidth: Float) =
+        if (axis == Axis.Y) {
+            wireWidth / 2f
+        } else {
+            wireWidth / 2f - WIRE_CLEARANCE
+        }
+
+    private fun halfXWireWidth(axis: Axis, wireWidth: Float) =
+        if (axis != Axis.X) {
+            wireWidth / 2f
+        } else {
+            wireWidth / 2f - WIRE_CLEARANCE
+        }
 
     fun fromVanilla(from: BakedModel, to: QuadEmitter, material: RenderMaterial) {
         val random = Random(42)

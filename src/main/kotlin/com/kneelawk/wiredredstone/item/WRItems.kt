@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder
 import net.minecraft.item.Item
 import net.minecraft.item.ItemGroup
 import net.minecraft.item.ItemStack
+import net.minecraft.util.DyeColor
 import net.minecraft.util.registry.Registry
 
 object WRItems {
@@ -15,11 +16,46 @@ object WRItems {
     // Wires
     val RED_ALLOY_WIRE by lazy { RedAlloyWireItem(WIRED_REDSTONE_ITEM_SETTINGS) }
 
+    val WHITE_INSULATED_WIRE by lazy { InsulatedWireItem(DyeColor.WHITE, WIRED_REDSTONE_ITEM_SETTINGS) }
+    val ORANGE_INSULATED_WIRE by lazy { InsulatedWireItem(DyeColor.ORANGE, WIRED_REDSTONE_ITEM_SETTINGS) }
+    val MAGENTA_INSULATED_WIRE by lazy { InsulatedWireItem(DyeColor.MAGENTA, WIRED_REDSTONE_ITEM_SETTINGS) }
+    val LIGHT_BLUE_INSULATED_WIRE by lazy { InsulatedWireItem(DyeColor.LIGHT_BLUE, WIRED_REDSTONE_ITEM_SETTINGS) }
+    val YELLOW_INSULATED_WIRE by lazy { InsulatedWireItem(DyeColor.YELLOW, WIRED_REDSTONE_ITEM_SETTINGS) }
+    val LIME_INSULATED_WIRE by lazy { InsulatedWireItem(DyeColor.LIME, WIRED_REDSTONE_ITEM_SETTINGS) }
+    val PINK_INSULATED_WIRE by lazy { InsulatedWireItem(DyeColor.PINK, WIRED_REDSTONE_ITEM_SETTINGS) }
+    val GRAY_INSULATED_WIRE by lazy { InsulatedWireItem(DyeColor.GRAY, WIRED_REDSTONE_ITEM_SETTINGS) }
+    val LIGHT_GRAY_INSULATED_WIRE by lazy { InsulatedWireItem(DyeColor.LIGHT_GRAY, WIRED_REDSTONE_ITEM_SETTINGS) }
+    val CYAN_INSULATED_WIRE by lazy { InsulatedWireItem(DyeColor.CYAN, WIRED_REDSTONE_ITEM_SETTINGS) }
+    val PURPLE_INSULATED_WIRE by lazy { InsulatedWireItem(DyeColor.PURPLE, WIRED_REDSTONE_ITEM_SETTINGS) }
+    val BLUE_INSULATED_WIRE by lazy { InsulatedWireItem(DyeColor.BLUE, WIRED_REDSTONE_ITEM_SETTINGS) }
+    val BROWN_INSULATED_WIRE by lazy { InsulatedWireItem(DyeColor.BROWN, WIRED_REDSTONE_ITEM_SETTINGS) }
+    val GREEN_INSULATED_WIRE by lazy { InsulatedWireItem(DyeColor.GREEN, WIRED_REDSTONE_ITEM_SETTINGS) }
+    val RED_INSULATED_WIRE by lazy { InsulatedWireItem(DyeColor.RED, WIRED_REDSTONE_ITEM_SETTINGS) }
+    val BLACK_INSULATED_WIRE by lazy { InsulatedWireItem(DyeColor.BLACK, WIRED_REDSTONE_ITEM_SETTINGS) }
+
     // Gates
     val GATE_DIODE by lazy { GateDiodeItem(WIRED_REDSTONE_ITEM_SETTINGS) }
 
     fun init() {
         register(RED_ALLOY_WIRE, "red_alloy_wire")
+
+        register(WHITE_INSULATED_WIRE, "white_insulated_wire")
+        register(ORANGE_INSULATED_WIRE, "orange_insulated_wire")
+        register(MAGENTA_INSULATED_WIRE, "magenta_insulated_wire")
+        register(LIGHT_BLUE_INSULATED_WIRE, "light_blue_insulated_wire")
+        register(YELLOW_INSULATED_WIRE, "yellow_insulated_wire")
+        register(LIME_INSULATED_WIRE, "lime_insulated_wire")
+        register(PINK_INSULATED_WIRE, "pink_insulated_wire")
+        register(GRAY_INSULATED_WIRE, "gray_insulated_wire")
+        register(LIGHT_GRAY_INSULATED_WIRE, "light_gray_insulated_wire")
+        register(CYAN_INSULATED_WIRE, "cyan_insulated_wire")
+        register(PURPLE_INSULATED_WIRE, "purple_insulated_wire")
+        register(BLUE_INSULATED_WIRE, "blue_insulated_wire")
+        register(BROWN_INSULATED_WIRE, "brown_insulated_wire")
+        register(GREEN_INSULATED_WIRE, "green_insulated_wire")
+        register(RED_INSULATED_WIRE, "red_insulated_wire")
+        register(BLACK_INSULATED_WIRE, "black_insulated_wire")
+
         register(GATE_DIODE, "gate_diode")
     }
 

@@ -15,6 +15,7 @@ import net.minecraft.block.Blocks
 import net.minecraft.item.ItemStack
 import net.minecraft.loot.context.LootContext
 import net.minecraft.nbt.NbtCompound
+import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.Direction
 import net.minecraft.util.shape.VoxelShape
 
@@ -39,8 +40,8 @@ class RedAlloyWirePart : AbstractRedstoneWirePart {
     )
 
     override val partExtType = RedAlloyWirePartExt.Type
-    override val wireWidth = 2.0
-    override val wireHeight = 2.0
+    override val wireWidth = WIRE_WIDTH
+    override val wireHeight = WIRE_HEIGHT
 
     override fun onAdded(bus: MultipartEventBus) {
         super.onAdded(bus)
@@ -85,7 +86,7 @@ class RedAlloyWirePart : AbstractRedstoneWirePart {
         return OUTLINE_SHAPES[BoundingBoxUtils.ShapeKey(side, connections)]
     }
 
-    override fun getPickStack(): ItemStack {
+    override fun getPickStack(hit: BlockHitResult?): ItemStack {
         return ItemStack(WRItems.RED_ALLOY_WIRE)
     }
 

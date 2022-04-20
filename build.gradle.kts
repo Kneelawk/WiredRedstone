@@ -96,6 +96,9 @@ tasks {
 
     processResources {
         inputs.property("version", project.version)
+
+        exclude("**/*.xcf")
+
         filesMatching("fabric.mod.json") { expand(mutableMapOf("version" to project.version)) }
     }
 

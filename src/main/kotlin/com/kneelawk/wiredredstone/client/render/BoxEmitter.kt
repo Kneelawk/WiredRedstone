@@ -16,13 +16,94 @@ class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Fl
         }
     }
 
-    private class TexCoords(var minU: Float, var minV: Float, var maxU: Float, var maxV: Float) {
+    class TexCoords(var minU: Float, var minV: Float, var maxU: Float, var maxV: Float) {
+        fun prepare(): FullTexCoords {
+            return FullTexCoords(
+                minU, minV,
+                minU, maxV,
+                maxU, maxV,
+                maxU, minV
+            )
+        }
+    }
+
+    class FullTexCoords(
+        val u0: Float, val v0: Float, val u1: Float, val v1: Float, val u2: Float, val v2: Float, val u3: Float,
+        val v3: Float
+    ) {
         fun spriteBake(emitter: QuadEmitter, sprite: Sprite) {
-            emitter.sprite(0, 0, minU, minV)
-            emitter.sprite(1, 0, minU, maxV)
-            emitter.sprite(2, 0, maxU, maxV)
-            emitter.sprite(3, 0, maxU, minV)
+            emitter.sprite(0, 0, u0, v0)
+            emitter.sprite(1, 0, u1, v1)
+            emitter.sprite(2, 0, u2, v2)
+            emitter.sprite(3, 0, u3, v3)
             emitter.spriteBake(0, sprite, QuadEmitter.BAKE_NORMALIZED)
+        }
+    }
+
+    enum class Rotation(val transform1: (TexCoords) -> TexCoords, val transform2: (FullTexCoords) -> FullTexCoords) {
+        DEGREES_0({ it }, { it }),
+        DEGREES_90({
+            TexCoords(it.minU, it.minV, it.minU + it.maxV - it.minV, it.minV + it.maxU - it.minU)
+        }, {
+            FullTexCoords(
+                it.u1, it.v1,
+                it.u2, it.v2,
+                it.u3, it.v3,
+                it.u0, it.v0
+            )
+        }),
+        DEGREES_180({ it }, {
+            FullTexCoords(
+                it.u2, it.v2,
+                it.u3, it.v3,
+                it.u0, it.v0,
+                it.u1, it.v1
+            )
+        }),
+        DEGREES_270({
+            TexCoords(it.minU, it.minV, it.minU + it.maxV - it.minV, it.minV + it.maxU - it.minU)
+        }, {
+            FullTexCoords(
+                it.u3, it.v3,
+                it.u0, it.v0,
+                it.u1, it.v1,
+                it.u2, it.v2
+            )
+        });
+    }
+
+    enum class Flip(val transform: (FullTexCoords) -> FullTexCoords) {
+        FLIP_NONE({ it }),
+        FLIP_U({
+            FullTexCoords(
+                it.u2, it.v0,
+                it.u3, it.v1,
+                it.u0, it.v2,
+                it.u1, it.v3
+            )
+        }),
+        FLIP_V({
+            FullTexCoords(
+                it.u0, it.v2,
+                it.u1, it.v3,
+                it.u2, it.v0,
+                it.u3, it.v1
+            )
+        }),
+        FLIP_UV({
+            FullTexCoords(
+                it.u2, it.v2,
+                it.u3, it.v3,
+                it.u0, it.v0,
+                it.u1, it.v1
+            )
+        });
+
+        infix fun or(flip: Flip): Flip {
+            if (this == flip) return this
+            if (this == FLIP_NONE) return flip
+            if (flip == FLIP_NONE) return this
+            return FLIP_UV
         }
     }
 
@@ -43,6 +124,20 @@ class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Fl
     private var southTexCoords: TexCoords = TexCoords(minX, minY, maxX, maxY)
     private var westTexCoords: TexCoords = TexCoords(minZ, minY, maxZ, maxY)
     private var eastTexCoords: TexCoords = TexCoords(1f - maxZ, minY, 1f - minZ, maxY)
+
+    private var downRotation: Rotation = Rotation.DEGREES_0
+    private var upRotation: Rotation = Rotation.DEGREES_0
+    private var northRotation: Rotation = Rotation.DEGREES_0
+    private var southRotation: Rotation = Rotation.DEGREES_0
+    private var westRotation: Rotation = Rotation.DEGREES_0
+    private var eastRotation: Rotation = Rotation.DEGREES_0
+
+    private var downFlip: Flip = Flip.FLIP_NONE
+    private var upFlip: Flip = Flip.FLIP_NONE
+    private var northFlip: Flip = Flip.FLIP_NONE
+    private var southFlip: Flip = Flip.FLIP_NONE
+    private var westFlip: Flip = Flip.FLIP_NONE
+    private var eastFlip: Flip = Flip.FLIP_NONE
 
     private var downCullFace: Direction? = null
     private var upCullFace: Direction? = null
@@ -159,6 +254,135 @@ class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Fl
         return this
     }
 
+    fun downTexCoords(u: Float, v: Float): BoxEmitter {
+        setTexCoords(downTexCoords, u, v)
+        return this
+    }
+
+    fun upTexCoords(u: Float, v: Float): BoxEmitter {
+        setTexCoords(upTexCoords, u, v)
+        return this
+    }
+
+    fun northTexCoords(u: Float, v: Float): BoxEmitter {
+        setTexCoords(northTexCoords, u, v)
+        return this
+    }
+
+    fun southTexCoords(u: Float, v: Float): BoxEmitter {
+        setTexCoords(southTexCoords, u, v)
+        return this
+    }
+
+    fun westTexCoords(u: Float, v: Float): BoxEmitter {
+        setTexCoords(westTexCoords, u, v)
+        return this
+    }
+
+    fun eastTexCoords(u: Float, v: Float): BoxEmitter {
+        setTexCoords(eastTexCoords, u, v)
+        return this
+    }
+
+    private fun setTexCoords(texCoords: TexCoords, u: Float, v: Float) {
+        val u2 = u + texCoords.maxU - texCoords.minU
+        val v2 = v + texCoords.maxV - texCoords.minV
+        texCoords.minU = u
+        texCoords.maxU = u2
+        texCoords.minV = v
+        texCoords.maxV = v2
+    }
+
+    fun downRotation(rotation: Rotation): BoxEmitter {
+        downRotation = rotation
+        return this
+    }
+
+    fun upRotation(rotation: Rotation): BoxEmitter {
+        upRotation = rotation
+        return this
+    }
+
+    fun northRotation(rotation: Rotation): BoxEmitter {
+        northRotation = rotation
+        return this
+    }
+
+    fun southRotation(rotation: Rotation): BoxEmitter {
+        southRotation = rotation
+        return this
+    }
+
+    fun westRotation(rotation: Rotation): BoxEmitter {
+        westRotation = rotation
+        return this
+    }
+
+    fun eastRotation(rotation: Rotation): BoxEmitter {
+        eastRotation = rotation
+        return this
+    }
+
+    fun downFlipV(): BoxEmitter {
+        downFlip = downFlip or Flip.FLIP_V
+        return this
+    }
+
+    fun upFlipV(): BoxEmitter {
+        upFlip = upFlip or Flip.FLIP_V
+        return this
+    }
+
+    fun northFlipV(): BoxEmitter {
+        northFlip = northFlip or Flip.FLIP_V
+        return this
+    }
+
+    fun southFlipV(): BoxEmitter {
+        southFlip = southFlip or Flip.FLIP_V
+        return this
+    }
+
+    fun westFlipV(): BoxEmitter {
+        westFlip = westFlip or Flip.FLIP_V
+        return this
+    }
+
+    fun eastFlipV(): BoxEmitter {
+        eastFlip = eastFlip or Flip.FLIP_V
+        return this
+    }
+
+    fun downFlipU(): BoxEmitter {
+        downFlip = downFlip or Flip.FLIP_U
+        return this
+    }
+
+    fun upFlipU(): BoxEmitter {
+        upFlip = upFlip or Flip.FLIP_U
+        return this
+    }
+
+    fun northFlipU(): BoxEmitter {
+        northFlip = northFlip or Flip.FLIP_U
+        return this
+    }
+
+    fun southFlipU(): BoxEmitter {
+        southFlip = southFlip or Flip.FLIP_U
+        return this
+    }
+
+    fun westFlipU(): BoxEmitter {
+        westFlip = westFlip or Flip.FLIP_U
+        return this
+    }
+
+    fun eastFlipU(): BoxEmitter {
+        eastFlip = eastFlip or Flip.FLIP_U
+        return this
+    }
+
     fun downCullFace(cullFace: Direction?): BoxEmitter {
         downCullFace = cullFace
         return this
@@ -197,7 +421,7 @@ class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Fl
             emitter.pos(1, minX, minY, minZ)
             emitter.pos(2, maxX, minY, minZ)
             emitter.pos(3, maxX, minY, maxZ)
-            finishFace(emitter, downTexCoords, downCullFace, it)
+            finishFace(emitter, downTexCoords, downCullFace, it, downRotation, downFlip)
         }
 
         upSprite?.let {
@@ -207,7 +431,7 @@ class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Fl
             emitter.pos(1, minX, maxY, maxZ)
             emitter.pos(2, maxX, maxY, maxZ)
             emitter.pos(3, maxX, maxY, minZ)
-            finishFace(emitter, upTexCoords, upCullFace, it)
+            finishFace(emitter, upTexCoords, upCullFace, it, upRotation, upFlip)
         }
 
         northSprite?.let {
@@ -217,7 +441,7 @@ class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Fl
             emitter.pos(1, maxX, minY, minZ)
             emitter.pos(2, minX, minY, minZ)
             emitter.pos(3, minX, maxY, minZ)
-            finishFace(emitter, northTexCoords, northCullFace, it)
+            finishFace(emitter, northTexCoords, northCullFace, it, northRotation, northFlip)
         }
 
         southSprite?.let {
@@ -227,7 +451,7 @@ class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Fl
             emitter.pos(1, minX, minY, maxZ)
             emitter.pos(2, maxX, minY, maxZ)
             emitter.pos(3, maxX, maxY, maxZ)
-            finishFace(emitter, southTexCoords, southCullFace, it)
+            finishFace(emitter, southTexCoords, southCullFace, it, southRotation, southFlip)
         }
 
         westSprite?.let {
@@ -237,7 +461,7 @@ class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Fl
             emitter.pos(1, minX, minY, minZ)
             emitter.pos(2, minX, minY, maxZ)
             emitter.pos(3, minX, maxY, maxZ)
-            finishFace(emitter, westTexCoords, westCullFace, it)
+            finishFace(emitter, westTexCoords, westCullFace, it, westRotation, westFlip)
         }
 
         eastSprite?.let {
@@ -247,12 +471,15 @@ class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Fl
             emitter.pos(1, maxX, minY, maxZ)
             emitter.pos(2, maxX, minY, minZ)
             emitter.pos(3, maxX, maxY, minZ)
-            finishFace(emitter, eastTexCoords, eastCullFace, it)
+            finishFace(emitter, eastTexCoords, eastCullFace, it, eastRotation, eastFlip)
         }
     }
 
-    private fun finishFace(emitter: QuadEmitter, texCoords: TexCoords, cullFace: Direction?, sprite: Sprite) {
-        texCoords.spriteBake(emitter, sprite)
+    private fun finishFace(
+        emitter: QuadEmitter, texCoords: TexCoords, cullFace: Direction?, sprite: Sprite, rotation: Rotation,
+        flip: Flip
+    ) {
+        flip.transform(rotation.transform2(rotation.transform1(texCoords).prepare())).spriteBake(emitter, sprite)
         emitter.spriteColor(0, -1, -1, -1, -1)
         material?.let { emitter.material(it) }
         emitter.cullFace(cullFace)
