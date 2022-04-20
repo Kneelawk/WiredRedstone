@@ -2,6 +2,8 @@ package com.kneelawk.wiredredstone.part
 
 import alexiil.mc.lib.multipart.api.*
 import alexiil.mc.lib.multipart.api.event.NeighbourUpdateEvent
+import alexiil.mc.lib.multipart.api.event.PartAddedEvent
+import alexiil.mc.lib.multipart.api.event.PartRemovedEvent
 import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
@@ -67,7 +69,26 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
             if (world is ServerWorld) {
                 if (shouldBreak()) {
                     removeAndDrop()
+                } else {
+                    // Something could be blocking our connection
+                    world.getWireNetworkState().controller.updateConnections(world, getSidedPos())
                 }
+            }
+        }
+
+        bus.addListener(this, PartAddedEvent::class.java) {
+            val world = getWorld()
+            if (it.part !== this && world is ServerWorld) {
+                // Something could be blocking our connection
+                world.getWireNetworkState().controller.updateConnections(world, getSidedPos())
+            }
+        }
+
+        bus.addListener(this, PartRemovedEvent::class.java) {
+            val world = getWorld()
+            if (it.removed !== this && world is ServerWorld) {
+                // A connection could be unblocked
+                world.getWireNetworkState().controller.updateConnections(world, getSidedPos())
             }
         }
     }

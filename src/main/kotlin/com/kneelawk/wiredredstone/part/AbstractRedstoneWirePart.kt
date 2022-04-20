@@ -113,9 +113,6 @@ abstract class AbstractRedstoneWirePart : AbstractConnectablePart, BlockablePart
     private fun handleUpdates() {
         val world = getWorld()
         if (world is ServerWorld) {
-            // Something could be blocking our connection
-            world.getWireNetworkState().controller.updateConnections(world, getSidedPos())
-
             updateConnections()
             RedstoneLogic.wiresGivePower = false
             if (getReceivingPower() != power) {

@@ -123,9 +123,6 @@ class GateDiodePart : AbstractRotatedPart {
 
             val world = getWorld()
             if (world is ServerWorld) {
-                // Something could be blocking our connection
-                world.getWireNetworkState().controller.updateConnections(world, getSidedPos())
-
                 updateConnections()
                 RedstoneLogic.wiresGivePower = false
                 if (calculateInputPower() != inputPower) {
