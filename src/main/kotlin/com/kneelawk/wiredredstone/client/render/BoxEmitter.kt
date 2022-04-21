@@ -421,6 +421,10 @@ class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Fl
             emitter.pos(1, minX, minY, minZ)
             emitter.pos(2, maxX, minY, minZ)
             emitter.pos(3, maxX, minY, maxZ)
+            emitter.normal(0, 0f, -1f, 0f)
+            emitter.normal(1, 0f, -1f, 0f)
+            emitter.normal(2, 0f, -1f, 0f)
+            emitter.normal(3, 0f, -1f, 0f)
             finishFace(emitter, downTexCoords, downCullFace, it, downRotation, downFlip)
         }
 
@@ -431,6 +435,10 @@ class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Fl
             emitter.pos(1, minX, maxY, maxZ)
             emitter.pos(2, maxX, maxY, maxZ)
             emitter.pos(3, maxX, maxY, minZ)
+            emitter.normal(0, 0f, 1f, 0f)
+            emitter.normal(1, 0f, 1f, 0f)
+            emitter.normal(2, 0f, 1f, 0f)
+            emitter.normal(3, 0f, 1f, 0f)
             finishFace(emitter, upTexCoords, upCullFace, it, upRotation, upFlip)
         }
 
@@ -441,6 +449,10 @@ class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Fl
             emitter.pos(1, maxX, minY, minZ)
             emitter.pos(2, minX, minY, minZ)
             emitter.pos(3, minX, maxY, minZ)
+            emitter.normal(0, 0f, 0f, -1f)
+            emitter.normal(1, 0f, 0f, -1f)
+            emitter.normal(2, 0f, 0f, -1f)
+            emitter.normal(3, 0f, 0f, -1f)
             finishFace(emitter, northTexCoords, northCullFace, it, northRotation, northFlip)
         }
 
@@ -451,6 +463,10 @@ class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Fl
             emitter.pos(1, minX, minY, maxZ)
             emitter.pos(2, maxX, minY, maxZ)
             emitter.pos(3, maxX, maxY, maxZ)
+            emitter.normal(0, 0f, 0f, 1f)
+            emitter.normal(1, 0f, 0f, 1f)
+            emitter.normal(2, 0f, 0f, 1f)
+            emitter.normal(3, 0f, 0f, 1f)
             finishFace(emitter, southTexCoords, southCullFace, it, southRotation, southFlip)
         }
 
@@ -461,6 +477,10 @@ class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Fl
             emitter.pos(1, minX, minY, minZ)
             emitter.pos(2, minX, minY, maxZ)
             emitter.pos(3, minX, maxY, maxZ)
+            emitter.normal(0, -1f, 0f, 0f)
+            emitter.normal(1, -1f, 0f, 0f)
+            emitter.normal(2, -1f, 0f, 0f)
+            emitter.normal(3, -1f, 0f, 0f)
             finishFace(emitter, westTexCoords, westCullFace, it, westRotation, westFlip)
         }
 
@@ -471,6 +491,10 @@ class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Fl
             emitter.pos(1, maxX, minY, maxZ)
             emitter.pos(2, maxX, minY, minZ)
             emitter.pos(3, maxX, maxY, minZ)
+            emitter.normal(0, 1f, 0f, 0f)
+            emitter.normal(1, 1f, 0f, 0f)
+            emitter.normal(2, 1f, 0f, 0f)
+            emitter.normal(3, 1f, 0f, 0f)
             finishFace(emitter, eastTexCoords, eastCullFace, it, eastRotation, eastFlip)
         }
     }
