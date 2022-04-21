@@ -26,7 +26,7 @@ class GateDiodeItem(settings: Settings) : Item(settings) {
 
     private fun creator(side: Direction, direction: Direction): (MultipartHolder) -> GateDiodePart {
         return { holder ->
-            GateDiodePart(WRParts.GATE_DIODE, holder, side, 0u, direction, 0, 0)
+            GateDiodePart(WRParts.GATE_DIODE, holder, side, 0u, direction, 0, 0, 0)
         }
     }
 }

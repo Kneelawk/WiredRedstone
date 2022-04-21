@@ -13,36 +13,33 @@ import net.minecraft.util.Identifier
 import java.util.function.Consumer
 
 object GateDiodePartBaker : WRPartBaker<GateDiodePartKey> {
-    private val GATE_DIODE_BACKGROUND = WRConstants.id("block/gate_diode/background")
-    private val GATE_DIODE_ON = WRConstants.id("block/gate_diode/redstone_on")
-    private val GATE_DIODE_OFF = WRConstants.id("block/gate_diode/redstone_off")
+    private val BACKGROUND = WRConstants.id("block/gate_diode/background")
+    private val INPUT_ON = WRConstants.id("block/gate_diode/redstone_input_on")
+    private val INPUT_OFF = WRConstants.id("block/gate_diode/redstone_input_off")
+    private val OUTPUT_ON = WRConstants.id("block/gate_diode/redstone_output_on")
+    private val OUTPUT_OFF = WRConstants.id("block/gate_diode/redstone_output_off")
 
     private val cache: LoadingCache<GateDiodePartKey, Mesh> =
         CacheBuilder.newBuilder().build(CacheLoader.from(::makeMesh))
 
     private fun makeMesh(key: GateDiodePartKey): Mesh {
-        val wireSpriteId = if (key.powered) {
-            WRSprites.RED_ALLOY_WIRE_POWERED_ID
-        } else {
-            WRSprites.RED_ALLOY_WIRE_UNPOWERED_ID
-        }
+        val outputWireSpriteId =
+            if (key.outputPowered) WRSprites.RED_ALLOY_WIRE_POWERED_ID else WRSprites.RED_ALLOY_WIRE_UNPOWERED_ID
+        val inputWireSpriteId =
+            if (key.inputPowered) WRSprites.RED_ALLOY_WIRE_POWERED_ID else WRSprites.RED_ALLOY_WIRE_UNPOWERED_ID
 
-        val wireSprite = RenderUtils.getBlockSprite(wireSpriteId)
+        val outputWireSprite = RenderUtils.getBlockSprite(outputWireSpriteId)
+        val inputWireSprite = RenderUtils.getBlockSprite(inputWireSpriteId)
 
-        val modelId = if (key.powered) {
-            GATE_DIODE_ON
-        } else {
-            GATE_DIODE_OFF
-        }
+        val outputModelId = if (key.outputPowered) OUTPUT_ON else OUTPUT_OFF
+        val inputModelId = if (key.inputPowered) INPUT_ON else INPUT_OFF
 
-        val backgroundModel = RenderUtils.getModel(GATE_DIODE_BACKGROUND)
-        val redstoneModel = RenderUtils.getModel(modelId)
+        val backgroundModel = RenderUtils.getModel(BACKGROUND)
+        val outputModel = RenderUtils.getModel(outputModelId)
+        val inputModel = RenderUtils.getModel(inputModelId)
 
-        val material = if (key.powered) {
-            WRMaterials.POWERED_MATERIAL
-        } else {
-            WRMaterials.UNPOWERED_MATERIAL
-        }
+        val outputMaterial = if (key.outputPowered) WRMaterials.POWERED_MATERIAL else WRMaterials.UNPOWERED_MATERIAL
+        val inputMaterial = if (key.inputPowered) WRMaterials.POWERED_MATERIAL else WRMaterials.UNPOWERED_MATERIAL
 
         val builder = RenderUtils.MESH_BUILDER
         val emitter = TransformingQuadEmitter.Multi(
@@ -50,15 +47,16 @@ object GateDiodePartBaker : WRPartBaker<GateDiodePartKey> {
         )
 
         RenderUtils.fromVanilla(backgroundModel, emitter, WRMaterials.UNPOWERED_MATERIAL)
-        RenderUtils.fromVanilla(redstoneModel, emitter, material)
+        RenderUtils.fromVanilla(outputModel, emitter, outputMaterial)
+        RenderUtils.fromVanilla(inputModel, emitter, inputMaterial)
 
         // render outer wire connections
         val conn = ConnectionUtils.unrotatedConnections(key.connections, key.direction)
         RenderUtils.emitNorthWireCorner(
-            conn, key.side.axis, key.direction.axis, 2f, 2f, wireSprite, 7f / 16f, material, emitter
+            conn, key.side.axis, key.direction.axis, 2f, 2f, outputWireSprite, 7f / 16f, outputMaterial, emitter
         )
         RenderUtils.emitSouthWireCorner(
-                conn, key.side.axis, key.direction.axis, 2f, 2f, wireSprite, 7f / 16f, material, emitter
+            conn, key.side.axis, key.direction.axis, 2f, 2f, inputWireSprite, 7f / 16f, inputMaterial, emitter
         )
 
         return builder.build()
@@ -69,8 +67,10 @@ object GateDiodePartBaker : WRPartBaker<GateDiodePartKey> {
     }
 
     override fun registerModels(out: Consumer<Identifier>) {
-        out.accept(GATE_DIODE_BACKGROUND)
-        out.accept(GATE_DIODE_ON)
-        out.accept(GATE_DIODE_OFF)
+        out.accept(BACKGROUND)
+        out.accept(INPUT_ON)
+        out.accept(INPUT_OFF)
+        out.accept(OUTPUT_ON)
+        out.accept(OUTPUT_OFF)
     }
 }

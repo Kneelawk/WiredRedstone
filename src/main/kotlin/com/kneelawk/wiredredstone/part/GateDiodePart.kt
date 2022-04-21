@@ -15,7 +15,6 @@ import com.kneelawk.wiredredstone.item.WRItems
 import com.kneelawk.wiredredstone.part.key.GateDiodePartKey
 import com.kneelawk.wiredredstone.partext.GateDiodePartExt
 import com.kneelawk.wiredredstone.util.*
-import com.kneelawk.wiredredstone.wirenet.getWireNetworkState
 import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
 import net.minecraft.item.ItemStack
@@ -26,6 +25,7 @@ import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.Box
 import net.minecraft.util.math.Direction
 import net.minecraft.util.shape.VoxelShape
+import kotlin.math.max
 
 class GateDiodePart : AbstractRotatedPart {
     companion object {
@@ -43,16 +43,19 @@ class GateDiodePart : AbstractRotatedPart {
         private set
     var outputPower: Int
         private set
+    var outputReversePower: Int
+        private set
     // Gates with more inputs might find it most efficient to just have a `shouldUpdate` variable, but since there is
     // only one input and one output and a pure function between them, we can always tell if we need an update just by
     // looking at the two of these.
 
     constructor(
         definition: PartDefinition, holder: MultipartHolder, side: Direction, connections: UByte, direction: Direction,
-        inputPower: Int, outputPower: Int
+        inputPower: Int, outputPower: Int, outputReversePower: Int
     ) : super(definition, holder, side, connections, direction) {
         this.inputPower = inputPower
         this.outputPower = outputPower
+        this.outputReversePower = outputReversePower
     }
 
     constructor(definition: PartDefinition, holder: MultipartHolder, tag: NbtCompound) : super(
@@ -60,6 +63,7 @@ class GateDiodePart : AbstractRotatedPart {
     ) {
         inputPower = tag.getByte("inputPower").toInt().coerceIn(0..15)
         outputPower = tag.getByte("outputPower").toInt().coerceIn(0..15)
+        outputReversePower = tag.getByte("outputReversePower").toInt().coerceIn(0..15)
     }
 
     constructor(definition: PartDefinition, holder: MultipartHolder, buffer: NetByteBuf, ctx: IMsgReadCtx) : super(
@@ -67,12 +71,14 @@ class GateDiodePart : AbstractRotatedPart {
     ) {
         inputPower = buffer.readByte().toInt().coerceIn(0..15)
         outputPower = buffer.readByte().toInt().coerceIn(0..15)
+        outputReversePower = buffer.readByte().toInt().coerceIn(0..15)
     }
 
     override fun toTag(): NbtCompound {
         val tag = super.toTag()
         tag.putByte("inputPower", inputPower.toByte())
         tag.putByte("outputPower", outputPower.toByte())
+        tag.putByte("outputReversePower", outputReversePower.toByte())
         return tag
     }
 
@@ -80,18 +86,21 @@ class GateDiodePart : AbstractRotatedPart {
         super.writeCreationData(buffer, ctx)
         buffer.writeByte(inputPower)
         buffer.writeByte(outputPower)
+        buffer.writeByte(outputReversePower)
     }
 
     override fun writeRenderData(buffer: NetByteBuf, ctx: IMsgWriteCtx) {
         super.writeRenderData(buffer, ctx)
         buffer.writeByte(inputPower)
         buffer.writeByte(outputPower)
+        buffer.writeByte(outputReversePower)
     }
 
     override fun readRenderData(buffer: NetByteBuf, ctx: IMsgReadCtx) {
         super.readRenderData(buffer, ctx)
         inputPower = buffer.readByte().toInt().coerceIn(0..15)
         outputPower = buffer.readByte().toInt().coerceIn(0..15)
+        outputReversePower = buffer.readByte().toInt().coerceIn(0..15)
     }
 
     override fun onAdded(bus: MultipartEventBus) {
@@ -125,7 +134,7 @@ class GateDiodePart : AbstractRotatedPart {
             if (world is ServerWorld) {
                 updateConnections()
                 RedstoneLogic.wiresGivePower = false
-                if (calculateInputPower() != inputPower) {
+                if (calculateInputPower() != inputPower || calculateOutputReversePower() != outputReversePower) {
                     RedstoneLogic.scheduleUpdate(world, getPos())
                 }
                 RedstoneLogic.wiresGivePower = true
@@ -148,11 +157,20 @@ class GateDiodePart : AbstractRotatedPart {
 
     private fun getRedstoneOutputPower(powerSide: Direction): Int {
         val edge = RotationUtils.rotatedDirection(side, direction)
-        return if (RedstoneLogic.wiresGivePower && powerSide == edge) outputPower else 0
+        return if (RedstoneLogic.wiresGivePower && powerSide == edge) getTotalOutputPower() else 0
+    }
+
+    fun getTotalOutputPower(): Int {
+        return max(outputPower, outputReversePower)
     }
 
     fun calculateInputPower(): Int {
         val edge = RotationUtils.rotatedDirection(side, getInputSide())
+        return getWorld().getEmittedRedstonePower(getPos().offset(edge), edge)
+    }
+
+    fun calculateOutputReversePower(): Int {
+        val edge = RotationUtils.rotatedDirection(side, getOutputSide())
         return getWorld().getEmittedRedstonePower(getPos().offset(edge), edge)
     }
 
@@ -186,7 +204,7 @@ class GateDiodePart : AbstractRotatedPart {
     }
 
     override fun getModelKey(): PartModelKey {
-        return GateDiodePartKey(side, direction, connections, outputPower != 0)
+        return GateDiodePartKey(side, direction, connections, inputPower != 0, getTotalOutputPower() != 0)
     }
 
     override fun getClosestBlockState(): BlockState {
@@ -201,7 +219,13 @@ class GateDiodePart : AbstractRotatedPart {
         LootTableUtil.addPartDrops(getWorld(), target, context, WRParts.GATE_DIODE.identifier)
     }
 
+    fun updateOutputReversePower(power: Int) {
+        this.outputReversePower = power
+        redraw()
+    }
+
     fun updateInputPower(power: Int) {
         this.inputPower = power
+        redraw()
     }
 }

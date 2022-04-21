@@ -3,7 +3,7 @@
   "parent": "wiredredstone:block/flat",
   "textures": {
     "particle": "wiredredstone:block/gate_diode/particle",
-    "redstone": "wiredredstone:block/gate_diode/redstone_off"
+    "redstone": "wiredredstone:block/gate_diode/redstone_input_off"
   },
   "elements": [
     {

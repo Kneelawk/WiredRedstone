@@ -14,6 +14,7 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
+import kotlin.math.max
 
 sealed class GateDiodePartExt(override val side: Direction) : ConnectablePartExt, RedstoneCarrierPartExt {
     override val type = Type
@@ -123,16 +124,21 @@ sealed class GateDiodePartExt(override val side: Direction) : ConnectablePartExt
         }
 
         override fun getState(world: World, self: NetNode): Int {
-            return getPart(world, self.data.pos)?.outputPower ?: 0
+            return getPart(world, self.data.pos)?.getTotalOutputPower() ?: 0
         }
 
         override fun setState(world: World, self: NetNode, state: Int) {
-            // Nothing to do here. The output does not accept power from the network.
+            getPart(world, self.data.pos)?.updateOutputReversePower(state)
         }
 
         override fun getInput(world: World, self: NetNode): Int {
-            // This is asking about input to the network, so we return our output value.
-            return getPart(world, self.data.pos)?.outputPower ?: 0
+            val pos = self.data.pos
+            val part = getPart(world, pos) ?: return 0
+
+            // This is asking about input to the network, so we return either our output value or the value calculated
+            // by redstone in the world.
+
+            return max(part.outputPower, part.calculateOutputReversePower())
         }
 
         override fun equals(other: Any?): Boolean {
