@@ -2,10 +2,10 @@
 	"credit": "Made with Blockbench",
 	"parent": "wiredredstone:block/flat",
 	"textures": {
-		"particle": "wiredredstone:block/green_insulated_wire_top_cross",
-		"top_cross": "wiredredstone:block/green_insulated_wire_top_cross",
-		"side": "wiredredstone:block/green_insulated_wire_side",
-		"end": "wiredredstone:block/green_insulated_wire_end"
+		"particle": "wiredredstone:block/insulated_wire/green_top_cross",
+		"top_cross": "wiredredstone:block/insulated_wire/green_top_cross",
+		"side": "wiredredstone:block/insulated_wire/green_side",
+		"end": "wiredredstone:block/insulated_wire/green_end"
 	},
 	"elements": [
 		{

@@ -2,8 +2,8 @@
   "credit": "Made with Blockbench",
   "parent": "wiredredstone:block/flat",
   "textures": {
-    "particle": "wiredredstone:block/gate_diode_particle",
-    "redstone": "wiredredstone:block/gate_diode_redstone_on"
+    "particle": "wiredredstone:block/gate_diode/particle",
+    "redstone": "wiredredstone:block/gate_diode/redstone_on"
   },
   "elements": [
     {

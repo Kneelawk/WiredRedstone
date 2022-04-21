@@ -51,116 +51,116 @@ object InsulatedWirePartBaker : WRPartBaker<InsulatedWirePartKey> {
 
     private val INSULATED_WIRE_IDS = mapOf(
         WHITE to WireIds(
-            id("block/white_insulated_wire_top_cross"),
-            id("block/white_insulated_wire_top_x"),
-            id("block/white_insulated_wire_top_z"),
-            id("block/white_insulated_wire_side"),
-            id("block/white_insulated_wire_end")
+            id("block/insulated_wire/white_top_cross"),
+            id("block/insulated_wire/white_top_x"),
+            id("block/insulated_wire/white_top_z"),
+            id("block/insulated_wire/white_side"),
+            id("block/insulated_wire/white_end")
         ),
         ORANGE to WireIds(
-            id("block/orange_insulated_wire_top_cross"),
-            id("block/orange_insulated_wire_top_x"),
-            id("block/orange_insulated_wire_top_z"),
-            id("block/orange_insulated_wire_side"),
-            id("block/orange_insulated_wire_end")
+            id("block/insulated_wire/orange_top_cross"),
+            id("block/insulated_wire/orange_top_x"),
+            id("block/insulated_wire/orange_top_z"),
+            id("block/insulated_wire/orange_side"),
+            id("block/insulated_wire/orange_end")
         ),
         MAGENTA to WireIds(
-            id("block/magenta_insulated_wire_top_cross"),
-            id("block/magenta_insulated_wire_top_x"),
-            id("block/magenta_insulated_wire_top_z"),
-            id("block/magenta_insulated_wire_side"),
-            id("block/magenta_insulated_wire_end")
+            id("block/insulated_wire/magenta_top_cross"),
+            id("block/insulated_wire/magenta_top_x"),
+            id("block/insulated_wire/magenta_top_z"),
+            id("block/insulated_wire/magenta_side"),
+            id("block/insulated_wire/magenta_end")
         ),
         LIGHT_BLUE to WireIds(
-            id("block/light_blue_insulated_wire_top_cross"),
-            id("block/light_blue_insulated_wire_top_x"),
-            id("block/light_blue_insulated_wire_top_z"),
-            id("block/light_blue_insulated_wire_side"),
-            id("block/light_blue_insulated_wire_end")
+            id("block/insulated_wire/light_blue_top_cross"),
+            id("block/insulated_wire/light_blue_top_x"),
+            id("block/insulated_wire/light_blue_top_z"),
+            id("block/insulated_wire/light_blue_side"),
+            id("block/insulated_wire/light_blue_end")
         ),
         YELLOW to WireIds(
-            id("block/yellow_insulated_wire_top_cross"),
-            id("block/yellow_insulated_wire_top_x"),
-            id("block/yellow_insulated_wire_top_z"),
-            id("block/yellow_insulated_wire_side"),
-            id("block/yellow_insulated_wire_end")
+            id("block/insulated_wire/yellow_top_cross"),
+            id("block/insulated_wire/yellow_top_x"),
+            id("block/insulated_wire/yellow_top_z"),
+            id("block/insulated_wire/yellow_side"),
+            id("block/insulated_wire/yellow_end")
         ),
         LIME to WireIds(
-            id("block/lime_insulated_wire_top_cross"),
-            id("block/lime_insulated_wire_top_x"),
-            id("block/lime_insulated_wire_top_z"),
-            id("block/lime_insulated_wire_side"),
-            id("block/lime_insulated_wire_end")
+            id("block/insulated_wire/lime_top_cross"),
+            id("block/insulated_wire/lime_top_x"),
+            id("block/insulated_wire/lime_top_z"),
+            id("block/insulated_wire/lime_side"),
+            id("block/insulated_wire/lime_end")
         ),
         PINK to WireIds(
-            id("block/pink_insulated_wire_top_cross"),
-            id("block/pink_insulated_wire_top_x"),
-            id("block/pink_insulated_wire_top_z"),
-            id("block/pink_insulated_wire_side"),
-            id("block/pink_insulated_wire_end")
+            id("block/insulated_wire/pink_top_cross"),
+            id("block/insulated_wire/pink_top_x"),
+            id("block/insulated_wire/pink_top_z"),
+            id("block/insulated_wire/pink_side"),
+            id("block/insulated_wire/pink_end")
         ),
         GRAY to WireIds(
-            id("block/gray_insulated_wire_top_cross"),
-            id("block/gray_insulated_wire_top_x"),
-            id("block/gray_insulated_wire_top_z"),
-            id("block/gray_insulated_wire_side"),
-            id("block/gray_insulated_wire_end")
+            id("block/insulated_wire/gray_top_cross"),
+            id("block/insulated_wire/gray_top_x"),
+            id("block/insulated_wire/gray_top_z"),
+            id("block/insulated_wire/gray_side"),
+            id("block/insulated_wire/gray_end")
         ),
         LIGHT_GRAY to WireIds(
-            id("block/light_gray_insulated_wire_top_cross"),
-            id("block/light_gray_insulated_wire_top_x"),
-            id("block/light_gray_insulated_wire_top_z"),
-            id("block/light_gray_insulated_wire_side"),
-            id("block/light_gray_insulated_wire_end")
+            id("block/insulated_wire/light_gray_top_cross"),
+            id("block/insulated_wire/light_gray_top_x"),
+            id("block/insulated_wire/light_gray_top_z"),
+            id("block/insulated_wire/light_gray_side"),
+            id("block/insulated_wire/light_gray_end")
         ),
         CYAN to WireIds(
-            id("block/cyan_insulated_wire_top_cross"),
-            id("block/cyan_insulated_wire_top_x"),
-            id("block/cyan_insulated_wire_top_z"),
-            id("block/cyan_insulated_wire_side"),
-            id("block/cyan_insulated_wire_end")
+            id("block/insulated_wire/cyan_top_cross"),
+            id("block/insulated_wire/cyan_top_x"),
+            id("block/insulated_wire/cyan_top_z"),
+            id("block/insulated_wire/cyan_side"),
+            id("block/insulated_wire/cyan_end")
         ),
         PURPLE to WireIds(
-            id("block/purple_insulated_wire_top_cross"),
-            id("block/purple_insulated_wire_top_x"),
-            id("block/purple_insulated_wire_top_z"),
-            id("block/purple_insulated_wire_side"),
-            id("block/purple_insulated_wire_end")
+            id("block/insulated_wire/purple_top_cross"),
+            id("block/insulated_wire/purple_top_x"),
+            id("block/insulated_wire/purple_top_z"),
+            id("block/insulated_wire/purple_side"),
+            id("block/insulated_wire/purple_end")
         ),
         BLUE to WireIds(
-            id("block/blue_insulated_wire_top_cross"),
-            id("block/blue_insulated_wire_top_x"),
-            id("block/blue_insulated_wire_top_z"),
-            id("block/blue_insulated_wire_side"),
-            id("block/blue_insulated_wire_end")
+            id("block/insulated_wire/blue_top_cross"),
+            id("block/insulated_wire/blue_top_x"),
+            id("block/insulated_wire/blue_top_z"),
+            id("block/insulated_wire/blue_side"),
+            id("block/insulated_wire/blue_end")
         ),
         BROWN to WireIds(
-            id("block/brown_insulated_wire_top_cross"),
-            id("block/brown_insulated_wire_top_x"),
-            id("block/brown_insulated_wire_top_z"),
-            id("block/brown_insulated_wire_side"),
-            id("block/brown_insulated_wire_end")
+            id("block/insulated_wire/brown_top_cross"),
+            id("block/insulated_wire/brown_top_x"),
+            id("block/insulated_wire/brown_top_z"),
+            id("block/insulated_wire/brown_side"),
+            id("block/insulated_wire/brown_end")
         ),
         GREEN to WireIds(
-            id("block/green_insulated_wire_top_cross"),
-            id("block/green_insulated_wire_top_x"),
-            id("block/green_insulated_wire_top_z"),
-            id("block/green_insulated_wire_side"),
-            id("block/green_insulated_wire_end")
+            id("block/insulated_wire/green_top_cross"),
+            id("block/insulated_wire/green_top_x"),
+            id("block/insulated_wire/green_top_z"),
+            id("block/insulated_wire/green_side"),
+            id("block/insulated_wire/green_end")
         ),
         RED to WireIds(
-            id("block/red_insulated_wire_top_cross"),
-            id("block/red_insulated_wire_top_x"),
-            id("block/red_insulated_wire_top_z"),
-            id("block/red_insulated_wire_side"),
-            id("block/red_insulated_wire_end")
+            id("block/insulated_wire/red_top_cross"),
+            id("block/insulated_wire/red_top_x"),
+            id("block/insulated_wire/red_top_z"),
+            id("block/insulated_wire/red_side"),
+            id("block/insulated_wire/red_end")
         ),
         BLACK to WireIds(
-            id("block/black_insulated_wire_top_cross"),
-            id("block/black_insulated_wire_top_x"),
-            id("block/black_insulated_wire_top_z"),
-            id("block/black_insulated_wire_side"),
-            id("block/black_insulated_wire_end")
+            id("block/insulated_wire/black_top_cross"),
+            id("block/insulated_wire/black_top_x"),
+            id("block/insulated_wire/black_top_z"),
+            id("block/insulated_wire/black_side"),
+            id("block/insulated_wire/black_end")
         )
     )
 }
