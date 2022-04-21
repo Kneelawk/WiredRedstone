@@ -37,6 +37,7 @@ data class InsulatedWirePartExt(override val side: Direction, val color: DyeColo
     override fun setState(world: World, self: NetNode, state: Int) {
         val part = getPart(world, self.data.pos) ?: return
         part.updatePower(state)
+        part.redraw()
     }
 
     override fun getInput(world: World, self: NetNode): Int {

@@ -107,16 +107,22 @@ class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Fl
         }
     }
 
-    // If I need sided materials, I can implement that later.
     private var material: RenderMaterial? = null
+    private var decal1Material: RenderMaterial? = null
 
-    // If I need sided sprites, I can implement that later.
     private var downSprite: Sprite? = null
     private var upSprite: Sprite? = null
     private var northSprite: Sprite? = null
     private var southSprite: Sprite? = null
     private var westSprite: Sprite? = null
     private var eastSprite: Sprite? = null
+
+    private var downDecal1: Sprite? = null
+    private var upDecal1: Sprite? = null
+    private var northDecal1: Sprite? = null
+    private var southDecal1: Sprite? = null
+    private var westDecal1: Sprite? = null
+    private var eastDecal1: Sprite? = null
 
     private var downTexCoords: TexCoords = TexCoords(minX, 1f - maxZ, maxX, 1f - minZ)
     private var upTexCoords: TexCoords = TexCoords(minX, minZ, maxX, maxZ)
@@ -148,6 +154,11 @@ class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Fl
 
     fun material(material: RenderMaterial?): BoxEmitter {
         this.material = material
+        return this
+    }
+
+    fun decal1Material(material: RenderMaterial?): BoxEmitter {
+        this.decal1Material = material
         return this
     }
 
@@ -188,6 +199,46 @@ class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Fl
 
     fun eastSprite(sprite: Sprite?): BoxEmitter {
         eastSprite = sprite
+        return this
+    }
+
+    fun decal1(sprite: Sprite?): BoxEmitter {
+        downDecal1 = sprite
+        upDecal1 = sprite
+        northDecal1 = sprite
+        southDecal1 = sprite
+        westDecal1 = sprite
+        eastDecal1 = sprite
+        return this
+    }
+
+    fun downDecal1(sprite: Sprite?): BoxEmitter {
+        downDecal1 = sprite
+        return this
+    }
+
+    fun upDecal1(sprite: Sprite?): BoxEmitter {
+        upDecal1 = sprite
+        return this
+    }
+
+    fun northDecal1(sprite: Sprite?): BoxEmitter {
+        northDecal1 = sprite
+        return this
+    }
+
+    fun southDecal1(sprite: Sprite?): BoxEmitter {
+        southDecal1 = sprite
+        return this
+    }
+
+    fun westDecal1(sprite: Sprite?): BoxEmitter {
+        westDecal1 = sprite
+        return this
+    }
+
+    fun eastDecal1(sprite: Sprite?): BoxEmitter {
+        eastDecal1 = sprite
         return this
     }
 
@@ -414,6 +465,14 @@ class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Fl
     }
 
     fun emit(emitter: QuadEmitter) {
+        emitBox(emitter, material, downSprite, upSprite, northSprite, southSprite, westSprite, eastSprite)
+        emitBox(emitter, decal1Material, downDecal1, upDecal1, northDecal1, southDecal1, westDecal1, eastDecal1)
+    }
+
+    private fun emitBox(
+        emitter: QuadEmitter, material: RenderMaterial?, downSprite: Sprite?, upSprite: Sprite?, northSprite: Sprite?,
+        southSprite: Sprite?, westSprite: Sprite?, eastSprite: Sprite?
+    ) {
         downSprite?.let {
             // down
             emitter.nominalFace(Direction.DOWN)
@@ -425,7 +484,7 @@ class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Fl
             emitter.normal(1, 0f, -1f, 0f)
             emitter.normal(2, 0f, -1f, 0f)
             emitter.normal(3, 0f, -1f, 0f)
-            finishFace(emitter, downTexCoords, downCullFace, it, downRotation, downFlip)
+            finishFace(emitter, downTexCoords, material, downCullFace, it, downRotation, downFlip)
         }
 
         upSprite?.let {
@@ -439,7 +498,7 @@ class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Fl
             emitter.normal(1, 0f, 1f, 0f)
             emitter.normal(2, 0f, 1f, 0f)
             emitter.normal(3, 0f, 1f, 0f)
-            finishFace(emitter, upTexCoords, upCullFace, it, upRotation, upFlip)
+            finishFace(emitter, upTexCoords, material, upCullFace, it, upRotation, upFlip)
         }
 
         northSprite?.let {
@@ -453,7 +512,7 @@ class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Fl
             emitter.normal(1, 0f, 0f, -1f)
             emitter.normal(2, 0f, 0f, -1f)
             emitter.normal(3, 0f, 0f, -1f)
-            finishFace(emitter, northTexCoords, northCullFace, it, northRotation, northFlip)
+            finishFace(emitter, northTexCoords, material, northCullFace, it, northRotation, northFlip)
         }
 
         southSprite?.let {
@@ -467,7 +526,7 @@ class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Fl
             emitter.normal(1, 0f, 0f, 1f)
             emitter.normal(2, 0f, 0f, 1f)
             emitter.normal(3, 0f, 0f, 1f)
-            finishFace(emitter, southTexCoords, southCullFace, it, southRotation, southFlip)
+            finishFace(emitter, southTexCoords, material, southCullFace, it, southRotation, southFlip)
         }
 
         westSprite?.let {
@@ -481,7 +540,7 @@ class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Fl
             emitter.normal(1, -1f, 0f, 0f)
             emitter.normal(2, -1f, 0f, 0f)
             emitter.normal(3, -1f, 0f, 0f)
-            finishFace(emitter, westTexCoords, westCullFace, it, westRotation, westFlip)
+            finishFace(emitter, westTexCoords, material, westCullFace, it, westRotation, westFlip)
         }
 
         eastSprite?.let {
@@ -495,12 +554,13 @@ class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Fl
             emitter.normal(1, 1f, 0f, 0f)
             emitter.normal(2, 1f, 0f, 0f)
             emitter.normal(3, 1f, 0f, 0f)
-            finishFace(emitter, eastTexCoords, eastCullFace, it, eastRotation, eastFlip)
+            finishFace(emitter, eastTexCoords, material, eastCullFace, it, eastRotation, eastFlip)
         }
     }
 
     private fun finishFace(
-        emitter: QuadEmitter, texCoords: TexCoords, cullFace: Direction?, sprite: Sprite, rotation: Rotation,
+        emitter: QuadEmitter, texCoords: TexCoords, material: RenderMaterial?, cullFace: Direction?, sprite: Sprite,
+        rotation: Rotation,
         flip: Flip
     ) {
         flip.transform(rotation.transform2(rotation.transform1(texCoords).prepare())).spriteBake(emitter, sprite)

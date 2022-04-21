@@ -19,6 +19,10 @@ object InsulatedWirePartBaker : WRPartBaker<InsulatedWirePartKey> {
         val builder = RenderUtils.MESH_BUILDER
         val emitter = TransformingQuadEmitter.Single(builder.emitter, SideQuadTransform(key.side))
 
+        val endSpriteId = if (key.powered) INSULATED_WIRE_END_POWERED_ID else null
+        val endSprite = endSpriteId?.let(RenderUtils::getBlockSprite)
+        val endMaterial = if (key.powered) WRMaterials.POWERED_MATERIAL else null
+
         val sprites = INSULATED_WIRE_IDS[key.color]!!.lookup()
 
         RenderUtils.emitWire(
@@ -31,8 +35,10 @@ object InsulatedWirePartBaker : WRPartBaker<InsulatedWirePartKey> {
             topZSprite = sprites.topZ,
             sideSprite = sprites.side,
             openEndSprite = sprites.openEnd,
+            openEndDecal = endSprite,
             sideV = 6f / 16f,
             material = WRMaterials.UNPOWERED_MATERIAL,
+            decalMaterial = endMaterial,
             emitter = emitter
         )
 
@@ -44,11 +50,13 @@ object InsulatedWirePartBaker : WRPartBaker<InsulatedWirePartKey> {
     }
 
     override fun registerSprites(registry: ClientSpriteRegistryCallback.Registry) {
+        registry.register(INSULATED_WIRE_END_POWERED_ID)
         for (wire in INSULATED_WIRE_IDS.values) {
             wire.register(registry)
         }
     }
 
+    private val INSULATED_WIRE_END_POWERED_ID = id("block/insulated_wire/end_powered")
     private val INSULATED_WIRE_IDS = mapOf(
         WHITE to WireIds(
             id("block/insulated_wire/white_top_cross"),

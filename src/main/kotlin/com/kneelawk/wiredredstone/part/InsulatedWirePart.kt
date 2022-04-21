@@ -95,7 +95,7 @@ class InsulatedWirePart : AbstractRedstoneWirePart {
     }
 
     override fun getModelKey(): PartModelKey {
-        return InsulatedWirePartKey(side, connections, color)
+        return InsulatedWirePartKey(side, connections, color, power != 0)
     }
 
     override fun getOutlineShape(): VoxelShape {

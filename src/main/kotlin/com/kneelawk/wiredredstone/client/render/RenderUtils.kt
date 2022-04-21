@@ -2,6 +2,7 @@ package com.kneelawk.wiredredstone.client.render
 
 import com.kneelawk.wiredredstone.util.ConnectionUtils.isCorner
 import com.kneelawk.wiredredstone.util.ConnectionUtils.isDisconnected
+import com.kneelawk.wiredredstone.util.ConnectionUtils.isExternal
 import com.kneelawk.wiredredstone.util.ConnectionUtils.isInternal
 import com.kneelawk.wiredredstone.util.requireNonNull
 import com.kneelawk.wiredredstone.util.threadLocal
@@ -41,8 +42,8 @@ object RenderUtils {
     fun emitWire(
         conn: UByte, axis: Axis, wireHeight: Float, wireWidth: Float, topCrossSprite: Sprite,
         topXSprite: Sprite = topCrossSprite, topZSprite: Sprite = topCrossSprite, sideSprite: Sprite = topCrossSprite,
-        openEndSprite: Sprite = topZSprite, closedEndSprite: Sprite = topZSprite, sideV: Float,
-        material: RenderMaterial, emitter: QuadEmitter
+        openEndSprite: Sprite = topZSprite, closedEndSprite: Sprite = topZSprite, openEndDecal: Sprite? = null,
+        sideV: Float, material: RenderMaterial, decalMaterial: RenderMaterial? = null, emitter: QuadEmitter
     ) {
         if (conn == 0u.toUByte()) {
             // no connections
@@ -53,6 +54,8 @@ object RenderUtils {
                 .upSprite(topXSprite)
                 .westSprite(openEndSprite)
                 .eastSprite(openEndSprite)
+                .westDecal1(openEndDecal)
+                .eastDecal1(openEndDecal)
                 .material(material)
                 .downCullFace(DOWN)
                 .setSideTexCoordsV(sideV)
@@ -87,7 +90,18 @@ object RenderUtils {
                             null
                         } else openEndSprite
                     )
+                    .westDecal1(
+                        if (isExternal(conn, WEST) || (isDisconnected(conn, WEST) && !(doZNeg || doZPos))) {
+                            openEndDecal
+                        } else null
+                    )
+                    .eastDecal1(
+                        if (isExternal(conn, EAST) || (isDisconnected(conn, EAST) && !(doZNeg || doZPos))) {
+                            openEndDecal
+                        } else null
+                    )
                     .material(material)
+                    .decal1Material(decalMaterial)
                     .downCullFace(DOWN)
                     .setSideTexCoordsV(sideV)
                     .emit(emitter)
@@ -111,7 +125,18 @@ object RenderUtils {
                             null
                         } else openEndSprite
                     )
+                    .northDecal1(
+                        if (isExternal(conn, NORTH) || (isDisconnected(conn, NORTH) && !(doXNeg || doXPos))) {
+                            openEndDecal
+                        } else null
+                    )
+                    .southDecal1(
+                        if (isExternal(conn, SOUTH) || (isDisconnected(conn, SOUTH) && !(doXNeg || doXPos))) {
+                            openEndDecal
+                        } else null
+                    )
                     .material(material)
+                    .decal1Material(decalMaterial)
                     .downCullFace(DOWN)
                     .setSideTexCoordsV(sideV)
                     .emit(emitter)
@@ -120,63 +145,72 @@ object RenderUtils {
             // emit corner boxes
 
             emitNorthWireCorner(
-                conn, wireHeight, halfZWireWidth, sideSprite, topZSprite, openEndSprite, closedEndSprite, sideV,
-                material, emitter
+                conn, wireHeight, halfZWireWidth, sideSprite, topZSprite, openEndSprite, closedEndSprite, openEndDecal,
+                sideV, material, decalMaterial, emitter
             )
             emitSouthWireCorner(
-                conn, wireHeight, halfZWireWidth, sideSprite, topZSprite, openEndSprite, closedEndSprite, sideV,
-                material, emitter
+                conn, wireHeight, halfZWireWidth, sideSprite, topZSprite, openEndSprite, closedEndSprite, openEndDecal,
+                sideV, material, decalMaterial, emitter
             )
             emitWestWireCorner(
-                conn, wireHeight, halfXWireWidth, sideSprite, topXSprite, openEndSprite, closedEndSprite, sideV,
-                material, emitter
+                conn, wireHeight, halfXWireWidth, sideSprite, topXSprite, openEndSprite, closedEndSprite, openEndDecal,
+                sideV, material, decalMaterial, emitter
             )
             emitEastWireCorner(
-                conn, wireHeight, halfXWireWidth, sideSprite, topXSprite, openEndSprite, closedEndSprite, sideV,
-                material, emitter
+                conn, wireHeight, halfXWireWidth, sideSprite, topXSprite, openEndSprite, closedEndSprite, openEndDecal,
+                sideV, material, decalMaterial, emitter
             )
         }
     }
 
     fun emitNorthWireCorner(
-        conn: UByte, sideAxis: Axis, rotationAxis: Axis, wireHeight: Float, wireWidth: Float, sprite: Sprite, sideV: Float,
-        material: RenderMaterial, emitter: QuadEmitter
+        conn: UByte, sideAxis: Axis, rotationAxis: Axis, wireHeight: Float, wireWidth: Float, sprite: Sprite,
+        sideV: Float, material: RenderMaterial, emitter: QuadEmitter
     ) {
         emitNorthWireCorner(
-            conn, wireHeight, if (rotationAxis == Axis.Z) halfZWireWidth(sideAxis, wireWidth) else halfXWireWidth(sideAxis, wireWidth), sprite, sprite, sprite, sprite, sideV, material, emitter
+            conn, wireHeight,
+            if (rotationAxis == Axis.Z) halfZWireWidth(sideAxis, wireWidth) else halfXWireWidth(sideAxis, wireWidth),
+            sprite, sprite, sprite, sprite, null, sideV, material, null, emitter
         )
     }
 
     fun emitSouthWireCorner(
-        conn: UByte, sideAxis: Axis, rotationAxis: Axis, wireHeight: Float, wireWidth: Float, sprite: Sprite, sideV: Float,
-        material: RenderMaterial, emitter: QuadEmitter
+        conn: UByte, sideAxis: Axis, rotationAxis: Axis, wireHeight: Float, wireWidth: Float, sprite: Sprite,
+        sideV: Float, material: RenderMaterial, emitter: QuadEmitter
     ) {
         emitSouthWireCorner(
-            conn, wireHeight, if (rotationAxis == Axis.Z) halfZWireWidth(sideAxis, wireWidth) else halfXWireWidth(sideAxis, wireWidth), sprite, sprite, sprite, sprite, sideV, material, emitter
+            conn, wireHeight,
+            if (rotationAxis == Axis.Z) halfZWireWidth(sideAxis, wireWidth) else halfXWireWidth(sideAxis, wireWidth),
+            sprite, sprite, sprite, sprite, null, sideV, material, null, emitter
         )
     }
 
     fun emitWestWireCorner(
-        conn: UByte, sideAxis: Axis, rotationAxis: Axis, wireHeight: Float, wireWidth: Float, sprite: Sprite, sideV: Float,
-        material: RenderMaterial, emitter: QuadEmitter
+        conn: UByte, sideAxis: Axis, rotationAxis: Axis, wireHeight: Float, wireWidth: Float, sprite: Sprite,
+        sideV: Float, material: RenderMaterial, emitter: QuadEmitter
     ) {
         emitWestWireCorner(
-            conn, wireHeight, if (rotationAxis == Axis.Z) halfXWireWidth(sideAxis, wireWidth) else halfZWireWidth(sideAxis, wireWidth), sprite, sprite, sprite, sprite, sideV, material, emitter
+            conn, wireHeight,
+            if (rotationAxis == Axis.Z) halfXWireWidth(sideAxis, wireWidth) else halfZWireWidth(sideAxis, wireWidth),
+            sprite, sprite, sprite, sprite, null, sideV, material, null, emitter
         )
     }
 
     fun emitEastWireCorner(
-        conn: UByte, sideAxis: Axis, rotationAxis: Axis, wireHeight: Float, wireWidth: Float, sprite: Sprite, sideV: Float,
-        material: RenderMaterial, emitter: QuadEmitter
+        conn: UByte, sideAxis: Axis, rotationAxis: Axis, wireHeight: Float, wireWidth: Float, sprite: Sprite,
+        sideV: Float, material: RenderMaterial, emitter: QuadEmitter
     ) {
         emitEastWireCorner(
-            conn, wireHeight, if (rotationAxis == Axis.Z) halfXWireWidth(sideAxis, wireWidth) else halfZWireWidth(sideAxis, wireWidth), sprite, sprite, sprite, sprite, sideV, material, emitter
+            conn, wireHeight,
+            if (rotationAxis == Axis.Z) halfXWireWidth(sideAxis, wireWidth) else halfZWireWidth(sideAxis, wireWidth),
+            sprite, sprite, sprite, sprite, null, sideV, material, null, emitter
         )
     }
 
     private fun emitNorthWireCorner(
         conn: UByte, wireHeight: Float, halfZWireWidth: Float, sideSprite: Sprite, topZSprite: Sprite,
-        openEndSprite: Sprite, closedEndSprite: Sprite, sideV: Float, material: RenderMaterial, emitter: QuadEmitter
+        openEndSprite: Sprite, closedEndSprite: Sprite, openEndDecal: Sprite?, sideV: Float, material: RenderMaterial,
+        decalMaterial: RenderMaterial?, emitter: QuadEmitter
     ) {
         if (isCorner(conn, NORTH)) {
             BoxEmitter.onGroundPixels(
@@ -186,8 +220,10 @@ object RenderUtils {
                 .upSprite(topZSprite)
                 .northSprite(closedEndSprite)
                 .downSprite(openEndSprite)
+                .downDecal1(openEndDecal)
                 .southSprite(null)
                 .material(material)
+                .decal1Material(decalMaterial)
                 .setSideTexCoordsV(sideV)
                 .translateDownTexCoords(0f, sideV - 1f)
                 .translateUpTexCoords(0f, 1f)
@@ -200,7 +236,8 @@ object RenderUtils {
 
     private fun emitSouthWireCorner(
         conn: UByte, wireHeight: Float, halfZWireWidth: Float, sideSprite: Sprite, topZSprite: Sprite,
-        openEndSprite: Sprite, closedEndSprite: Sprite, sideV: Float, material: RenderMaterial, emitter: QuadEmitter
+        openEndSprite: Sprite, closedEndSprite: Sprite, openEndDecal: Sprite?, sideV: Float, material: RenderMaterial,
+        decalMaterial: RenderMaterial?, emitter: QuadEmitter
     ) {
         if (isCorner(conn, SOUTH)) {
             BoxEmitter.onGroundPixels(
@@ -210,8 +247,10 @@ object RenderUtils {
                 .upSprite(topZSprite)
                 .southSprite(closedEndSprite)
                 .downSprite(openEndSprite)
+                .downDecal1(openEndDecal)
                 .northSprite(null)
                 .material(material)
+                .decal1Material(decalMaterial)
                 .setSideTexCoordsV(sideV)
                 .translateDownTexCoords(0f, sideV + wireHeight / 16f)
                 .translateUpTexCoords(0f, -1f)
@@ -223,7 +262,8 @@ object RenderUtils {
 
     private fun emitWestWireCorner(
         conn: UByte, wireHeight: Float, halfXWireWidth: Float, sideSprite: Sprite, topXSprite: Sprite,
-        openEndSprite: Sprite, closedEndSprite: Sprite, sideV: Float, material: RenderMaterial, emitter: QuadEmitter
+        openEndSprite: Sprite, closedEndSprite: Sprite, openEndDecal: Sprite?, sideV: Float, material: RenderMaterial,
+        decalMaterial: RenderMaterial?, emitter: QuadEmitter
     ) {
         if (isCorner(conn, WEST)) {
             BoxEmitter.onGroundPixels(
@@ -233,8 +273,10 @@ object RenderUtils {
                 .upSprite(topXSprite)
                 .westSprite(closedEndSprite)
                 .downSprite(openEndSprite)
+                .downDecal1(openEndDecal)
                 .eastSprite(null)
                 .material(material)
+                .decal1Material(decalMaterial)
                 .setSideTexCoordsV(sideV)
                 .downTexCoords(0.5f - halfXWireWidth / 16f, sideV)
                 .translateUpTexCoords(1f, 0f)
@@ -247,7 +289,8 @@ object RenderUtils {
 
     private fun emitEastWireCorner(
         conn: UByte, wireHeight: Float, halfXWireWidth: Float, sideSprite: Sprite, topXSprite: Sprite,
-        openEndSprite: Sprite, closedEndSprite: Sprite, sideV: Float, material: RenderMaterial, emitter: QuadEmitter
+        openEndSprite: Sprite, closedEndSprite: Sprite, openEndDecal: Sprite?, sideV: Float, material: RenderMaterial,
+        decalMaterial: RenderMaterial?, emitter: QuadEmitter
     ) {
         if (isCorner(conn, EAST)) {
             BoxEmitter.onGroundPixels(
@@ -257,8 +300,10 @@ object RenderUtils {
                 .upSprite(topXSprite)
                 .eastSprite(closedEndSprite)
                 .downSprite(openEndSprite)
+                .downDecal1(openEndDecal)
                 .westSprite(null)
                 .material(material)
+                .decal1Material(decalMaterial)
                 .setSideTexCoordsV(sideV)
                 .downTexCoords(0.5f - halfXWireWidth / 16f, sideV)
                 .translateUpTexCoords(-1f, 0f)
