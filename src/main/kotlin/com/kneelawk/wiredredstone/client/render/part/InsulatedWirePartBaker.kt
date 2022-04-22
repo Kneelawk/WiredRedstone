@@ -25,7 +25,7 @@ object InsulatedWirePartBaker : WRPartBaker<InsulatedWirePartKey> {
 
         val sprites = INSULATED_WIRE_IDS[key.color]!!.lookup()
 
-        RenderUtils.emitWire(
+        WireRendering.emitWire(
             conn = key.connections,
             axis = key.side.axis,
             wireHeight = 3f,

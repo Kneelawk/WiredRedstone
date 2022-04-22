@@ -32,7 +32,7 @@ object RedAlloyWirePartBaker : WRPartBaker<RedAlloyWirePartKey> {
         val builder = RenderUtils.MESH_BUILDER
         val emitter = TransformingQuadEmitter.Single(builder.emitter, SideQuadTransform(key.side))
 
-        RenderUtils.emitWire(
+        WireRendering.emitWire(
             conn = key.connections,
             axis = key.side.axis,
             wireHeight = 2f,

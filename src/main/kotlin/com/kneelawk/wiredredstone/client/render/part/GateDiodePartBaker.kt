@@ -52,10 +52,10 @@ object GateDiodePartBaker : WRPartBaker<GateDiodePartKey> {
 
         // render outer wire connections
         val conn = ConnectionUtils.unrotatedConnections(key.connections, key.direction)
-        RenderUtils.emitNorthWireCorner(
+        WireRendering.emitNorthWireCorner(
             conn, key.side.axis, key.direction.axis, 2f, 2f, outputWireSprite, 7f / 16f, outputMaterial, emitter
         )
-        RenderUtils.emitSouthWireCorner(
+        WireRendering.emitSouthWireCorner(
             conn, key.side.axis, key.direction.axis, 2f, 2f, inputWireSprite, 7f / 16f, inputMaterial, emitter
         )
 
