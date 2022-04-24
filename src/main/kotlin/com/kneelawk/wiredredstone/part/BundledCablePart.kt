@@ -34,7 +34,7 @@ class BundledCablePart : AbstractBlockablePart {
         const val WIRE_HEIGHT = 4.0
 
         private val CONFLICT_SHAPES = BoundingBoxUtils.getWireConflictShapes(WIRE_WIDTH, WIRE_HEIGHT)
-        private val OUTLINE_SHAPES = BoundingBoxUtils.getWireOutlineShapes(10.0, WIRE_HEIGHT)
+        private val OUTLINE_SHAPES = BoundingBoxUtils.getWireOutlineShapes(12.0, WIRE_HEIGHT)
     }
 
     val color: DyeColor?

@@ -9,11 +9,17 @@ import com.kneelawk.wiredredstone.client.render.*
 import com.kneelawk.wiredredstone.part.key.InsulatedWirePartKey
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh
+import net.minecraft.client.texture.Sprite
 import net.minecraft.util.DyeColor.*
+import net.minecraft.util.Identifier
 
 object InsulatedWirePartBaker : WRPartBaker<InsulatedWirePartKey> {
     private val cache: LoadingCache<InsulatedWirePartKey, Mesh> =
         CacheBuilder.newBuilder().build(CacheLoader.from(::makeMesh))
+
+    override fun invalidateCaches() {
+        cache.invalidateAll()
+    }
 
     private fun makeMesh(key: InsulatedWirePartKey): Mesh {
         val builder = RenderUtils.MESH_BUILDER
@@ -27,9 +33,9 @@ object InsulatedWirePartBaker : WRPartBaker<InsulatedWirePartKey> {
 
         WireRendering.emitWire(
             conn = key.connections,
-            axis = key.side.axis,
-            wireHeight = 3f,
-            wireWidth = 4f,
+            side = key.side,
+            wireHeight = 3f / 16f,
+            wireWidth = 4f / 16f,
             topCrossSprite = sprites.topCross,
             topXSprite = sprites.topX,
             topZSprite = sprites.topZ,
@@ -55,6 +61,33 @@ object InsulatedWirePartBaker : WRPartBaker<InsulatedWirePartKey> {
             wire.register(registry)
         }
     }
+
+    data class WireIds(
+        val topCross: Identifier, val topX: Identifier, val topZ: Identifier, val side: Identifier,
+        val openEnd: Identifier
+    ) {
+        fun register(registry: ClientSpriteRegistryCallback.Registry) {
+            registry.register(topCross)
+            registry.register(topX)
+            registry.register(topZ)
+            registry.register(side)
+            registry.register(openEnd)
+        }
+
+        fun lookup(): WireSprites {
+            return WireSprites(
+                RenderUtils.getBlockSprite(topCross),
+                RenderUtils.getBlockSprite(topX),
+                RenderUtils.getBlockSprite(topZ),
+                RenderUtils.getBlockSprite(side),
+                RenderUtils.getBlockSprite(openEnd)
+            )
+        }
+    }
+
+    data class WireSprites(
+        val topCross: Sprite, val topX: Sprite, val topZ: Sprite, val side: Sprite, val openEnd: Sprite
+    )
 
     private val INSULATED_WIRE_END_POWERED_ID = id("block/insulated_wire/end_powered")
     private val INSULATED_WIRE_IDS = mapOf(

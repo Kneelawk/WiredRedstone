@@ -11,4 +11,6 @@ interface WRPartBaker<K : PartModelKey> : PartModelBaker<K> {
 
     // Note: sprites only need be registered if they are not referenced from an existing model.
     fun registerSprites(registry: ClientSpriteRegistryCallback.Registry) {}
+
+    fun invalidateCaches() {}
 }

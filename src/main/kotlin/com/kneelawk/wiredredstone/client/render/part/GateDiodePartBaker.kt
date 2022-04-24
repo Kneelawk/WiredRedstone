@@ -22,6 +22,10 @@ object GateDiodePartBaker : WRPartBaker<GateDiodePartKey> {
     private val cache: LoadingCache<GateDiodePartKey, Mesh> =
         CacheBuilder.newBuilder().build(CacheLoader.from(::makeMesh))
 
+    override fun invalidateCaches() {
+        cache.invalidateAll()
+    }
+
     private fun makeMesh(key: GateDiodePartKey): Mesh {
         val outputWireSpriteId =
             if (key.outputPowered) WRSprites.RED_ALLOY_WIRE_POWERED_ID else WRSprites.RED_ALLOY_WIRE_UNPOWERED_ID
@@ -53,10 +57,10 @@ object GateDiodePartBaker : WRPartBaker<GateDiodePartKey> {
         // render outer wire connections
         val conn = ConnectionUtils.unrotatedConnections(key.connections, key.direction)
         WireRendering.emitNorthWireCorner(
-            conn, key.side.axis, key.direction.axis, 2f, 2f, outputWireSprite, 7f / 16f, outputMaterial, emitter
+            conn, key.side, key.direction.axis, 2f / 16f, 2f / 16f, outputWireSprite, 7f / 16f, outputMaterial, emitter
         )
         WireRendering.emitSouthWireCorner(
-            conn, key.side.axis, key.direction.axis, 2f, 2f, inputWireSprite, 7f / 16f, inputMaterial, emitter
+            conn, key.side, key.direction.axis, 2f / 16f, 2f / 16f, inputWireSprite, 7f / 16f, inputMaterial, emitter
         )
 
         return builder.build()

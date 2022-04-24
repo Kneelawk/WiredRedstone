@@ -4,15 +4,17 @@ import alexiil.mc.lib.multipart.api.render.PartRenderContext
 import com.google.common.cache.CacheBuilder
 import com.google.common.cache.CacheLoader
 import com.google.common.cache.LoadingCache
-import com.kneelawk.wiredredstone.WRConstants
 import com.kneelawk.wiredredstone.client.render.*
 import com.kneelawk.wiredredstone.part.key.RedAlloyWirePartKey
-import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh
 
 object RedAlloyWirePartBaker : WRPartBaker<RedAlloyWirePartKey> {
     private val cache: LoadingCache<RedAlloyWirePartKey, Mesh> =
         CacheBuilder.newBuilder().build(CacheLoader.from(::makeMesh))
+
+    override fun invalidateCaches() {
+        cache.invalidateAll()
+    }
 
     private fun makeMesh(key: RedAlloyWirePartKey): Mesh {
         val spriteId = if (key.powered) {
@@ -34,9 +36,9 @@ object RedAlloyWirePartBaker : WRPartBaker<RedAlloyWirePartKey> {
 
         WireRendering.emitWire(
             conn = key.connections,
-            axis = key.side.axis,
-            wireHeight = 2f,
-            wireWidth = 2f,
+            side = key.side,
+            wireHeight = 2f / 16f,
+            wireWidth = 2f / 16f,
             topCrossSprite = sprite,
             sideV = 7f / 16f,
             material = material,

@@ -7,11 +7,14 @@ import net.minecraft.util.math.Direction
 import kotlin.math.max
 import kotlin.math.min
 
+/**
+ * This thing is an eldritch abomination.
+ */
 class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Float, val maxY: Float, val maxZ: Float) {
     companion object {
-        fun onGroundPixels(x1: Float, z1: Float, x2: Float, z2: Float, height: Float): BoxEmitter {
+        fun onGround(x1: Float, z1: Float, x2: Float, z2: Float, height: Float): BoxEmitter {
             return BoxEmitter(
-                min(x1, x2) / 16f, 0f, min(z1, z2) / 16f, max(x1, x2) / 16f, height / 16f, max(z1, z2) / 16f
+                min(x1, x2), 0f, min(z1, z2), max(x1, x2), height, max(z1, z2)
             )
         }
     }
@@ -40,6 +43,9 @@ class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Fl
         }
     }
 
+    /**
+     * This directly rotates a quad in place, making sure it keeps the correct aspect ratio. This is unlike [Flip] which flips the entire `u` and `v` coordinates.
+     */
     enum class Rotation(val transform1: (TexCoords) -> TexCoords, val transform2: (FullTexCoords) -> FullTexCoords) {
         DEGREES_0({ it }, { it }),
         DEGREES_90({
@@ -72,30 +78,33 @@ class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Fl
         });
     }
 
+    /**
+     * Flips the entire `u` and `v` coordinates along the `u`-axis and/or the `v`-axis. This is unlike [Rotation] which rotates quads in place.
+     */
     enum class Flip(val transform: (FullTexCoords) -> FullTexCoords) {
         FLIP_NONE({ it }),
         FLIP_U({
             FullTexCoords(
-                it.u2, it.v0,
-                it.u3, it.v1,
-                it.u0, it.v2,
-                it.u1, it.v3
+                1f - it.u0, it.v0,
+                1f - it.u1, it.v1,
+                1f - it.u2, it.v2,
+                1f - it.u3, it.v3
             )
         }),
         FLIP_V({
             FullTexCoords(
-                it.u0, it.v2,
-                it.u1, it.v3,
-                it.u2, it.v0,
-                it.u3, it.v1
+                it.u0, 1f - it.v0,
+                it.u1, 1f - it.v1,
+                it.u2, 1f - it.v2,
+                it.u3, 1f - it.v3
             )
         }),
         FLIP_UV({
             FullTexCoords(
-                it.u2, it.v2,
-                it.u3, it.v3,
-                it.u0, it.v0,
-                it.u1, it.v1
+                1f - it.u0, 1f - it.v0,
+                1f - it.u1, 1f - it.v1,
+                1f - it.u2, 1f - it.v2,
+                1f - it.u3, 1f - it.v3
             )
         });
 
