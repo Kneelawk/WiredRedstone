@@ -222,6 +222,8 @@ class GateDiodePart : AbstractRotatedPart {
     fun updateOutputReversePower(power: Int) {
         this.outputReversePower = power
         redraw()
+        getBlockEntity().markDirty()
+
         val edge = RotationUtils.rotatedDirection(side, direction)
         WorldUtils.strongUpdateNeighbors(getWorld(), getPos(), edge)
     }
@@ -229,5 +231,6 @@ class GateDiodePart : AbstractRotatedPart {
     fun updateInputPower(power: Int) {
         this.inputPower = power
         redraw()
+        getBlockEntity().markDirty()
     }
 }

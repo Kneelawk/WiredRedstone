@@ -2,6 +2,7 @@ package com.kneelawk.wiredredstone.client.render.part
 
 import alexiil.mc.lib.multipart.api.render.PartModelKey
 import alexiil.mc.lib.multipart.api.render.PartStaticModelRegisterEvent
+import com.kneelawk.wiredredstone.part.key.BundledCablePartKey
 import com.kneelawk.wiredredstone.part.key.GateDiodePartKey
 import com.kneelawk.wiredredstone.part.key.InsulatedWirePartKey
 import com.kneelawk.wiredredstone.part.key.RedAlloyWirePartKey
@@ -14,6 +15,7 @@ object WRPartRenderers {
     fun init() {
         register(RedAlloyWirePartBaker, RedAlloyWirePartKey::class)
         register(InsulatedWirePartBaker, InsulatedWirePartKey::class)
+        register(BundledCablePartBaker, BundledCablePartKey::class)
         register(GateDiodePartBaker, GateDiodePartKey::class)
 
         PartStaticModelRegisterEvent.EVENT.register { event: PartStaticModelRegisterEvent.StaticModelRenderer ->

@@ -33,6 +33,24 @@ object WRItems {
     val RED_INSULATED_WIRE by lazy { InsulatedWireItem(DyeColor.RED, WIRED_REDSTONE_ITEM_SETTINGS) }
     val BLACK_INSULATED_WIRE by lazy { InsulatedWireItem(DyeColor.BLACK, WIRED_REDSTONE_ITEM_SETTINGS) }
 
+    val BUNDLED_CABLE by lazy { BundledCableItem(null, WIRED_REDSTONE_ITEM_SETTINGS) }
+    val WHITE_BUNDLED_CABLE by lazy { BundledCableItem(DyeColor.WHITE, WIRED_REDSTONE_ITEM_SETTINGS) }
+    val ORANGE_BUNDLED_CABLE by lazy { BundledCableItem(DyeColor.ORANGE, WIRED_REDSTONE_ITEM_SETTINGS) }
+    val MAGENTA_BUNDLED_CABLE by lazy { BundledCableItem(DyeColor.MAGENTA, WIRED_REDSTONE_ITEM_SETTINGS) }
+    val LIGHT_BLUE_BUNDLED_CABLE by lazy { BundledCableItem(DyeColor.LIGHT_BLUE, WIRED_REDSTONE_ITEM_SETTINGS) }
+    val YELLOW_BUNDLED_CABLE by lazy { BundledCableItem(DyeColor.YELLOW, WIRED_REDSTONE_ITEM_SETTINGS) }
+    val LIME_BUNDLED_CABLE by lazy { BundledCableItem(DyeColor.LIME, WIRED_REDSTONE_ITEM_SETTINGS) }
+    val PINK_BUNDLED_CABLE by lazy { BundledCableItem(DyeColor.PINK, WIRED_REDSTONE_ITEM_SETTINGS) }
+    val GRAY_BUNDLED_CABLE by lazy { BundledCableItem(DyeColor.GRAY, WIRED_REDSTONE_ITEM_SETTINGS) }
+    val LIGHT_GRAY_BUNDLED_CABLE by lazy { BundledCableItem(DyeColor.LIGHT_GRAY, WIRED_REDSTONE_ITEM_SETTINGS) }
+    val CYAN_BUNDLED_CABLE by lazy { BundledCableItem(DyeColor.CYAN, WIRED_REDSTONE_ITEM_SETTINGS) }
+    val PURPLE_BUNDLED_CABLE by lazy { BundledCableItem(DyeColor.PURPLE, WIRED_REDSTONE_ITEM_SETTINGS) }
+    val BLUE_BUNDLED_CABLE by lazy { BundledCableItem(DyeColor.BLUE, WIRED_REDSTONE_ITEM_SETTINGS) }
+    val BROWN_BUNDLED_CABLE by lazy { BundledCableItem(DyeColor.BROWN, WIRED_REDSTONE_ITEM_SETTINGS) }
+    val GREEN_BUNDLED_CABLE by lazy { BundledCableItem(DyeColor.GREEN, WIRED_REDSTONE_ITEM_SETTINGS) }
+    val RED_BUNDLED_CABLE by lazy { BundledCableItem(DyeColor.RED, WIRED_REDSTONE_ITEM_SETTINGS) }
+    val BLACK_BUNDLED_CABLE by lazy { BundledCableItem(DyeColor.BLACK, WIRED_REDSTONE_ITEM_SETTINGS) }
+
     // Gates
     val GATE_DIODE by lazy { GateDiodeItem(WIRED_REDSTONE_ITEM_SETTINGS) }
 
@@ -55,6 +73,24 @@ object WRItems {
         register(GREEN_INSULATED_WIRE, "green_insulated_wire")
         register(RED_INSULATED_WIRE, "red_insulated_wire")
         register(BLACK_INSULATED_WIRE, "black_insulated_wire")
+
+        register(BUNDLED_CABLE, "bundled_cable")
+        register(WHITE_BUNDLED_CABLE, "white_bundled_cable")
+        register(ORANGE_BUNDLED_CABLE, "orange_bundled_cable")
+        register(MAGENTA_BUNDLED_CABLE, "magenta_bundled_cable")
+        register(LIGHT_BLUE_BUNDLED_CABLE, "light_blue_bundled_cable")
+        register(YELLOW_BUNDLED_CABLE, "yellow_bundled_cable")
+        register(LIME_BUNDLED_CABLE, "lime_bundled_cable")
+        register(PINK_BUNDLED_CABLE, "pink_bundled_cable")
+        register(GRAY_BUNDLED_CABLE, "gray_bundled_cable")
+        register(LIGHT_GRAY_BUNDLED_CABLE, "light_gray_bundled_cable")
+        register(CYAN_BUNDLED_CABLE, "cyan_bundled_cable")
+        register(PURPLE_BUNDLED_CABLE, "purple_bundled_cable")
+        register(BLUE_BUNDLED_CABLE, "blue_bundled_cable")
+        register(BROWN_BUNDLED_CABLE, "brown_bundled_cable")
+        register(GREEN_BUNDLED_CABLE, "green_bundled_cable")
+        register(RED_BUNDLED_CABLE, "red_bundled_cable")
+        register(BLACK_BUNDLED_CABLE, "black_bundled_cable")
 
         register(GATE_DIODE, "gate_diode")
     }

@@ -23,14 +23,8 @@ import net.minecraft.util.math.Direction
 import net.minecraft.util.shape.VoxelShape
 import net.minecraft.util.shape.VoxelShapes
 
-abstract class AbstractRedstoneWirePart : AbstractConnectablePart, BlockablePart, PowerablePart {
+abstract class AbstractRedstoneWirePart : AbstractBlockablePart, PowerablePart {
     var power: Int
-        private set
-
-    /**
-     * Blockage cache. This is for helping in determining in which directions to emit a redstone signal.
-     */
-    var blockage: UByte
         private set
 
     abstract val wireWidth: Double
@@ -39,9 +33,8 @@ abstract class AbstractRedstoneWirePart : AbstractConnectablePart, BlockablePart
     constructor(
         definition: PartDefinition, holder: MultipartHolder, side: Direction, connections: UByte, power: Int,
         blockage: UByte
-    ) : super(definition, holder, side, connections) {
+    ) : super(definition, holder, side, connections, blockage) {
         this.power = power
-        this.blockage = blockage
     }
 
     constructor(definition: PartDefinition, holder: MultipartHolder, tag: NbtCompound) : super(
@@ -49,15 +42,12 @@ abstract class AbstractRedstoneWirePart : AbstractConnectablePart, BlockablePart
     ) {
         power = tag.maybeGetByte("power")?.toInt()?.coerceIn(0..15)
             ?: if (tag.maybeGetByte("powered") == 1.toByte()) 15 else 0
-        blockage = tag.maybeGetByte("blockage")?.toUByte() ?: BlockageUtils.UNBLOCKED
     }
 
     constructor(definition: PartDefinition, holder: MultipartHolder, buffer: NetByteBuf, ctx: IMsgReadCtx) : super(
         definition, holder, buffer, ctx
     ) {
         power = buffer.readByte().toInt().coerceIn(0..15)
-        // There is currently no real use for blockage on the client
-        blockage = BlockageUtils.UNBLOCKED
     }
 
     abstract fun getReceivingPower(): Int
@@ -65,7 +55,6 @@ abstract class AbstractRedstoneWirePart : AbstractConnectablePart, BlockablePart
     override fun toTag(): NbtCompound {
         val tag = super.toTag()
         tag.putByte("power", power.toByte())
-        tag.putByte("blockage", blockage.toByte())
         return tag
     }
 
@@ -180,11 +169,6 @@ abstract class AbstractRedstoneWirePart : AbstractConnectablePart, BlockablePart
         }
 
         return newConn
-    }
-
-    override fun updateBlockage(blockage: UByte) {
-        this.blockage = blockage
-        getBlockEntity().markDirty()
     }
 
     override fun updatePower(power: Int) {
