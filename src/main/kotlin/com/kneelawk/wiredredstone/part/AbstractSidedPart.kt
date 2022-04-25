@@ -7,6 +7,7 @@ import alexiil.mc.lib.multipart.api.event.PartRemovedEvent
 import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
+import com.kneelawk.wiredredstone.util.ConnectableUtils
 import com.kneelawk.wiredredstone.util.ConnectableUtils.isValidFace
 import com.kneelawk.wiredredstone.util.SimpleItemDropTarget
 import com.kneelawk.wiredredstone.util.getWorld
@@ -24,6 +25,7 @@ import net.minecraft.util.Hand
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Vec3d
+import net.minecraft.util.shape.VoxelShape
 
 /**
  * A part that is on the side of a block and can be part of the Redstone-ish network.
@@ -34,6 +36,8 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
     AbstractPart(definition, holder), NetNodeContainer, SidedPart {
 
     private var ctx: SidedPartContext? = null
+
+    private val shapeCache = mutableMapOf<Direction, VoxelShape>()
 
     constructor(definition: PartDefinition, holder: MultipartHolder, tag: NbtCompound) : this(
         definition, holder, Direction.byId(tag.getByte("side").toInt())
@@ -70,8 +74,13 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
                 if (shouldBreak()) {
                     removeAndDrop()
                 } else {
-                    // Something could be blocking our connection
-                    world.getWireNetworkState().controller.updateConnections(world, getSidedPos())
+                    if (ConnectableUtils.shouldUpdateConnectionsForNeighborUpdate(
+                            shapeCache, world, getPos(), it.pos
+                        )
+                    ) {
+                        // Something could be blocking our connection
+                        world.getWireNetworkState().controller.updateConnections(world, getSidedPos())
+                    }
                 }
             }
         }

@@ -37,7 +37,7 @@ dependencies {
 
     // LibMultiPart dependency
     val lmpVersion: String by project
-    modImplementation("alexiil.mc.lib:libmultipart-all:$lmpVersion") {
+    modCompileOnly("alexiil.mc.lib:libmultipart-all:$lmpVersion") {
         exclude("net.fabricmc.fabric-api")
     }
     // JIJs LMP, LNS, & LBA Core
