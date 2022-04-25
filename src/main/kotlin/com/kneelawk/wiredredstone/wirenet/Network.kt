@@ -1,6 +1,7 @@
 package com.kneelawk.wiredredstone.wirenet
 
 import com.google.common.collect.LinkedHashMultimap
+import com.kneelawk.wiredredstone.WRLog
 import com.kneelawk.wiredredstone.util.SidedPos
 import net.fabricmc.fabric.api.util.NbtType
 import net.minecraft.nbt.NbtCompound
@@ -58,6 +59,15 @@ class Network(val controller: WireNetworkController, val id: UUID) {
             serializedNodes += node.data.toTag(NbtCompound())
         }
         for (link in nodes.flatMap { it.connections }.distinct()) {
+            if (!n1.containsKey(link.first)) {
+                WRLog.warn("Attempted to save link with non-existent node: ${link.first}")
+                continue
+            }
+            if (!n1.containsKey(link.second)) {
+                WRLog.warn("Attempted to save link with non-existent node: ${link.second}")
+                continue
+            }
+
             val sLink = NbtCompound()
             sLink.putInt("first", n1.getValue(link.first))
             sLink.putInt("second", n1.getValue(link.second))
