@@ -1,6 +1,6 @@
 package com.kneelawk.wiredredstone.wirenet
 
-import com.google.common.collect.HashMultimap
+import com.google.common.collect.LinkedHashMultimap
 import com.kneelawk.wiredredstone.util.SidedPos
 import net.fabricmc.fabric.api.util.NbtType
 import net.minecraft.nbt.NbtCompound
@@ -47,7 +47,7 @@ class Network(val controller: WireNetworkController, val id: UUID) {
 
     private val graph = NetGraph()
 
-    private val nodesInPos = HashMultimap.create<BlockPos, NetNode>()
+    private val nodesInPos = LinkedHashMultimap.create<BlockPos, NetNode>()
 
     fun toTag(tag: NbtCompound): NbtCompound {
         val serializedNodes = mutableListOf<NbtCompound>()
@@ -70,10 +70,10 @@ class Network(val controller: WireNetworkController, val id: UUID) {
         return tag
     }
 
-    fun getNodesAt(pos: BlockPos) = nodesInPos[pos].toSet()
+    fun getNodesAt(pos: BlockPos): Sequence<NetNode> = nodesInPos[pos].asSequence()
 
-    fun getNodesAt(pos: SidedPos) =
-        nodesInPos[pos.pos].filter { it.data.ext is SidedPartExt && it.data.ext.side == pos.side }.toSet()
+    fun getNodesAt(pos: SidedPos): Sequence<NetNode> =
+        nodesInPos[pos.pos].asSequence().filter { it.data.ext is SidedPartExt && it.data.ext.side == pos.side }
 
     fun getNodes() = graph.nodes
 

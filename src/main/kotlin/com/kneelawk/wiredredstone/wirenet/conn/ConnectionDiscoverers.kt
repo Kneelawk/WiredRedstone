@@ -13,7 +13,7 @@ object ConnectionDiscoverers {
     val WIRE = connectionDiscoverer<ConnectablePartExt, Direction> {
         // wires in same block
         connectionRule {
-            forOutputs { Direction.values().filter { it.axis != self.data.ext.side.axis } }
+            forOutputs { Direction.values().asSequence().filter { it.axis != self.data.ext.side.axis } }
             connect {
                 findNode(pos, Constraint(ConnectablePartExt::class) { otherNode ->
                     val other = otherNode.data.ext
@@ -24,7 +24,7 @@ object ConnectionDiscoverers {
 
         // planar connections
         connectionRule {
-            forOutputs { Direction.values().filter { it.axis != self.data.ext.side.axis } }
+            forOutputs { Direction.values().asSequence().filter { it.axis != self.data.ext.side.axis } }
             connect {
                 val otherPos = pos.offset(output)
                 findNode(otherPos, Constraint(ConnectablePartExt::class) { otherNode ->
@@ -36,7 +36,7 @@ object ConnectionDiscoverers {
 
         // machine connections
         connectionRule {
-            forOutputs { Direction.values().filter { it != self.data.ext.side.opposite } }
+            forOutputs { Direction.values().asSequence().filter { it != self.data.ext.side.opposite } }
             connect {
                 findNode(pos.offset(output), Constraint(FullBlockPartExt::class))
             }
@@ -44,7 +44,7 @@ object ConnectionDiscoverers {
 
         // corner connections
         connectionRule {
-            forOutputs { Direction.values().filter { it.axis != self.data.ext.side.axis } }
+            forOutputs { Direction.values().asSequence().filter { it.axis != self.data.ext.side.axis } }
             connect {
                 val otherPos = pos.offset(output).offset(self.data.ext.side)
                 findNode(otherPos, Constraint(ConnectablePartExt::class) { otherNode ->
@@ -65,14 +65,14 @@ object ConnectionDiscoverers {
 
     val FULL_BLOCK = connectionDiscoverer<FullBlockPartExt, Edge> {
         connectionRule {
-            forOutputs { edges }
+            forOutputs { edges.asSequence() }
             connect {
                 findNode(pos.offset(output.side), Constraint(ConnectablePartExt::class) { it.data.ext.side == output.edge })
             }
         }
 
         connectionRule {
-            forOutputs { edges }
+            forOutputs { edges.asSequence() }
             connect {
                 findNode(
                     pos.offset(output.side), Constraint(FullBlockPartExt::class)
@@ -88,7 +88,7 @@ object ConnectionDiscoverers {
 
     private fun <E : PartExt, T> ConnectScope<E, T>.findNode(
         at: BlockPos, vararg constraints: Constraint<*>
-    ): List<NetNode> {
+    ): Sequence<NetNode> {
         return nv.getNodes(at).filter { node -> constraints.all { c -> c.matches(node) } }
     }
 }

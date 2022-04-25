@@ -30,7 +30,7 @@ import net.minecraft.util.math.BlockPos
  * sequence has been found.
  */
 interface ConnectionDiscoverer {
-    fun getPossibleConnections(self: NetNode, world: ServerWorld, pos: BlockPos, nv: NodeView): Set<Sequence<NetNode>>
+    fun getPossibleConnections(self: NetNode, world: ServerWorld, pos: BlockPos, nv: NodeView): Sequence<Sequence<NetNode>>
 }
 
 /**
@@ -81,7 +81,7 @@ fun <E : PartExt, T> connectionDiscoverer(op: ConnectionDiscovererScope<E, T>.()
 private class ConnectionDiscovererImpl<E : PartExt, T>(private val parts: List<ConnectionDiscovererPart<E, T>>) : ConnectionDiscoverer {
 
     @Suppress("unchecked_cast")
-    override fun getPossibleConnections(self: NetNode, world: ServerWorld, pos: BlockPos, nv: NodeView): Set<Sequence<NetNode>> {
+    override fun getPossibleConnections(self: NetNode, world: ServerWorld, pos: BlockPos, nv: NodeView): Sequence<Sequence<NetNode>> {
         self as TNetNode<E> // yep, this is unsafe, but if you pass the wrong type of NetNode here you're a dumbass
         val map = mutableMapOf<T, MutableList<ConnectionDiscovererPart<E, T>>>()
         for (part in parts) {
@@ -89,21 +89,17 @@ private class ConnectionDiscovererImpl<E : PartExt, T>(private val parts: List<C
                 map.computeIfAbsent(output) { mutableListOf() } += part
             }
         }
-        return map.keys.map { output ->
-            sequence {
-                for (part in map.getValue(output)) {
-                    part.tryConnect(output, self, world, pos, nv).forEach { yield(it) }
-                }
-            }
-        }.toSet()
+        return map.keys.asSequence().map { output ->
+            map.getValue(output).asSequence().flatMap { it.tryConnect(output, self, world, pos, nv) }
+        }
     }
 
 }
 
 private abstract class ConnectionDiscovererPart<E : PartExt, T> {
-    abstract fun getPotentialOutputs(self: TNetNode<E>, world: ServerWorld, pos: BlockPos): List<T>
+    abstract fun getPotentialOutputs(self: TNetNode<E>, world: ServerWorld, pos: BlockPos): Sequence<T>
 
-    abstract fun tryConnect(output: T, self: TNetNode<E>, world: ServerWorld, pos: BlockPos, nv: NodeView): List<NetNode>
+    abstract fun tryConnect(output: T, self: TNetNode<E>, world: ServerWorld, pos: BlockPos, nv: NodeView): Sequence<NetNode>
 }
 
 interface ConnectionDiscovererScope<E : PartExt, T> {
@@ -111,8 +107,8 @@ interface ConnectionDiscovererScope<E : PartExt, T> {
 }
 
 interface PartConfigScope<E : PartExt, T> {
-    fun forOutputs(op: OutputsScope<E>.() -> List<T>)
-    fun connect(op: ConnectScope<E, T>.() -> List<NetNode>)
+    fun forOutputs(op: OutputsScope<E>.() -> Sequence<T>)
+    fun connect(op: ConnectScope<E, T>.() -> Sequence<NetNode>)
 }
 
 interface OutputsScope<E : PartExt> {
@@ -135,24 +131,24 @@ private class ConnectionDiscovererScopeImpl<E : PartExt, T> : ConnectionDiscover
     override fun connectionRule(op: PartConfigScope<E, T>.() -> Unit) {
         val pcs = PartConfigScopeImpl<E, T>().also(op)
         parts += object : ConnectionDiscovererPart<E, T>() {
-            override fun getPotentialOutputs(self: TNetNode<E>, world: ServerWorld, pos: BlockPos): List<T> =
+            override fun getPotentialOutputs(self: TNetNode<E>, world: ServerWorld, pos: BlockPos): Sequence<T> =
                 pcs.forOutputs(OutputsScopeImpl(self, world, pos))
 
-            override fun tryConnect(output: T, self: TNetNode<E>, world: ServerWorld, pos: BlockPos, nv: NodeView): List<NetNode> =
+            override fun tryConnect(output: T, self: TNetNode<E>, world: ServerWorld, pos: BlockPos, nv: NodeView): Sequence<NetNode> =
                 pcs.connect(ConnectScopeImpl(output, self, world, pos, nv))
         }
     }
 }
 
 private class PartConfigScopeImpl<E : PartExt, T> : PartConfigScope<E, T> {
-    var forOutputs: OutputsScope<E>.() -> List<T> = { emptyList() }
-    var connect: ConnectScope<E, T>.() -> List<NetNode> = { emptyList() }
+    var forOutputs: OutputsScope<E>.() -> Sequence<T> = { emptySequence() }
+    var connect: ConnectScope<E, T>.() -> Sequence<NetNode> = { emptySequence() }
 
-    override fun forOutputs(op: OutputsScope<E>.() -> List<T>) {
+    override fun forOutputs(op: OutputsScope<E>.() -> Sequence<T>) {
         forOutputs = op
     }
 
-    override fun connect(op: ConnectScope<E, T>.() -> List<NetNode>) {
+    override fun connect(op: ConnectScope<E, T>.() -> Sequence<NetNode>) {
         connect = op
     }
 }

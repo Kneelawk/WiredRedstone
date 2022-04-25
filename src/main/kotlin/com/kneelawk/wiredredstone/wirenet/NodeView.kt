@@ -9,7 +9,7 @@ import net.minecraft.util.math.BlockPos
 class NodeView(world: ServerWorld) {
     private val wns = world.getWireNetworkState()
 
-    fun getNodes(pos: SidedPos): Set<NetNode> = wns.controller.getNodesAt(pos)
+    fun getNodes(pos: SidedPos): Sequence<NetNode> = wns.controller.getNodesAt(pos)
 
-    fun getNodes(pos: BlockPos): Set<NetNode> = wns.controller.getNodesAt(pos)
+    fun getNodes(pos: BlockPos): Sequence<NetNode> = wns.controller.getNodesAt(pos)
 }
