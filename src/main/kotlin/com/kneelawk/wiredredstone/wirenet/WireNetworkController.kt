@@ -1,7 +1,7 @@
 package com.kneelawk.wiredredstone.wirenet
 
 import alexiil.mc.lib.multipart.api.MultipartUtil
-import com.google.common.collect.HashMultimap
+import com.google.common.collect.LinkedHashMultimap
 import com.kneelawk.wiredredstone.util.SidedPos
 import net.fabricmc.fabric.api.util.NbtType
 import net.minecraft.nbt.NbtCompound
@@ -30,7 +30,7 @@ class WireNetworkController(val world: ServerWorld, val changeListener: () -> Un
     }
 
     private val networks = mutableMapOf<UUID, Network>()
-    val networksInPos = HashMultimap.create<BlockPos, Network>()
+    val networksInPos = LinkedHashMultimap.create<BlockPos, Network>()
     val nodesToNetworks = mutableMapOf<NetNode, UUID>()
 
     private var changed = setOf<NetNode>()
@@ -43,12 +43,12 @@ class WireNetworkController(val world: ServerWorld, val changeListener: () -> Un
         return tag
     }
 
-    fun getNodesAt(pos: BlockPos): Set<NetNode> {
-        return networksInPos[pos].flatMap { net -> net.getNodesAt(pos) }.toSet()
+    fun getNodesAt(pos: BlockPos): Sequence<NetNode> {
+        return networksInPos[pos].asSequence().flatMap { net -> net.getNodesAt(pos) }.distinct()
     }
 
-    fun getNodesAt(pos: SidedPos): Set<NetNode> {
-        return networksInPos[pos.pos].flatMap { net -> net.getNodesAt(pos) }.toSet()
+    fun getNodesAt(pos: SidedPos): Sequence<NetNode> {
+        return networksInPos[pos.pos].asSequence().flatMap { net -> net.getNodesAt(pos) }.distinct()
     }
 
     fun getNetworksAt(pos: BlockPos): Set<Network> {
@@ -60,16 +60,22 @@ class WireNetworkController(val world: ServerWorld, val changeListener: () -> Un
         val toRebuild = networks.takeIf { it.isNotEmpty() }?.map { Pair(it, this.networks[it]) }
             ?: this.networks.entries.map { Pair(it.key, it.value) }
 
+        val toRemove = mutableListOf<Pair<BlockPos, Network>>()
+
         for ((id, net) in toRebuild) {
-            for ((pos, netInPos) in networksInPos.entries().toSet()) {
-                if (netInPos.id == id) networksInPos.remove(pos, netInPos)
+            for ((pos, netInPos) in networksInPos.entries()) {
+                if (netInPos.id == id) toRemove.add(Pair(pos, netInPos))
             }
+            for ((pos, netInPos) in toRemove) {
+                networksInPos.remove(pos, netInPos)
+            }
+            toRemove.clear()
 
             nodesToNetworks -= nodesToNetworks.filterValues { it == id }.keys
 
             if (net != null) {
                 net.rebuildRefs()
-                net.getNodes().onEach { nodesToNetworks[it] = net.id }.map { it.data.pos }.toSet()
+                net.getNodes().onEach { nodesToNetworks[it] = net.id }.map { it.data.pos }
                     .forEach { networksInPos.put(it, net) }
             }
         }
@@ -127,7 +133,7 @@ class WireNetworkController(val world: ServerWorld, val changeListener: () -> Un
         val new = worldExts.toMutableSet()
 
         for (net in networksInPos[pos].toSet()) {
-            for (node in net.getNodesAt(pos)) {
+            for (node in net.getNodesAt(pos).toList()) {
                 if (node.data.ext !in worldExts) {
                     net.destroyNode(node)
                 }
@@ -138,15 +144,15 @@ class WireNetworkController(val world: ServerWorld, val changeListener: () -> Un
         for (ext in new) {
             val net = createNetwork()
             val node = net.createNode(pos, ext)
-            updateNodeConnections(world, node)
+            updateNodeConnections(world, node, true)
         }
     }
 
     fun updateConnections(world: ServerWorld, pos: SidedPos) {
-        getNodesAt(pos).forEach { updateNodeConnections(world, it) }
+        getNodesAt(pos).toList().forEach { updateNodeConnections(world, it, false) }
     }
 
-    fun updateNodeConnections(world: ServerWorld, node: NetNode) {
+    private fun updateNodeConnections(world: ServerWorld, node: NetNode, forceRebuild: Boolean) {
         changeListener()
         val nodeNetId = getNetIdForNode(node)
 
@@ -175,7 +181,10 @@ class WireNetworkController(val world: ServerWorld, val changeListener: () -> Un
 
         net.split().forEach { rebuildRefs(it.id) }
         if (net.getNodes().isEmpty()) destroyNetwork(net.id)
-        rebuildRefs(net.id)
+        if (forceRebuild || newConnections.isNotEmpty() || removedConnections.isNotEmpty()) {
+            // This is expensive, so I want to avoid it if at all possible
+            rebuildRefs(net.id)
+        }
     }
 
     fun getNetIdForNode(node: NetNode) = nodesToNetworks.getValue(node)

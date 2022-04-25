@@ -20,9 +20,9 @@ abstract class AbstractConnectablePart : AbstractSidedPart, ConnectablePart, Red
         private val NET_PARENT: ParentNetIdSingle<AbstractConnectablePart> =
             NET_ID.subType(AbstractConnectablePart::class.java, str("abstract_wire_part"))
 
-        private val NET_REDRAW: NetIdSignalK<AbstractConnectablePart> =
-            NET_PARENT.idSignal("redraw").toClientOnly().setRecv {
-                redraw()
+        private val NET_RECALCULATE_SHAPE: NetIdSignalK<AbstractConnectablePart> =
+            NET_PARENT.idSignal("recalculate_shape").toClientOnly().setRecv {
+                recalculateShape()
             }
     }
 
@@ -76,12 +76,22 @@ abstract class AbstractConnectablePart : AbstractSidedPart, ConnectablePart, Red
         // Sometimes this gets called after a part has already been removed
         if (isRemoved()) return
 
-        if (isClientSide()) {
-            redrawIfChanged()
-        } else {
+        if (!isClientSide()) {
             sendNetworkUpdate(this, NET_RENDER_DATA)
-            sendNetworkUpdate(this, NET_REDRAW)
         }
+
+        // handles sending redraw packets to the client
+        redrawIfChanged()
+    }
+
+    override fun recalculateShape() {
+        // Want to make sure nothing bad happens if this is called after this part has already been removed.
+        if (isRemoved()) return
+
+        if (!isClientSide()) {
+            sendNetworkUpdate(this, NET_RECALCULATE_SHAPE)
+        }
+
         holder.container.recalculateShape()
     }
 

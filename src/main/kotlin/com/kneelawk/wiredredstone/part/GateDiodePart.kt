@@ -157,7 +157,7 @@ class GateDiodePart : AbstractRotatedPart {
 
     private fun getRedstoneOutputPower(powerSide: Direction): Int {
         val edge = RotationUtils.rotatedDirection(side, direction)
-        return if (RedstoneLogic.wiresGivePower && powerSide == edge) getTotalOutputPower() else 0
+        return if (RedstoneLogic.wiresGivePower && powerSide == edge) outputPower else 0
     }
 
     fun getTotalOutputPower(): Int {
@@ -224,8 +224,8 @@ class GateDiodePart : AbstractRotatedPart {
         redraw()
         getBlockEntity().markDirty()
 
-        val edge = RotationUtils.rotatedDirection(side, direction)
-        WorldUtils.strongUpdateNeighbors(getWorld(), getPos(), edge)
+//        val edge = RotationUtils.rotatedDirection(side, direction)
+//        WorldUtils.strongUpdateNeighbors(getWorld(), getPos(), edge)
     }
 
     fun updateInputPower(power: Int) {

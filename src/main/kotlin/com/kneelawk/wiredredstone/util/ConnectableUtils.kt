@@ -17,21 +17,6 @@ import net.minecraft.util.shape.VoxelShape
 import net.minecraft.world.BlockView
 
 object ConnectableUtils {
-    data class Connection(val edge: Direction, val type: ConnectionType) {
-        fun setForSide(side: Direction, connections: UByte, blockage: UByte = BlockageUtils.UNBLOCKED): UByte {
-            val cardinal = RotationUtils.unrotatedDirection(side, edge)
-            if (!DirectionUtils.isHorizontal(cardinal) || BlockageUtils.isBlocked(blockage, cardinal)) {
-                // A blockage or a vertical connection means we shouldn't set anything
-                return connections
-            }
-
-            return when (type) {
-                ConnectionType.INTERNAL -> ConnectionUtils.setInternal(connections, cardinal)
-                ConnectionType.EXTERNAL -> ConnectionUtils.setExternal(connections, cardinal)
-                ConnectionType.CORNER -> ConnectionUtils.setCorner(connections, cardinal)
-            }
-        }
-    }
 
     /**
      * Updates both the connections and the blockage of the LMP part and asks it to update the client.
@@ -76,27 +61,91 @@ object ConnectableUtils {
         val side = part.side
         val pos = part.getSidedPos()
 
-        val nodes1 = net.getNodesAt(pos).filter { it.data.ext is ConnectablePartExt }
-            // The flatMap here causes entire parts to visually connect, even if only one of their network-nodes is
-            // actually connected.
-            .flatMap { node ->
-                node.connections.mapNotNull { link ->
+        val connections = net.getNodesAt(pos).filter { it.data.ext is ConnectablePartExt }
+            // The fold here causes entire parts to visually connect, even if only one of their network-nodes is
+            // actually connected. The first byte represents the actual connection value. The second byte keeps track of
+            // if this edge has already tried to connect in a different connection.
+            .fold(Pair(0u.toUByte(), 0u.toUByte())) { connections, node ->
+                var newConn = connections
+                node.connections.forEach { link ->
                     val other = link.other(node)
                     if (node.data.pos == other.data.pos && other.data.ext is SidedPartExt) {
-                        Connection(other.data.ext.side, ConnectionType.INTERNAL)
+                        newConn = setSingularConnection(
+                            newConn, blockage, side, other.data.ext.side, ConnectionUtils::setInternal,
+                            ConnectionUtils::isInternal
+                        )
                     } else {
-                        other.data.pos.subtract(node.data.pos.offset(side)).let { Direction.fromVector(it) }
-                            ?.let { Connection(it, ConnectionType.CORNER) } ?: other.data.pos.subtract(node.data.pos)
-                            .let { Direction.fromVector(it) }?.let { Connection(it, ConnectionType.EXTERNAL) }
+                        val cornerEdge = other.data.pos.subtract(node.data.pos.offset(side)).let(Direction::fromVector)
+                        if (cornerEdge != null) {
+                            newConn = setSingularConnection(
+                                newConn, blockage, side, cornerEdge, ConnectionUtils::setCorner,
+                                ConnectionUtils::isCorner
+                            )
+                        } else {
+                            other.data.pos.subtract(node.data.pos).let(Direction::fromVector)?.let {
+                                newConn = setSingularConnection(
+                                    newConn, blockage, side, it, ConnectionUtils::setExternal,
+                                    ConnectionUtils::isExternal
+                                )
+                            }
+                        }
                     }
                 }
-            }.groupBy { it.edge }.mapNotNull { (_, v) -> v.distinct().singleOrNull() }
+                newConn
+            }
 
-        val connections = nodes1.fold(0u.toUByte()) { current, new -> new.setForSide(side, current, blockage) }
-        val newConnections = part.overrideConnections(connections)
+        val newConnections = part.overrideConnections(connections.first)
 
         part.updateConnections(newConnections)
-        (part as? RedrawablePart)?.redraw()
+        (part as? RedrawablePart)?.let {
+            it.redraw()
+            it.recalculateShape()
+        }
+    }
+
+    private inline fun setSingularConnection(
+        connections: Pair<UByte, UByte>, blockage: UByte, side: Direction, edge: Direction,
+        set: (UByte, Direction) -> UByte, test: (UByte, Direction) -> Boolean
+    ): Pair<UByte, UByte> {
+        val cardinal = RotationUtils.unrotatedDirection(side, edge)
+
+        if (!DirectionUtils.isHorizontal(cardinal) || BlockageUtils.isBlocked(blockage, cardinal)) {
+            return connections
+        }
+
+        return if (!ConnectionUtils.isDisconnected(connections.second, cardinal) && !test(
+                connections.second, cardinal
+            )
+        ) {
+            Pair(ConnectionUtils.setDisconnected(connections.first, cardinal), connections.second)
+        } else {
+            Pair(set(connections.first, cardinal), set(connections.second, cardinal))
+        }
+    }
+
+    fun shouldUpdateConnectionsForNeighborUpdate(
+        shapeCache: MutableMap<Direction, VoxelShape>, world: ServerWorld, yourPos: BlockPos, otherPos: BlockPos
+    ): Boolean {
+        val direction = Direction.fromVector(otherPos.subtract(yourPos))
+        return if (direction != null) {
+            val previousShape = shapeCache[direction]
+            val state = world.getBlockState(otherPos)
+            val curShape = state.getOutlineShape(world, otherPos)
+
+            if (previousShape != null) {
+                // Identity checking here is about the best we can do if we want to be fast. This works because most
+                // blocks re-use the same VoxelShape objects if they want to keep their shapes.
+                if (previousShape !== curShape) {
+                    shapeCache[direction] = curShape
+                    true
+                } else false
+            } else {
+                shapeCache[direction] = curShape
+                true
+            }
+        } else {
+            true
+        }
     }
 
     /**
