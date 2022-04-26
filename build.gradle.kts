@@ -1,8 +1,11 @@
+import com.modrinth.minotaur.dependencies.ModDependency
+
 plugins {
     id("fabric-loom")
     val kotlinVersion: String by System.getProperties()
     kotlin("jvm").version(kotlinVersion)
     id("io.github.juuxel.loom-quiltflower")
+    id("com.modrinth.minotaur")
 }
 
 base {
@@ -108,4 +111,32 @@ tasks {
         targetCompatibility = javaVersion
         withSourcesJar()
     }
+}
+
+modrinth {
+    val commaRegex = Regex("\\s*,\\s*")
+    token.set(System.getenv("MODRINTH_TOKEN"))
+    val mrProjectId: String by project
+    projectId.set(mrProjectId)
+    versionNumber.set(modVersion)
+    val mrVersionType: String by project
+    versionType.set(mrVersionType)
+    val changelogFile = file("changelogs/changelog-v$modVersion.md")
+    if (changelogFile.exists()) {
+        changelog.set(changelogFile.readText())
+    }
+    uploadFile.set(tasks.remapJar.get())
+    additionalFiles.set(listOf(tasks.getByName("sourcesJar")))
+    val mrGameVersions: String by project
+    gameVersions.set(mrGameVersions.split(commaRegex))
+    val mrLoaders: String by project
+    loaders.set(mrLoaders.split(commaRegex))
+    val fabricApiMrProjectId: String by project
+    val fabricLangKotlinMrProjectId: String by project
+    dependencies.set(
+        listOf(
+            ModDependency(fabricApiMrProjectId, "required"),
+            ModDependency(fabricLangKotlinMrProjectId, "required")
+        )
+    )
 }

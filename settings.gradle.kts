@@ -7,11 +7,13 @@ pluginManagement {
     }
     plugins {
         val loomVersion: String by settings
-        id("fabric-loom").version(loomVersion)
+        id("fabric-loom") version loomVersion
         val kotlinVersion: String by System.getProperties()
-        kotlin("jvm").version(kotlinVersion)
+        kotlin("jvm") version kotlinVersion
         val loomQuiltflowerVersion: String by settings
-        id("io.github.juuxel.loom-quiltflower").version(loomQuiltflowerVersion)
+        id("io.github.juuxel.loom-quiltflower") version loomQuiltflowerVersion
+        val minotaurVersion: String by settings
+        id("com.modrinth.minotaur") version minotaurVersion
     }
 }
 

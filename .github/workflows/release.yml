@@ -9,6 +9,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Get Tag Version
+        uses: dawidd6/action-get-tag@v1
+        id: tag_version
       - name: Checkout
         uses: actions/checkout@v2
       - name: Setup JDK 17
@@ -22,6 +25,11 @@ jobs:
       - name: Github Release
         uses: softprops/action-gh-release@v1
         with:
+          body_path: changelogs/changelog-${{ steps.tag_version.outputs.tag }}.md
           files: build/libs/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Modrinth Release
+        run: ./gradlew modrinth modrinthSyncBody
+        env:
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
