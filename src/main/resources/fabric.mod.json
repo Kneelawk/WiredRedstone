@@ -14,7 +14,7 @@
     "sources": "https://github.com/Kneelawk/WiredRedstone"
   },
   "license": "MIT",
-  "icon": "assets/wiredredstone/icon.png",
+  "icon": "assets/wiredredstone/icon-128.png",
   "environment": "*",
   "entrypoints": {
     "main": [
