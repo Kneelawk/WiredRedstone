@@ -144,15 +144,15 @@ class WireNetworkController(val world: ServerWorld, val changeListener: () -> Un
         for (ext in new) {
             val net = createNetwork()
             val node = net.createNode(pos, ext)
-            updateNodeConnections(world, node, true)
+            updateNodeConnections(world, node)
         }
     }
 
     fun updateConnections(world: ServerWorld, pos: SidedPos) {
-        getNodesAt(pos).toList().forEach { updateNodeConnections(world, it, false) }
+        getNodesAt(pos).toList().forEach { updateNodeConnections(world, it) }
     }
 
-    private fun updateNodeConnections(world: ServerWorld, node: NetNode, forceRebuild: Boolean) {
+    private fun updateNodeConnections(world: ServerWorld, node: NetNode) {
         changeListener()
         val nodeNetId = getNetIdForNode(node)
 
@@ -175,14 +175,13 @@ class WireNetworkController(val world: ServerWorld, val changeListener: () -> Un
 
         val net = networks.getValue(nodeNetId)
         for (other in removedConnections) {
-
             net.unlink(node, other)
         }
 
-        net.split().forEach { rebuildRefs(it.id) }
-        if (net.getNodes().isEmpty()) destroyNetwork(net.id)
-        if (forceRebuild || newConnections.isNotEmpty() || removedConnections.isNotEmpty()) {
+        if (removedConnections.isNotEmpty()) {
             // This is expensive, so I want to avoid it if at all possible
+            net.split().forEach { rebuildRefs(it.id) }
+            if (net.getNodes().isEmpty()) destroyNetwork(net.id)
             rebuildRefs(net.id)
         }
     }

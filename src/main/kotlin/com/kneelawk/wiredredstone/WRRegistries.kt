@@ -7,20 +7,14 @@ import net.minecraft.util.registry.RegistryKey
 import net.minecraft.util.registry.SimpleRegistry
 
 object WRRegistries {
-    val EXT_PART_TYPE_IDENTIFIER = WRConstants.id("ext_part_type")
-
-    val EXT_PART_TYPE_KEY: RegistryKey<Registry<PartExtType>> by lazy {
-        RegistryKey.ofRegistry(EXT_PART_TYPE_IDENTIFIER)
-    }
+    private val EXT_PART_TYPE_IDENTIFIER = WRConstants.id("ext_part_type")
+    private val EXT_PART_TYPE_KEY: RegistryKey<Registry<PartExtType>> = RegistryKey.ofRegistry(EXT_PART_TYPE_IDENTIFIER)
 
     @JvmStatic
-    lateinit var EXT_PART_TYPE: Registry<PartExtType>
+    val EXT_PART_TYPE = SimpleRegistry(EXT_PART_TYPE_KEY, Lifecycle.experimental(), null)
 
     @Suppress("unchecked_cast")
     fun init() {
-        EXT_PART_TYPE = Registry.register(
-            Registry.REGISTRIES as Registry<Registry<*>>, EXT_PART_TYPE_IDENTIFIER,
-            SimpleRegistry(EXT_PART_TYPE_KEY, Lifecycle.experimental(), null)
-        )
+        Registry.register(Registry.REGISTRIES as Registry<Registry<*>>, EXT_PART_TYPE_IDENTIFIER, EXT_PART_TYPE)
     }
 }
