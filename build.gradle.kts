@@ -139,4 +139,5 @@ modrinth {
             ModDependency(fabricLangKotlinMrProjectId, "required")
         )
     )
+    syncBodyFrom.set(rootProject.file("README.md").readText())
 }
