@@ -1,7 +1,8 @@
-![Wired Redstone Logo](https://raw.githubusercontent.com/Kneelawk/WiredRedstone/main/src/main/resources/assets/wiredredstone/icon-256.png)
-
-# Wired Redstone
-Adds redstone wires and stuff
+<center>
+<p align="center"><img src="https://raw.githubusercontent.com/Kneelawk/WiredRedstone/main/src/main/resources/assets/wiredredstone/icon-256.png" alt="Logo" width="200"></p>
+<h1 align="center">Wired Redstone</h1>
+<h3 align="center">Adds redstone wires and stuff</h3>
+</center>
 
 ## Pre-Alpha
 This project is currently in pre-alpha. Expect bugs, missing items, and sometimes needing to use a command to fix things.
