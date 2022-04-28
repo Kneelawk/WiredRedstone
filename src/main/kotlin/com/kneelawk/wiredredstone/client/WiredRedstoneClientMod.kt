@@ -1,6 +1,7 @@
 package com.kneelawk.wiredredstone.client
 
 import com.kneelawk.wiredredstone.client.render.WRModels
+import com.kneelawk.wiredredstone.client.render.WROutlineRenderer
 import com.kneelawk.wiredredstone.client.render.WRSprites
 import com.kneelawk.wiredredstone.client.render.part.WRPartRenderers
 
@@ -9,4 +10,5 @@ fun init() {
     WRSprites.init()
     WRModels.init()
     WRPartRenderers.init()
+    WROutlineRenderer.register()
 }

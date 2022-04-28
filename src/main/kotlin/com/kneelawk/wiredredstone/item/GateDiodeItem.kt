@@ -10,7 +10,7 @@ import net.minecraft.item.ItemUsageContext
 import net.minecraft.util.ActionResult
 import net.minecraft.util.math.Direction
 
-class GateDiodeItem(settings: Settings) : Item(settings) {
+class GateDiodeItem(settings: Settings) : Item(settings), GateItem {
     override fun useOnBlock(context: ItemUsageContext): ActionResult {
         val world = context.world
         if (world.isClient) {
