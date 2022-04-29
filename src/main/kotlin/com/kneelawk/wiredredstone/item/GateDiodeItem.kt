@@ -1,9 +1,12 @@
 package com.kneelawk.wiredredstone.item
 
+import alexiil.mc.lib.multipart.api.MultipartContainer
 import alexiil.mc.lib.multipart.api.MultipartHolder
 import com.kneelawk.wiredredstone.part.GateDiodePart
 import com.kneelawk.wiredredstone.part.WRParts
 import com.kneelawk.wiredredstone.util.PlacementUtils
+import net.fabricmc.api.EnvType
+import net.fabricmc.api.Environment
 import net.minecraft.block.Blocks
 import net.minecraft.item.Item
 import net.minecraft.item.ItemUsageContext
@@ -22,6 +25,11 @@ class GateDiodeItem(settings: Settings) : Item(settings), GateItem {
         PlacementUtils.finishPlacement(context, offer, Blocks.REPEATER.defaultState)
 
         return ActionResult.SUCCESS
+    }
+
+    @Environment(EnvType.CLIENT)
+    override fun getOfferForPlacementGhost(context: ItemUsageContext): MultipartContainer.PartOffer? {
+        return PlacementUtils.tryPlaceGate(context, ::creator)
     }
 
     private fun creator(side: Direction, direction: Direction): (MultipartHolder) -> GateDiodePart {

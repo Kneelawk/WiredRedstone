@@ -22,7 +22,7 @@ object WROutlineRenderer {
 
     private data class Line(val start: Vec3f, val end: Vec3f)
 
-    fun register() {
+    fun init() {
         WorldRenderEvents.BLOCK_OUTLINE.register(::handleOutline)
     }
 

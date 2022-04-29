@@ -1,9 +1,14 @@
 {
   "required": true,
-  "package": "com.kneelawk.wiredredstone.mixins",
+  "package": "com.kneelawk.wiredredstone.mixin.impl",
   "compatibilityLevel": "JAVA_17",
   "injectors": {
     "defaultRequire": 1
   },
+  "client": [
+    "IdentifierMixin",
+    "RenderLayerAccessor",
+    "RenderPhaseAccessor"
+  ],
   "mixins": []
 }

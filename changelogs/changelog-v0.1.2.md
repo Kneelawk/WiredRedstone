@@ -2,3 +2,4 @@
 
 Changes:
  * Adds gate placement outlines.
+ * Adds gate placement ghosts.

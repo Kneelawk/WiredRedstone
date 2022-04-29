@@ -26,7 +26,7 @@ object GateDiodePartBaker : WRPartBaker<GateDiodePartKey> {
         cache.invalidateAll()
     }
 
-    private fun makeMesh(key: GateDiodePartKey): Mesh {
+    override fun makeMesh(key: GateDiodePartKey): Mesh {
         val outputWireSpriteId =
             if (key.outputPowered) WRSprites.RED_ALLOY_WIRE_POWERED_ID else WRSprites.RED_ALLOY_WIRE_UNPOWERED_ID
         val inputWireSpriteId =

@@ -16,6 +16,7 @@ import kotlin.reflect.KClass
 
 object WRPartRenderers {
     private val BAKERS = mutableListOf<PartBaker<*>>()
+    private val BAKER_MAP = mutableMapOf<KClass<out PartModelKey>, WRPartBaker<*>>()
 
     @Suppress("UNCHECKED_CAST")
     fun init() {
@@ -25,8 +26,8 @@ object WRPartRenderers {
         register(GateDiodePartBaker, GateDiodePartKey::class)
 
         PartStaticModelRegisterEvent.EVENT.register { event: PartStaticModelRegisterEvent.StaticModelRenderer ->
-            for (baker in BAKERS) {
-                event.register(baker.clazz.java as Class<PartModelKey>, baker.baker as WRPartBaker<PartModelKey>)
+            for ((baker, clazz) in BAKERS) {
+                event.register(clazz.java as Class<PartModelKey>, baker as WRPartBaker<PartModelKey>)
             }
         }
 
@@ -44,9 +45,15 @@ object WRPartRenderers {
 
     fun <K : PartModelKey> register(baker: WRPartBaker<K>, clazz: KClass<K>) {
         BAKERS.add(PartBaker(baker, clazz))
+        BAKER_MAP[clazz] = baker
     }
 
     fun bakers(): Sequence<WRPartBaker<*>> = BAKERS.asSequence().map { it.baker }
+
+    @Suppress("UNCHECKED_CAST")
+    fun <K : PartModelKey> bakerFor(clazz: KClass<out K>): WRPartBaker<K> {
+        return BAKER_MAP[clazz] as WRPartBaker<K>
+    }
 
     private data class PartBaker<K : PartModelKey>(val baker: WRPartBaker<K>, val clazz: KClass<K>)
 }

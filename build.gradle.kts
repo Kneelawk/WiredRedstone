@@ -18,6 +18,10 @@ version = modVersion
 val mavenGroup: String by project
 group = mavenGroup
 
+loom {
+    accessWidenerPath.set(file("src/main/resources/wiredredstone.accesswidener"))
+}
+
 repositories {
     maven("https://mod-buildcraft.com/maven") { name = "BuildCraft" }
     maven("https://maven.terraformersmc.com/releases/") { name = "TerraformersMC" }

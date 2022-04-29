@@ -1,0 +1,9 @@
+accessWidener   v1      named
+
+# RenderLayer access wideners
+accessible      class   net/minecraft/client/render/RenderLayer$MultiPhase
+accessible      class   net/minecraft/client/render/RenderLayer$MultiPhaseParameters
+accessible      class   net/minecraft/client/render/RenderPhase$Shader
+accessible      class   net/minecraft/client/render/RenderPhase$Texture
+accessible      class   net/minecraft/client/render/RenderPhase$TextureBase
+accessible      class   net/minecraft/client/render/RenderPhase$Transparency

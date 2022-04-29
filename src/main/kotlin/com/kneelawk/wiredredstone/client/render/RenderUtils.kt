@@ -5,13 +5,17 @@ import com.kneelawk.wiredredstone.util.threadLocal
 import net.fabricmc.fabric.api.client.model.BakedModelManagerHelper
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial
+import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView
 import net.minecraft.client.MinecraftClient
+import net.minecraft.client.render.OverlayTexture
+import net.minecraft.client.render.VertexConsumer
 import net.minecraft.client.render.model.BakedModel
 import net.minecraft.client.texture.Sprite
 import net.minecraft.client.texture.SpriteAtlasTexture
+import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Vec3f
@@ -47,6 +51,22 @@ object RenderUtils {
         for (quad in quads) {
             to.fromVanilla(quad, material, null)
             to.emit()
+        }
+    }
+
+    fun renderMesh(stack: MatrixStack, consumer: VertexConsumer, mesh: Mesh) {
+        val matrix4f = stack.peek().positionMatrix
+        val matrix3f = stack.peek().normalMatrix
+        mesh.forEach { quad ->
+            for (i in 0 until 4) {
+                consumer.vertex(matrix4f, quad.x(i), quad.y(i), quad.z(i))
+                    .color(quad.spriteColor(i, 0))
+                    .texture(quad.spriteU(i, 0), quad.spriteV(i, 0))
+                    .overlay(OverlayTexture.DEFAULT_UV)
+                    .light(quad.lightmap(i))
+                    .normal(matrix3f, quad.normalX(i), quad.normalY(i), quad.normalZ(i))
+                    .next()
+            }
         }
     }
 

@@ -21,7 +21,7 @@ object BundledCablePartBaker : WRPartBaker<BundledCablePartKey> {
         cache.invalidateAll()
     }
 
-    private fun makeMesh(key: BundledCablePartKey): Mesh {
+    override fun makeMesh(key: BundledCablePartKey): Mesh {
         val builder = RenderUtils.MESH_BUILDER
         val emitter = TransformingQuadEmitter.Single(builder.emitter, SideQuadTransform(key.side))
 

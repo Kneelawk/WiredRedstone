@@ -1,14 +1,15 @@
 package com.kneelawk.wiredredstone.client
 
-import com.kneelawk.wiredredstone.client.render.WRModels
-import com.kneelawk.wiredredstone.client.render.WROutlineRenderer
-import com.kneelawk.wiredredstone.client.render.WRSprites
+import com.kneelawk.wiredredstone.client.render.*
 import com.kneelawk.wiredredstone.client.render.part.WRPartRenderers
 
 @Suppress("unused")
 fun init() {
+    WRMatrixFixer.init()
+    WRShaders.init()
     WRSprites.init()
     WRModels.init()
     WRPartRenderers.init()
-    WROutlineRenderer.register()
+    WROutlineRenderer.init()
+    WRGhostRenderer.init()
 }
