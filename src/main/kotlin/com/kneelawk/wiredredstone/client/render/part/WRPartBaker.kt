@@ -8,7 +8,7 @@ import net.minecraft.util.Identifier
 import java.util.function.Consumer
 
 interface WRPartBaker<K : PartModelKey> : PartModelBaker<K> {
-    fun makeMesh(key: K): Mesh
+    fun getMeshForPlacementGhost(key: K): Mesh? = null
 
     fun registerModels(out: Consumer<Identifier>) {}
 

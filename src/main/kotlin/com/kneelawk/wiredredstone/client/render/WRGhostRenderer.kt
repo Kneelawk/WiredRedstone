@@ -47,8 +47,11 @@ object WRGhostRenderer : VertexConsumerProvider {
                         val context = ItemUsageContext(player, hand, target)
                         val offer = item.getOfferForPlacementGhost(context)
                         if (offer != null) {
-                            val key = offer.holder.part.modelKey
-                            if (key != null) {
+                            val mesh = offer.holder.part.modelKey?.let { key ->
+                                WRPartRenderers.bakerFor(key::class).getMeshForPlacementGhost(key)
+                            }
+
+                            if (mesh != null) {
                                 val pos = offer.holder.container.multipartPos
                                 val cameraPos = camera.pos
                                 val x = pos.x - cameraPos.x
@@ -56,7 +59,6 @@ object WRGhostRenderer : VertexConsumerProvider {
                                 val z = pos.z - cameraPos.z
                                 matrices.push()
                                 matrices.translate(x, y, z)
-                                val mesh = WRPartRenderers.bakerFor(key::class).makeMesh(key)
                                 val consumer = getBuffer(WRRenderLayers.GATE_PLACEMENT)
                                 RenderUtils.renderMesh(matrices, consumer, mesh)
                                 matrices.pop()

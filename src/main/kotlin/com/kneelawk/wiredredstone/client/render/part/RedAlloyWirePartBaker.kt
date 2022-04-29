@@ -16,7 +16,7 @@ object RedAlloyWirePartBaker : WRPartBaker<RedAlloyWirePartKey> {
         cache.invalidateAll()
     }
 
-    override fun makeMesh(key: RedAlloyWirePartKey): Mesh {
+    private fun makeMesh(key: RedAlloyWirePartKey): Mesh {
         val spriteId = if (key.powered) {
             WRSprites.RED_ALLOY_WIRE_POWERED_ID
         } else {

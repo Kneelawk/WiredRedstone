@@ -26,7 +26,7 @@ object GateDiodePartBaker : WRPartBaker<GateDiodePartKey> {
         cache.invalidateAll()
     }
 
-    override fun makeMesh(key: GateDiodePartKey): Mesh {
+    private fun makeMesh(key: GateDiodePartKey): Mesh {
         val outputWireSpriteId =
             if (key.outputPowered) WRSprites.RED_ALLOY_WIRE_POWERED_ID else WRSprites.RED_ALLOY_WIRE_UNPOWERED_ID
         val inputWireSpriteId =
@@ -68,6 +68,10 @@ object GateDiodePartBaker : WRPartBaker<GateDiodePartKey> {
 
     override fun emitQuads(key: GateDiodePartKey, ctx: PartRenderContext) {
         ctx.meshConsumer().accept(cache[key])
+    }
+
+    override fun getMeshForPlacementGhost(key: GateDiodePartKey): Mesh? {
+        return cache[key]
     }
 
     override fun registerModels(out: Consumer<Identifier>) {

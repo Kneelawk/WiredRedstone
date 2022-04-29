@@ -21,7 +21,7 @@ object InsulatedWirePartBaker : WRPartBaker<InsulatedWirePartKey> {
         cache.invalidateAll()
     }
 
-    override fun makeMesh(key: InsulatedWirePartKey): Mesh {
+    private fun makeMesh(key: InsulatedWirePartKey): Mesh {
         val builder = RenderUtils.MESH_BUILDER
         val emitter = TransformingQuadEmitter.Single(builder.emitter, SideQuadTransform(key.side))
 
