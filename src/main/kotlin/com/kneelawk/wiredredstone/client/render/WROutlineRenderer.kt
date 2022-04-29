@@ -8,7 +8,10 @@ import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.util.Hand
 import net.minecraft.util.hit.BlockHitResult
-import net.minecraft.util.math.*
+import net.minecraft.util.math.Direction
+import net.minecraft.util.math.MathHelper
+import net.minecraft.util.math.Vec3f
+import net.minecraft.util.math.Vector4f
 
 object WROutlineRenderer {
     private val PLACEMENT_OUTLINE = arrayOf(
@@ -90,30 +93,49 @@ object WROutlineRenderer {
         val blockPos = outlineCtx.blockPos()
         val hitPos = target.pos
         when (target.side!!) {
-            Direction.DOWN -> translate(
-                stack, Vec3d(blockPos.x.toDouble(), hitPos.y, blockPos.z.toDouble()), outlineCtx
-            )
-            Direction.UP -> translate(
-                stack, Vec3d(blockPos.x.toDouble(), hitPos.y - 1.0, blockPos.z.toDouble()), outlineCtx
-            )
-            Direction.NORTH -> translate(
-                stack, Vec3d(blockPos.x.toDouble(), blockPos.y.toDouble(), hitPos.z), outlineCtx
-            )
-            Direction.SOUTH -> translate(
-                stack, Vec3d(blockPos.x.toDouble(), blockPos.y.toDouble(), hitPos.z - 1.0), outlineCtx
-            )
-            Direction.WEST -> translate(
-                stack, Vec3d(hitPos.x, blockPos.y.toDouble(), blockPos.z.toDouble()), outlineCtx
-            )
-            Direction.EAST -> translate(
-                stack, Vec3d(hitPos.x - 1.0, blockPos.y.toDouble(), blockPos.z.toDouble()), outlineCtx
-            )
+            Direction.DOWN -> {
+                stack.translate(
+                    blockPos.x.toDouble() - outlineCtx.cameraX(),
+                    hitPos.y - outlineCtx.cameraY(),
+                    blockPos.z.toDouble() - outlineCtx.cameraZ()
+                )
+            }
+            Direction.UP -> {
+                stack.translate(
+                    blockPos.x.toDouble() - outlineCtx.cameraX(),
+                    hitPos.y - 1.0 - outlineCtx.cameraY(),
+                    blockPos.z.toDouble() - outlineCtx.cameraZ()
+                )
+            }
+            Direction.NORTH -> {
+                stack.translate(
+                    blockPos.x.toDouble() - outlineCtx.cameraX(),
+                    blockPos.y.toDouble() - outlineCtx.cameraY(),
+                    hitPos.z - outlineCtx.cameraZ()
+                )
+            }
+            Direction.SOUTH -> {
+                stack.translate(
+                    blockPos.x.toDouble() - outlineCtx.cameraX(),
+                    blockPos.y.toDouble() - outlineCtx.cameraY(),
+                    hitPos.z - 1.0 - outlineCtx.cameraZ()
+                )
+            }
+            Direction.WEST -> {
+                stack.translate(
+                    hitPos.x - outlineCtx.cameraX(),
+                    blockPos.y.toDouble() - outlineCtx.cameraY(),
+                    blockPos.z.toDouble() - outlineCtx.cameraZ()
+                )
+            }
+            Direction.EAST -> {
+                stack.translate(
+                    hitPos.x - 1.0 - outlineCtx.cameraX(),
+                    blockPos.y.toDouble() - outlineCtx.cameraY(),
+                    blockPos.z.toDouble() - outlineCtx.cameraZ()
+                )
+            }
         }
     }
 
-    private fun translate(stack: MatrixStack, pos: Vec3d, outlineCtx: WorldRenderContext.BlockOutlineContext) {
-        stack.translate(
-            pos.x - outlineCtx.cameraX(), pos.y - outlineCtx.cameraY(), pos.z - outlineCtx.cameraZ()
-        )
-    }
 }
