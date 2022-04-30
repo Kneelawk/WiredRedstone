@@ -136,11 +136,21 @@ object BoundingBoxUtils {
             side, RotationUtils.cardinalRotatedBox(
                 cardinal, if (shouldBeInsideBlock) {
                     Box(
-                        0.5 - wireWidth / 32.0, 0.0, 1.0 - wireHeight / 16.0, 0.5 + wireWidth / 32.0, wireHeight, 1.0
+                        0.5 - wireWidth / 32.0,
+                        0.0,
+                        1.0 - wireHeight / 16.0,
+                        0.5 + wireWidth / 32.0,
+                        wireHeight / 16.0,
+                        1.0
                     )
                 } else {
                     Box(
-                        0.5 - wireWidth / 32.0, 0.0, -wireHeight / 16.0, 0.5 + wireWidth / 32.0, wireHeight, 0.0
+                        0.5 - wireWidth / 32.0,
+                        0.0,
+                        -wireHeight / 16.0,
+                        0.5 + wireWidth / 32.0,
+                        wireHeight / 16.0,
+                        0.0
                     )
                 }
             )
