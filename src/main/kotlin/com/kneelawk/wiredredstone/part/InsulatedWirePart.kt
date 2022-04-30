@@ -83,7 +83,12 @@ class InsulatedWirePart : AbstractRedstoneWirePart {
     }
 
     private fun getRedstonePower(powerSide: Direction): Int {
-        return if (RedstoneLogic.wiresGivePower && powerSide == side) power else 0
+        val cardinal = RotationUtils.unrotatedDirection(side, powerSide)
+        return if (RedstoneLogic.wiresGivePower
+            && (powerSide == side
+                    || (DirectionUtils.isHorizontal(cardinal)
+                    && !ConnectionUtils.isDisconnected(connections, cardinal)))
+        ) power else 0
     }
 
     override fun getReceivingPower(): Int {
