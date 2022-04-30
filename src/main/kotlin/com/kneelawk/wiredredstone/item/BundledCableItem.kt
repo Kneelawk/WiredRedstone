@@ -22,7 +22,7 @@ class BundledCableItem(private val color: DyeColor?, settings: Settings) : Item(
 
         val offer = PlacementUtils.tryPlaceWire(context, ::creator) ?: return ActionResult.FAIL
 
-        PlacementUtils.finishPlacement(context, offer, (color?.let(DyeColorUtil::wool) ?: Blocks.STONE).defaultState)
+        PlacementUtils.finishPlacement(context, offer, (color?.let(DyeColorUtil::wool) ?: Blocks.WHITE_WOOL).defaultState)
 
         return ActionResult.SUCCESS
     }

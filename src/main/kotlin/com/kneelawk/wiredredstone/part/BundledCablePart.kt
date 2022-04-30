@@ -128,7 +128,7 @@ class BundledCablePart : AbstractBlockablePart {
     }
 
     override fun getClosestBlockState(): BlockState {
-        return (color?.let(DyeColorUtil::wool) ?: Blocks.STONE).defaultState
+        return (color?.let(DyeColorUtil::wool) ?: Blocks.WHITE_WOOL).defaultState
     }
 
     override fun calculateBreakingDelta(player: PlayerEntity): Float {
