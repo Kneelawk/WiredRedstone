@@ -28,6 +28,7 @@ repositories {
     maven("https://maven.quiltmc.org/repository/release") { name = "QuiltMC" }
     maven("https://maven.vram.io/") { name = "VRAM" }
     maven("https://maven.shedaniel.me/") { name = "shedaniel" }
+    mavenLocal()
 }
 
 dependencies {
@@ -49,6 +50,14 @@ dependencies {
     }
     // JIJs LMP, LNS, & LBA Core
     include("alexiil.mc.lib:libmultipart-all:$lmpVersion")
+
+    // GraphLib dependency
+    val graphlibVersion: String by project
+    modImplementation("com.kneelawk:graphlib:$graphlibVersion") {
+        exclude("org.quiltmc")
+        exclude("org.quiltmc.quilted-fabric-api")
+    }
+    include("com.kneelawk:graphlib:$graphlibVersion")
 
     //
     // Optional Mod Dependencies
