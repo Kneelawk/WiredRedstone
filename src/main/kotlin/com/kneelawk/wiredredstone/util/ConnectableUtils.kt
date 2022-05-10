@@ -1,13 +1,14 @@
 package com.kneelawk.wiredredstone.util
 
 import alexiil.mc.lib.multipart.api.MultipartUtil
+import com.kneelawk.graphlib.GraphLib
+import com.kneelawk.graphlib.graph.BlockGraphController
+import com.kneelawk.graphlib.graph.SidedBlockNode
+import com.kneelawk.graphlib.wire.SidedWireBlockNode
+import com.kneelawk.graphlib.wire.WireConnectionType
 import com.kneelawk.wiredredstone.part.BlockablePart
 import com.kneelawk.wiredredstone.part.ConnectablePart
 import com.kneelawk.wiredredstone.part.RedrawablePart
-import com.kneelawk.wiredredstone.wirenet.ConnectablePartExt
-import com.kneelawk.wiredredstone.wirenet.SidedPartExt
-import com.kneelawk.wiredredstone.wirenet.WireNetworkController
-import com.kneelawk.wiredredstone.wirenet.getWireNetworkState
 import net.minecraft.block.BlockState
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.BlockPos
@@ -15,6 +16,7 @@ import net.minecraft.util.math.Box
 import net.minecraft.util.math.Direction
 import net.minecraft.util.shape.VoxelShape
 import net.minecraft.world.BlockView
+import kotlin.streams.asSequence
 
 object ConnectableUtils {
 
@@ -26,7 +28,7 @@ object ConnectableUtils {
     fun updateBlockageAndConnections(world: ServerWorld, part: BlockablePart, wireWidth: Double, wireHeight: Double) {
         val blockPos = part.getPos()
         val side = part.side
-        val net = world.getWireNetworkState().controller
+        val net = GraphLib.getController(world)
 
         val blockage = DirectionUtils.HORIZONTALS.fold(0u.toUByte()) { blockage, cardinal ->
             val inside = BoundingBoxUtils.getWireInsideConnectionShape(side, cardinal, wireWidth, wireHeight)
@@ -47,7 +49,7 @@ object ConnectableUtils {
      * Updates connections of the LMP part and asking it to update the client.
      */
     fun updateConnections(world: ServerWorld, part: ConnectablePart) {
-        val net = world.getWireNetworkState().controller
+        val net = GraphLib.getController(world)
 
         updateConnectionsImpl(part, net, BlockageUtils.UNBLOCKED)
     }
@@ -56,33 +58,33 @@ object ConnectableUtils {
      * Updates visual connections, updating the LMP part and asking it to update the client.
      */
     private fun updateConnectionsImpl(
-        part: ConnectablePart, net: WireNetworkController, blockage: UByte
+        part: ConnectablePart, net: BlockGraphController, blockage: UByte
     ) {
         val side = part.side
         val pos = part.getSidedPos()
 
-        val connections = net.getNodesAt(pos).filter { it.data.ext is ConnectablePartExt }
+        val connections = net.getNodesAt(pos).asSequence().filter { it.ext is SidedWireBlockNode }
             // The fold here causes entire parts to visually connect, even if only one of their network-nodes is
             // actually connected. The first byte represents the actual connection value. The second byte keeps track of
             // if this edge has already tried to connect in a different connection.
             .fold(Pair(0u.toUByte(), 0u.toUByte())) { connections, node ->
                 var newConn = connections
-                node.connections.forEach { link ->
+                node.connections().forEach { link ->
                     val other = link.other(node)
-                    if (node.data.pos == other.data.pos && other.data.ext is SidedPartExt) {
+                    if (node.pos == other.pos && other.ext is SidedBlockNode) {
                         newConn = setSingularConnection(
-                            newConn, blockage, side, other.data.ext.side, ConnectionUtils::setInternal,
+                            newConn, blockage, side, (other.ext as SidedBlockNode).side, ConnectionUtils::setInternal,
                             ConnectionUtils::isInternal
                         )
                     } else {
-                        val cornerEdge = other.data.pos.subtract(node.data.pos.offset(side)).let(Direction::fromVector)
+                        val cornerEdge = other.pos.subtract(node.pos.offset(side)).let(Direction::fromVector)
                         if (cornerEdge != null) {
                             newConn = setSingularConnection(
                                 newConn, blockage, side, cornerEdge, ConnectionUtils::setCorner,
                                 ConnectionUtils::isCorner
                             )
                         } else {
-                            other.data.pos.subtract(node.data.pos).let(Direction::fromVector)?.let {
+                            other.pos.subtract(node.pos).let(Direction::fromVector)?.let {
                                 newConn = setSingularConnection(
                                     newConn, blockage, side, it, ConnectionUtils::setExternal,
                                     ConnectionUtils::isExternal
@@ -159,7 +161,7 @@ object ConnectableUtils {
      * Checks whether a wire on the given side, of the given dimensions, can connect in a given direction.
      */
     fun canWireConnect(
-        world: BlockView, pos: BlockPos, inDirection: Direction, type: ConnectionType, wireSide: Direction,
+        world: BlockView, pos: BlockPos, inDirection: Direction, type: WireConnectionType, wireSide: Direction,
         wireWidth: Double, wireHeight: Double
     ): Boolean {
         val cardinal = RotationUtils.unrotatedDirection(wireSide, inDirection)
@@ -169,7 +171,7 @@ object ConnectableUtils {
             return false
         }
 
-        return if (type == ConnectionType.CORNER) {
+        return if (type == WireConnectionType.CORNER) {
             val outside =
                 BoundingBoxUtils.getWireOutsideConnectionShape(wireSide, cardinal, wireWidth, wireHeight, true)
                     ?: return true

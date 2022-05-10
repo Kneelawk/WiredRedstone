@@ -10,6 +10,7 @@ import alexiil.mc.lib.multipart.api.render.PartModelKey
 import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
+import com.kneelawk.graphlib.graph.BlockNode
 import com.kneelawk.wiredredstone.part.key.BundledCablePartKey
 import com.kneelawk.wiredredstone.partext.BundledCablePartExt
 import com.kneelawk.wiredredstone.util.*
@@ -39,8 +40,6 @@ class BundledCablePart : AbstractBlockablePart {
 
     val color: DyeColor?
 
-    override val partExtType = BundledCablePartExt.Type
-
     constructor(
         definition: PartDefinition, holder: MultipartHolder, side: Direction, connections: UByte, blockage: UByte,
         color: DyeColor?
@@ -60,6 +59,10 @@ class BundledCablePart : AbstractBlockablePart {
         definition, holder, buffer, ctx
     ) {
         color = if (buffer.readBoolean()) DyeColor.byId(buffer.readByte().toInt()) else null
+    }
+
+    override fun createExtsForContainer(): Collection<BlockNode> {
+        return DyeColor.values().asSequence().map { BundledCablePartExt(side, color, it) }.toList()
     }
 
     override fun toTag(): NbtCompound {

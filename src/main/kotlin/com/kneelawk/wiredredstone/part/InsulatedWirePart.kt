@@ -8,6 +8,7 @@ import alexiil.mc.lib.multipart.api.render.PartModelKey
 import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
+import com.kneelawk.graphlib.graph.BlockNode
 import com.kneelawk.wiredredstone.part.key.InsulatedWirePartKey
 import com.kneelawk.wiredredstone.partext.InsulatedWirePartExt
 import com.kneelawk.wiredredstone.util.*
@@ -33,7 +34,6 @@ class InsulatedWirePart : AbstractRedstoneWirePart {
 
     val color: DyeColor
 
-    override val partExtType = InsulatedWirePartExt.Type
     override val wireWidth = WIRE_WIDTH
     override val wireHeight = WIRE_HEIGHT
 
@@ -54,6 +54,10 @@ class InsulatedWirePart : AbstractRedstoneWirePart {
         definition, holder, buffer, ctx
     ) {
         color = DyeColor.byId(buffer.readByte().toInt())
+    }
+
+    override fun createExtsForContainer(): Collection<BlockNode> {
+        return listOf(InsulatedWirePartExt(side, color))
     }
 
     override fun toTag(): NbtCompound {

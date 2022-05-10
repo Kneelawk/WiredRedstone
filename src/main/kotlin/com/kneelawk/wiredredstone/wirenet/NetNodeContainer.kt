@@ -1,5 +1,7 @@
 package com.kneelawk.wiredredstone.wirenet
 
+import com.kneelawk.graphlib.graph.BlockNode
+
 interface NetNodeContainer {
-    val partExtType: PartExtType
+    fun createExtsForContainer(): Collection<BlockNode>
 }

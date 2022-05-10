@@ -7,14 +7,13 @@ import alexiil.mc.lib.multipart.api.event.PartRemovedEvent
 import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
+import com.kneelawk.graphlib.GraphLib
 import com.kneelawk.wiredredstone.util.ConnectableUtils
 import com.kneelawk.wiredredstone.util.ConnectableUtils.isValidFace
 import com.kneelawk.wiredredstone.util.SimpleItemDropTarget
 import com.kneelawk.wiredredstone.util.getWorld
 import com.kneelawk.wiredredstone.util.requireNonNull
 import com.kneelawk.wiredredstone.wirenet.NetNodeContainer
-import com.kneelawk.wiredredstone.wirenet.SidedPartExtType
-import com.kneelawk.wiredredstone.wirenet.getWireNetworkState
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemStack
 import net.minecraft.loot.context.LootContext
@@ -47,8 +46,6 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
         definition, holder, Direction.byId(buffer.readByte().toInt())
     )
 
-    abstract override val partExtType: SidedPartExtType
-
     override fun toTag(): NbtCompound {
         val tag = super.toTag()
         tag.putByte("side", side.id.toByte())
@@ -79,7 +76,7 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
                         )
                     ) {
                         // Something could be blocking our connection
-                        world.getWireNetworkState().controller.updateConnections(world, getSidedPos())
+                        GraphLib.getController(world).updateConnections(getSidedPos())
                     }
                 }
             }
@@ -89,7 +86,7 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
             val world = getWorld()
             if (it.part !== this && world is ServerWorld) {
                 // Something could be blocking our connection
-                world.getWireNetworkState().controller.updateConnections(world, getSidedPos())
+                GraphLib.getController(world).updateConnections(getSidedPos())
             }
         }
 
@@ -97,7 +94,7 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
             val world = getWorld()
             if (it.removed !== this && world is ServerWorld) {
                 // A connection could be unblocked
-                world.getWireNetworkState().controller.updateConnections(world, getSidedPos())
+                GraphLib.getController(world).updateConnections(getSidedPos())
             }
         }
     }
@@ -136,7 +133,7 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
     override fun onPlacedBy(player: PlayerEntity?, hand: Hand?) {
         val world = getWorld()
         if (!world.isClient && world is ServerWorld) {
-            world.getWireNetworkState().controller.onChanged(world, getPos())
+            GraphLib.getController(world).onChanged(getPos())
         }
     }
 
@@ -145,7 +142,7 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
 
         val world = getWorld()
         if (!world.isClient && world is ServerWorld) {
-            world.getWireNetworkState().controller.onChanged(world, getPos())
+            GraphLib.getController(world).onChanged(getPos())
         }
     }
 

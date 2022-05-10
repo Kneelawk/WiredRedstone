@@ -1,14 +1,19 @@
 package com.kneelawk.wiredredstone.partext
 
+import com.kneelawk.graphlib.GraphLib
 import com.kneelawk.wiredredstone.WRConstants.id
-import com.kneelawk.wiredredstone.WRRegistries.EXT_PART_TYPE
 import net.minecraft.util.registry.Registry
 
 object WRPartExts {
+    val RED_ALLOY_WIRE_ID = id("red_alloy_wire")
+    val INSULATED_WIRE_ID = id("insulated_wire")
+    val BUNDLED_CABLE_ID = id("bundled_cable")
+    val GATE_DIODE_ID = id("gate_diode")
+
     fun init() {
-        Registry.register(EXT_PART_TYPE, id("red_alloy_wire"), RedAlloyWirePartExt.Type)
-        Registry.register(EXT_PART_TYPE, id("insulated_wire"), InsulatedWirePartExt.Type)
-        Registry.register(EXT_PART_TYPE, id("bundled_cable"), BundledCablePartExt.Type)
-        Registry.register(EXT_PART_TYPE, id("gate_diode"), GateDiodePartExt.Type)
+        Registry.register(GraphLib.BLOCK_NODE_DECODER, RED_ALLOY_WIRE_ID, RedAlloyWirePartExt.Decoder)
+        Registry.register(GraphLib.BLOCK_NODE_DECODER, INSULATED_WIRE_ID, InsulatedWirePartExt.Decoder)
+        Registry.register(GraphLib.BLOCK_NODE_DECODER, BUNDLED_CABLE_ID, BundledCablePartExt.Decoder)
+        Registry.register(GraphLib.BLOCK_NODE_DECODER, GATE_DIODE_ID, GateDiodePartExt.Decoder)
     }
 }

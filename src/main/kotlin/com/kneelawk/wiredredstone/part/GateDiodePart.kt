@@ -11,6 +11,7 @@ import alexiil.mc.lib.multipart.api.render.PartModelKey
 import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
+import com.kneelawk.graphlib.graph.BlockNode
 import com.kneelawk.wiredredstone.item.WRItems
 import com.kneelawk.wiredredstone.part.key.GateDiodePartKey
 import com.kneelawk.wiredredstone.partext.GateDiodePartExt
@@ -36,8 +37,6 @@ class GateDiodePart : AbstractRotatedPart {
             BoundingBoxUtils.getRotatedShapes(Box(4.0 / 16.0, 0.0, 4.0 / 16.0, 12.0 / 16.0, 2.0 / 16.0, 12.0 / 16.0))
         val SHAPES = BoundingBoxUtils.getRotatedShapes(Box(0.0, 0.0, 0.0, 1.0, 2.0 / 16.0, 1.0))
     }
-
-    override val partExtType = GateDiodePartExt.Type
 
     var inputPower: Int
         private set
@@ -72,6 +71,10 @@ class GateDiodePart : AbstractRotatedPart {
         inputPower = buffer.readByte().toInt().coerceIn(0..15)
         outputPower = buffer.readByte().toInt().coerceIn(0..15)
         outputReversePower = buffer.readByte().toInt().coerceIn(0..15)
+    }
+
+    override fun createExtsForContainer(): Collection<BlockNode> {
+        return listOf(GateDiodePartExt.Input(side), GateDiodePartExt.Output(side))
     }
 
     override fun toTag(): NbtCompound {

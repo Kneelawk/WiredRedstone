@@ -1,13 +1,7 @@
 package com.kneelawk.wiredredstone.wirenet
 
-import com.kneelawk.wiredredstone.util.Graph
-import com.kneelawk.wiredredstone.util.Link
-import com.kneelawk.wiredredstone.util.Node
+import com.kneelawk.graphlib.graph.BlockNode
+import com.kneelawk.graphlib.graph.BlockNodeWrapper
+import com.kneelawk.graphlib.graph.struct.Node
 
-// This is almost completely copied from 2xsaiko's HCTM-Base.
-
-typealias NetNode = Node<NetworkPart<out PartExt>, Nothing?>
-typealias NetGraph = Graph<NetworkPart<out PartExt>, Nothing?>
-typealias NetLink = Link<NetworkPart<out PartExt>, Nothing?>
-
-typealias TNetNode<T> = Node<NetworkPart<T>, Nothing>
+typealias NetNode = Node<BlockNodeWrapper<out BlockNode>>

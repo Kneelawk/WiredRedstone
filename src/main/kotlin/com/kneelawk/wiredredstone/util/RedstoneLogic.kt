@@ -1,8 +1,11 @@
 package com.kneelawk.wiredredstone.util
 
-import com.kneelawk.wiredredstone.wirenet.Network
+import com.kneelawk.graphlib.GraphLib
+import com.kneelawk.graphlib.graph.BlockGraph
+import com.kneelawk.graphlib.util.SidedPos
 import com.kneelawk.wiredredstone.wirenet.RedstoneCarrierPartExt
-import com.kneelawk.wiredredstone.wirenet.getWireNetworkState
+import it.unimi.dsi.fastutil.longs.LongLinkedOpenHashSet
+import it.unimi.dsi.fastutil.longs.LongSet
 import net.minecraft.block.Blocks
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.BlockPos
@@ -13,15 +16,13 @@ import java.util.*
 import kotlin.math.max
 
 object RedstoneLogic {
-    var scheduled = mapOf<RegistryKey<World>, Set<UUID>>()
+    val scheduled = mutableMapOf<RegistryKey<World>, LongSet>()
     var wiresGivePower = true
 
     fun scheduleUpdate(world: ServerWorld, pos: BlockPos) {
         // Could probably be optimised to only update the networks it needs to, but I can do that later.
-        scheduled =
-            scheduled + (world.registryKey to
-                    (scheduled[world.registryKey].orEmpty()
-                            + world.getWireNetworkState().controller.getNetworksAt(pos).map { it.id }))
+        val set = scheduled.computeIfAbsent(world.registryKey) {LongLinkedOpenHashSet()}
+        GraphLib.getController(world).getGraphsInPos(pos).forEach(set::add)
     }
 
     fun flushUpdates(world: ServerWorld) {
@@ -35,24 +36,24 @@ object RedstoneLogic {
         // graph-of-graphs solution has its own drawbacks as well. Any kind of super-graph loop would always involve a
         // one-tick delay somewhere, but players would have no way of controlling where.
 
-        val wireNetworkState = world.getWireNetworkState()
+        val controller = GraphLib.getController(world)
         for (id in scheduled[world.registryKey].orEmpty()) {
-            val net = wireNetworkState.controller.getNetwork(id)
+            val net = controller.getGraph(id)
             if (net != null) updateState(world, net)
         }
-        scheduled = scheduled - world.registryKey
+        scheduled -= world.registryKey
     }
 
-    fun updateState(world: World, network: Network) {
+    fun updateState(world: World, network: BlockGraph) {
         val power = try {
             wiresGivePower = false
-            network.getNodes()
-                .constrainedMaxOfOrNull(0, 15) { (it.data.ext as RedstoneCarrierPartExt).getInput(world, it) }
+            network.nodes
+                .constrainedMaxOf(0, 15) { (it.ext as RedstoneCarrierPartExt).getInput(world, it) }
         } finally {
             wiresGivePower = true
         }
-        for (node in network.getNodes()) {
-            val ext = node.data.ext as RedstoneCarrierPartExt
+        for (node in network.nodes) {
+            val ext = node.ext as RedstoneCarrierPartExt
             ext.setState(world, node, power)
         }
     }
@@ -69,7 +70,7 @@ object RedstoneLogic {
                     && !BlockageUtils.isBlocked(blockage, cardinal)
         }
         return max(
-            weakSides.constrainedMaxOfOrNull(0, 15) {
+            weakSides.constrainedMaxOf(0, 15) {
                 val otherPos = pos.pos.offset(it)
                 val otherState = world.getBlockState(otherPos)
                 if (otherState.block == Blocks.REDSTONE_WIRE) {

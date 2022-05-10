@@ -13,7 +13,6 @@ import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
 import com.kneelawk.wiredredstone.util.*
 import com.kneelawk.wiredredstone.wirenet.NetNodeContainer
-import com.kneelawk.wiredredstone.wirenet.getWireNetworkState
 import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
 import net.minecraft.entity.player.PlayerEntity
