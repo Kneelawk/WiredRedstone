@@ -10,7 +10,7 @@ import alexiil.mc.lib.net.NetByteBuf
 import com.kneelawk.graphlib.graph.BlockNode
 import com.kneelawk.wiredredstone.item.WRItems
 import com.kneelawk.wiredredstone.part.key.RedAlloyWirePartKey
-import com.kneelawk.wiredredstone.partext.RedAlloyWirePartExt
+import com.kneelawk.wiredredstone.node.RedAlloyWireBlockNode
 import com.kneelawk.wiredredstone.util.*
 import net.minecraft.block.Blocks
 import net.minecraft.item.ItemStack
@@ -43,7 +43,7 @@ class RedAlloyWirePart : AbstractRedstoneWirePart {
     override val wireWidth = WIRE_WIDTH
     override val wireHeight = WIRE_HEIGHT
 
-    override fun createExtsForContainer(): Collection<BlockNode> = listOf(RedAlloyWirePartExt(side))
+    override fun createBlockNodes(): Collection<BlockNode> = listOf(RedAlloyWireBlockNode(side))
 
     override fun onAdded(bus: MultipartEventBus) {
         super.onAdded(bus)

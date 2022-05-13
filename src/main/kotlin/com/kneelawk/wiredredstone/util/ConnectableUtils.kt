@@ -63,7 +63,7 @@ object ConnectableUtils {
         val side = part.side
         val pos = part.getSidedPos()
 
-        val connections = net.getNodesAt(pos).asSequence().filter { it.ext is SidedWireBlockNode }
+        val connections = net.getNodesAt(pos).asSequence().filter { it.node is SidedWireBlockNode }
             // The fold here causes entire parts to visually connect, even if only one of their network-nodes is
             // actually connected. The first byte represents the actual connection value. The second byte keeps track of
             // if this edge has already tried to connect in a different connection.
@@ -71,9 +71,9 @@ object ConnectableUtils {
                 var newConn = connections
                 node.connections().forEach { link ->
                     val other = link.other(node)
-                    if (node.pos == other.pos && other.ext is SidedBlockNode) {
+                    if (node.pos == other.pos && other.node is SidedBlockNode) {
                         newConn = setSingularConnection(
-                            newConn, blockage, side, (other.ext as SidedBlockNode).side, ConnectionUtils::setInternal,
+                            newConn, blockage, side, (other.node as SidedBlockNode).side, ConnectionUtils::setInternal,
                             ConnectionUtils::isInternal
                         )
                     } else {

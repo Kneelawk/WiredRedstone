@@ -1,4 +1,4 @@
-package com.kneelawk.wiredredstone.partext
+package com.kneelawk.wiredredstone.node
 
 import com.kneelawk.graphlib.graph.BlockNode
 import com.kneelawk.graphlib.graph.BlockNodeDecoder
@@ -10,7 +10,6 @@ import com.kneelawk.graphlib.wire.WireConnectionType
 import com.kneelawk.wiredredstone.part.BundledCablePart
 import com.kneelawk.wiredredstone.part.SidedPart
 import com.kneelawk.wiredredstone.util.*
-import com.kneelawk.wiredredstone.wirenet.*
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.nbt.NbtElement
 import net.minecraft.server.world.ServerWorld
@@ -21,13 +20,13 @@ import net.minecraft.util.math.Direction
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
 
-data class BundledCablePartExt(private val side: Direction, val color: DyeColor?, val inner: DyeColor) :
-    SidedWireBlockNode, RedstoneCarrierPartExt {
+data class BundledCableBlockNode(private val side: Direction, val color: DyeColor?, val inner: DyeColor) :
+    SidedWireBlockNode, RedstoneCarrierBlockNode {
 
     override val redstoneType = RedstoneWireType.Bundled(color, inner)
 
     override fun getSide(): Direction = side
-    override fun getTypeId(): Identifier = WRPartExts.BUNDLED_CABLE_ID
+    override fun getTypeId(): Identifier = WRBlockNodes.BUNDLED_CABLE_ID
 
     private fun getPart(world: BlockView, pos: BlockPos): BundledCablePart? {
         return SidedPart.getPart(world, SidedPos(pos, side)) as? BundledCablePart
@@ -82,7 +81,7 @@ data class BundledCablePartExt(private val side: Direction, val color: DyeColor?
             val side = Direction.byId(tag.getByte("side").toInt())
             val color = if (tag.contains("color")) DyeColor.byId(tag.getByte("color").toInt()) else null
             val inner = DyeColor.byId(tag.getByte("inner").toInt())
-            return BundledCablePartExt(side, color, inner)
+            return BundledCableBlockNode(side, color, inner)
         }
     }
 }

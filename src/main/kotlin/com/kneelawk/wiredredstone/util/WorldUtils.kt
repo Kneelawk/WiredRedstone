@@ -1,7 +1,7 @@
 package com.kneelawk.wiredredstone.util
 
 import alexiil.mc.lib.multipart.api.MultipartUtil
-import com.kneelawk.wiredredstone.wirenet.NetNodeContainer
+import com.kneelawk.wiredredstone.part.BlockNodeContainer
 import net.minecraft.block.Block
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
@@ -34,7 +34,7 @@ object WorldUtils {
         val multipart = MultipartUtil.get(world, pos)
 
         if (multipart != null) {
-            if (multipart.getFirstPart { it !is NetNodeContainer } != null) {
+            if (multipart.getFirstPart { it !is BlockNodeContainer } != null) {
                 world.updateNeighbor(pos, sourceBlock, neighbosPos)
             }
         } else {

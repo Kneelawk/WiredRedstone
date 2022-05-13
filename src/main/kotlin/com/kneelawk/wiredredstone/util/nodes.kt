@@ -1,4 +1,4 @@
-package com.kneelawk.wiredredstone.wirenet
+package com.kneelawk.wiredredstone.util
 
 import com.kneelawk.graphlib.graph.BlockNode
 import com.kneelawk.graphlib.graph.BlockNodeWrapper

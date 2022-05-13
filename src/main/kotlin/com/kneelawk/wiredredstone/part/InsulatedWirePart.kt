@@ -10,7 +10,7 @@ import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
 import com.kneelawk.graphlib.graph.BlockNode
 import com.kneelawk.wiredredstone.part.key.InsulatedWirePartKey
-import com.kneelawk.wiredredstone.partext.InsulatedWirePartExt
+import com.kneelawk.wiredredstone.node.InsulatedWireBlockNode
 import com.kneelawk.wiredredstone.util.*
 import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
@@ -56,8 +56,8 @@ class InsulatedWirePart : AbstractRedstoneWirePart {
         color = DyeColor.byId(buffer.readByte().toInt())
     }
 
-    override fun createExtsForContainer(): Collection<BlockNode> {
-        return listOf(InsulatedWirePartExt(side, color))
+    override fun createBlockNodes(): Collection<BlockNode> {
+        return listOf(InsulatedWireBlockNode(side, color))
     }
 
     override fun toTag(): NbtCompound {

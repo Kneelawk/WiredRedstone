@@ -1,4 +1,4 @@
-package com.kneelawk.wiredredstone.partext
+package com.kneelawk.wiredredstone.node
 
 import com.kneelawk.graphlib.graph.BlockNode
 import com.kneelawk.graphlib.graph.BlockNodeDecoder
@@ -13,7 +13,6 @@ import com.kneelawk.wiredredstone.WRLog
 import com.kneelawk.wiredredstone.part.GateDiodePart
 import com.kneelawk.wiredredstone.part.SidedPart
 import com.kneelawk.wiredredstone.util.*
-import com.kneelawk.wiredredstone.wirenet.*
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.nbt.NbtElement
 import net.minecraft.server.world.ServerWorld
@@ -24,13 +23,13 @@ import net.minecraft.world.BlockView
 import net.minecraft.world.World
 import kotlin.math.max
 
-sealed class GateDiodePartExt(private val side: Direction) : SidedWireBlockNode, RedstoneCarrierPartExt {
+sealed class GateDiodeBlockNode(private val side: Direction) : SidedWireBlockNode, RedstoneCarrierBlockNode {
     override val redstoneType = RedstoneWireType.RedAlloy
 
     protected abstract val typeByte: Byte
 
     override fun getSide(): Direction = side
-    override fun getTypeId(): Identifier = WRPartExts.GATE_DIODE_ID
+    override fun getTypeId(): Identifier = WRBlockNodes.GATE_DIODE_ID
 
     protected abstract fun getConnectDirection(part: GateDiodePart): Direction
 
@@ -80,7 +79,7 @@ sealed class GateDiodePartExt(private val side: Direction) : SidedWireBlockNode,
         getPart(world, pos)?.updateConnections()
     }
 
-    data class Input(private val side: Direction) : GateDiodePartExt(side) {
+    data class Input(private val side: Direction) : GateDiodeBlockNode(side) {
         companion object {
             // This is just to reduce the likelihood of hash collisions with Output
             private const val HASH_SALT = -807492579
@@ -131,7 +130,7 @@ sealed class GateDiodePartExt(private val side: Direction) : SidedWireBlockNode,
         }
     }
 
-    data class Output(private val side: Direction) : GateDiodePartExt(side) {
+    data class Output(private val side: Direction) : GateDiodeBlockNode(side) {
         companion object {
             // This is just to reduce the likelihood of hash collisions with Input
             private const val HASH_SALT = 1863451528

@@ -13,7 +13,6 @@ import com.kneelawk.wiredredstone.util.ConnectableUtils.isValidFace
 import com.kneelawk.wiredredstone.util.SimpleItemDropTarget
 import com.kneelawk.wiredredstone.util.getWorld
 import com.kneelawk.wiredredstone.util.requireNonNull
-import com.kneelawk.wiredredstone.wirenet.NetNodeContainer
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemStack
 import net.minecraft.loot.context.LootContext
@@ -32,7 +31,7 @@ import net.minecraft.util.shape.VoxelShape
  * Subtypes of this could be parts for wires, bundle cables, or gates.
  */
 abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHolder, override val side: Direction) :
-    AbstractPart(definition, holder), NetNodeContainer, SidedPart {
+    AbstractPart(definition, holder), BlockNodeContainer, SidedPart {
 
     private var ctx: SidedPartContext? = null
 

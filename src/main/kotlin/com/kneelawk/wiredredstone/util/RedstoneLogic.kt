@@ -3,7 +3,7 @@ package com.kneelawk.wiredredstone.util
 import com.kneelawk.graphlib.GraphLib
 import com.kneelawk.graphlib.graph.BlockGraph
 import com.kneelawk.graphlib.util.SidedPos
-import com.kneelawk.wiredredstone.wirenet.RedstoneCarrierPartExt
+import com.kneelawk.wiredredstone.node.RedstoneCarrierBlockNode
 import it.unimi.dsi.fastutil.longs.LongLinkedOpenHashSet
 import it.unimi.dsi.fastutil.longs.LongSet
 import net.minecraft.block.Blocks
@@ -12,7 +12,6 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.registry.RegistryKey
 import net.minecraft.world.World
-import java.util.*
 import kotlin.math.max
 
 object RedstoneLogic {
@@ -48,12 +47,12 @@ object RedstoneLogic {
         val power = try {
             wiresGivePower = false
             network.nodes
-                .constrainedMaxOf(0, 15) { (it.ext as RedstoneCarrierPartExt).getInput(world, it) }
+                .constrainedMaxOf(0, 15) { (it.node as RedstoneCarrierBlockNode).getInput(world, it) }
         } finally {
             wiresGivePower = true
         }
         for (node in network.nodes) {
-            val ext = node.ext as RedstoneCarrierPartExt
+            val ext = node.node as RedstoneCarrierBlockNode
             ext.setState(world, node, power)
         }
     }

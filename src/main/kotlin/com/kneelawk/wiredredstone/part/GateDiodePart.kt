@@ -14,7 +14,7 @@ import alexiil.mc.lib.net.NetByteBuf
 import com.kneelawk.graphlib.graph.BlockNode
 import com.kneelawk.wiredredstone.item.WRItems
 import com.kneelawk.wiredredstone.part.key.GateDiodePartKey
-import com.kneelawk.wiredredstone.partext.GateDiodePartExt
+import com.kneelawk.wiredredstone.node.GateDiodeBlockNode
 import com.kneelawk.wiredredstone.util.*
 import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
@@ -73,8 +73,8 @@ class GateDiodePart : AbstractRotatedPart {
         outputReversePower = buffer.readByte().toInt().coerceIn(0..15)
     }
 
-    override fun createExtsForContainer(): Collection<BlockNode> {
-        return listOf(GateDiodePartExt.Input(side), GateDiodePartExt.Output(side))
+    override fun createBlockNodes(): Collection<BlockNode> {
+        return listOf(GateDiodeBlockNode.Input(side), GateDiodeBlockNode.Output(side))
     }
 
     override fun toTag(): NbtCompound {
