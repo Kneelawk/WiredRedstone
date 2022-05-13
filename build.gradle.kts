@@ -29,6 +29,7 @@ repositories {
     maven("https://maven.vram.io/") { name = "VRAM" }
     maven("https://maven.shedaniel.me/") { name = "shedaniel" }
     maven("https://kneelawk.com/maven/") { name = "Kneelawk" }
+//    mavenLocal()
 }
 
 dependencies {
