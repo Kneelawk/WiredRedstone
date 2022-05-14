@@ -11,8 +11,8 @@ things.
 
 ## Breaking Changes
 
-Version 0.2.0 introduces changes to how wire networks are saved. All wires from before version 0.2.0 will not function
-when updated until they are fixed using a command.
+Version 0.2.0 introduces changes to how wire networks are saved. ~~All wires from before version 0.2.0 will not function
+when updated until they are fixed using a command.~~ Fixed in 0.2.1.
 
 The command to fix wires is:
 
@@ -20,22 +20,10 @@ The command to fix wires is:
 /graphlib updatewires <from> <to>
 ```
 
-This command can be used for more than just fixing wires from before 0.2.0. It can also be used if wires aren't
-connecting for some reason or another (like being world-edited).
-
-## World Edit
-
-For the time being, wires will not function after they have been edited by world-edit. This is because world-edit does
-not modify the information wires use to understand their connections.
-
-To Fix this, use the same command as before in the affected areas:
-
-```
-/graphlib updatewires <from> <to>
-```
-
-**Note:** You will also likely want to use this command, even if you're only removing wires, because the wires would
-leave their connection data behind otherwise, which could make new wires placed in the area act strange.
+This command can be used for more than just fixing wires from old versions. It can also be used if wires just aren't
+connecting for some reason or another. This command can cause significant amounts of lag if used over a large area, so
+it is restricted to only be usable with operator privileges. For reference, updating a 100x100x100 area on my machine
+took about 16 seconds. During that time, the server thread was completely stopped.
 
 ## Recipes
 
