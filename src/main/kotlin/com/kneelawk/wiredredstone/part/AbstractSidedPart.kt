@@ -13,13 +13,12 @@ import com.kneelawk.wiredredstone.util.ConnectableUtils.isValidFace
 import com.kneelawk.wiredredstone.util.SimpleItemDropTarget
 import com.kneelawk.wiredredstone.util.getWorld
 import com.kneelawk.wiredredstone.util.requireNonNull
-import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemStack
 import net.minecraft.loot.context.LootContext
 import net.minecraft.loot.context.LootContextParameters
 import net.minecraft.nbt.NbtCompound
+import net.minecraft.server.ServerTask
 import net.minecraft.server.world.ServerWorld
-import net.minecraft.util.Hand
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Vec3d
@@ -96,6 +95,14 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
                 GraphLib.getController(world).updateConnections(getSidedPos())
             }
         }
+
+        val world = getWorld()
+        if (!world.isClient && world is ServerWorld) {
+            world.server.send(ServerTask(world.server.ticks) {
+                // run this later to prevent deadlocks
+                GraphLib.getController(world).onChanged(getPos())
+            })
+        }
     }
 
     protected open fun shouldBreak(): Boolean {
@@ -127,13 +134,6 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
         addDrops(SimpleItemDropTarget(world, origin), context)
 
         holder.remove()
-    }
-
-    override fun onPlacedBy(player: PlayerEntity?, hand: Hand?) {
-        val world = getWorld()
-        if (!world.isClient && world is ServerWorld) {
-            GraphLib.getController(world).onChanged(getPos())
-        }
     }
 
     override fun onRemoved() {
