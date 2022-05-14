@@ -29,6 +29,8 @@ incorporates some rather large changes:
     * These probably could be added to RSWires too, fairly easily, I just haven't gotten around to adding them and no
       one else has either.
 
+Please go checkout [RSWires][RSWires CF] if you haven't already.
+
 [RSWires CF]: https://www.curseforge.com/minecraft/mc-mods/rswires/
 
 ## Breaking Changes
