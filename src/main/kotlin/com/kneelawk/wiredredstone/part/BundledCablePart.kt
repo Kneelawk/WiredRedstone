@@ -10,10 +10,10 @@ import alexiil.mc.lib.multipart.api.render.PartModelKey
 import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
+import com.kneelawk.graphlib.graph.BlockNode
 import com.kneelawk.wiredredstone.part.key.BundledCablePartKey
-import com.kneelawk.wiredredstone.partext.BundledCablePartExt
+import com.kneelawk.wiredredstone.node.BundledCableBlockNode
 import com.kneelawk.wiredredstone.util.*
-import com.kneelawk.wiredredstone.wirenet.NetNodeContainer
 import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
 import net.minecraft.entity.player.PlayerEntity
@@ -39,8 +39,6 @@ class BundledCablePart : AbstractBlockablePart {
 
     val color: DyeColor?
 
-    override val partExtType = BundledCablePartExt.Type
-
     constructor(
         definition: PartDefinition, holder: MultipartHolder, side: Direction, connections: UByte, blockage: UByte,
         color: DyeColor?
@@ -60,6 +58,10 @@ class BundledCablePart : AbstractBlockablePart {
         definition, holder, buffer, ctx
     ) {
         color = if (buffer.readBoolean()) DyeColor.byId(buffer.readByte().toInt()) else null
+    }
+
+    override fun createBlockNodes(): Collection<BlockNode> {
+        return DyeColor.values().asSequence().map { BundledCableBlockNode(side, color, it) }.toList()
     }
 
     override fun toTag(): NbtCompound {
@@ -86,14 +88,14 @@ class BundledCablePart : AbstractBlockablePart {
 
         bus.addListener(this, PartAddedEvent::class.java) { e ->
             // NetNodeContainers update our connections directly when changed
-            if (e.part !is NetNodeContainer) {
+            if (e.part !is BlockNodeContainer) {
                 handleUpdates()
             }
         }
 
         bus.addListener(this, PartRemovedEvent::class.java) { e ->
             // NetNodeContainers update our connections directly when changed
-            if (e.removed !is NetNodeContainer) {
+            if (e.removed !is BlockNodeContainer) {
                 handleUpdates()
             }
         }

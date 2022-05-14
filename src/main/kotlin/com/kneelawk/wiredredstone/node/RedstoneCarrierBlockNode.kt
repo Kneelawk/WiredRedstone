@@ -1,9 +1,11 @@
-package com.kneelawk.wiredredstone.wirenet
+package com.kneelawk.wiredredstone.node
 
+import com.kneelawk.graphlib.graph.BlockNode
 import com.kneelawk.wiredredstone.util.RedstoneWireType
+import com.kneelawk.wiredredstone.util.NetNode
 import net.minecraft.world.World
 
-interface RedstoneCarrierPartExt : PartExt {
+interface RedstoneCarrierBlockNode : BlockNode {
     val redstoneType: RedstoneWireType
 
     fun getState(world: World, self: NetNode): Int

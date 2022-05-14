@@ -12,8 +12,6 @@ import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
 import com.kneelawk.wiredredstone.util.*
-import com.kneelawk.wiredredstone.wirenet.NetNodeContainer
-import com.kneelawk.wiredredstone.wirenet.getWireNetworkState
 import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
 import net.minecraft.entity.player.PlayerEntity
@@ -86,14 +84,14 @@ abstract class AbstractRedstoneWirePart : AbstractBlockablePart, PowerablePart {
 
         bus.addListener(this, PartAddedEvent::class.java) { e ->
             // NetNodeContainers update our connections directly when changed
-            if (e.part !is NetNodeContainer) {
+            if (e.part !is BlockNodeContainer) {
                 handleUpdates()
             }
         }
 
         bus.addListener(this, PartRemovedEvent::class.java) { e ->
             // NetNodeContainers update our connections directly when changed
-            if (e.removed !is NetNodeContainer) {
+            if (e.removed !is BlockNodeContainer) {
                 handleUpdates()
             }
         }

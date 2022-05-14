@@ -7,9 +7,10 @@ import alexiil.mc.lib.multipart.api.event.PartRedstonePowerEvent
 import alexiil.mc.lib.multipart.api.render.PartModelKey
 import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.NetByteBuf
+import com.kneelawk.graphlib.graph.BlockNode
 import com.kneelawk.wiredredstone.item.WRItems
 import com.kneelawk.wiredredstone.part.key.RedAlloyWirePartKey
-import com.kneelawk.wiredredstone.partext.RedAlloyWirePartExt
+import com.kneelawk.wiredredstone.node.RedAlloyWireBlockNode
 import com.kneelawk.wiredredstone.util.*
 import net.minecraft.block.Blocks
 import net.minecraft.item.ItemStack
@@ -39,9 +40,10 @@ class RedAlloyWirePart : AbstractRedstoneWirePart {
         definition, holder, buffer, ctx
     )
 
-    override val partExtType = RedAlloyWirePartExt.Type
     override val wireWidth = WIRE_WIDTH
     override val wireHeight = WIRE_HEIGHT
+
+    override fun createBlockNodes(): Collection<BlockNode> = listOf(RedAlloyWireBlockNode(side))
 
     override fun onAdded(bus: MultipartEventBus) {
         super.onAdded(bus)
