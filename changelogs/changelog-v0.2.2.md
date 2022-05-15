@@ -6,3 +6,4 @@ Changes:
 
 * Adds Not Gates.
 * Fixes bug where a world could get old enough that placement ghosts would stop working.
+* Changes item rotation in inventory.
