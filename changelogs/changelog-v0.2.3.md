@@ -5,3 +5,4 @@ Wired Redstone version 0.2.3 for Minecraft 1.18.2
 Changes:
 
 * Changes homepage to point to the [Modrinth page](https://modrinth.com/mod/wiredredstone).
+* Re-texture gates to look a little less clunky.
