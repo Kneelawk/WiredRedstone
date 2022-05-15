@@ -100,7 +100,9 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
         if (!world.isClient && world is ServerWorld) {
             world.server.send(ServerTask(world.server.ticks) {
                 // run this later to prevent deadlocks
-                GraphLib.getController(world).onChanged(getPos())
+                if (holder.isPresent) {
+                    GraphLib.getController(world).onChanged(getPos())
+                }
             })
         }
     }

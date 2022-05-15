@@ -3,10 +3,7 @@ package com.kneelawk.wiredredstone.client.render.part
 import alexiil.mc.lib.multipart.api.render.PartModelKey
 import alexiil.mc.lib.multipart.api.render.PartStaticModelRegisterEvent
 import com.kneelawk.wiredredstone.WRConstants
-import com.kneelawk.wiredredstone.part.key.BundledCablePartKey
-import com.kneelawk.wiredredstone.part.key.GateDiodePartKey
-import com.kneelawk.wiredredstone.part.key.InsulatedWirePartKey
-import com.kneelawk.wiredredstone.part.key.RedAlloyWirePartKey
+import com.kneelawk.wiredredstone.part.key.*
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener
 import net.minecraft.resource.ResourceManager
@@ -24,6 +21,7 @@ object WRPartRenderers {
         register(InsulatedWirePartBaker, InsulatedWirePartKey::class)
         register(BundledCablePartBaker, BundledCablePartKey::class)
         register(GateDiodePartBaker, GateDiodePartKey::class)
+        register(GateNotPartBaker, GateNotPartKey::class)
 
         PartStaticModelRegisterEvent.EVENT.register { event: PartStaticModelRegisterEvent.StaticModelRenderer ->
             for ((baker, clazz) in BAKERS) {

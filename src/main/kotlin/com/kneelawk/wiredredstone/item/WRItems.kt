@@ -1,6 +1,9 @@
 package com.kneelawk.wiredredstone.item
 
 import com.kneelawk.wiredredstone.WRConstants
+import com.kneelawk.wiredredstone.part.GateDiodePart
+import com.kneelawk.wiredredstone.part.GateNotPart
+import com.kneelawk.wiredredstone.part.WRParts
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder
 import net.minecraft.item.Item
 import net.minecraft.item.ItemGroup
@@ -52,7 +55,16 @@ object WRItems {
     val BLACK_BUNDLED_CABLE by lazy { BundledCableItem(DyeColor.BLACK, WIRED_REDSTONE_ITEM_SETTINGS) }
 
     // Gates
-    val GATE_DIODE by lazy { GateDiodeItem(WIRED_REDSTONE_ITEM_SETTINGS) }
+    val GATE_DIODE by lazy {
+        SimpleGateItem(WIRED_REDSTONE_ITEM_SETTINGS) { holder, side, direction ->
+            GateDiodePart(WRParts.GATE_DIODE, holder, side, 0u, direction, 0, 0, 0)
+        }
+    }
+    val GATE_NOT by lazy {
+        SimpleGateItem(WIRED_REDSTONE_ITEM_SETTINGS) { holder, side, direction ->
+            GateNotPart(WRParts.GATE_NOT, holder, side, 0u, direction, 0, 15, 0)
+        }
+    }
 
     fun init() {
         register(RED_ALLOY_WIRE, "red_alloy_wire")
@@ -93,6 +105,7 @@ object WRItems {
         register(BLACK_BUNDLED_CABLE, "black_bundled_cable")
 
         register(GATE_DIODE, "gate_diode")
+        register(GATE_NOT, "gate_not")
     }
 
     private fun register(item: Item, name: String) {

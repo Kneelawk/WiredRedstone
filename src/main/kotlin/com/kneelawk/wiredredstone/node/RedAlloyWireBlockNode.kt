@@ -6,11 +6,9 @@ import com.kneelawk.graphlib.graph.NodeView
 import com.kneelawk.graphlib.util.SidedPos
 import com.kneelawk.graphlib.wire.SidedWireBlockNode
 import com.kneelawk.graphlib.wire.WireConnectionDiscoverers
-import com.kneelawk.graphlib.wire.WireConnectionType
 import com.kneelawk.wiredredstone.part.RedAlloyWirePart
 import com.kneelawk.wiredredstone.part.SidedPart
 import com.kneelawk.wiredredstone.util.*
-import com.kneelawk.wiredredstone.util.NetNode
 import net.minecraft.nbt.NbtByte
 import net.minecraft.nbt.NbtElement
 import net.minecraft.server.world.ServerWorld
@@ -21,6 +19,10 @@ import net.minecraft.world.BlockView
 import net.minecraft.world.World
 
 data class RedAlloyWireBlockNode(private val side: Direction) : SidedWireBlockNode, RedstoneCarrierBlockNode {
+
+    private val filter =
+        RedstoneCarrierFilter.and(WireBlockageFilter(side, RedAlloyWirePart.WIRE_WIDTH, RedAlloyWirePart.WIRE_HEIGHT))
+
     override val redstoneType = RedstoneWireType.RedAlloy
 
     override fun getSide(): Direction = side
@@ -31,11 +33,11 @@ data class RedAlloyWireBlockNode(private val side: Direction) : SidedWireBlockNo
     }
 
     override fun findConnections(world: ServerWorld, nv: NodeView, pos: BlockPos): Collection<NetNode> {
-        return WireConnectionDiscoverers.wireFindConnections(this, world, nv, pos, RedstoneCarrierFilter)
+        return WireConnectionDiscoverers.wireFindConnections(this, world, nv, pos, filter)
     }
 
     override fun canConnect(world: ServerWorld, nodeView: NodeView, pos: BlockPos, other: NetNode): Boolean {
-        return WireConnectionDiscoverers.wireCanConnect(this, world, pos, RedstoneCarrierFilter, other)
+        return WireConnectionDiscoverers.wireCanConnect(this, world, pos, filter, other)
     }
 
     override fun getState(world: World, self: NetNode): Int {
@@ -63,14 +65,6 @@ data class RedAlloyWireBlockNode(private val side: Direction) : SidedWireBlockNo
 
     override fun toTag(): NbtElement? {
         return NbtByte.of(side.id.toByte())
-    }
-
-    override fun canConnect(
-        world: ServerWorld, pos: BlockPos, inDirection: Direction, type: WireConnectionType, other: NetNode
-    ): Boolean {
-        return ConnectableUtils.canWireConnect(
-            world, pos, inDirection, type, side, RedAlloyWirePart.WIRE_WIDTH, RedAlloyWirePart.WIRE_HEIGHT
-        )
     }
 
     object Decoder : BlockNodeDecoder {

@@ -1,0 +1,8 @@
+{
+  "credit": "Made with Blockbench",
+  "parent": "wiredredstone:block/gate_not/redstone_output",
+  "textures": {
+    "redstone": "wiredredstone:block/gate_not/redstone_output_off",
+    "torch": "wiredredstone:block/redstone_torch_off"
+  }
+}

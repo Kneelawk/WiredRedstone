@@ -11,7 +11,7 @@ import com.kneelawk.graphlib.wire.WireConnectionDiscoverers
 import com.kneelawk.graphlib.wire.WireConnectionType
 import com.kneelawk.wiredredstone.WRLog
 import com.kneelawk.wiredredstone.part.AbstractGatePart
-import com.kneelawk.wiredredstone.part.GateDiodePart
+import com.kneelawk.wiredredstone.part.GateNotPart
 import com.kneelawk.wiredredstone.part.SidedPart
 import com.kneelawk.wiredredstone.util.*
 import net.minecraft.nbt.NbtCompound
@@ -24,9 +24,8 @@ import net.minecraft.world.BlockView
 import net.minecraft.world.World
 import kotlin.math.max
 
-sealed class GateDiodeBlockNode : SidedWireBlockNode, RedstoneCarrierBlockNode {
+sealed class GateNotBlockNode : SidedWireBlockNode, RedstoneCarrierBlockNode {
     private val filter by lazy {
-        // must be lazy or this would be initialized before side
         RedstoneCarrierFilter.and(
             WireCornerBlockageFilter(side, AbstractGatePart.CONNECTION_WIDTH, AbstractGatePart.CONNECTION_HEIGHT)
         )
@@ -36,12 +35,12 @@ sealed class GateDiodeBlockNode : SidedWireBlockNode, RedstoneCarrierBlockNode {
 
     protected abstract val typeByte: Byte
 
-    override fun getTypeId(): Identifier = WRBlockNodes.GATE_DIODE_ID
+    override fun getTypeId(): Identifier = WRBlockNodes.GATE_NOT_ID
 
-    protected abstract fun getConnectDirection(part: GateDiodePart): Direction
+    protected abstract fun getConnectDirection(part: GateNotPart): Direction
 
-    protected fun getPart(world: BlockView, pos: BlockPos): GateDiodePart? {
-        return SidedPart.getPart(world, SidedPos(pos, side)) as? GateDiodePart
+    protected fun getPart(world: BlockView, pos: BlockPos): GateNotPart? {
+        return SidedPart.getPart(world, SidedPos(pos, side)) as? GateNotPart
     }
 
     override fun toTag(): NbtElement? {
@@ -76,11 +75,9 @@ sealed class GateDiodeBlockNode : SidedWireBlockNode, RedstoneCarrierBlockNode {
         getPart(world, pos)?.updateConnections()
     }
 
-    data class Input(private val side: Direction) : GateDiodeBlockNode() {
+    data class Input(private val side: Direction) : GateNotBlockNode() {
         companion object {
-            // This is just to reduce the likelihood of hash collisions with Output
-            private const val HASH_SALT = -807492579
-
+            private const val HASH_SALT = -1891208086
             const val TYPE_BYTE = 0.toByte()
         }
 
@@ -88,7 +85,7 @@ sealed class GateDiodeBlockNode : SidedWireBlockNode, RedstoneCarrierBlockNode {
 
         override fun getSide(): Direction = side
 
-        override fun getConnectDirection(part: GateDiodePart): Direction = part.getInputSide()
+        override fun getConnectDirection(part: GateNotPart): Direction = part.getInputSide()
 
         override fun getState(world: World, self: NetNode): Int = 0
 
@@ -98,12 +95,7 @@ sealed class GateDiodeBlockNode : SidedWireBlockNode, RedstoneCarrierBlockNode {
 
         override fun getInput(world: World, self: NetNode): Int {
             val part = getPart(world, self.pos) ?: return 0
-            val input = part.calculateInputPower()
-
-            // Even though this gate's input does not output any signal to anything else in the network,
-            // the gate's input itself is a network of one node, meaning that what's returned here gets
-            // sent to setState anyways.
-            return input
+            return part.calculateInputPower()
         }
 
         override fun equals(other: Any?): Boolean {
@@ -122,17 +114,16 @@ sealed class GateDiodeBlockNode : SidedWireBlockNode, RedstoneCarrierBlockNode {
         }
     }
 
-    data class Output(private val side: Direction) : GateDiodeBlockNode() {
+    data class Output(private val side: Direction) : GateNotBlockNode() {
         companion object {
-            // This is just to reduce the likelihood of hash collisions with Input
-            private const val HASH_SALT = 1863451528
+            private const val HASH_SALT = -361062015
         }
 
         override val typeByte = 1.toByte()
 
         override fun getSide(): Direction = side
 
-        override fun getConnectDirection(part: GateDiodePart): Direction = part.getOutputSide()
+        override fun getConnectDirection(part: GateNotPart): Direction = part.getOutputSide()
 
         override fun getState(world: World, self: NetNode): Int {
             return getPart(world, self.pos)?.getTotalOutputPower() ?: 0
@@ -144,10 +135,6 @@ sealed class GateDiodeBlockNode : SidedWireBlockNode, RedstoneCarrierBlockNode {
 
         override fun getInput(world: World, self: NetNode): Int {
             val part = getPart(world, self.pos) ?: return 0
-
-            // This is asking about input to the network, so we return either our output value or the value calculated
-            // by redstone in the world.
-
             return max(part.outputPower, part.calculateOutputReversePower())
         }
 

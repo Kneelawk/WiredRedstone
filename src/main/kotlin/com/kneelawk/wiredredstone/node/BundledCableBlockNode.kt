@@ -6,10 +6,12 @@ import com.kneelawk.graphlib.graph.NodeView
 import com.kneelawk.graphlib.util.SidedPos
 import com.kneelawk.graphlib.wire.SidedWireBlockNode
 import com.kneelawk.graphlib.wire.WireConnectionDiscoverers
-import com.kneelawk.graphlib.wire.WireConnectionType
 import com.kneelawk.wiredredstone.part.BundledCablePart
 import com.kneelawk.wiredredstone.part.SidedPart
-import com.kneelawk.wiredredstone.util.*
+import com.kneelawk.wiredredstone.util.NetNode
+import com.kneelawk.wiredredstone.util.RedstoneCarrierFilter
+import com.kneelawk.wiredredstone.util.RedstoneWireType
+import com.kneelawk.wiredredstone.util.WireBlockageFilter
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.nbt.NbtElement
 import net.minecraft.server.world.ServerWorld
@@ -23,6 +25,9 @@ import net.minecraft.world.World
 data class BundledCableBlockNode(private val side: Direction, val color: DyeColor?, val inner: DyeColor) :
     SidedWireBlockNode, RedstoneCarrierBlockNode {
 
+    private val filter =
+        RedstoneCarrierFilter.and(WireBlockageFilter(side, BundledCablePart.WIRE_WIDTH, BundledCablePart.WIRE_HEIGHT))
+
     override val redstoneType = RedstoneWireType.Bundled(color, inner)
 
     override fun getSide(): Direction = side
@@ -33,13 +38,13 @@ data class BundledCableBlockNode(private val side: Direction, val color: DyeColo
     }
 
     override fun findConnections(world: ServerWorld, nv: NodeView, pos: BlockPos): Collection<NetNode> {
-        return WireConnectionDiscoverers.wireFindConnections(this, world, nv, pos, RedstoneCarrierFilter)
+        return WireConnectionDiscoverers.wireFindConnections(this, world, nv, pos, filter)
     }
 
     override fun canConnect(
         world: ServerWorld, nodeView: NodeView, pos: BlockPos, other: NetNode
     ): Boolean {
-        return WireConnectionDiscoverers.wireCanConnect(this, world, pos, RedstoneCarrierFilter, other)
+        return WireConnectionDiscoverers.wireCanConnect(this, world, pos, filter, other)
     }
 
     override fun getState(world: World, self: NetNode): Int {
@@ -56,15 +61,6 @@ data class BundledCableBlockNode(private val side: Direction, val color: DyeColo
 
     override fun onChanged(world: ServerWorld, pos: BlockPos) {
         getPart(world, pos)?.handleUpdates()
-    }
-
-    override fun canConnect(
-        world: ServerWorld, pos: BlockPos, inDirection: Direction, connectionType: WireConnectionType,
-        other: NetNode
-    ): Boolean {
-        return ConnectableUtils.canWireConnect(
-            world, pos, inDirection, connectionType, side, BundledCablePart.WIRE_WIDTH, BundledCablePart.WIRE_HEIGHT
-        )
     }
 
     override fun toTag(): NbtElement {

@@ -1,9 +1,8 @@
 package com.kneelawk.wiredredstone.item
 
+import alexiil.mc.lib.multipart.api.AbstractPart
 import alexiil.mc.lib.multipart.api.MultipartContainer
 import alexiil.mc.lib.multipart.api.MultipartHolder
-import com.kneelawk.wiredredstone.part.GateDiodePart
-import com.kneelawk.wiredredstone.part.WRParts
 import com.kneelawk.wiredredstone.util.PlacementUtils
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
@@ -13,7 +12,8 @@ import net.minecraft.item.ItemUsageContext
 import net.minecraft.util.ActionResult
 import net.minecraft.util.math.Direction
 
-class GateDiodeItem(settings: Settings) : Item(settings), GateItem {
+class SimpleGateItem(settings: Settings, private val creator: (MultipartHolder, Direction, Direction) -> AbstractPart) :
+    Item(settings), GateItem {
     override fun useOnBlock(context: ItemUsageContext): ActionResult {
         val world = context.world
         if (world.isClient) {
@@ -32,9 +32,9 @@ class GateDiodeItem(settings: Settings) : Item(settings), GateItem {
         return PlacementUtils.tryPlaceGate(context, ::creator)
     }
 
-    private fun creator(side: Direction, direction: Direction): (MultipartHolder) -> GateDiodePart {
+    private fun creator(side: Direction, direction: Direction): (MultipartHolder) -> AbstractPart {
         return { holder ->
-            GateDiodePart(WRParts.GATE_DIODE, holder, side, 0u, direction, 0, 0, 0)
+            creator(holder, side, direction)
         }
     }
 }

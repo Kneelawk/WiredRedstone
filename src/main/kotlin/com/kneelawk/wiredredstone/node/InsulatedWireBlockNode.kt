@@ -8,11 +8,9 @@ import com.kneelawk.graphlib.graph.struct.Node
 import com.kneelawk.graphlib.util.SidedPos
 import com.kneelawk.graphlib.wire.SidedWireBlockNode
 import com.kneelawk.graphlib.wire.WireConnectionDiscoverers
-import com.kneelawk.graphlib.wire.WireConnectionType
 import com.kneelawk.wiredredstone.part.InsulatedWirePart
 import com.kneelawk.wiredredstone.part.SidedPart
 import com.kneelawk.wiredredstone.util.*
-import com.kneelawk.wiredredstone.util.NetNode
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.nbt.NbtElement
 import net.minecraft.server.world.ServerWorld
@@ -26,6 +24,9 @@ import net.minecraft.world.World
 data class InsulatedWireBlockNode(private val side: Direction, val color: DyeColor) : SidedWireBlockNode,
     RedstoneCarrierBlockNode {
 
+    private val filter =
+        RedstoneCarrierFilter.and(WireBlockageFilter(side, InsulatedWirePart.WIRE_WIDTH, InsulatedWirePart.WIRE_HEIGHT))
+
     override val redstoneType = RedstoneWireType.Colored(color)
 
     override fun getSide(): Direction = side
@@ -36,13 +37,13 @@ data class InsulatedWireBlockNode(private val side: Direction, val color: DyeCol
     }
 
     override fun findConnections(world: ServerWorld, nv: NodeView, pos: BlockPos): Collection<NetNode> {
-        return WireConnectionDiscoverers.wireFindConnections(this, world, nv, pos, RedstoneCarrierFilter)
+        return WireConnectionDiscoverers.wireFindConnections(this, world, nv, pos, filter)
     }
 
     override fun canConnect(
         world: ServerWorld, nodeView: NodeView, pos: BlockPos, other: Node<BlockNodeWrapper<*>>
     ): Boolean {
-        return WireConnectionDiscoverers.wireCanConnect(this, world, pos, RedstoneCarrierFilter, other)
+        return WireConnectionDiscoverers.wireCanConnect(this, world, pos, filter, other)
     }
 
     override fun getState(world: World, self: NetNode): Int {
@@ -65,15 +66,6 @@ data class InsulatedWireBlockNode(private val side: Direction, val color: DyeCol
     override fun onChanged(world: ServerWorld, pos: BlockPos) {
         RedstoneLogic.scheduleUpdate(world, pos)
         getPart(world, pos)?.updateConnections()
-    }
-
-    override fun canConnect(
-        world: ServerWorld, pos: BlockPos, inDirection: Direction, connectionType: WireConnectionType,
-        other: Node<BlockNodeWrapper<*>>
-    ): Boolean {
-        return ConnectableUtils.canWireConnect(
-            world, pos, inDirection, connectionType, side, InsulatedWirePart.WIRE_WIDTH, InsulatedWirePart.WIRE_HEIGHT
-        )
     }
 
     override fun toTag(): NbtElement {

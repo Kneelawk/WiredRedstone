@@ -2,11 +2,10 @@
   "credit": "Made with Blockbench",
   "parent": "wiredredstone:block/flat",
   "textures": {
-    "particle": "wiredredstone:block/gate_diode/particle",
-    "background": "wiredredstone:block/gate_diode/background",
+    "particle": "wiredredstone:block/gate_not/particle",
+    "background": "wiredredstone:block/gate_not/background",
     "base": "wiredredstone:block/gate_base",
-    "redstone_input": "wiredredstone:block/gate_diode/redstone_input_off",
-    "redstone_output": "wiredredstone:block/gate_diode/redstone_output_off"
+    "torch": "wiredredstone:block/redstone_torch_off"
   },
   "elements": [
     {
@@ -22,17 +21,21 @@
       }
     },
     {
-      "from": [ 0, 0, 0 ],
-      "to": [ 16, 2, 16 ],
+      "from": [ 7, 2, 2 ],
+      "to": [ 9, 3, 18 ],
+      "shade": false,
       "faces": {
-        "up": { "uv": [ 0, 0, 16, 16 ], "texture": "#redstone_input" }
+        "east": { "uv": [ 0, 9, 16, 10 ], "texture": "#torch" },
+        "west": { "uv": [ 0, 9, 16, 10 ], "texture": "#torch" }
       }
     },
     {
-      "from": [ 0, 0, 0 ],
-      "to": [ 16, 2, 16 ],
+      "from": [ 0, 2, 9 ],
+      "to": [ 16, 3, 11 ],
+      "shade": false,
       "faces": {
-        "up": { "uv": [ 0, 0, 16, 16 ], "texture": "#redstone_output" }
+        "north": { "uv": [ 0, 9, 16, 10 ], "texture": "#torch" },
+        "south": { "uv": [ 0, 9, 16, 10 ], "texture": "#torch" }
       }
     }
   ]

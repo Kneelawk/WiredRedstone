@@ -7,8 +7,8 @@ import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.NetByteBuf
 import com.kneelawk.graphlib.graph.BlockNode
 import com.kneelawk.wiredredstone.item.WRItems
-import com.kneelawk.wiredredstone.node.GateDiodeBlockNode
-import com.kneelawk.wiredredstone.part.key.GateDiodePartKey
+import com.kneelawk.wiredredstone.node.GateNotBlockNode
+import com.kneelawk.wiredredstone.part.key.GateNotPartKey
 import com.kneelawk.wiredredstone.util.LootTableUtil
 import com.kneelawk.wiredredstone.util.getWorld
 import net.minecraft.item.ItemStack
@@ -17,12 +17,7 @@ import net.minecraft.nbt.NbtCompound
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.Direction
 
-class GateDiodePart : AbstractInputOutputGatePart {
-
-    // Gates with more inputs might find it most efficient to just have a `shouldUpdate` variable, but since there is
-    // only one input and one output and a pure function between them, we can always tell if we need an update just by
-    // looking at the two of these.
-
+class GateNotPart : AbstractInputOutputGatePart {
     constructor(
         definition: PartDefinition, holder: MultipartHolder, side: Direction, connections: UByte, direction: Direction,
         inputPower: Int, outputPower: Int, outputReversePower: Int
@@ -34,26 +29,26 @@ class GateDiodePart : AbstractInputOutputGatePart {
     )
 
     override fun createBlockNodes(): Collection<BlockNode> {
-        return listOf(GateDiodeBlockNode.Input(side), GateDiodeBlockNode.Output(side))
+        return listOf(GateNotBlockNode.Input(side), GateNotBlockNode.Output(side))
     }
 
     override fun shouldRecalculate(): Boolean {
-        return outputPower != inputPower
+        return (inputPower == 0) == (outputPower == 0)
     }
 
     override fun recalculate() {
-        outputPower = inputPower
+        outputPower = if (inputPower == 0) 15 else 0
     }
 
     override fun getModelKey(): PartModelKey {
-        return GateDiodePartKey(side, direction, connections, inputPower != 0, getTotalOutputPower() != 0)
+        return GateNotPartKey(side, direction, connections, inputPower != 0, getTotalOutputPower() != 0)
     }
 
-    override fun getPickStack(hit: BlockHitResult?): ItemStack {
-        return ItemStack(WRItems.GATE_DIODE)
+    override fun getPickStack(hitResult: BlockHitResult?): ItemStack {
+        return ItemStack(WRItems.GATE_NOT)
     }
 
     override fun addDrops(target: ItemDropTarget, context: LootContext) {
-        LootTableUtil.addPartDrops(getWorld(), target, context, WRParts.GATE_DIODE.identifier)
+        LootTableUtil.addPartDrops(getWorld(), target, context, WRParts.GATE_NOT.identifier)
     }
 }

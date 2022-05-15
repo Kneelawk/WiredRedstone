@@ -18,6 +18,8 @@ import net.minecraft.util.shape.VoxelShape
 import net.minecraft.world.BlockView
 import kotlin.streams.asSequence
 
+// Significant parts of this were copied or inspired by 2xsaiko's HCTM-Base.
+
 object ConnectableUtils {
 
     /**
@@ -158,6 +160,24 @@ object ConnectableUtils {
     }
 
     /**
+     * Checks whether a wire on the given side, of the given dimensions, can make a corner connection in the given
+     * direction.
+     */
+    fun canWireCornerConnect(
+        world: BlockView, pos: BlockPos, inDirection: Direction, type: WireConnectionType, wireSide: Direction,
+        wireWidth: Double, wireHeight: Double
+    ): Boolean {
+        val cardinal = RotationUtils.unrotatedDirection(wireSide, inDirection)
+
+        return if (type == WireConnectionType.CORNER) {
+            val outside =
+                BoundingBoxUtils.getWireOutsideConnectionShape(wireSide, cardinal, wireWidth, wireHeight, true)
+                    ?: return true
+            !checkOutside(world, pos.offset(inDirection), outside)
+        } else true
+    }
+
+    /**
      * Checks whether a wire on the given side, of the given dimensions, can connect in a given direction.
      */
     fun canWireConnect(
@@ -175,11 +195,8 @@ object ConnectableUtils {
             val outside =
                 BoundingBoxUtils.getWireOutsideConnectionShape(wireSide, cardinal, wireWidth, wireHeight, true)
                     ?: return true
-            val checkOutside = checkOutside(world, pos.offset(inDirection), outside)
-            return !checkOutside
-        } else {
-            true
-        }
+            return !checkOutside(world, pos.offset(inDirection), outside)
+        } else true
     }
 
     /**

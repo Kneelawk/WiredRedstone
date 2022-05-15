@@ -37,7 +37,7 @@ object WRShaders {
         val client = MinecraftClient.getInstance()
         client.player?.let { player ->
             val world = player.world
-            placementDelta = world.time + tickDelta
+            placementDelta = (world.time % 100L) + tickDelta
         }
 
         // Setup shader uniforms
