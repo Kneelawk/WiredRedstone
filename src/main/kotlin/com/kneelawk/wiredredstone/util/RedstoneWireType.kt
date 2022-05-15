@@ -11,7 +11,10 @@ sealed class RedstoneWireType {
         if (this == other) return true
         if (this == RedAlloy && other is Colored || this is Colored && other == RedAlloy) return true
         if (this is Colored && other is Bundled && other.inner == this.color || this is Bundled && other is Colored && this.inner == other.color) return true
-        if (other is Bundled && this == Bundled(null, other.inner) || this is Bundled && other == Bundled(null, this.inner)) return true
+        if (other is Bundled && this == Bundled(null, other.inner) || this is Bundled && other == Bundled(
+                null, this.inner
+            )
+        ) return true
         return false
     }
 }

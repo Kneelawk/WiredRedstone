@@ -3,7 +3,6 @@ package com.kneelawk.wiredredstone.util
 import alexiil.mc.lib.multipart.api.AbstractPart
 import alexiil.mc.lib.multipart.api.property.MultipartPropertyContainer
 import net.minecraft.block.entity.BlockEntity
-import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
 /**

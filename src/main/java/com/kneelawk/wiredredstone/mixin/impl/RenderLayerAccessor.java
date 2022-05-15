@@ -9,8 +9,8 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 public interface RenderLayerAccessor {
     @Invoker
     static RenderLayer.MultiPhase callOf(String name, VertexFormat vertexFormat, VertexFormat.DrawMode drawMode,
-                          int expectedBufferSize, boolean hasCrumbling, boolean translucent,
-                          RenderLayer.MultiPhaseParameters phases) {
+                                         int expectedBufferSize, boolean hasCrumbling, boolean translucent,
+                                         RenderLayer.MultiPhaseParameters phases) {
         throw new IllegalStateException("RenderLayerAccessor mixin error");
     }
 }

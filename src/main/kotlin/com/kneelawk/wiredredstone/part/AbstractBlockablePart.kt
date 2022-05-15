@@ -17,13 +17,17 @@ abstract class AbstractBlockablePart : AbstractConnectablePart, BlockablePart {
     var blockage: UByte
         private set
 
-    constructor(definition: PartDefinition, holder: MultipartHolder, side: Direction, connections: UByte, blockage: UByte) : super(
+    constructor(
+        definition: PartDefinition, holder: MultipartHolder, side: Direction, connections: UByte, blockage: UByte
+    ) : super(
         definition, holder, side, connections
     ) {
         this.blockage = blockage
     }
 
-    constructor(definition: PartDefinition, holder: MultipartHolder, tag: NbtCompound) : super(definition, holder, tag) {
+    constructor(definition: PartDefinition, holder: MultipartHolder, tag: NbtCompound) : super(
+        definition, holder, tag
+    ) {
         blockage = tag.maybeGetByte("blockage")?.toUByte() ?: BlockageUtils.UNBLOCKED
     }
 

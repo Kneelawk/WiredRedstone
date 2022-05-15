@@ -21,7 +21,10 @@ val baseBottomZ = ImageIO.read(File(whiteDir, "bottom_z.png"))
 
 println("Base images loaded.")
 
-val otherColors = listOf("orange", "magenta", "light_blue", "yellow", "lime", "pink", "gray", "light_gray", "cyan", "purple", "blue", "brown", "green", "red", "black")
+val otherColors = listOf(
+    "orange", "magenta", "light_blue", "yellow", "lime", "pink", "gray", "light_gray", "cyan", "purple", "blue",
+    "brown", "green", "red", "black"
+)
 
 fun Graphics2D.drawCross(light: Int, medium: Int, dark: Int) {
     setColor(Color(light))

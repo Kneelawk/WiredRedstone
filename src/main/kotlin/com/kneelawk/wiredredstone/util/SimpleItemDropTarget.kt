@@ -1,7 +1,6 @@
 package com.kneelawk.wiredredstone.util
 
 import alexiil.mc.lib.multipart.api.AbstractPart
-import com.kneelawk.wiredredstone.WRLog
 import net.minecraft.entity.ItemEntity
 import net.minecraft.item.ItemStack
 import net.minecraft.server.world.ServerWorld

@@ -1,66 +1,66 @@
 {
-	"credit": "Made with Blockbench",
-	"parent": "wiredredstone:block/flat",
-	"textures": {
-		"lower_side": "wiredredstone:block/bundled_cable/lower_side",
-		"upper_side": "wiredredstone:block/bundled_cable/upper_side",
-		"particle": "wiredredstone:block/bundled_cable/top_cross",
-		"top_cross": "wiredredstone:block/bundled_cable/top_cross",
-		"end": "wiredredstone:block/bundled_cable/end",
-		"bottom_cross": "wiredredstone:block/bundled_cable/bottom_cross"
-	},
-	"elements": [
-		{
-			"from": [5, 0, 5],
-			"to": [11, 4, 11],
-			"faces": {
-				"up": {"uv": [5, 5, 11, 11], "texture": "#top_cross"},
-				"down": {"uv": [5, 11, 11, 5], "texture": "#bottom_cross"}
-			}
-		},
-		{
-			"from": [5, 0, 11],
-			"to": [11, 4, 16],
-			"faces": {
-				"east": {"uv": [0, 5, 5, 9], "texture": "#upper_side"},
-				"south": {"uv": [5, 5, 11, 9], "texture": "#end"},
-				"west": {"uv": [11, 5, 16, 9], "texture": "#lower_side"},
-				"up": {"uv": [5, 11, 11, 16], "texture": "#top_cross"},
-				"down": {"uv": [5, 16, 11, 11], "texture": "#bottom_cross"}
-			}
-		},
-		{
-			"from": [0, 0, 5],
-			"to": [5, 4, 11],
-			"faces": {
-				"north": {"uv": [11, 5, 16, 9], "texture": "#lower_side"},
-				"south": {"uv": [0, 5, 5, 9], "texture": "#upper_side"},
-				"west": {"uv": [5, 5, 11, 9], "texture": "#end"},
-				"up": {"uv": [0, 5, 5, 11], "texture": "#top_cross"},
-				"down": {"uv": [0, 11, 5, 5], "texture": "#bottom_cross"}
-			}
-		},
-		{
-			"from": [11, 0, 5],
-			"to": [16, 4, 11],
-			"faces": {
-				"north": {"uv": [0, 5, 5, 9], "texture": "#lower_side"},
-				"east": {"uv": [11, 5, 5, 9], "texture": "#end"},
-				"south": {"uv": [11, 5, 16, 9], "texture": "#upper_side"},
-				"up": {"uv": [11, 5, 16, 11], "texture": "#top_cross"},
-				"down": {"uv": [11, 11, 16, 5], "texture": "#bottom_cross"}
-			}
-		},
-		{
-			"from": [5, 0, 0],
-			"to": [11, 4, 5],
-			"faces": {
-				"north": {"uv": [11, 5, 5, 9], "texture": "#end"},
-				"east": {"uv": [11, 5, 16, 9], "texture": "#upper_side"},
-				"west": {"uv": [0, 5, 5, 9], "texture": "#lower_side"},
-				"up": {"uv": [5, 0, 11, 5], "texture": "#top_cross"},
-				"down": {"uv": [5, 5, 11, 0], "texture": "#bottom_cross"}
-			}
-		}
-	]
+  "credit": "Made with Blockbench",
+  "parent": "wiredredstone:block/flat",
+  "textures": {
+    "lower_side": "wiredredstone:block/bundled_cable/lower_side",
+    "upper_side": "wiredredstone:block/bundled_cable/upper_side",
+    "particle": "wiredredstone:block/bundled_cable/top_cross",
+    "top_cross": "wiredredstone:block/bundled_cable/top_cross",
+    "end": "wiredredstone:block/bundled_cable/end",
+    "bottom_cross": "wiredredstone:block/bundled_cable/bottom_cross"
+  },
+  "elements": [
+    {
+      "from": [ 5, 0, 5 ],
+      "to": [ 11, 4, 11 ],
+      "faces": {
+        "up": { "uv": [ 5, 5, 11, 11 ], "texture": "#top_cross" },
+        "down": { "uv": [ 5, 11, 11, 5 ], "texture": "#bottom_cross" }
+      }
+    },
+    {
+      "from": [ 5, 0, 11 ],
+      "to": [ 11, 4, 16 ],
+      "faces": {
+        "east": { "uv": [ 0, 5, 5, 9 ], "texture": "#upper_side" },
+        "south": { "uv": [ 5, 5, 11, 9 ], "texture": "#end" },
+        "west": { "uv": [ 11, 5, 16, 9 ], "texture": "#lower_side" },
+        "up": { "uv": [ 5, 11, 11, 16 ], "texture": "#top_cross" },
+        "down": { "uv": [ 5, 16, 11, 11 ], "texture": "#bottom_cross" }
+      }
+    },
+    {
+      "from": [ 0, 0, 5 ],
+      "to": [ 5, 4, 11 ],
+      "faces": {
+        "north": { "uv": [ 11, 5, 16, 9 ], "texture": "#lower_side" },
+        "south": { "uv": [ 0, 5, 5, 9 ], "texture": "#upper_side" },
+        "west": { "uv": [ 5, 5, 11, 9 ], "texture": "#end" },
+        "up": { "uv": [ 0, 5, 5, 11 ], "texture": "#top_cross" },
+        "down": { "uv": [ 0, 11, 5, 5 ], "texture": "#bottom_cross" }
+      }
+    },
+    {
+      "from": [ 11, 0, 5 ],
+      "to": [ 16, 4, 11 ],
+      "faces": {
+        "north": { "uv": [ 0, 5, 5, 9 ], "texture": "#lower_side" },
+        "east": { "uv": [ 11, 5, 5, 9 ], "texture": "#end" },
+        "south": { "uv": [ 11, 5, 16, 9 ], "texture": "#upper_side" },
+        "up": { "uv": [ 11, 5, 16, 11 ], "texture": "#top_cross" },
+        "down": { "uv": [ 11, 11, 16, 5 ], "texture": "#bottom_cross" }
+      }
+    },
+    {
+      "from": [ 5, 0, 0 ],
+      "to": [ 11, 4, 5 ],
+      "faces": {
+        "north": { "uv": [ 11, 5, 5, 9 ], "texture": "#end" },
+        "east": { "uv": [ 11, 5, 16, 9 ], "texture": "#upper_side" },
+        "west": { "uv": [ 0, 5, 5, 9 ], "texture": "#lower_side" },
+        "up": { "uv": [ 5, 0, 11, 5 ], "texture": "#top_cross" },
+        "down": { "uv": [ 5, 5, 11, 0 ], "texture": "#bottom_cross" }
+      }
+    }
+  ]
 }

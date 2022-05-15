@@ -9,8 +9,8 @@ import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.NetByteBuf
 import com.kneelawk.graphlib.graph.BlockNode
 import com.kneelawk.wiredredstone.item.WRItems
-import com.kneelawk.wiredredstone.part.key.RedAlloyWirePartKey
 import com.kneelawk.wiredredstone.node.RedAlloyWireBlockNode
+import com.kneelawk.wiredredstone.part.key.RedAlloyWirePartKey
 import com.kneelawk.wiredredstone.util.*
 import net.minecraft.block.Blocks
 import net.minecraft.item.ItemStack

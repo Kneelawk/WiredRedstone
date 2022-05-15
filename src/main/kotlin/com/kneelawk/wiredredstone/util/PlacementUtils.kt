@@ -4,7 +4,6 @@ import alexiil.mc.lib.multipart.api.AbstractPart
 import alexiil.mc.lib.multipart.api.MultipartContainer
 import alexiil.mc.lib.multipart.api.MultipartHolder
 import alexiil.mc.lib.multipart.api.MultipartUtil
-import com.kneelawk.wiredredstone.part.RedAlloyWirePart
 import net.minecraft.block.BlockState
 import net.minecraft.item.ItemUsageContext
 import net.minecraft.sound.SoundCategory

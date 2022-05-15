@@ -1,10 +1,10 @@
 {
-	"credit": "Made with Blockbench",
-	"parent": "wiredredstone:item/bundled_cable",
-	"textures": {
-		"top_cross": "wiredredstone:block/bundled_cable/light_gray/top_cross",
-		"bottom_cross": "wiredredstone:block/bundled_cable/light_gray/bottom_cross",
-		"lower_side": "wiredredstone:block/bundled_cable/light_gray/lower_side",
-		"upper_side": "wiredredstone:block/bundled_cable/light_gray/upper_side"
-	}
+  "credit": "Made with Blockbench",
+  "parent": "wiredredstone:item/bundled_cable",
+  "textures": {
+    "top_cross": "wiredredstone:block/bundled_cable/light_gray/top_cross",
+    "bottom_cross": "wiredredstone:block/bundled_cable/light_gray/bottom_cross",
+    "lower_side": "wiredredstone:block/bundled_cable/light_gray/lower_side",
+    "upper_side": "wiredredstone:block/bundled_cable/light_gray/upper_side"
+  }
 }

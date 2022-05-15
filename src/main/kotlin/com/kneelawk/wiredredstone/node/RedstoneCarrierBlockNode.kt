@@ -1,8 +1,8 @@
 package com.kneelawk.wiredredstone.node
 
 import com.kneelawk.graphlib.graph.BlockNode
-import com.kneelawk.wiredredstone.util.RedstoneWireType
 import com.kneelawk.wiredredstone.util.NetNode
+import com.kneelawk.wiredredstone.util.RedstoneWireType
 import net.minecraft.world.World
 
 interface RedstoneCarrierBlockNode : BlockNode {
