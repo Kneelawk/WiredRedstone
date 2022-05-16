@@ -2,7 +2,6 @@
   "credit": "Made with Blockbench",
   "parent": "wiredredstone:block/gate_not/redstone_output",
   "textures": {
-    "redstone": "wiredredstone:block/gate_not/redstone_output_on",
-    "torch": "wiredredstone:block/redstone_torch"
+    "redstone": "wiredredstone:block/gate_not/redstone_output_on"
   }
 }

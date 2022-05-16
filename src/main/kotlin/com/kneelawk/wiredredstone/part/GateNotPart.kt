@@ -41,7 +41,9 @@ class GateNotPart : AbstractInputOutputGatePart {
     }
 
     override fun getModelKey(): PartModelKey {
-        return GateNotPartKey(side, direction, connections, inputPower != 0, getTotalOutputPower() != 0)
+        return GateNotPartKey(
+            side, direction, connections, inputPower != 0, outputPower != 0, getTotalOutputPower() != 0
+        )
     }
 
     override fun getPickStack(hitResult: BlockHitResult?): ItemStack {
