@@ -67,23 +67,6 @@ dependencies {
         exclude("net.fabricmc.fabric-api")
     }
 
-    // Select a renderer
-    val renderer = System.getProperty("com.kneelawk.wiredredstone.renderer", "indigo").toLowerCase()
-
-    if (renderer == "canvas") {
-        println("Using 'Canvas' renderer.")
-
-        val vramExtension: String by project
-        val canvasVersion: String by project
-        modRuntimeOnly("io.vram:canvas-fabric-$vramExtension:$canvasVersion") {
-            exclude("net.fabricmc.fabric-api")
-        }
-    }
-
-    if (renderer == "indigo") {
-        println("Using 'Indigo' renderer.")
-    }
-
     // Quiltflower
     // Probably best to just use the IDEA plugin instead
 //    val quiltflowerVersion: String by project
