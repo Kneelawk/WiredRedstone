@@ -6,3 +6,4 @@ Changes:
 
 * Fixes visual bug where powering a Not Gate backwards would light up its torch, even if it was being powered forwards
   as well.
+* Updates GraphLib to v0.1.5+1.18.2.
