@@ -29,6 +29,7 @@ repositories {
     maven("https://maven.vram.io/") { name = "VRAM" }
     maven("https://maven.shedaniel.me/") { name = "shedaniel" }
     maven("https://kneelawk.com/maven/") { name = "Kneelawk" }
+    maven("https://maven.bai.lol") { name = "WTHIT" }
 //    mavenLocal()
 }
 
@@ -57,6 +58,10 @@ dependencies {
     modImplementation("com.kneelawk:graphlib:$graphlibVersion")
     include("com.kneelawk:graphlib:$graphlibVersion")
 
+    // WTHIT API
+    val wthitVersion: String by project
+    modCompileOnly("mcp.mobius.waila:wthit-api:fabric-$wthitVersion")
+
     //
     // Optional Mod Dependencies
     //
@@ -64,6 +69,11 @@ dependencies {
     // Mod Menu
     val modMenuVersion: String by project
     modRuntimeOnly("com.terraformersmc:modmenu:$modMenuVersion") {
+        exclude("net.fabricmc.fabric-api")
+    }
+
+    // WTHIT
+    modRuntimeOnly("mcp.mobius.waila:wthit:fabric-$wthitVersion") {
         exclude("net.fabricmc.fabric-api")
     }
 
