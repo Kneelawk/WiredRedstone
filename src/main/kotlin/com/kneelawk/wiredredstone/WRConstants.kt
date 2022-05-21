@@ -1,5 +1,7 @@
 package com.kneelawk.wiredredstone
 
+import net.minecraft.text.MutableText
+import net.minecraft.text.TranslatableText
 import net.minecraft.util.Identifier
 
 object WRConstants {
@@ -13,5 +15,13 @@ object WRConstants {
 
     fun str(path: String): String {
         return "$MOD_ID:$path"
+    }
+
+    fun tt(prefix: String, path: String): MutableText {
+        return TranslatableText("$prefix.$MOD_ID.$path")
+    }
+
+    fun tooltip(path: String): MutableText {
+        return tt("tooltip", path)
     }
 }

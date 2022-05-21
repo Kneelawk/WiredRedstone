@@ -41,5 +41,13 @@
     "libnetworkstack": ">=0.6.0",
     "minecraft": "1.18.x",
     "java": ">=17"
+  },
+  "custom": {
+    "waila:plugins": [
+      {
+        "id": "wiredredstone:part_plugin",
+        "initializer": "com.kneelawk.wiredredstone.wthit.PartPlugin"
+      }
+    ]
   }
 }
