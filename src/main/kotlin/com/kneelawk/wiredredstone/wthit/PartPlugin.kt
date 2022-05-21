@@ -4,6 +4,7 @@ import alexiil.mc.lib.multipart.api.AbstractPart
 import alexiil.mc.lib.multipart.api.MultipartUtil
 import alexiil.mc.lib.multipart.impl.MultipartBlock
 import com.kneelawk.wiredredstone.WRConstants
+import com.kneelawk.wiredredstone.part.AbstractRedstoneWirePart
 import com.kneelawk.wiredredstone.part.WRPart
 import mcp.mobius.waila.api.*
 import net.minecraft.util.Formatting
@@ -15,6 +16,7 @@ class PartPlugin : IWailaPlugin, IBlockComponentProvider {
     override fun register(registrar: IRegistrar) {
         // referencing an impl class directly isn't great, but it's the only way we can select multipart blocks
         registrar.addComponent(this, TooltipPosition.HEAD, MultipartBlock::class.java)
+        registrar.addComponent(this, TooltipPosition.BODY, MultipartBlock::class.java)
         registrar.addComponent(this, TooltipPosition.TAIL, MultipartBlock::class.java)
     }
 
@@ -23,6 +25,14 @@ class PartPlugin : IWailaPlugin, IBlockComponentProvider {
             tooltip.addLine(
                 part.getPartName(accessor.hitResult as? BlockHitResult).copy()
                     .styled { it.withColor(Formatting.WHITE) })
+        }
+    }
+
+    override fun appendBody(tooltip: ITooltip, accessor: IBlockAccessor, config: IPluginConfig) {
+        getSelectedPart(accessor)?.let { part ->
+            if (part is AbstractRedstoneWirePart) {
+                tooltip.addLine(WRConstants.tooltip("redstone_wire.power", part.power))
+            }
         }
     }
 

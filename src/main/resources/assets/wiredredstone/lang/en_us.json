@@ -36,5 +36,6 @@
   "item.wiredredstone.red_bundled_cable": "Red Bundled Cable",
   "item.wiredredstone.black_bundled_cable": "Black Bundled Cable",
   "itemGroup.wiredredstone.wiredredstone": "Wired Redstone",
-  "tooltip.wiredredstone.mod_name": "Wired Redstone"
+  "tooltip.wiredredstone.mod_name": "Wired Redstone",
+  "tooltip.wiredredstone.redstone_wire.power": "Power: %d"
 }

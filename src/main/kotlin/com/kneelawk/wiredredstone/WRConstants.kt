@@ -17,11 +17,11 @@ object WRConstants {
         return "$MOD_ID:$path"
     }
 
-    fun tt(prefix: String, path: String): MutableText {
-        return TranslatableText("$prefix.$MOD_ID.$path")
+    fun tt(prefix: String, path: String, vararg args: Any?): MutableText {
+        return TranslatableText("$prefix.$MOD_ID.$path", *args)
     }
 
-    fun tooltip(path: String): MutableText {
-        return tt("tooltip", path)
+    fun tooltip(path: String, vararg args: Any?): MutableText {
+        return tt("tooltip", path, *args)
     }
 }
