@@ -45,7 +45,7 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
     )
 
     constructor(definition: PartDefinition, holder: MultipartHolder, buffer: NetByteBuf, ctx: IMsgReadCtx) : this(
-        definition, holder, Direction.byId(buffer.readByte().toInt())
+        definition, holder, Direction.byId(buffer.readFixedBits(3))
     )
 
     override fun toTag(): NbtCompound {
@@ -56,7 +56,7 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
 
     override fun writeCreationData(buffer: NetByteBuf, ctx: IMsgWriteCtx) {
         super.writeCreationData(buffer, ctx)
-        buffer.writeByte(side.id)
+        buffer.writeFixedBits(side.id, 3)
     }
 
     override fun getSidedContext(): SidedPartContext {

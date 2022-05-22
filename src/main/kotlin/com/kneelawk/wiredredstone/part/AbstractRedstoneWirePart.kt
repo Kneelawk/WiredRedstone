@@ -45,7 +45,7 @@ abstract class AbstractRedstoneWirePart : AbstractBlockablePart, PowerablePart {
     constructor(definition: PartDefinition, holder: MultipartHolder, buffer: NetByteBuf, ctx: IMsgReadCtx) : super(
         definition, holder, buffer, ctx
     ) {
-        power = buffer.readByte().toInt().coerceIn(0..15)
+        power = buffer.readFixedBits(4).coerceIn(0..15)
     }
 
     abstract fun getReceivingPower(): Int
@@ -58,17 +58,17 @@ abstract class AbstractRedstoneWirePart : AbstractBlockablePart, PowerablePart {
 
     override fun writeCreationData(buffer: NetByteBuf, ctx: IMsgWriteCtx) {
         super.writeCreationData(buffer, ctx)
-        buffer.writeByte(power)
+        buffer.writeFixedBits(power, 4)
     }
 
     override fun writeRenderData(buffer: NetByteBuf, ctx: IMsgWriteCtx) {
         super.writeRenderData(buffer, ctx)
-        buffer.writeByte(power)
+        buffer.writeFixedBits(power, 4)
     }
 
     override fun readRenderData(buffer: NetByteBuf, ctx: IMsgReadCtx) {
         super.readRenderData(buffer, ctx)
-        power = buffer.readByte().toInt().coerceIn(0..15)
+        power = buffer.readFixedBits(4).coerceIn(0..15)
     }
 
     override fun onAdded(bus: MultipartEventBus) {

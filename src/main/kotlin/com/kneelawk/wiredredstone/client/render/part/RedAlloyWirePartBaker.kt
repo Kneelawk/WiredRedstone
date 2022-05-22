@@ -1,22 +1,11 @@
 package com.kneelawk.wiredredstone.client.render.part
 
-import alexiil.mc.lib.multipart.api.render.PartRenderContext
-import com.google.common.cache.CacheBuilder
-import com.google.common.cache.CacheLoader
-import com.google.common.cache.LoadingCache
 import com.kneelawk.wiredredstone.client.render.*
 import com.kneelawk.wiredredstone.part.key.RedAlloyWirePartKey
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh
 
-object RedAlloyWirePartBaker : WRPartBaker<RedAlloyWirePartKey> {
-    private val cache: LoadingCache<RedAlloyWirePartKey, Mesh> =
-        CacheBuilder.newBuilder().build(CacheLoader.from(::makeMesh))
-
-    override fun invalidateCaches() {
-        cache.invalidateAll()
-    }
-
-    private fun makeMesh(key: RedAlloyWirePartKey): Mesh {
+object RedAlloyWirePartBaker : AbstractPartBaker<RedAlloyWirePartKey>() {
+    override fun makeMesh(key: RedAlloyWirePartKey): Mesh {
         val spriteId = if (key.powered) {
             WRSprites.RED_ALLOY_WIRE_POWERED_ID
         } else {
@@ -46,9 +35,5 @@ object RedAlloyWirePartBaker : WRPartBaker<RedAlloyWirePartKey> {
         )
 
         return builder.build()
-    }
-
-    override fun emitQuads(key: RedAlloyWirePartKey, ctx: PartRenderContext) {
-        ctx.meshConsumer().accept(cache[key])
     }
 }

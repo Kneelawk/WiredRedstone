@@ -22,6 +22,7 @@ object WRPartRenderers {
         register(BundledCablePartBaker, BundledCablePartKey::class)
         register(GateDiodePartBaker, GateDiodePartKey::class)
         register(GateNotPartBaker, GateNotPartKey::class)
+        register(GateRepeaterPartBaker, GateRepeaterPartKey::class)
 
         PartStaticModelRegisterEvent.EVENT.register { event: PartStaticModelRegisterEvent.StaticModelRenderer ->
             for ((baker, clazz) in BAKERS) {

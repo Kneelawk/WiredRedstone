@@ -1,10 +1,5 @@
 package com.kneelawk.wiredredstone.client.render.part
 
-import alexiil.mc.lib.multipart.api.render.PartRenderContext
-import com.google.common.cache.CacheBuilder
-import com.google.common.cache.CacheLoader
-import com.google.common.cache.LoadingCache
-import com.kneelawk.wiredredstone.WRConstants
 import com.kneelawk.wiredredstone.WRConstants.id
 import com.kneelawk.wiredredstone.client.render.*
 import com.kneelawk.wiredredstone.client.render.WRMaterials.POWERED_MATERIAL
@@ -17,7 +12,7 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh
 import net.minecraft.util.Identifier
 import java.util.function.Consumer
 
-object GateNotPartBaker : WRPartBaker<GateNotPartKey> {
+object GateNotPartBaker : AbstractPartBaker<GateNotPartKey>() {
     private val BACKGROUND = id("block/gate_not/background")
     private val INPUT_ON = id("block/gate_not/redstone_input_on")
     private val INPUT_OFF = id("block/gate_not/redstone_input_off")
@@ -26,14 +21,7 @@ object GateNotPartBaker : WRPartBaker<GateNotPartKey> {
     private val TORCH_ON = id("block/gate_not/torch_on")
     private val TORCH_OFF = id("block/gate_not/torch_off")
 
-    private val cache: LoadingCache<GateNotPartKey, Mesh> =
-        CacheBuilder.newBuilder().build(CacheLoader.from(::makeMesh))
-
-    override fun invalidateCaches() {
-        cache.invalidateAll()
-    }
-
-    private fun makeMesh(key: GateNotPartKey): Mesh {
+    override fun makeMesh(key: GateNotPartKey): Mesh {
         val outputWireSpriteId =
             if (key.outputPowered) RED_ALLOY_WIRE_POWERED_ID else RED_ALLOY_WIRE_UNPOWERED_ID
         val inputWireSpriteId =
@@ -75,14 +63,6 @@ object GateNotPartBaker : WRPartBaker<GateNotPartKey> {
         )
 
         return builder.build()
-    }
-
-    override fun emitQuads(key: GateNotPartKey, ctx: PartRenderContext) {
-        ctx.meshConsumer().accept(cache[key])
-    }
-
-    override fun getMeshForPlacementGhost(key: GateNotPartKey): Mesh? {
-        return cache[key]
     }
 
     override fun registerModels(out: Consumer<Identifier>) {

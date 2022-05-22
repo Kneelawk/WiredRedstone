@@ -10,12 +10,10 @@ import com.kneelawk.graphlib.wire.SidedWireBlockNode
 import com.kneelawk.graphlib.wire.SidedWireConnectionFilter
 import com.kneelawk.graphlib.wire.WireConnectionDiscoverers
 import com.kneelawk.graphlib.wire.WireConnectionType
-import com.kneelawk.wiredredstone.WRLog
 import com.kneelawk.wiredredstone.part.AbstractGatePart
-import com.kneelawk.wiredredstone.part.GateNotPart
+import com.kneelawk.wiredredstone.part.GateRepeaterPart
 import com.kneelawk.wiredredstone.part.SidedPart
 import com.kneelawk.wiredredstone.util.*
-import net.minecraft.nbt.NbtCompound
 import net.minecraft.nbt.NbtElement
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.Identifier
@@ -25,7 +23,7 @@ import net.minecraft.world.BlockView
 import net.minecraft.world.World
 import kotlin.math.max
 
-sealed class GateNotBlockNode : AbstractGateBlockNode<GateNotPart>(GateNotPart::class) {
+sealed class GateRepeaterBlockNode : AbstractGateBlockNode<GateRepeaterPart>(GateRepeaterPart::class) {
     override val filter: SidedWireConnectionFilter by lazy {
         RedstoneCarrierFilter.and(
             WireCornerBlockageFilter(side, AbstractGatePart.CONNECTION_WIDTH, AbstractGatePart.CONNECTION_HEIGHT)
@@ -36,16 +34,16 @@ sealed class GateNotBlockNode : AbstractGateBlockNode<GateNotPart>(GateNotPart::
 
     protected abstract val type: Type
 
-    override fun getTypeId(): Identifier = WRBlockNodes.GATE_NOT_ID
+    override fun getTypeId(): Identifier = WRBlockNodes.GATE_REPEATER_ID
 
     override fun toTag(): NbtElement? = BlockNodeUtil.writeSidedType(side, type)
 
-    data class Input(private val side: Direction) : GateNotBlockNode() {
+    data class Input(private val side: Direction) : GateRepeaterBlockNode() {
         override val type = Type.INPUT
 
         override fun getSide(): Direction = side
 
-        override fun getConnectDirection(part: GateNotPart): Direction = part.getInputSide()
+        override fun getConnectDirection(part: GateRepeaterPart): Direction = part.getInputSide()
 
         override fun getState(world: World, self: NetNode): Int = 0
 
@@ -70,16 +68,16 @@ sealed class GateNotBlockNode : AbstractGateBlockNode<GateNotPart>(GateNotPart::
         }
 
         override fun hashCode(): Int {
-            return side.hashCode() xor -1891208086
+            return side.hashCode() xor -1438488813
         }
     }
 
-    data class Output(private val side: Direction) : GateNotBlockNode() {
+    data class Output(private val side: Direction) : GateRepeaterBlockNode() {
         override val type = Type.OUTPUT
 
         override fun getSide(): Direction = side
 
-        override fun getConnectDirection(part: GateNotPart): Direction = part.getOutputSide()
+        override fun getConnectDirection(part: GateRepeaterPart): Direction = part.getOutputSide()
 
         override fun getState(world: World, self: NetNode): Int {
             return getPart(world, self.pos)?.getTotalOutputPower() ?: 0
@@ -106,7 +104,7 @@ sealed class GateNotBlockNode : AbstractGateBlockNode<GateNotPart>(GateNotPart::
         }
 
         override fun hashCode(): Int {
-            return side.hashCode() xor -361062015
+            return side.hashCode() xor -703886180
         }
     }
 

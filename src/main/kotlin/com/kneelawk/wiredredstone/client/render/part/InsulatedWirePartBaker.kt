@@ -1,9 +1,5 @@
 package com.kneelawk.wiredredstone.client.render.part
 
-import alexiil.mc.lib.multipart.api.render.PartRenderContext
-import com.google.common.cache.CacheBuilder
-import com.google.common.cache.CacheLoader
-import com.google.common.cache.LoadingCache
 import com.kneelawk.wiredredstone.WRConstants.id
 import com.kneelawk.wiredredstone.client.render.*
 import com.kneelawk.wiredredstone.part.key.InsulatedWirePartKey
@@ -13,15 +9,8 @@ import net.minecraft.client.texture.Sprite
 import net.minecraft.util.DyeColor.*
 import net.minecraft.util.Identifier
 
-object InsulatedWirePartBaker : WRPartBaker<InsulatedWirePartKey> {
-    private val cache: LoadingCache<InsulatedWirePartKey, Mesh> =
-        CacheBuilder.newBuilder().build(CacheLoader.from(::makeMesh))
-
-    override fun invalidateCaches() {
-        cache.invalidateAll()
-    }
-
-    private fun makeMesh(key: InsulatedWirePartKey): Mesh {
+object InsulatedWirePartBaker : AbstractPartBaker<InsulatedWirePartKey>() {
+    override fun makeMesh(key: InsulatedWirePartKey): Mesh {
         val builder = RenderUtils.MESH_BUILDER
         val emitter = TransformingQuadEmitter.Single(builder.emitter, SideQuadTransform(key.side))
 
@@ -49,10 +38,6 @@ object InsulatedWirePartBaker : WRPartBaker<InsulatedWirePartKey> {
         )
 
         return builder.build()
-    }
-
-    override fun emitQuads(key: InsulatedWirePartKey, ctx: PartRenderContext) {
-        ctx.meshConsumer().accept(cache[key])
     }
 
     override fun registerSprites(registry: ClientSpriteRegistryCallback.Registry) {

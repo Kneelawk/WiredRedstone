@@ -29,7 +29,7 @@ abstract class AbstractRotatedPart : AbstractConnectablePart, RotatedPart {
     constructor(definition: PartDefinition, holder: MultipartHolder, buffer: NetByteBuf, ctx: IMsgReadCtx) : super(
         definition, holder, buffer, ctx
     ) {
-        direction = DirectionUtils.HORIZONTALS[buffer.readByte().toInt().coerceIn(0..3)]
+        direction = DirectionUtils.HORIZONTALS[buffer.readFixedBits(2).coerceIn(0..3)]
     }
 
     override fun toTag(): NbtCompound {
@@ -40,16 +40,16 @@ abstract class AbstractRotatedPart : AbstractConnectablePart, RotatedPart {
 
     override fun writeCreationData(buffer: NetByteBuf, ctx: IMsgWriteCtx) {
         super.writeCreationData(buffer, ctx)
-        buffer.writeByte(direction.horizontal)
+        buffer.writeFixedBits(direction.horizontal, 2)
     }
 
     override fun writeRenderData(buffer: NetByteBuf, ctx: IMsgWriteCtx) {
         super.writeRenderData(buffer, ctx)
-        buffer.writeByte(direction.horizontal)
+        buffer.writeFixedBits(direction.horizontal, 2)
     }
 
     override fun readRenderData(buffer: NetByteBuf, ctx: IMsgReadCtx) {
         super.readRenderData(buffer, ctx)
-        direction = DirectionUtils.HORIZONTALS[buffer.readByte().toInt().coerceIn(0..3)]
+        direction = DirectionUtils.HORIZONTALS[buffer.readFixedBits(2).coerceIn(0..3)]
     }
 }

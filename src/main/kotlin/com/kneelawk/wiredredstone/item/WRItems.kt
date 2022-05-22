@@ -3,6 +3,7 @@ package com.kneelawk.wiredredstone.item
 import com.kneelawk.wiredredstone.WRConstants
 import com.kneelawk.wiredredstone.part.GateDiodePart
 import com.kneelawk.wiredredstone.part.GateNotPart
+import com.kneelawk.wiredredstone.part.GateRepeaterPart
 import com.kneelawk.wiredredstone.part.WRParts
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder
 import net.minecraft.item.Item
@@ -65,6 +66,11 @@ object WRItems {
             GateNotPart(WRParts.GATE_NOT, holder, side, 0u, direction, 0, 15, 0)
         }
     }
+    val GATE_REPEATER by lazy {
+        SimpleGateItem(WIRED_REDSTONE_ITEM_SETTINGS) { holder, side, direction ->
+            GateRepeaterPart(WRParts.GATE_REPEATER, holder, side, 0u, direction, 0, 0, 0, 0, 0, false)
+        }
+    }
 
     fun init() {
         register(RED_ALLOY_WIRE, "red_alloy_wire")
@@ -106,6 +112,7 @@ object WRItems {
 
         register(GATE_DIODE, "gate_diode")
         register(GATE_NOT, "gate_not")
+        register(GATE_REPEATER, "gate_repeater")
     }
 
     private fun register(item: Item, name: String) {

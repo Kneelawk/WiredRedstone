@@ -12,6 +12,7 @@ object WRParts {
     // Gates
     val GATE_DIODE by lazy { definition("gate_diode", ::GateDiodePart, ::GateDiodePart) }
     val GATE_NOT by lazy { definition("gate_not", ::GateNotPart, ::GateNotPart) }
+    val GATE_REPEATER by lazy { definition("gate_repeater", ::GateRepeaterPart, ::GateRepeaterPart) }
 
     private fun definition(
         path: String, reader: PartDefinition.IPartNbtReader, loader: PartDefinition.IPartNetLoader
@@ -25,5 +26,6 @@ object WRParts {
         PartDefinition.PARTS[BUNDLED_CABLE.identifier] = BUNDLED_CABLE
         PartDefinition.PARTS[GATE_DIODE.identifier] = GATE_DIODE
         PartDefinition.PARTS[GATE_NOT.identifier] = GATE_NOT
+        PartDefinition.PARTS[GATE_REPEATER.identifier] = GATE_REPEATER
     }
 }

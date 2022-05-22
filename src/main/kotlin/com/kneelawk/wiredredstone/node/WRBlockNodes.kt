@@ -10,6 +10,7 @@ object WRBlockNodes {
     val BUNDLED_CABLE_ID = id("bundled_cable")
     val GATE_DIODE_ID = id("gate_diode")
     val GATE_NOT_ID = id("gate_not")
+    val GATE_REPEATER_ID = id("gate_repeater")
 
     fun init() {
         Registry.register(GraphLib.BLOCK_NODE_DECODER, RED_ALLOY_WIRE_ID, RedAlloyWireBlockNode.Decoder)
@@ -17,5 +18,6 @@ object WRBlockNodes {
         Registry.register(GraphLib.BLOCK_NODE_DECODER, BUNDLED_CABLE_ID, BundledCableBlockNode.Decoder)
         Registry.register(GraphLib.BLOCK_NODE_DECODER, GATE_DIODE_ID, GateDiodeBlockNode.Decoder)
         Registry.register(GraphLib.BLOCK_NODE_DECODER, GATE_NOT_ID, GateNotBlockNode.Decoder)
+        Registry.register(GraphLib.BLOCK_NODE_DECODER, GATE_REPEATER_ID, GateRepeaterBlockNode.Decoder)
     }
 }

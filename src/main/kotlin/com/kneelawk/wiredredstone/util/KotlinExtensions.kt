@@ -33,3 +33,12 @@ inline fun <T, R : Comparable<R>> Iterator<T>.constrainedMaxOf(min: R, max: R, s
     }
     return maxValue
 }
+
+fun <E : Enum<E>> E.toByte(): Byte {
+    return ordinal.toByte()
+}
+
+inline fun <reified E : Enum<E>> Byte.toEnum(): E {
+    val values = enumValues<E>()
+    return values[toInt() % values.size]
+}

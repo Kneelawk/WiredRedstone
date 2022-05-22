@@ -7,9 +7,9 @@ import com.kneelawk.graphlib.graph.NodeView
 import com.kneelawk.graphlib.graph.struct.Node
 import com.kneelawk.graphlib.util.SidedPos
 import com.kneelawk.graphlib.wire.SidedWireBlockNode
+import com.kneelawk.graphlib.wire.SidedWireConnectionFilter
 import com.kneelawk.graphlib.wire.WireConnectionDiscoverers
 import com.kneelawk.graphlib.wire.WireConnectionType
-import com.kneelawk.wiredredstone.WRLog
 import com.kneelawk.wiredredstone.part.AbstractGatePart
 import com.kneelawk.wiredredstone.part.GateDiodePart
 import com.kneelawk.wiredredstone.part.SidedPart
@@ -24,8 +24,8 @@ import net.minecraft.world.BlockView
 import net.minecraft.world.World
 import kotlin.math.max
 
-sealed class GateDiodeBlockNode : SidedWireBlockNode, RedstoneCarrierBlockNode {
-    private val filter by lazy {
+sealed class GateDiodeBlockNode : AbstractGateBlockNode<GateDiodePart>(GateDiodePart::class) {
+    override val filter: SidedWireConnectionFilter by lazy {
         // must be lazy or this would be initialized before side
         RedstoneCarrierFilter.and(
             WireCornerBlockageFilter(side, AbstractGatePart.CONNECTION_WIDTH, AbstractGatePart.CONNECTION_HEIGHT)
@@ -34,57 +34,14 @@ sealed class GateDiodeBlockNode : SidedWireBlockNode, RedstoneCarrierBlockNode {
 
     override val redstoneType = RedstoneWireType.RedAlloy
 
-    protected abstract val typeByte: Byte
+    protected abstract val type: Type
 
     override fun getTypeId(): Identifier = WRBlockNodes.GATE_DIODE_ID
 
-    protected abstract fun getConnectDirection(part: GateDiodePart): Direction
-
-    protected fun getPart(world: BlockView, pos: BlockPos): GateDiodePart? {
-        return SidedPart.getPart(world, SidedPos(pos, side)) as? GateDiodePart
-    }
-
-    override fun toTag(): NbtElement? {
-        val tag = NbtCompound()
-        tag.putByte("side", side.id.toByte())
-        tag.putByte("type", typeByte)
-        return tag
-    }
-
-    override fun findConnections(world: ServerWorld, nv: NodeView, pos: BlockPos): Collection<NetNode> {
-        return WireConnectionDiscoverers.wireFindConnections(this, world, nv, pos, filter)
-    }
-
-    override fun canConnect(
-        world: ServerWorld, nodeView: NodeView, pos: BlockPos, other: Node<BlockNodeWrapper<*>>
-    ): Boolean {
-        return WireConnectionDiscoverers.wireCanConnect(this, world, pos, filter, other)
-    }
-
-    override fun canConnect(
-        world: ServerWorld, pos: BlockPos, inDirection: Direction, connectionType: WireConnectionType, other: NetNode
-    ): Boolean {
-        val part = getPart(world, pos) ?: return false
-
-        val cardinal = getConnectDirection(part)
-
-        return RotationUtils.rotatedDirection(side, cardinal) == inDirection
-    }
-
-    override fun onChanged(world: ServerWorld, pos: BlockPos) {
-        RedstoneLogic.scheduleUpdate(world, pos)
-        getPart(world, pos)?.updateConnections()
-    }
+    override fun toTag(): NbtElement? = BlockNodeUtil.writeSidedType(side, type)
 
     data class Input(private val side: Direction) : GateDiodeBlockNode() {
-        companion object {
-            // This is just to reduce the likelihood of hash collisions with Output
-            private const val HASH_SALT = -807492579
-
-            const val TYPE_BYTE = 0.toByte()
-        }
-
-        override val typeByte = TYPE_BYTE
+        override val type = Type.INPUT
 
         override fun getSide(): Direction = side
 
@@ -118,17 +75,12 @@ sealed class GateDiodeBlockNode : SidedWireBlockNode, RedstoneCarrierBlockNode {
         }
 
         override fun hashCode(): Int {
-            return side.hashCode() xor HASH_SALT
+            return side.hashCode() xor -807492579
         }
     }
 
     data class Output(private val side: Direction) : GateDiodeBlockNode() {
-        companion object {
-            // This is just to reduce the likelihood of hash collisions with Input
-            private const val HASH_SALT = 1863451528
-        }
-
-        override val typeByte = 1.toByte()
+        override val type = Type.OUTPUT
 
         override fun getSide(): Direction = side
 
@@ -163,32 +115,22 @@ sealed class GateDiodeBlockNode : SidedWireBlockNode, RedstoneCarrierBlockNode {
         }
 
         override fun hashCode(): Int {
-            return side.hashCode() xor HASH_SALT
+            return side.hashCode() xor 1863451528
         }
     }
 
     object Decoder : BlockNodeDecoder {
         override fun createBlockNodeFromTag(tag: NbtElement?): BlockNode? {
-            if (tag !is NbtCompound) {
-                WRLog.warn("tag is not a compound tag")
-                return null
-            }
-
-            val side = Direction.byId((tag.maybeGetByte("side") ?: run {
-                WRLog.warn("missing 'side' tag")
-                return null
-            }).toInt())
-
-            val type = (tag.maybeGetByte("type") ?: run {
-                WRLog.warn("missing 'type' tag")
-                return null
-            }).coerceIn(0, 1)
-
-            return if (type == Input.TYPE_BYTE) {
-                Input(side)
-            } else {
-                Output(side)
+            return BlockNodeUtil.readSidedTyped<Type>(tag) { side, type ->
+                when (type) {
+                    Type.INPUT -> Input(side)
+                    Type.OUTPUT -> Output(side)
+                }
             }
         }
+    }
+
+    protected enum class Type {
+        INPUT, OUTPUT
     }
 }

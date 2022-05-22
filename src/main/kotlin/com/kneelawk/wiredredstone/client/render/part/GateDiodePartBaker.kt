@@ -1,9 +1,5 @@
 package com.kneelawk.wiredredstone.client.render.part
 
-import alexiil.mc.lib.multipart.api.render.PartRenderContext
-import com.google.common.cache.CacheBuilder
-import com.google.common.cache.CacheLoader
-import com.google.common.cache.LoadingCache
 import com.kneelawk.wiredredstone.WRConstants
 import com.kneelawk.wiredredstone.client.render.*
 import com.kneelawk.wiredredstone.part.key.GateDiodePartKey
@@ -12,21 +8,14 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh
 import net.minecraft.util.Identifier
 import java.util.function.Consumer
 
-object GateDiodePartBaker : WRPartBaker<GateDiodePartKey> {
+object GateDiodePartBaker : AbstractPartBaker<GateDiodePartKey>() {
     private val BACKGROUND = WRConstants.id("block/gate_diode/background")
     private val INPUT_ON = WRConstants.id("block/gate_diode/redstone_input_on")
     private val INPUT_OFF = WRConstants.id("block/gate_diode/redstone_input_off")
     private val OUTPUT_ON = WRConstants.id("block/gate_diode/redstone_output_on")
     private val OUTPUT_OFF = WRConstants.id("block/gate_diode/redstone_output_off")
 
-    private val cache: LoadingCache<GateDiodePartKey, Mesh> =
-        CacheBuilder.newBuilder().build(CacheLoader.from(::makeMesh))
-
-    override fun invalidateCaches() {
-        cache.invalidateAll()
-    }
-
-    private fun makeMesh(key: GateDiodePartKey): Mesh {
+    override fun makeMesh(key: GateDiodePartKey): Mesh {
         val outputWireSpriteId =
             if (key.outputPowered) WRSprites.RED_ALLOY_WIRE_POWERED_ID else WRSprites.RED_ALLOY_WIRE_UNPOWERED_ID
         val inputWireSpriteId =
@@ -64,14 +53,6 @@ object GateDiodePartBaker : WRPartBaker<GateDiodePartKey> {
         )
 
         return builder.build()
-    }
-
-    override fun emitQuads(key: GateDiodePartKey, ctx: PartRenderContext) {
-        ctx.meshConsumer().accept(cache[key])
-    }
-
-    override fun getMeshForPlacementGhost(key: GateDiodePartKey): Mesh? {
-        return cache[key]
     }
 
     override fun registerModels(out: Consumer<Identifier>) {

@@ -1,0 +1,93 @@
+{
+	"credit": "Made with Blockbench",
+	"parent": "wiredredstone:block/flat",
+	"textures": {
+		"particle": "wiredredstone:block/gate_repeater/particle",
+		"base": "wiredredstone:block/gate_base",
+		"background": "wiredredstone:block/gate_repeater/background",
+		"redstone_input": "wiredredstone:block/gate_repeater/redstone_input_off",
+		"redstone_anode": "wiredredstone:block/gate_repeater/redstone_anode_on",
+		"torch_input": "wiredredstone:block/redstone_torch",
+		"torch_output": "wiredredstone:block/redstone_torch_off"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [16, 2, 16],
+			"faces": {
+				"north": {"uv": [0, 14, 16, 16], "texture": "#base"},
+				"east": {"uv": [0, 14, 16, 16], "texture": "#base"},
+				"south": {"uv": [0, 14, 16, 16], "texture": "#base"},
+				"west": {"uv": [0, 14, 16, 16], "texture": "#base"},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#background"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#base"}
+			}
+		},
+		{
+			"from": [0, 0, 0],
+			"to": [16, 2, 16],
+			"faces": {
+				"up": {"uv": [0, 0, 16, 16], "texture": "#redstone_input"}
+			}
+		},
+		{
+			"from": [0, 0, 0],
+			"to": [16, 2, 16],
+			"faces": {
+				"up": {"uv": [0, 0, 16, 16], "texture": "#redstone_anode"}
+			}
+		},
+		{
+			"from": [2, 2, 8],
+			"to": [4, 6, 10],
+			"shade": false,
+			"faces": {
+				"up": {"uv": [7, 6, 9, 8], "texture": "#torch_input"}
+			}
+		},
+		{
+			"from": [2, 2, 1],
+			"to": [4, 12, 17],
+			"shade": false,
+			"faces": {
+				"east": {"uv": [0, 0, 16, 10], "texture": "#torch_input"},
+				"west": {"uv": [0, 0, 16, 10], "texture": "#torch_input"}
+			}
+		},
+		{
+			"from": [-5, 2, 8],
+			"to": [11, 12, 10],
+			"shade": false,
+			"faces": {
+				"north": {"uv": [0, 0, 16, 10], "texture": "#torch_input"},
+				"south": {"uv": [0, 0, 16, 10], "texture": "#torch_input"}
+			}
+		},
+		{
+			"from": [7, 2, 1],
+			"to": [9, 6, 3],
+			"shade": false,
+			"faces": {
+				"up": {"uv": [7, 6, 9, 8], "texture": "#torch_output"}
+			}
+		},
+		{
+			"from": [7, 2, -6],
+			"to": [9, 12, 10],
+			"shade": false,
+			"faces": {
+				"east": {"uv": [0, 0, 16, 10], "texture": "#torch_output"},
+				"west": {"uv": [0, 0, 16, 10], "texture": "#torch_output"}
+			}
+		},
+		{
+			"from": [0, 2, 1],
+			"to": [16, 12, 3],
+			"shade": false,
+			"faces": {
+				"north": {"uv": [0, 0, 16, 10], "texture": "#torch_output"},
+				"south": {"uv": [0, 0, 16, 10], "texture": "#torch_output"}
+			}
+		}
+	]
+}

@@ -1,6 +1,7 @@
 {
   "item.wiredredstone.gate_diode": "Redstone Diode",
   "item.wiredredstone.gate_not": "Not Gate",
+  "item.wiredredstone.gate_repeater": "Repeater",
   "item.wiredredstone.red_alloy_wire": "Red Alloy Wire",
   "item.wiredredstone.white_insulated_wire": "White Insulated Wire",
   "item.wiredredstone.orange_insulated_wire": "Orange Insulated Wire",
@@ -37,5 +38,6 @@
   "item.wiredredstone.black_bundled_cable": "Black Bundled Cable",
   "itemGroup.wiredredstone.wiredredstone": "Wired Redstone",
   "tooltip.wiredredstone.mod_name": "Wired Redstone",
-  "tooltip.wiredredstone.redstone_wire.power": "Power: %d"
+  "tooltip.wiredredstone.redstone_wire.power": "Power: %d",
+  "tooltip.wiredredstone.gate_repeater.delay": "Delay: %.1f Ticks"
 }

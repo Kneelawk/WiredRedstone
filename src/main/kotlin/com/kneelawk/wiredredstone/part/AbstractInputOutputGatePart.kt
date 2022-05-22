@@ -44,9 +44,9 @@ abstract class AbstractInputOutputGatePart : AbstractGatePart {
     constructor(definition: PartDefinition, holder: MultipartHolder, buffer: NetByteBuf, ctx: IMsgReadCtx) : super(
         definition, holder, buffer, ctx
     ) {
-        inputPower = buffer.readByte().toInt().coerceIn(0..15)
-        outputPower = buffer.readByte().toInt().coerceIn(0..15)
-        outputReversePower = buffer.readByte().toInt().coerceIn(0..15)
+        inputPower = buffer.readFixedBits(4).coerceIn(0..15)
+        outputPower = buffer.readFixedBits(4).coerceIn(0..15)
+        outputReversePower = buffer.readFixedBits(4).coerceIn(0..15)
     }
 
     abstract fun shouldRecalculate(): Boolean
@@ -63,23 +63,23 @@ abstract class AbstractInputOutputGatePart : AbstractGatePart {
 
     override fun writeCreationData(buffer: NetByteBuf, ctx: IMsgWriteCtx) {
         super.writeCreationData(buffer, ctx)
-        buffer.writeByte(inputPower)
-        buffer.writeByte(outputPower)
-        buffer.writeByte(outputReversePower)
+        buffer.writeFixedBits(inputPower, 4)
+        buffer.writeFixedBits(outputPower, 4)
+        buffer.writeFixedBits(outputReversePower, 4)
     }
 
     override fun writeRenderData(buffer: NetByteBuf, ctx: IMsgWriteCtx) {
         super.writeRenderData(buffer, ctx)
-        buffer.writeByte(inputPower)
-        buffer.writeByte(outputPower)
-        buffer.writeByte(outputReversePower)
+        buffer.writeFixedBits(inputPower, 4)
+        buffer.writeFixedBits(outputPower, 4)
+        buffer.writeFixedBits(outputReversePower, 4)
     }
 
     override fun readRenderData(buffer: NetByteBuf, ctx: IMsgReadCtx) {
         super.readRenderData(buffer, ctx)
-        inputPower = buffer.readByte().toInt().coerceIn(0..15)
-        outputPower = buffer.readByte().toInt().coerceIn(0..15)
-        outputReversePower = buffer.readByte().toInt().coerceIn(0..15)
+        inputPower = buffer.readFixedBits(4).coerceIn(0..15)
+        outputPower = buffer.readFixedBits(4).coerceIn(0..15)
+        outputReversePower = buffer.readFixedBits(4).coerceIn(0..15)
     }
 
     override fun onAdded(bus: MultipartEventBus) {
