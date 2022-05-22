@@ -74,10 +74,10 @@ object GateRepeaterPartBaker : AbstractPartBaker<GateRepeaterPartKey>() {
         // render outer wire connections
         val conn = ConnectionUtils.unrotatedConnections(key.connections, key.direction)
         WireRendering.emitNorthWireCorner(
-            conn, key.side, key.direction.axis, 2f / 16f, 2f / 16f, outputWireSprite, 7f / 16f, outputMaterial, emitter
+            conn, key.side, key.direction.axis, 2f / 16f, 2f / 16f, outputWireSprite, 7f / 16f, outputMaterial, emitter1
         )
         WireRendering.emitSouthWireCorner(
-            conn, key.side, key.direction.axis, 2f / 16f, 2f / 16f, inputWireSprite, 7f / 16f, inputMaterial, emitter
+            conn, key.side, key.direction.axis, 2f / 16f, 2f / 16f, inputWireSprite, 7f / 16f, inputMaterial, emitter1
         )
 
         return builder.build()
