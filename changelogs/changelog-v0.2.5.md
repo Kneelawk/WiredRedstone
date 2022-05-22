@@ -6,3 +6,4 @@ Changes:
 
 * Adds basic WTHIT integration.
 * Adds Repeaters.
+* Reduces packet sizes a little.
