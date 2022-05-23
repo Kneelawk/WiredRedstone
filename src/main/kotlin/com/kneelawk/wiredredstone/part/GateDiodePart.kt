@@ -9,11 +9,11 @@ import com.kneelawk.graphlib.graph.BlockNode
 import com.kneelawk.wiredredstone.item.WRItems
 import com.kneelawk.wiredredstone.node.GateDiodeBlockNode
 import com.kneelawk.wiredredstone.part.key.GateDiodePartKey
-import com.kneelawk.wiredredstone.util.LootTableUtil
-import com.kneelawk.wiredredstone.util.getWorld
+import com.kneelawk.wiredredstone.util.*
 import net.minecraft.item.ItemStack
 import net.minecraft.loot.context.LootContext
 import net.minecraft.nbt.NbtCompound
+import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.Direction
 
@@ -55,5 +55,22 @@ class GateDiodePart : AbstractInputOutputGatePart {
 
     override fun addDrops(target: ItemDropTarget, context: LootContext) {
         LootTableUtil.addPartDrops(getWorld(), target, context, WRParts.GATE_DIODE.identifier)
+    }
+
+    override fun updateInputPower(power: Int) {
+        super.updateInputPower(power)
+
+        val world = getWorld()
+        if (shouldRecalculate() && world is ServerWorld) {
+            recalculate()
+
+            val pos = getPos()
+            RedstoneLogic.scheduleUpdate(world, pos)
+            redraw()
+
+            // Update neighbors
+            val edge = RotationUtils.rotatedDirection(side, direction)
+            WorldUtils.strongUpdateNeighbors(world, pos, edge)
+        }
     }
 }

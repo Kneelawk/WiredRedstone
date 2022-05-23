@@ -15,7 +15,7 @@ import net.minecraft.world.World
 import kotlin.math.max
 
 object RedstoneLogic {
-    val scheduled = mutableMapOf<RegistryKey<World>, LongSet>()
+    val scheduled = mutableMapOf<RegistryKey<World>, LongLinkedOpenHashSet>()
     var wiresGivePower = true
 
     fun scheduleUpdate(world: ServerWorld, pos: BlockPos) {
@@ -36,11 +36,13 @@ object RedstoneLogic {
         // one-tick delay somewhere, but players would have no way of controlling where.
 
         val controller = GraphLib.getController(world)
-        for (id in scheduled[world.registryKey].orEmpty()) {
-            val net = controller.getGraph(id)
-            if (net != null) updateState(world, net)
+        scheduled[world.registryKey]?.let { forWorld ->
+            while (forWorld.isNotEmpty()) {
+                val id = forWorld.removeFirstLong()
+                val net = controller.getGraph(id)
+                if (net != null) updateState(world, net)
+            }
         }
-        scheduled -= world.registryKey
     }
 
     fun updateState(world: World, network: BlockGraph) {
