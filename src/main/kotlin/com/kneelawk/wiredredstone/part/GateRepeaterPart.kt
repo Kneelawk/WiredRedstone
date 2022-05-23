@@ -110,7 +110,9 @@ class GateRepeaterPart : AbstractInputOutputGatePart {
     }
 
     override fun getModelKey(): PartModelKey {
-        return GateRepeaterPartKey(side, direction, connections, delay, inputPower != 0, outputPower != 0)
+        return GateRepeaterPartKey(
+            side, direction, connections, delay, inputPower != 0, outputPower != 0, getTotalOutputPower() != 0
+        )
     }
 
     override fun updateInputPower(power: Int) {

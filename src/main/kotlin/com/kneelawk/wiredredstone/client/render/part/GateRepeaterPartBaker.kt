@@ -35,9 +35,9 @@ object GateRepeaterPartBaker : AbstractPartBaker<GateRepeaterPartKey>() {
         val inputWireSprite = RenderUtils.getBlockSprite(inputWireSpriteId)
 
         val inputModelId = if (key.inputPowered) INPUT_ON else INPUT_OFF
-        val anodeModelId = if (key.outputPowered) ANODE_OFF else ANODE_ON
+        val anodeModelId = if (key.outputTorch) ANODE_OFF else ANODE_ON
         val torchInputModelId = if (key.inputPowered) TORCH_INPUT_OFF else TORCH_INPUT_ON
-        val torchOutputModelId = if (key.outputPowered) TORCH_OUTPUT_ON else TORCH_OUTPUT_OFF
+        val torchOutputModelId = if (key.outputTorch) TORCH_OUTPUT_ON else TORCH_OUTPUT_OFF
 
         val backgroundModel = RenderUtils.getModel(BACKGROUND)
         val inputModel = RenderUtils.getModel(inputModelId)
@@ -47,9 +47,9 @@ object GateRepeaterPartBaker : AbstractPartBaker<GateRepeaterPartKey>() {
         val torchOutputModel = RenderUtils.getModel(torchOutputModelId)
 
         val inputMaterial = if (key.inputPowered) POWERED_MATERIAL else UNPOWERED_MATERIAL
-        val anodeMaterial = if (key.outputPowered) UNPOWERED_MATERIAL else POWERED_MATERIAL
+        val anodeMaterial = if (key.outputTorch) UNPOWERED_MATERIAL else POWERED_MATERIAL
         val torchInputMaterial = if (key.inputPowered) UNPOWERED_MATERIAL else POWERED_MATERIAL
-        val torchOutputMaterial = if (key.outputPowered) POWERED_MATERIAL else UNPOWERED_MATERIAL
+        val torchOutputMaterial = if (key.outputTorch) POWERED_MATERIAL else UNPOWERED_MATERIAL
         val outputMaterial = if (key.outputPowered) POWERED_MATERIAL else UNPOWERED_MATERIAL
 
         val builder = RenderUtils.MESH_BUILDER
