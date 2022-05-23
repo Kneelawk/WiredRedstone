@@ -9,12 +9,10 @@ import com.kneelawk.graphlib.wire.SidedWireConnectionFilter
 import com.kneelawk.graphlib.wire.WireConnectionDiscoverers
 import com.kneelawk.graphlib.wire.WireConnectionType
 import com.kneelawk.wiredredstone.part.AbstractGatePart
-import com.kneelawk.wiredredstone.part.GateNotPart
 import com.kneelawk.wiredredstone.part.SidedPart
 import com.kneelawk.wiredredstone.util.NetNode
 import com.kneelawk.wiredredstone.util.RedstoneLogic
 import com.kneelawk.wiredredstone.util.RotationUtils
-import net.minecraft.nbt.NbtElement
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
@@ -22,7 +20,8 @@ import net.minecraft.world.BlockView
 import kotlin.reflect.KClass
 import kotlin.reflect.safeCast
 
-abstract class AbstractGateBlockNode<P : AbstractGatePart>(private val partClass: KClass<P>) : SidedWireBlockNode, RedstoneCarrierBlockNode {
+abstract class AbstractGateBlockNode<P : AbstractGatePart>(private val partClass: KClass<P>) : SidedWireBlockNode,
+    RedstoneCarrierBlockNode {
     protected abstract val filter: SidedWireConnectionFilter
 
     protected abstract fun getConnectDirection(part: P): Direction

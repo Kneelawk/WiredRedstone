@@ -3,7 +3,6 @@ package com.kneelawk.wiredredstone.wthit
 import alexiil.mc.lib.multipart.api.AbstractPart
 import alexiil.mc.lib.multipart.api.MultipartUtil
 import alexiil.mc.lib.multipart.impl.MultipartBlock
-import com.kneelawk.wiredredstone.WRConstants
 import com.kneelawk.wiredredstone.WRConstants.tooltip
 import com.kneelawk.wiredredstone.part.AbstractRedstoneWirePart
 import com.kneelawk.wiredredstone.part.GateRepeaterPart

@@ -2,26 +2,13 @@ package com.kneelawk.wiredredstone.node
 
 import com.kneelawk.graphlib.graph.BlockNode
 import com.kneelawk.graphlib.graph.BlockNodeDecoder
-import com.kneelawk.graphlib.graph.BlockNodeWrapper
-import com.kneelawk.graphlib.graph.NodeView
-import com.kneelawk.graphlib.graph.struct.Node
-import com.kneelawk.graphlib.util.SidedPos
-import com.kneelawk.graphlib.wire.SidedWireBlockNode
 import com.kneelawk.graphlib.wire.SidedWireConnectionFilter
-import com.kneelawk.graphlib.wire.WireConnectionDiscoverers
-import com.kneelawk.graphlib.wire.WireConnectionType
-import com.kneelawk.wiredredstone.WRLog
 import com.kneelawk.wiredredstone.part.AbstractGatePart
 import com.kneelawk.wiredredstone.part.GateNotPart
-import com.kneelawk.wiredredstone.part.SidedPart
 import com.kneelawk.wiredredstone.util.*
-import net.minecraft.nbt.NbtCompound
 import net.minecraft.nbt.NbtElement
-import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.Identifier
-import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
-import net.minecraft.world.BlockView
 import net.minecraft.world.World
 import kotlin.math.max
 
