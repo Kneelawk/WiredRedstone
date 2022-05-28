@@ -32,12 +32,12 @@ data class RedAlloyWireBlockNode(private val side: Direction) : SidedWireBlockNo
         return SidedPart.getPart(world, SidedPos(pos, side)) as? RedAlloyWirePart
     }
 
-    override fun findConnections(world: ServerWorld, nv: NodeView, pos: BlockPos): Collection<NetNode> {
-        return WireConnectionDiscoverers.wireFindConnections(this, world, nv, pos, filter)
+    override fun findConnections(world: ServerWorld, nv: NodeView, pos: BlockPos, self: NetNode): Collection<NetNode> {
+        return WireConnectionDiscoverers.wireFindConnections(this, world, nv, pos, self, filter)
     }
 
-    override fun canConnect(world: ServerWorld, nodeView: NodeView, pos: BlockPos, other: NetNode): Boolean {
-        return WireConnectionDiscoverers.wireCanConnect(this, world, pos, filter, other)
+    override fun canConnect(world: ServerWorld, nodeView: NodeView, pos: BlockPos, self: NetNode, other: NetNode): Boolean {
+        return WireConnectionDiscoverers.wireCanConnect(this, world, pos, self, other, filter)
     }
 
     override fun getState(world: World, self: NetNode): Int {
@@ -58,7 +58,7 @@ data class RedAlloyWireBlockNode(private val side: Direction) : SidedWireBlockNo
         return RedstoneLogic.getReceivingPower(world, pos, part.connections, true, part.blockage)
     }
 
-    override fun onChanged(world: ServerWorld, pos: BlockPos) {
+    override fun onConnectionsChanged(world: ServerWorld, pos: BlockPos, self: NetNode) {
         RedstoneLogic.scheduleUpdate(world, pos)
         getPart(world, pos)?.updateConnections()
     }

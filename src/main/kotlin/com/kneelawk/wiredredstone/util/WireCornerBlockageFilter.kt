@@ -12,7 +12,7 @@ class WireCornerBlockageFilter(
 ) : SidedWireConnectionFilter {
     override fun canConnect(
         self: SidedWireBlockNode, world: ServerWorld, pos: BlockPos, inDirection: Direction,
-        connectionType: WireConnectionType, other: NetNode
+        connectionType: WireConnectionType, selfNode: NetNode, otherNode: NetNode
     ): Boolean {
         return ConnectableUtils.canWireCornerConnect(
             world, pos, inDirection, connectionType, wireSide, wireWidth, wireHeight

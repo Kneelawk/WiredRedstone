@@ -1,7 +1,6 @@
 package com.kneelawk.wiredredstone.util
 
-import com.kneelawk.graphlib.graph.BlockNode
-import com.kneelawk.graphlib.graph.BlockNodeWrapper
+import com.kneelawk.graphlib.graph.BlockNodeHolder
 import com.kneelawk.graphlib.graph.struct.Node
 
-typealias NetNode = Node<BlockNodeWrapper<out BlockNode>>
+typealias NetNode = Node<BlockNodeHolder>

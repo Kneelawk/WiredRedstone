@@ -2,9 +2,7 @@ package com.kneelawk.wiredredstone.node
 
 import com.kneelawk.graphlib.graph.BlockNode
 import com.kneelawk.graphlib.graph.BlockNodeDecoder
-import com.kneelawk.graphlib.graph.BlockNodeWrapper
 import com.kneelawk.graphlib.graph.NodeView
-import com.kneelawk.graphlib.graph.struct.Node
 import com.kneelawk.graphlib.util.SidedPos
 import com.kneelawk.graphlib.wire.SidedWireBlockNode
 import com.kneelawk.graphlib.wire.WireConnectionDiscoverers
@@ -36,14 +34,14 @@ data class InsulatedWireBlockNode(private val side: Direction, val color: DyeCol
         return SidedPart.getPart(world, SidedPos(pos, side)) as? InsulatedWirePart
     }
 
-    override fun findConnections(world: ServerWorld, nv: NodeView, pos: BlockPos): Collection<NetNode> {
-        return WireConnectionDiscoverers.wireFindConnections(this, world, nv, pos, filter)
+    override fun findConnections(world: ServerWorld, nv: NodeView, pos: BlockPos, self: NetNode): Collection<NetNode> {
+        return WireConnectionDiscoverers.wireFindConnections(this, world, nv, pos, self, filter)
     }
 
     override fun canConnect(
-        world: ServerWorld, nodeView: NodeView, pos: BlockPos, other: Node<BlockNodeWrapper<*>>
+        world: ServerWorld, nodeView: NodeView, pos: BlockPos, self: NetNode, other: NetNode
     ): Boolean {
-        return WireConnectionDiscoverers.wireCanConnect(this, world, pos, filter, other)
+        return WireConnectionDiscoverers.wireCanConnect(this, world, pos, self, other, filter)
     }
 
     override fun getState(world: World, self: NetNode): Int {
@@ -63,7 +61,7 @@ data class InsulatedWireBlockNode(private val side: Direction, val color: DyeCol
         return RedstoneLogic.getReceivingPower(world, pos, part.connections, false, part.blockage)
     }
 
-    override fun onChanged(world: ServerWorld, pos: BlockPos) {
+    override fun onConnectionsChanged(world: ServerWorld, pos: BlockPos, self: NetNode) {
         RedstoneLogic.scheduleUpdate(world, pos)
         getPart(world, pos)?.updateConnections()
     }

@@ -21,7 +21,7 @@ object RedstoneLogic {
     fun scheduleUpdate(world: ServerWorld, pos: BlockPos) {
         // Could probably be optimised to only update the networks it needs to, but I can do that later.
         val set = scheduled.computeIfAbsent(world.registryKey) { LongLinkedOpenHashSet() }
-        GraphLib.getController(world).getGraphsInPos(pos).forEach(set::add)
+        GraphLib.getController(world).getGraphsAt(pos).forEach(set::add)
     }
 
     fun flushUpdates(world: ServerWorld) {
