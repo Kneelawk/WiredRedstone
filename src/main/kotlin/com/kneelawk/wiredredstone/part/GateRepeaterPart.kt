@@ -57,7 +57,7 @@ class GateRepeaterPart : AbstractInputOutputGatePart {
         definition, holder, tag
     ) {
         delay = tag.getByte("delay").toInt().coerceIn(0, MAX_DELAY)
-        timer = tag.getByte("timer").toInt().coerceIn(0, MAX_DELAY)
+        timer = tag.getByte("timer").toInt().coerceIn(0, MAX_DELAY + 1)
         storedInput = tag.getBoolean("storedInput")
     }
 
@@ -97,7 +97,12 @@ class GateRepeaterPart : AbstractInputOutputGatePart {
     }
 
     override fun shouldRecalculate(): Boolean {
-        return if (timer < 1) {
+        // timer is done when it hits 1, but 
+        return if (timer <= 1) {
+            if (timer > 0) {
+                timer--
+            }
+
             storedInput != (outputPower != 0)
         } else {
             timer--
@@ -118,9 +123,10 @@ class GateRepeaterPart : AbstractInputOutputGatePart {
     override fun updateInputPower(power: Int) {
         super.updateInputPower(power)
 
+        // only accept new input if we've already processed the previous input
         if (timer < 1 && storedInput != (power != 0)) {
             storedInput = power != 0
-            timer = delay
+            timer = delay + 1
         }
     }
 
