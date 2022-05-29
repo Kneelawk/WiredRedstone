@@ -7,9 +7,9 @@ import com.kneelawk.wiredredstone.part.AbstractGatePart
 import com.kneelawk.wiredredstone.part.GateDiodePart
 import com.kneelawk.wiredredstone.util.*
 import net.minecraft.nbt.NbtElement
+import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.Direction
-import net.minecraft.world.World
 import kotlin.math.max
 
 sealed class GateDiodeBlockNode : AbstractGateBlockNode<GateDiodePart>(GateDiodePart::class) {
@@ -35,13 +35,13 @@ sealed class GateDiodeBlockNode : AbstractGateBlockNode<GateDiodePart>(GateDiode
 
         override fun getConnectDirection(part: GateDiodePart): Direction = part.getInputSide()
 
-        override fun getState(world: World, self: NetNode): Int = 0
+        override fun getState(world: ServerWorld, self: NetNode): Int = 0
 
-        override fun setState(world: World, self: NetNode, state: Int) {
+        override fun setState(world: ServerWorld, self: NetNode, state: Int) {
             getPart(world, self.pos)?.updateInputPower(state)
         }
 
-        override fun getInput(world: World, self: NetNode): Int {
+        override fun getInput(world: ServerWorld, self: NetNode): Int {
             val part = getPart(world, self.pos) ?: return 0
             val input = part.calculateInputPower()
 
@@ -74,15 +74,15 @@ sealed class GateDiodeBlockNode : AbstractGateBlockNode<GateDiodePart>(GateDiode
 
         override fun getConnectDirection(part: GateDiodePart): Direction = part.getOutputSide()
 
-        override fun getState(world: World, self: NetNode): Int {
+        override fun getState(world: ServerWorld, self: NetNode): Int {
             return getPart(world, self.pos)?.getTotalOutputPower() ?: 0
         }
 
-        override fun setState(world: World, self: NetNode, state: Int) {
+        override fun setState(world: ServerWorld, self: NetNode, state: Int) {
             getPart(world, self.pos)?.updateOutputReversePower(state)
         }
 
-        override fun getInput(world: World, self: NetNode): Int {
+        override fun getInput(world: ServerWorld, self: NetNode): Int {
             val part = getPart(world, self.pos) ?: return 0
 
             // This is asking about input to the network, so we return either our output value or the value calculated

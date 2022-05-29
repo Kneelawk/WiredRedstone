@@ -20,6 +20,10 @@ inline fun <T, R : Comparable<R>> Stream<T>.constrainedMaxOf(min: R, max: R, sel
     return iterator().constrainedMaxOf(min, max, selector)
 }
 
+inline fun <T, R : Comparable<R>> Sequence<T>.constrainedMaxOf(min: R, max: R, selector: (T) -> R): R {
+    return iterator().constrainedMaxOf(min, max, selector)
+}
+
 inline fun <T, R : Comparable<R>> Iterator<T>.constrainedMaxOf(min: R, max: R, selector: (T) -> R): R {
     var maxValue = min
     while (hasNext()) {

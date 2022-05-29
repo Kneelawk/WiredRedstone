@@ -16,7 +16,6 @@ import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.world.BlockView
-import net.minecraft.world.World
 
 data class RedAlloyWireBlockNode(private val side: Direction) : SidedWireBlockNode, RedstoneCarrierBlockNode {
 
@@ -36,23 +35,25 @@ data class RedAlloyWireBlockNode(private val side: Direction) : SidedWireBlockNo
         return WireConnectionDiscoverers.wireFindConnections(this, world, nv, pos, self, filter)
     }
 
-    override fun canConnect(world: ServerWorld, nodeView: NodeView, pos: BlockPos, self: NetNode, other: NetNode): Boolean {
+    override fun canConnect(
+        world: ServerWorld, nodeView: NodeView, pos: BlockPos, self: NetNode, other: NetNode
+    ): Boolean {
         return WireConnectionDiscoverers.wireCanConnect(this, world, pos, self, other, filter)
     }
 
-    override fun getState(world: World, self: NetNode): Int {
+    override fun getState(world: ServerWorld, self: NetNode): Int {
         val part = getPart(world, self.pos) ?: return 0
         return part.power
     }
 
-    override fun setState(world: World, self: NetNode, state: Int) {
+    override fun setState(world: ServerWorld, self: NetNode, state: Int) {
         val part = getPart(world, self.pos) ?: return
         // Updating neighbors is handled by updatePowered()
         part.updatePower(state)
         part.redraw()
     }
 
-    override fun getInput(world: World, self: NetNode): Int {
+    override fun getInput(world: ServerWorld, self: NetNode): Int {
         val part = getPart(world, self.pos) ?: return 0
         val pos = SidedPos(self.pos, side)
         return RedstoneLogic.getReceivingPower(world, pos, part.connections, true, part.blockage)

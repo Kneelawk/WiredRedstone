@@ -31,7 +31,7 @@ class BundledCableItem(private val color: DyeColor?, settings: Settings) : Item(
 
     private fun creator(side: Direction): ((MultipartHolder) -> BundledCablePart) {
         return { holder ->
-            BundledCablePart(WRParts.BUNDLED_CABLE, holder, side, 0u, BlockageUtils.UNBLOCKED, color)
+            BundledCablePart(WRParts.BUNDLED_CABLE, holder, side, 0u, BlockageUtils.UNBLOCKED, color, 0u)
         }
     }
 }

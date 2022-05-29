@@ -17,7 +17,6 @@ import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.world.BlockView
-import net.minecraft.world.World
 
 data class InsulatedWireBlockNode(private val side: Direction, val color: DyeColor) : SidedWireBlockNode,
     RedstoneCarrierBlockNode {
@@ -44,18 +43,18 @@ data class InsulatedWireBlockNode(private val side: Direction, val color: DyeCol
         return WireConnectionDiscoverers.wireCanConnect(this, world, pos, self, other, filter)
     }
 
-    override fun getState(world: World, self: NetNode): Int {
+    override fun getState(world: ServerWorld, self: NetNode): Int {
         val part = getPart(world, self.pos) ?: return 0
         return part.power
     }
 
-    override fun setState(world: World, self: NetNode, state: Int) {
+    override fun setState(world: ServerWorld, self: NetNode, state: Int) {
         val part = getPart(world, self.pos) ?: return
         part.updatePower(state)
         part.redraw()
     }
 
-    override fun getInput(world: World, self: NetNode): Int {
+    override fun getInput(world: ServerWorld, self: NetNode): Int {
         val part = getPart(world, self.pos) ?: return 0
         val pos = SidedPos(self.pos, side)
         return RedstoneLogic.getReceivingPower(world, pos, part.connections, false, part.blockage)

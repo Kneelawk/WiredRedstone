@@ -1,5 +1,6 @@
 package com.kneelawk.wiredredstone
 
+import com.kneelawk.wiredredstone.cc.CCIntegrationHandler
 import com.kneelawk.wiredredstone.item.WRItems
 import com.kneelawk.wiredredstone.node.WRBlockNodeDiscoverer
 import com.kneelawk.wiredredstone.node.WRBlockNodes
@@ -13,6 +14,8 @@ fun init() {
     WRItems.init()
     WRBlockNodes.init()
     WRBlockNodeDiscoverer.init()
+
+    CCIntegrationHandler.init()
 
     // Not sure where better to do this
     ServerTickEvents.END_WORLD_TICK.register { world ->

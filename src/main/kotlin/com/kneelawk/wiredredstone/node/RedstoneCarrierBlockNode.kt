@@ -3,14 +3,14 @@ package com.kneelawk.wiredredstone.node
 import com.kneelawk.graphlib.graph.BlockNode
 import com.kneelawk.wiredredstone.util.NetNode
 import com.kneelawk.wiredredstone.util.RedstoneWireType
-import net.minecraft.world.World
+import net.minecraft.server.world.ServerWorld
 
 interface RedstoneCarrierBlockNode : BlockNode {
     val redstoneType: RedstoneWireType
 
-    fun getState(world: World, self: NetNode): Int
+    fun getState(world: ServerWorld, self: NetNode): Int
 
-    fun setState(world: World, self: NetNode, state: Int)
+    fun setState(world: ServerWorld, self: NetNode, state: Int)
 
-    fun getInput(world: World, self: NetNode): Int
+    fun getInput(world: ServerWorld, self: NetNode): Int
 }

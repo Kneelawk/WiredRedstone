@@ -8,10 +8,7 @@ import com.kneelawk.graphlib.wire.SidedWireBlockNode
 import com.kneelawk.graphlib.wire.WireConnectionDiscoverers
 import com.kneelawk.wiredredstone.part.BundledCablePart
 import com.kneelawk.wiredredstone.part.SidedPart
-import com.kneelawk.wiredredstone.util.NetNode
-import com.kneelawk.wiredredstone.util.RedstoneCarrierFilter
-import com.kneelawk.wiredredstone.util.RedstoneWireType
-import com.kneelawk.wiredredstone.util.WireBlockageFilter
+import com.kneelawk.wiredredstone.util.*
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.nbt.NbtElement
 import net.minecraft.server.world.ServerWorld
@@ -20,7 +17,6 @@ import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.world.BlockView
-import net.minecraft.world.World
 
 data class BundledCableBlockNode(private val side: Direction, val color: DyeColor?, val inner: DyeColor) :
     SidedWireBlockNode, RedstoneCarrierBlockNode {
@@ -47,16 +43,19 @@ data class BundledCableBlockNode(private val side: Direction, val color: DyeColo
         return WireConnectionDiscoverers.wireCanConnect(this, world, pos, self, other, filter)
     }
 
-    override fun getState(world: World, self: NetNode): Int {
-        return 0
+    override fun getState(world: ServerWorld, self: NetNode): Int {
+        return getPart(world, self.pos)?.getPower(inner) ?: 0
     }
 
-    override fun setState(world: World, self: NetNode, state: Int) {
+    override fun setState(world: ServerWorld, self: NetNode, state: Int) {
+        getPart(world, self.pos)?.updatePower(inner, state)
     }
 
-    override fun getInput(world: World, self: NetNode): Int {
-        // TODO: BundledCableIO support
-        return 0
+    override fun getInput(world: ServerWorld, self: NetNode): Int {
+        val part = getPart(world, self.pos) ?: return 0
+        return BundledCableUtils.getBundledCableInput(
+            world, SidedPos(self.pos, side), inner, part.connections, part.blockage
+        )
     }
 
     override fun onConnectionsChanged(world: ServerWorld, pos: BlockPos, self: NetNode) {

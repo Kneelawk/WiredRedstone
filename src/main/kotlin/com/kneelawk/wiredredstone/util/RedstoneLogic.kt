@@ -43,7 +43,7 @@ object RedstoneLogic {
         scheduled -= world.registryKey
     }
 
-    fun updateState(world: World, network: BlockGraph) {
+    fun updateState(world: ServerWorld, network: BlockGraph) {
         val power = try {
             wiresGivePower = false
             network.nodes

@@ -30,6 +30,12 @@ repositories {
     maven("https://maven.shedaniel.me/") { name = "shedaniel" }
     maven("https://kneelawk.com/maven/") { name = "Kneelawk" }
     maven("https://maven.bai.lol") { name = "WTHIT" }
+    maven("https://api.modrinth.com/maven") {
+        name = "Modrinth"
+        content {
+            includeGroup("maven.modrinth")
+        }
+    }
 //    mavenLocal()
 }
 
@@ -62,6 +68,10 @@ dependencies {
     val wthitVersion: String by project
     modCompileOnly("mcp.mobius.waila:wthit-api:fabric-$wthitVersion")
 
+    // CC: Restitched
+    val ccRestitchedVersion: String by project
+    modCompileOnly("maven.modrinth:cc-restitched:$ccRestitchedVersion")
+
     //
     // Optional Mod Dependencies
     //
@@ -76,6 +86,19 @@ dependencies {
     modRuntimeOnly("mcp.mobius.waila:wthit:fabric-$wthitVersion") {
         exclude("net.fabricmc.fabric-api")
     }
+
+    // CC: Restitched
+    modRuntimeOnly("maven.modrinth:cc-restitched:$ccRestitchedVersion")
+    val clothConfigVersion: String by project
+    modRuntimeOnly("me.shedaniel.cloth:cloth-config-fabric:$clothConfigVersion") {
+        exclude("net.fabricmc.fabric-api")
+    }
+    val clothApiVersion: String by project
+    modRuntimeOnly("me.shedaniel.cloth.api:cloth-utils-v1:$clothApiVersion") {
+        exclude("net.fabricmc.fabric-api")
+    }
+    val nightConfigVersion: String by project
+    runtimeOnly("com.electronwill.night-config:toml:$nightConfigVersion")
 
     // Quiltflower
     // Probably best to just use the IDEA plugin instead
