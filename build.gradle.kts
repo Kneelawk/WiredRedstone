@@ -122,7 +122,7 @@ tasks {
         targetCompatibility = javaVersion.toString()
     }
 
-    jar { from("LICENSE") { rename { "${it}_${base.archivesName}" } } }
+    jar { from("LICENSE") { rename { "${it}_${base.archivesName.get()}" } } }
 
     processResources {
         inputs.property("version", project.version)
