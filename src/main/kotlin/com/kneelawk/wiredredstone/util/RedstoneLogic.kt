@@ -84,7 +84,13 @@ object RedstoneLogic {
                     .none { world.getBlockState(offsetPos.offset(it)).block == Blocks.REDSTONE_WIRE }
             ) {
                 world.getEmittedRedstonePower(offsetPos, pos.side)
-            } else 0
+            } else {
+                val state = world.getBlockState(offsetPos)
+                max(
+                    state.getWeakRedstonePower(world, offsetPos, pos.side),
+                    state.getStrongRedstonePower(world, offsetPos, pos.side)
+                )
+            }
         )
     }
 }
