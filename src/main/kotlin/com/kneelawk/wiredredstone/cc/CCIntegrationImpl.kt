@@ -11,6 +11,8 @@ import net.minecraft.world.World
 @Suppress("unused")
 object CCIntegrationImpl : CCIntegration {
     override fun init() {
+        WRLog.log.info("Wired Redstone: enabling Computer Craft integration!")
+
         ComputerCraftAPI.registerBundledRedstoneProvider { world, pos, side ->
             val output = BundledCableUtils.getBundledCableOutput(world, SidedPos(pos, side))
                 ?: return@registerBundledRedstoneProvider -1
