@@ -9,3 +9,4 @@ Changes:
     * Insulated wires needed to be able to power the block underneath them, because there needed to be some way to power
       blocks weakly. Only allowing insulated wires to power blocks beneath them but not be powered by those blocks felt
       inconsistent.
+* Makes sure all client-side networking is initialized before connecting to a server.

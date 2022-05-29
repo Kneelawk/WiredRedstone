@@ -17,6 +17,8 @@ import net.minecraft.util.shape.VoxelShape
 abstract class AbstractConnectablePart : AbstractSidedPart, ConnectablePart, RedrawablePart {
 
     companion object {
+        fun initNetworking() {}
+
         private val NET_PARENT: ParentNetIdSingle<AbstractConnectablePart> =
             NET_ID.subType(AbstractConnectablePart::class.java, str("abstract_wire_part"))
 

@@ -2,6 +2,7 @@ package com.kneelawk.wiredredstone
 
 import com.kneelawk.wiredredstone.cc.CCIntegrationHandler
 import com.kneelawk.wiredredstone.item.WRItems
+import com.kneelawk.wiredredstone.net.WRNetworking
 import com.kneelawk.wiredredstone.node.WRBlockNodeDiscoverer
 import com.kneelawk.wiredredstone.node.WRBlockNodes
 import com.kneelawk.wiredredstone.part.WRParts
@@ -14,6 +15,7 @@ fun init() {
     WRItems.init()
     WRBlockNodes.init()
     WRBlockNodeDiscoverer.init()
+    WRNetworking.init()
 
     CCIntegrationHandler.init()
 
