@@ -1,6 +1,7 @@
 package com.kneelawk.wiredredstone.cc
 
 import com.kneelawk.graphlib.util.SidedPos
+import com.kneelawk.wiredredstone.WRLog
 import com.kneelawk.wiredredstone.util.BundledCableUtils
 import dan200.computercraft.api.ComputerCraftAPI
 import dan200.computercraft.shared.common.IBundledRedstoneBlock
