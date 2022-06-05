@@ -64,6 +64,14 @@ dependencies {
     modImplementation("com.kneelawk:graphlib:$graphlibVersion")
     include("com.kneelawk:graphlib:$graphlibVersion")
 
+    // TechReborn Lightweight Energy API
+    val energyVersion: String by project
+    modApi("teamreborn:energy:$energyVersion") {
+        exclude("net.fabricmc.fabric-api")
+        exclude("net.fabricmc")
+    }
+    include("teamreborn:energy:$energyVersion")
+
     // WTHIT API
     val wthitVersion: String by project
     modCompileOnly("mcp.mobius.waila:wthit-api:fabric-$wthitVersion")

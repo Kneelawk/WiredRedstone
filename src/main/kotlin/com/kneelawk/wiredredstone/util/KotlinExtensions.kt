@@ -3,8 +3,7 @@ package com.kneelawk.wiredredstone.util
 import java.util.stream.Stream
 
 fun <T> T?.requireNonNull(msg: String): T {
-    if (this == null)
-        throw NullPointerException(msg)
+    if (this == null) throw NullPointerException(msg)
     return this
 }
 
@@ -46,3 +45,15 @@ inline fun <reified E : Enum<E>> Byte.toEnum(): E {
     val values = enumValues<E>()
     return values[toInt() % values.size]
 }
+
+fun <E : Enum<E>> E.toInt(): Int {
+    return ordinal
+}
+
+inline fun <reified E : Enum<E>> Int.toEnum(): E {
+    val values = enumValues<E>()
+    return values[this % values.size]
+}
+
+// From https://discuss.kotlinlang.org/t/arrays-from-ranges/5216/3
+fun IntProgression.toArray() = IntArray(this.count()).also { forEachIndexed { index, i -> it[index] = i } }

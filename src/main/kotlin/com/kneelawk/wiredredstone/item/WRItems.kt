@@ -13,9 +13,10 @@ import net.minecraft.util.DyeColor
 import net.minecraft.util.registry.Registry
 
 object WRItems {
-    private val WIRED_REDSTONE_ITEM_GROUP: ItemGroup =
+    private val WIRED_REDSTONE_ITEM_GROUP: ItemGroup by lazy {
         FabricItemGroupBuilder.build(WRConstants.id("wiredredstone")) { ItemStack(RED_ALLOY_WIRE) }
-    private val WIRED_REDSTONE_ITEM_SETTINGS = Item.Settings().group(WIRED_REDSTONE_ITEM_GROUP)
+    }
+    val WIRED_REDSTONE_ITEM_SETTINGS: Item.Settings by lazy { Item.Settings().group(WIRED_REDSTONE_ITEM_GROUP) }
 
     // Wires
     val RED_ALLOY_WIRE by lazy { RedAlloyWireItem(WIRED_REDSTONE_ITEM_SETTINGS) }
@@ -72,6 +73,9 @@ object WRItems {
         }
     }
 
+    // Crafting Materials
+    val REDSTONE_ALLOY_INGOT by lazy { Item(WIRED_REDSTONE_ITEM_SETTINGS) }
+
     fun init() {
         register(RED_ALLOY_WIRE, "red_alloy_wire")
 
@@ -113,6 +117,8 @@ object WRItems {
         register(GATE_DIODE, "gate_diode")
         register(GATE_NOT, "gate_not")
         register(GATE_REPEATER, "gate_repeater")
+
+        register(REDSTONE_ALLOY_INGOT, "redstone_alloy_ingot")
     }
 
     private fun register(item: Item, name: String) {
