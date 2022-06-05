@@ -1,12 +1,17 @@
 package com.kneelawk.wiredredstone.blockentity
 
 import com.kneelawk.wiredredstone.WRConstants.tt
+import com.kneelawk.wiredredstone.block.RedstoneAssemblerBlock
+import com.kneelawk.wiredredstone.recipe.DelegatingCraftingInventory
 import com.kneelawk.wiredredstone.recipe.RedstoneAssemblerInventory
+import com.kneelawk.wiredredstone.recipe.RedstoneAssemblerRecipe
+import com.kneelawk.wiredredstone.recipe.RedstoneAssemblerRecipeType
 import com.kneelawk.wiredredstone.screenhandler.RedstoneAssemblerScreenHandler
 import com.kneelawk.wiredredstone.util.toArray
 import com.kneelawk.wiredredstone.util.toByte
 import com.kneelawk.wiredredstone.util.toEnum
 import com.kneelawk.wiredredstone.util.toInt
+import net.minecraft.block.Block
 import net.minecraft.block.BlockState
 import net.minecraft.block.entity.AbstractFurnaceBlockEntity
 import net.minecraft.block.entity.LockableContainerBlockEntity
@@ -18,8 +23,7 @@ import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.nbt.NbtCompound
-import net.minecraft.recipe.RecipeInputProvider
-import net.minecraft.recipe.RecipeMatcher
+import net.minecraft.recipe.*
 import net.minecraft.screen.NamedScreenHandlerFactory
 import net.minecraft.screen.PropertyDelegate
 import net.minecraft.screen.ScreenHandler
@@ -28,6 +32,7 @@ import net.minecraft.text.Text
 import net.minecraft.util.collection.DefaultedList
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
+import net.minecraft.util.math.MathHelper
 import net.minecraft.world.World
 import team.reborn.energy.api.base.SimpleEnergyStorage
 
@@ -59,6 +64,10 @@ class RedstoneAssemblerBlockEntity(pos: BlockPos, state: BlockState) :
         const val ENERGY_MAX_INSERT = 128L
         const val ENERGY_MAX_EXTRACT = 128L
 
+        const val DEFAULT_COOK_TIME = 200
+        const val CRAFTING_COOK_TIME = 10
+        const val CRAFTING_ENERGY_PER_TICK = 5
+
         const val BURN_ENERGY_PER_TICK = 5
         val FUEL_TIME_MAP: Map<Item, Int> by lazy {
             AbstractFurnaceBlockEntity.createFuelTimeMap().mapValues { it.value / 2 }
@@ -72,7 +81,88 @@ class RedstoneAssemblerBlockEntity(pos: BlockPos, state: BlockState) :
 
         fun tick(world: World, pos: BlockPos, state: BlockState, blockEntity: RedstoneAssemblerBlockEntity) {
             with(blockEntity) {
+                val wasBurning = isBurning()
+                var markDirty = false
 
+                // generate more energy while we're burning
+                if (isBurning()) {
+                    burnTime--
+                    energyStorage.amount =
+                        MathHelper.clamp(energyStorage.amount + BURN_ENERGY_PER_TICK, 0L, ENERGY_CAPACITY)
+
+                    markDirty = true
+                }
+
+                // consume fuel items to start the burnTime countdown again
+                if (!isBurning() && isFuelItem(inventory[FUEL_SLOT])) {
+                    val fuel = inventory[FUEL_SLOT]
+                    burnTimeTotal = getFuelTime(fuel)
+                    burnTime = burnTimeTotal
+
+                    if (isBurning()) {
+                        val item = fuel.item
+                        fuel.decrement(1)
+                        if (fuel.isEmpty) {
+                            inventory[FUEL_SLOT] =
+                                item.recipeRemainder?.let { ItemStack(it) } ?: ItemStack.EMPTY
+                        }
+                    }
+
+                    markDirty = true
+                }
+
+                // utility function for decrementing cookTime if something doesn't work
+                fun tryDecrementCookTime() {
+                    if (cookTime > 0) {
+                        cookTime = MathHelper.clamp(cookTime - 2, 0, cookTimeTotal)
+                        markDirty = true
+                    }
+                }
+
+                // step recipes along, attempting to complete them if possible
+                if (hasEnergy()) {
+                    val (recipe, energyPerTick) = when (mode) {
+                        Mode.ASSEMBLER -> {
+                            val recipe = getAssemblerRecipe()
+                            recipe to recipe?.energyPerTick
+                        }
+                        Mode.CRAFTING_TABLE -> getCraftingRecipe() to CRAFTING_ENERGY_PER_TICK
+                    }
+
+                    if (recipe != null && energyPerTick != null &&
+                        energyStorage.amount >= energyPerTick && canUseInputs(recipe)
+                    ) {
+                        if (canAcceptOutput(recipe)) {
+                            energyStorage.amount -= energyPerTick
+                            cookTime++
+
+                            if (cookTime >= cookTimeTotal) {
+                                cookTime = 0
+                                cookTimeTotal = recipeCookTimeTotal()
+
+                                takeInputs(recipe)
+                                val output = recipe.output.copy()
+                                insertOutput(output)
+                            }
+
+                            markDirty = true
+                        }
+                    } else {
+                        tryDecrementCookTime()
+                    }
+                } else {
+                    tryDecrementCookTime()
+                }
+
+                // update the `LIT` blockstate
+                if (wasBurning != isBurning()) {
+                    world.setBlockState(pos, state.with(RedstoneAssemblerBlock.LIT, isBurning()), Block.NOTIFY_ALL)
+                    markDirty = true
+                }
+
+                if (markDirty) {
+                    markDirty()
+                }
             }
         }
 
@@ -98,11 +188,17 @@ class RedstoneAssemblerBlockEntity(pos: BlockPos, state: BlockState) :
     val energyStorage = SimpleEnergyStorage(ENERGY_CAPACITY, ENERGY_MAX_INSERT, ENERGY_MAX_EXTRACT)
 
     var burnTime = 0
+        private set
     var burnTimeTotal = 0
+        private set
     var cookTime = 0
+        private set
     var cookTimeTotal = 0
+        private set
     var useCraftingItems = true
+        private set
     var mode = Mode.ASSEMBLER
+        private set
 
     private val propertyDelegate = object : PropertyDelegate {
         override fun get(index: Int): Int {
@@ -133,25 +229,167 @@ class RedstoneAssemblerBlockEntity(pos: BlockPos, state: BlockState) :
         override fun size(): Int = PROPERTY_COUNT
     }
 
+    private val craftingInventory = DelegatingCraftingInventory(this, 3, 3, CRAFTING_START_SLOT)
+
     override val width = 3
     override val height = 3
+
+    fun updateUseCraftingItems(use: Boolean) {
+        useCraftingItems = use
+        markDirty()
+    }
+
+    fun updateMode(mode: Mode) {
+        this.mode = mode
+        cookTimeTotal = recipeCookTimeTotal()
+        cookTime = 0
+        markDirty()
+    }
+
+    fun isBurning(): Boolean = burnTime > 0
+
+    fun hasEnergy(): Boolean = energyStorage.amount > 0
+
+    fun getAssemblerRecipe(): RedstoneAssemblerRecipe? =
+        world!!.recipeManager.getFirstMatch(RedstoneAssemblerRecipeType, this, world).orElse(null)
+
+    fun getCraftingRecipe(): CraftingRecipe? =
+        world!!.recipeManager.getFirstMatch(RecipeType.CRAFTING, craftingInventory, world).orElse(null)
+
+    fun canUseInputs(recipe: Recipe<*>): Boolean {
+        val matcher = RecipeMatcher()
+        provideRecipeInputs(matcher)
+        return matcher.match(recipe, null)
+    }
+
+    fun canAcceptOutput(recipe: Recipe<*>): Boolean {
+        val output = recipe.output.copy()
+
+        for (i in OUTPUT_START_SLOT until OUTPUT_STOP_SLOT) {
+            val existing = inventory[i]
+            if (existing.isEmpty) {
+                return true
+            }
+
+            if (output.isStackable && ItemStack.canCombine(existing, output)) {
+                if (existing.count + output.count <= existing.maxCount) {
+                    return true
+                } else if (existing.count < existing.maxCount) {
+                    output.decrement(existing.maxCount - existing.count)
+                }
+            }
+
+            if (output.isEmpty) {
+                return true
+            }
+        }
+
+        return false
+    }
+
+    fun takeInputs(recipe: Recipe<*>) {
+        val ingredients = ArrayList(recipe.ingredients)
+
+        // O(n^2) :(
+        // At least n^2 is only around 243
+
+        // first iterate through input slots
+        for (i in (0 until ingredients.size).reversed()) {
+            for (slot in INPUT_START_SLOT until INPUT_STOP_SLOT) {
+                val stack = inventory[slot]
+
+                if (!stack.isEmpty && ingredients[i].test(stack)) {
+                    val item = stack.item
+                    stack.decrement(1)
+                    ingredients.removeAt(i)
+
+                    if (stack.isEmpty) {
+                        inventory[slot] = item.recipeRemainder?.let { ItemStack(it) } ?: ItemStack.EMPTY
+                    }
+
+                    break
+                }
+            }
+        }
+
+        // next go through the crafting grid if we can
+        if (useCraftingItems) {
+            for (i in (0 until ingredients.size).reversed()) {
+                for (slot in CRAFTING_START_SLOT until CRAFTING_STOP_SLOT) {
+                    val stack = inventory[slot]
+
+                    if (!stack.isEmpty && ingredients[i].test(stack)) {
+                        val item = stack.item
+                        stack.decrement(1)
+                        ingredients.removeAt(i)
+
+                        if (stack.isEmpty) {
+                            inventory[slot] = item.recipeRemainder?.let { ItemStack(it) } ?: ItemStack.EMPTY
+                        }
+
+                        break
+                    }
+                }
+            }
+        }
+    }
+
+    fun insertOutput(output: ItemStack) {
+        if (output.isEmpty) {
+            return
+        }
+
+        // first pass tries to insert into existing stacks
+        if (output.isStackable) {
+            for (i in OUTPUT_START_SLOT until OUTPUT_STOP_SLOT) {
+                val existing = inventory[i]
+
+                if (!existing.isEmpty && ItemStack.canCombine(existing, output)) {
+                    val total = existing.count + output.count
+                    if (total <= existing.maxCount) {
+                        output.count = 0
+                        existing.count = total
+                    } else if (existing.count < existing.maxCount) {
+                        output.decrement(existing.maxCount - existing.count)
+                        existing.count = existing.maxCount
+                    }
+                }
+
+                if (output.isEmpty) {
+                    return
+                }
+            }
+        }
+
+        // second pass tries to insert into empty slots
+        for (i in OUTPUT_START_SLOT until OUTPUT_STOP_SLOT) {
+            if (inventory[i].isEmpty) {
+                inventory[i] = output.split(output.count)
+            }
+        }
+    }
+
+    fun recipeCookTimeTotal(): Int = if (mode == Mode.ASSEMBLER) {
+        getAssemblerRecipe()?.cookTime ?: DEFAULT_COOK_TIME
+    } else CRAFTING_COOK_TIME
 
     override fun readNbt(nbt: NbtCompound) {
         super.readNbt(nbt)
         inventory.clear()
         Inventories.readNbt(nbt, inventory)
         burnTime = nbt.getShort("BurnTime").toInt()
+        burnTimeTotal = nbt.getShort("BurnTimeTotal").toInt()
         cookTime = nbt.getShort("CookTime").toInt()
         cookTimeTotal = nbt.getShort("CookTimeTotal").toInt()
         energyStorage.amount = nbt.getInt("Energy").toLong()
         useCraftingItems = nbt.getBoolean("UseCraftingItems")
         mode = nbt.getByte("Mode").toEnum()
-        burnTimeTotal = getFuelTime(inventory[FUEL_SLOT])
     }
 
     override fun writeNbt(nbt: NbtCompound) {
         super.writeNbt(nbt)
         nbt.putShort("BurnTime", burnTime.toShort())
+        nbt.putShort("BurnTimeTotal", burnTimeTotal.toShort())
         nbt.putShort("CookTime", cookTime.toShort())
         nbt.putShort("CookTimeTotal", cookTimeTotal.toShort())
         nbt.putInt("Energy", energyStorage.amount.toInt())
@@ -190,7 +428,8 @@ class RedstoneAssemblerBlockEntity(pos: BlockPos, state: BlockState) :
         }
 
         if (slot in CRAFTING_START_SLOT until CRAFTING_STOP_SLOT && !sameStack) {
-            // TODO: recipe start detection
+            cookTimeTotal = recipeCookTimeTotal()
+            cookTime = 0
         }
 
         this.markDirty()
@@ -246,7 +485,13 @@ class RedstoneAssemblerBlockEntity(pos: BlockPos, state: BlockState) :
     }
 
     override fun provideRecipeInputs(finder: RecipeMatcher) {
-        for (i in CRAFTING_START_SLOT until CRAFTING_STOP_SLOT) {
+        if (useCraftingItems) {
+            for (i in CRAFTING_START_SLOT until CRAFTING_STOP_SLOT) {
+                finder.addInput(inventory[i])
+            }
+        }
+
+        for (i in INPUT_START_SLOT until INPUT_STOP_SLOT) {
             finder.addInput(inventory[i])
         }
     }

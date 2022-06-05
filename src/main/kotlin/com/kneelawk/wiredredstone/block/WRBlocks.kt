@@ -9,7 +9,11 @@ import net.minecraft.item.BlockItem
 import net.minecraft.util.registry.Registry
 
 object WRBlocks {
-    val REDSTONE_ASSEMBLER by lazy { RedstoneAssemblerBlock(FabricBlockSettings.of(Material.STONE, MapColor.RED)) }
+    val REDSTONE_ASSEMBLER by lazy {
+        RedstoneAssemblerBlock(
+            FabricBlockSettings.of(Material.STONE, MapColor.RED)
+                .luminance { if (it[RedstoneAssemblerBlock.LIT] == true) 13 else 0 })
+    }
 
     fun init() {
         Registry.register(Registry.BLOCK, id("redstone_assembler"), REDSTONE_ASSEMBLER)

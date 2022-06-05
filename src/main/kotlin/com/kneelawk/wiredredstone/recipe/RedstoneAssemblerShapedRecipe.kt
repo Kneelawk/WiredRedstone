@@ -275,7 +275,7 @@ class RedstoneAssemblerShapedRecipe(
             val cookTime = JsonHelper.getInt(json, "cookingtime", 100)
             val energyPerTick = JsonHelper.getInt(json, "energypertick", 5)
 
-            return RedstoneAssemblerShapedRecipe(id, group, width, height, input, output, cookTime, energyPerTick)
+            return RedstoneAssemblerShapedRecipe(id, group, width, height, input, output, energyPerTick, cookTime)
         }
 
         override fun read(id: Identifier, buf: PacketByteBuf): RedstoneAssemblerShapedRecipe {

@@ -54,15 +54,13 @@ class RedstoneAssemblerScreenHandler(
         private val NET_SET_USE_CRAFTING_ITEMS =
             NET_PARENT.idData("set_use_crafting_items").toServerOnly().setRecv { buf, _ ->
                 if (inventory is RedstoneAssemblerBlockEntity) {
-                    inventory.useCraftingItems = buf.readBoolean()
-                    inventory.markDirty()
+                    inventory.updateUseCraftingItems(buf.readBoolean())
                 }
             }
 
         private val NET_SET_MODE = NET_PARENT.idData("set_mode").toServerOnly().setRecv { buf, _ ->
             if (inventory is RedstoneAssemblerBlockEntity) {
-                inventory.mode = buf.readByte().toEnum()
-                inventory.markDirty()
+                inventory.updateMode(buf.readByte().toEnum())
             }
         }
     }

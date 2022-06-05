@@ -67,7 +67,7 @@ class RedstoneAssemblerShapelessRecipe(
                 val cookTime = JsonHelper.getInt(json, "cookingtime", 100)
                 val energyPerTick = JsonHelper.getInt(json, "energypertick", 5)
 
-                RedstoneAssemblerShapelessRecipe(id, group, output, input, cookTime, energyPerTick)
+                RedstoneAssemblerShapelessRecipe(id, group, output, input, energyPerTick, cookTime)
             }
         }
 
@@ -96,7 +96,7 @@ class RedstoneAssemblerShapelessRecipe(
             }
 
             val output = buf.readItemStack()
-            return RedstoneAssemblerShapelessRecipe(id, group, output, input, cookTime, energyPerTick)
+            return RedstoneAssemblerShapelessRecipe(id, group, output, input, energyPerTick, cookTime)
         }
 
         override fun write(buf: PacketByteBuf, recipe: RedstoneAssemblerShapelessRecipe) {
