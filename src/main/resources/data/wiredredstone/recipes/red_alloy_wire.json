@@ -1,0 +1,19 @@
+{
+  "type": "wiredredstone:redstone_assembler_shaped",
+  "pattern": [
+    "R",
+    "R",
+    "R"
+  ],
+  "key": {
+    "R": {
+      "item": "wiredredstone:redstone_alloy_ingot"
+    }
+  },
+  "result": {
+    "item": "wiredredstone:red_alloy_wire",
+    "count": 12
+  },
+  "cookingtime": 100,
+  "energypertick": 5
+}
