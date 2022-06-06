@@ -80,6 +80,10 @@ dependencies {
     val ccRestitchedVersion: String by project
     modCompileOnly("maven.modrinth:cc-restitched:$ccRestitchedVersion")
 
+    // REI
+    val reiVersion: String by project
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:$reiVersion")
+
     //
     // Optional Mod Dependencies
     //
@@ -107,6 +111,11 @@ dependencies {
     }
     val nightConfigVersion: String by project
     runtimeOnly("com.electronwill.night-config:toml:$nightConfigVersion")
+
+    // REI
+    modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:$reiVersion") {
+        exclude("net.fabricmc.fabric-api")
+    }
 
     // Quiltflower
     // Probably best to just use the IDEA plugin instead
