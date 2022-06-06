@@ -10,17 +10,11 @@ import net.minecraft.recipe.RecipeMatcher
 class DelegatingCraftingInventory(
     private val delegate: Inventory, private val width: Int, private val height: Int, private val offset: Int
 ) : CraftingInventory(null, 0, 0) {
-    override fun getWidth(): Int {
-        return width
-    }
+    override fun getWidth(): Int = width
 
-    override fun getHeight(): Int {
-        return height
-    }
+    override fun getHeight(): Int = height
 
-    override fun size(): Int {
-        return width * height
-    }
+    override fun size(): Int = width * height
 
     override fun isEmpty(): Boolean {
         for (i in 0 until (width * height)) {
@@ -32,29 +26,17 @@ class DelegatingCraftingInventory(
         return true
     }
 
-    override fun getStack(slot: Int): ItemStack {
-        return delegate.getStack(offset + slot)
-    }
+    override fun getStack(slot: Int): ItemStack = delegate.getStack(offset + slot)
 
-    override fun removeStack(slot: Int): ItemStack {
-        return delegate.removeStack(offset + slot)
-    }
+    override fun removeStack(slot: Int): ItemStack = delegate.removeStack(offset + slot)
 
-    override fun removeStack(slot: Int, amount: Int): ItemStack {
-        return delegate.removeStack(offset + slot, amount)
-    }
+    override fun removeStack(slot: Int, amount: Int): ItemStack = delegate.removeStack(offset + slot, amount)
 
-    override fun setStack(slot: Int, stack: ItemStack) {
-        delegate.setStack(offset + slot, stack)
-    }
+    override fun setStack(slot: Int, stack: ItemStack) = delegate.setStack(offset + slot, stack)
 
-    override fun markDirty() {
-        delegate.markDirty()
-    }
+    override fun markDirty() = delegate.markDirty()
 
-    override fun canPlayerUse(player: PlayerEntity): Boolean {
-        return delegate.canPlayerUse(player)
-    }
+    override fun canPlayerUse(player: PlayerEntity): Boolean = delegate.canPlayerUse(player)
 
     override fun clear() {
         for (i in 0 until (width * height)) {
@@ -66,15 +48,9 @@ class DelegatingCraftingInventory(
         (delegate as? RecipeInputProvider)?.provideRecipeInputs(finder)
     }
 
-    override fun onOpen(player: PlayerEntity) {
-        delegate.onOpen(player)
-    }
+    override fun onOpen(player: PlayerEntity) = delegate.onOpen(player)
 
-    override fun onClose(player: PlayerEntity) {
-        delegate.onClose(player)
-    }
+    override fun onClose(player: PlayerEntity) = delegate.onClose(player)
 
-    override fun isValid(slot: Int, stack: ItemStack): Boolean {
-        return delegate.isValid(offset + slot, stack)
-    }
+    override fun isValid(slot: Int, stack: ItemStack): Boolean = delegate.isValid(offset + slot, stack)
 }

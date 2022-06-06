@@ -8,6 +8,8 @@ import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Compa
 import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.BURN_TIME_TOTAL_PROPERTY
 import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.COOK_TIME_PROPERTY
 import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.COOK_TIME_TOTAL_PROPERTY
+import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.CRAFTING_PATTERN_HEIGHT
+import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.CRAFTING_PATTERN_WIDTH
 import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.CRAFTING_SLOT_COUNT
 import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.CRAFTING_START_SLOT
 import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.ENERGY_CAPACITY
@@ -16,9 +18,11 @@ import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Compa
 import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.INPUT_START_SLOT
 import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.INPUT_STOP_SLOT
 import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.MODE_PROPERTY
+import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.OUTPUT_HEIGHT
 import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.OUTPUT_SLOT_COUNT
 import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.OUTPUT_START_SLOT
 import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.OUTPUT_STOP_SLOT
+import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.OUTPUT_WIDTH
 import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.PROPERTY_COUNT
 import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.SLOT_COUNT
 import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.USE_CRAFTING_ITEMS_PROPERTY
@@ -66,7 +70,9 @@ class RedstoneAssemblerScreenHandler(
     }
 
     constructor(syncId: Int, playerInventory: PlayerInventory) : this(
-        syncId, playerInventory, SimpleRedstoneAssemblerInventory(SLOT_COUNT, 3, 3, CRAFTING_START_SLOT),
+        syncId, playerInventory, SimpleRedstoneAssemblerInventory(
+            SLOT_COUNT, CRAFTING_PATTERN_WIDTH, CRAFTING_PATTERN_HEIGHT, CRAFTING_START_SLOT
+        ),
         ArrayPropertyDelegate(PROPERTY_COUNT), ScreenHandlerContext.EMPTY
     )
 
@@ -79,16 +85,16 @@ class RedstoneAssemblerScreenHandler(
         // Add all slots in the order of their inventory numbers. This will make slot index calculations easier.
 
         // crafting slots
-        for (y in 0 until 3) {
-            for (x in 0 until 3) {
-                addSlot(Slot(inventory, CRAFTING_START_SLOT + x + y * 3, 35 + x * 18, 17 + y * 18))
+        for (y in 0 until CRAFTING_PATTERN_HEIGHT) {
+            for (x in 0 until CRAFTING_PATTERN_WIDTH) {
+                addSlot(Slot(inventory, CRAFTING_START_SLOT + x + y * CRAFTING_PATTERN_WIDTH, 35 + x * 18, 17 + y * 18))
             }
         }
 
         // output slots
-        for (y in 0 until 2) {
-            for (x in 0 until 2) {
-                addSlot(OutputSlot(inventory, OUTPUT_START_SLOT + x + y * 2, 125 + x * 18, 17 + y * 18))
+        for (y in 0 until OUTPUT_HEIGHT) {
+            for (x in 0 until OUTPUT_WIDTH) {
+                addSlot(OutputSlot(inventory, OUTPUT_START_SLOT + x + y * OUTPUT_WIDTH, 125 + x * 18, 17 + y * 18))
             }
         }
 

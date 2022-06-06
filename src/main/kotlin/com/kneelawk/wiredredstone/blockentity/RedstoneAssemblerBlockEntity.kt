@@ -2,10 +2,7 @@ package com.kneelawk.wiredredstone.blockentity
 
 import com.kneelawk.wiredredstone.WRConstants.tt
 import com.kneelawk.wiredredstone.block.RedstoneAssemblerBlock
-import com.kneelawk.wiredredstone.recipe.DelegatingCraftingInventory
-import com.kneelawk.wiredredstone.recipe.RedstoneAssemblerInventory
-import com.kneelawk.wiredredstone.recipe.RedstoneAssemblerRecipe
-import com.kneelawk.wiredredstone.recipe.RedstoneAssemblerRecipeType
+import com.kneelawk.wiredredstone.recipe.*
 import com.kneelawk.wiredredstone.screenhandler.RedstoneAssemblerScreenHandler
 import com.kneelawk.wiredredstone.util.toArray
 import com.kneelawk.wiredredstone.util.toByte
@@ -18,6 +15,7 @@ import net.minecraft.block.entity.LockableContainerBlockEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.inventory.Inventories
+import net.minecraft.inventory.Inventory
 import net.minecraft.inventory.SidedInventory
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
@@ -50,6 +48,10 @@ class RedstoneAssemblerBlockEntity(pos: BlockPos, state: BlockState) :
         const val SLOT_COUNT = 32
         const val CRAFTING_SLOT_COUNT = 9
         const val OUTPUT_SLOT_COUNT = 4
+        const val CRAFTING_PATTERN_WIDTH = 3
+        const val CRAFTING_PATTERN_HEIGHT = 3
+        const val OUTPUT_WIDTH = 2
+        const val OUTPUT_HEIGHT = 2
 
         const val BURN_TIME_PROPERTY = 0
         const val BURN_TIME_TOTAL_PROPERTY = 1
@@ -111,44 +113,27 @@ class RedstoneAssemblerBlockEntity(pos: BlockPos, state: BlockState) :
                     markDirty = true
                 }
 
-                // utility function for decrementing cookTime if something doesn't work
-                fun tryDecrementCookTime() {
-                    if (cookTime > 0) {
-                        cookTime = MathHelper.clamp(cookTime - 2, 0, cookTimeTotal)
-                        markDirty = true
-                    }
-                }
-
                 // step recipes along, attempting to complete them if possible
                 if (hasEnergy()) {
-                    val (recipe, energyPerTick) = when (mode) {
+                    when (mode) {
                         Mode.ASSEMBLER -> {
                             val recipe = getAssemblerRecipe()
-                            recipe to recipe?.energyPerTick
-                        }
-                        Mode.CRAFTING_TABLE -> getCraftingRecipe() to CRAFTING_ENERGY_PER_TICK
-                    }
 
-                    if (recipe != null && energyPerTick != null &&
-                        energyStorage.amount >= energyPerTick && canUseInputs(recipe)
-                    ) {
-                        if (canAcceptOutput(recipe)) {
-                            energyStorage.amount -= energyPerTick
-                            cookTime++
-
-                            if (cookTime >= cookTimeTotal) {
-                                cookTime = 0
-                                cookTimeTotal = recipeCookTimeTotal()
-
-                                takeInputs(recipe)
-                                val output = recipe.output.copy()
-                                insertOutput(output)
+                            if (recipe != null && energyStorage.amount >= recipe.energyPerTick) {
+                                tryCraft(getValidAssemblerInputInventory(recipe), recipe, recipe.energyPerTick)
+                            } else {
+                                tryDecrementCookTime()
                             }
-
-                            markDirty = true
                         }
-                    } else {
-                        tryDecrementCookTime()
+                        Mode.CRAFTING_TABLE -> {
+                            val recipe = getCraftingRecipe()
+
+                            if (recipe != null && energyStorage.amount >= CRAFTING_ENERGY_PER_TICK) {
+                                tryCraft(getValidCraftingInputInventory(recipe), recipe, CRAFTING_ENERGY_PER_TICK)
+                            } else {
+                                tryDecrementCookTime()
+                            }
+                        }
                     }
                 } else {
                     tryDecrementCookTime()
@@ -250,21 +235,97 @@ class RedstoneAssemblerBlockEntity(pos: BlockPos, state: BlockState) :
 
     fun hasEnergy(): Boolean = energyStorage.amount > 0
 
+    fun tryDecrementCookTime() {
+        if (cookTime > 0) {
+            cookTime = MathHelper.clamp(cookTime - 2, 0, cookTimeTotal)
+            markDirty()
+        }
+    }
+
     fun getAssemblerRecipe(): RedstoneAssemblerRecipe? =
         world!!.recipeManager.getFirstMatch(RedstoneAssemblerRecipeType, this, world).orElse(null)
 
     fun getCraftingRecipe(): CraftingRecipe? =
         world!!.recipeManager.getFirstMatch(RecipeType.CRAFTING, craftingInventory, world).orElse(null)
 
-    fun canUseInputs(recipe: Recipe<*>): Boolean {
-        val matcher = RecipeMatcher()
-        provideRecipeInputs(matcher)
-        return matcher.match(recipe, null)
+    fun getValidAssemblerInputInventory(recipe: RedstoneAssemblerRecipe): DelegateSlotRedstoneAssemblerInventory? {
+        var inventory = DelegateSlotRedstoneAssemblerInventory.fromPatternAndInput(
+            this, CRAFTING_START_SLOT, CRAFTING_PATTERN_WIDTH, CRAFTING_PATTERN_HEIGHT,
+            INPUT_START_SLOT, INPUT_STOP_SLOT, useCraftingItems, preferExact = false
+        )
+
+        if (inventory != null && recipe.matches(inventory, world)) {
+            return inventory
+        }
+
+        if (!useCraftingItems) {
+            return null
+        }
+
+        inventory = DelegateSlotRedstoneAssemblerInventory.fromPatternAndInput(
+            this, CRAFTING_START_SLOT, CRAFTING_PATTERN_WIDTH, CRAFTING_PATTERN_HEIGHT,
+            INPUT_START_SLOT, INPUT_STOP_SLOT, usePatternSlots = true, preferExact = false
+        )
+
+        return if (inventory != null && recipe.matches(inventory, world)) {
+            inventory
+        } else {
+            null
+        }
     }
 
-    fun canAcceptOutput(recipe: Recipe<*>): Boolean {
-        val output = recipe.output.copy()
+    fun getValidCraftingInputInventory(recipe: CraftingRecipe): DelegateSlotCraftingInventory? {
+        var inventory = DelegateSlotCraftingInventory.fromPatternAndInput(
+            this, CRAFTING_START_SLOT, CRAFTING_PATTERN_WIDTH, CRAFTING_PATTERN_HEIGHT,
+            INPUT_START_SLOT, INPUT_STOP_SLOT, useCraftingItems, preferExact = false
+        )
 
+        if (inventory != null && recipe.matches(inventory, world)) {
+            return inventory
+        }
+
+        if (!useCraftingItems) {
+            return null
+        }
+
+        inventory = DelegateSlotCraftingInventory.fromPatternAndInput(
+            this, CRAFTING_START_SLOT, CRAFTING_PATTERN_WIDTH, CRAFTING_PATTERN_HEIGHT,
+            INPUT_START_SLOT, INPUT_STOP_SLOT, usePatternSlots = true, preferExact = false
+        )
+
+        return if (inventory != null && recipe.matches(inventory, world)) {
+            inventory
+        } else {
+            null
+        }
+    }
+
+    fun <I : Inventory> tryCraft(inventory: I?, recipe: Recipe<I>, energyPerTick: Int) {
+        if (inventory != null) {
+            val output = recipe.craft(inventory)
+
+            if (canAcceptOutput(output)) {
+                energyStorage.amount -= energyPerTick
+                cookTime++
+
+                if (cookTime >= cookTimeTotal) {
+                    cookTime = 0
+                    cookTimeTotal = recipeCookTimeTotal()
+
+                    // Rust could have this checked at compile time :(
+                    if (inventory is InputTaker)
+                        inventory.takeInputs()
+                    insertOutput(output)
+                }
+
+                markDirty()
+            }
+        } else {
+            tryDecrementCookTime()
+        }
+    }
+
+    fun canAcceptOutput(output: ItemStack): Boolean {
         for (i in OUTPUT_START_SLOT until OUTPUT_STOP_SLOT) {
             val existing = inventory[i]
             if (existing.isEmpty) {
@@ -285,53 +346,6 @@ class RedstoneAssemblerBlockEntity(pos: BlockPos, state: BlockState) :
         }
 
         return false
-    }
-
-    fun takeInputs(recipe: Recipe<*>) {
-        val ingredients = ArrayList(recipe.ingredients)
-
-        // O(n^2) :(
-        // At least n^2 is only around 243
-
-        // first iterate through input slots
-        for (i in (0 until ingredients.size).reversed()) {
-            for (slot in INPUT_START_SLOT until INPUT_STOP_SLOT) {
-                val stack = inventory[slot]
-
-                if (!stack.isEmpty && ingredients[i].test(stack)) {
-                    val item = stack.item
-                    stack.decrement(1)
-                    ingredients.removeAt(i)
-
-                    if (stack.isEmpty) {
-                        inventory[slot] = item.recipeRemainder?.let { ItemStack(it) } ?: ItemStack.EMPTY
-                    }
-
-                    break
-                }
-            }
-        }
-
-        // next go through the crafting grid if we can
-        if (useCraftingItems) {
-            for (i in (0 until ingredients.size).reversed()) {
-                for (slot in CRAFTING_START_SLOT until CRAFTING_STOP_SLOT) {
-                    val stack = inventory[slot]
-
-                    if (!stack.isEmpty && ingredients[i].test(stack)) {
-                        val item = stack.item
-                        stack.decrement(1)
-                        ingredients.removeAt(i)
-
-                        if (stack.isEmpty) {
-                            inventory[slot] = item.recipeRemainder?.let { ItemStack(it) } ?: ItemStack.EMPTY
-                        }
-
-                        break
-                    }
-                }
-            }
-        }
     }
 
     fun insertOutput(output: ItemStack) {
