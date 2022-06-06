@@ -43,7 +43,9 @@ class RedstoneAssemblerBlock(settings: Settings) : BlockWithEntity(settings) {
 
     override fun <T : BlockEntity?> getTicker(
         world: World, state: BlockState, type: BlockEntityType<T>?
-    ): BlockEntityTicker<T>? = checkType(type, WRBlockEntities.REDSTONE_ASSEMBLER, RedstoneAssemblerBlockEntity::tick)
+    ): BlockEntityTicker<T>? = checkType(
+        type, WRBlockEntities.REDSTONE_ASSEMBLER, if (!world.isClient) RedstoneAssemblerBlockEntity::tick else null
+    )
 
     override fun getRenderType(state: BlockState): BlockRenderType = BlockRenderType.MODEL
 

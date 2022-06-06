@@ -83,14 +83,15 @@ class RedstoneAssemblerBlockEntity(pos: BlockPos, state: BlockState) :
 
         fun tick(world: World, pos: BlockPos, state: BlockState, blockEntity: RedstoneAssemblerBlockEntity) {
             with(blockEntity) {
-                val wasBurning = isBurning()
+                var showBurning = false
                 var markDirty = false
 
                 // generate more energy while we're burning
-                if (isBurning()) {
+                if (isBurning() && energyStorage.amount + BURN_ENERGY_PER_TICK <= ENERGY_CAPACITY) {
                     burnTime--
                     energyStorage.amount =
                         MathHelper.clamp(energyStorage.amount + BURN_ENERGY_PER_TICK, 0L, ENERGY_CAPACITY)
+                    showBurning = true
 
                     markDirty = true
                 }
@@ -100,6 +101,7 @@ class RedstoneAssemblerBlockEntity(pos: BlockPos, state: BlockState) :
                     val fuel = inventory[FUEL_SLOT]
                     burnTimeTotal = getFuelTime(fuel)
                     burnTime = burnTimeTotal
+                    showBurning = true
 
                     if (isBurning()) {
                         val item = fuel.item
@@ -140,8 +142,8 @@ class RedstoneAssemblerBlockEntity(pos: BlockPos, state: BlockState) :
                 }
 
                 // update the `LIT` blockstate
-                if (wasBurning != isBurning()) {
-                    world.setBlockState(pos, state.with(RedstoneAssemblerBlock.LIT, isBurning()), Block.NOTIFY_ALL)
+                if (showBurning != state[RedstoneAssemblerBlock.LIT]) {
+                    world.setBlockState(pos, state.with(RedstoneAssemblerBlock.LIT, showBurning), Block.NOTIFY_ALL)
                     markDirty = true
                 }
 
