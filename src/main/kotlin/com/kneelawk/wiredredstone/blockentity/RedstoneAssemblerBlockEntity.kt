@@ -180,7 +180,7 @@ class RedstoneAssemblerBlockEntity(pos: BlockPos, state: BlockState) :
         private set
     var cookTimeTotal = 0
         private set
-    var useCraftingItems = true
+    var useCraftingItems = false
         private set
     var mode = Mode.ASSEMBLER
         private set
