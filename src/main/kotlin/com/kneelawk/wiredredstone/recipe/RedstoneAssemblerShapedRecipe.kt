@@ -21,7 +21,7 @@ import kotlin.math.max
 import kotlin.math.min
 
 class RedstoneAssemblerShapedRecipe(
-    private val id: Identifier, private val group: String, private val width: Int, private val height: Int,
+    private val id: Identifier, private val group: String, val width: Int, val height: Int,
     private val input: DefaultedList<Ingredient>, private val output: ItemStack, override val energyPerTick: Int,
     override val cookTime: Int
 ) : RedstoneAssemblerRecipe {

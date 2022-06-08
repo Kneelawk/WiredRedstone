@@ -1,8 +1,8 @@
 package com.kneelawk.wiredredstone.client.screen
 
+import com.kneelawk.wiredredstone.WRConstants.gui
 import com.kneelawk.wiredredstone.WRConstants.id
 import com.kneelawk.wiredredstone.WRConstants.tooltip
-import com.kneelawk.wiredredstone.WRConstants.tt
 import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity
 import com.kneelawk.wiredredstone.screenhandler.RedstoneAssemblerScreenHandler
 import com.mojang.blaze3d.systems.RenderSystem
@@ -19,11 +19,15 @@ import net.minecraft.util.Formatting
 class RedstoneAssemblerScreen(handler: RedstoneAssemblerScreenHandler, playerInventory: PlayerInventory, title: Text) :
     HandledScreen<RedstoneAssemblerScreenHandler>(handler, playerInventory, title) {
     companion object {
+        const val BACKGROUND_WIDTH = 176
+        const val BACKGROUND_HEIGHT = 224
+
         private val TEXTURE = id("textures/gui/container/redstone_assembler.png")
     }
 
     init {
-        backgroundHeight = 224
+        backgroundWidth = BACKGROUND_WIDTH
+        backgroundHeight = BACKGROUND_HEIGHT
         playerInventoryTitleY = backgroundHeight - 94
     }
 
@@ -77,7 +81,7 @@ class RedstoneAssemblerScreen(handler: RedstoneAssemblerScreenHandler, playerInv
 
     override fun drawForeground(matrices: MatrixStack, mouseX: Int, mouseY: Int) {
         textRenderer.draw(matrices, title, titleX.toFloat(), titleY.toFloat(), 0xEEEEEE)
-        textRenderer.draw(matrices, tt("gui", "redstone_assembler.input"), 29f, 82f, 0xEEEEEE)
+        textRenderer.draw(matrices, gui("redstone_assembler.input"), 29f, 82f, 0xEEEEEE)
         textRenderer.draw(
             matrices, playerInventoryTitle, playerInventoryTitleX.toFloat(), playerInventoryTitleY.toFloat(), 0xEEEEEE
         )

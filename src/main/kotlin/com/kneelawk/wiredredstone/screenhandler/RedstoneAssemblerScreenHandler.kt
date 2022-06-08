@@ -228,6 +228,8 @@ class RedstoneAssemblerScreenHandler(
             } else if (!insertItem(stack, SLOT_COUNT, SLOT_COUNT + 4 * 9, false)) {
                 return ItemStack.EMPTY
             }
+
+            inventory.markDirty()
         }
 
         return result

@@ -2,6 +2,8 @@
   "block.wiredredstone.redstone_assembler": "Redstone Assembler",
   "container.wiredredstone.redstone_assembler": "Redstone Assembler",
   "gui.wiredredstone.redstone_assembler.input": "Input",
+  "gui.wiredredstone.redstone_assembler.energy_per_tick": "%d E/t",
+  "gui.wiredredstone.redstone_assembler.cook_time": "%d t",
   "item.wiredredstone.gate_diode": "Redstone Diode",
   "item.wiredredstone.gate_not": "Not Gate",
   "item.wiredredstone.gate_repeater": "Repeater",
