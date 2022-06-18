@@ -51,5 +51,8 @@
   "tooltip.wiredredstone.redstone_assembler.mode.assembler": "Redstone Assembler",
   "tooltip.wiredredstone.redstone_assembler.mode.crafting_table": "Crafting Table",
   "tooltip.wiredredstone.redstone_assembler.use_crafting_items.true": "Will consume crafting-pattern items.",
-  "tooltip.wiredredstone.redstone_assembler.use_crafting_items.false": "Will only use input items, keeping crafting-pattern intact."
+  "tooltip.wiredredstone.redstone_assembler.use_crafting_items.false": "Will only use input items, keeping crafting-pattern intact.",
+  "tooltip.wiredredstone.redstone_assembler.shaped": "Shaped Recipe",
+  "tooltip.wiredredstone.redstone_assembler.shapeless": "Shapeless Recipe",
+  "emi.category.wiredredstone.redstone_assembler": "Redstone Assembler"
 }

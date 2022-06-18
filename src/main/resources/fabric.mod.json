@@ -36,6 +36,11 @@
       {
         "value": "com.kneelawk.wiredredstone.rei.WiredRedstoneCommonPlugin"
       }
+    ],
+    "emi": [
+      {
+        "value": "com.kneelawk.wiredredstone.emi.WiredRedstonePlugin"
+      }
     ]
   },
   "mixins": [

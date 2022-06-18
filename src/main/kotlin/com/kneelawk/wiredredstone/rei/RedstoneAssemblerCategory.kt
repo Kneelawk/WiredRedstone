@@ -8,6 +8,7 @@ import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Compa
 import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.CRAFTING_PATTERN_WIDTH
 import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.OUTPUT_HEIGHT
 import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.OUTPUT_WIDTH
+import com.kneelawk.wiredredstone.util.RecipeUtil
 import me.shedaniel.math.Point
 import me.shedaniel.math.Rectangle
 import me.shedaniel.rei.api.client.gui.Renderer
@@ -63,7 +64,7 @@ object RedstoneAssemblerCategory : DisplayCategory<RedstoneAssemblerDisplay> {
         }
 
         for (i in input.indices) {
-            val slot = WiredRedstoneREI.recipeToSlotIndex(i, display.width, display.height, CRAFTING_PATTERN_WIDTH)
+            val slot = RecipeUtil.recipeToSlotIndex(i, display.width, display.height, CRAFTING_PATTERN_WIDTH)
             inputSlots[slot].markInput().entries(input[i])
         }
 

@@ -4,6 +4,7 @@ import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Compa
 import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.CRAFTING_START_SLOT
 import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.CRAFTING_STOP_SLOT
 import com.kneelawk.wiredredstone.screenhandler.RedstoneAssemblerScreenHandler
+import com.kneelawk.wiredredstone.util.RecipeUtil
 import me.shedaniel.rei.api.common.transfer.info.MenuInfoContext
 import me.shedaniel.rei.api.common.transfer.info.clean.InputCleanHandler
 import me.shedaniel.rei.api.common.transfer.info.simple.SimplePlayerInventoryMenuInfo
@@ -18,7 +19,7 @@ class RedstoneAssemblerMenuInfo(private val display: RedstoneAssemblerDisplay) :
         val display = context.display
 
         return display.input.indices.map {
-            val slot = WiredRedstoneREI.recipeToSlotIndex(it, display.width, display.height, CRAFTING_PATTERN_WIDTH)
+            val slot = RecipeUtil.recipeToSlotIndex(it, display.width, display.height, CRAFTING_PATTERN_WIDTH)
             SlotAccessor.fromSlot(handler.getSlot(slot))
         }
     }

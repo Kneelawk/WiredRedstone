@@ -84,6 +84,10 @@ dependencies {
     val reiVersion: String by project
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:$reiVersion")
 
+    // EMI
+    val emiVersion: String by project
+    modCompileOnly("dev.emi:emi:$emiVersion")
+
     //
     // Optional Mod Dependencies
     //
@@ -113,7 +117,12 @@ dependencies {
     runtimeOnly("com.electronwill.night-config:toml:$nightConfigVersion")
 
     // REI
-    modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:$reiVersion") {
+//    modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:$reiVersion") {
+//        exclude("net.fabricmc.fabric-api")
+//    }
+
+    modRuntimeOnly("dev.emi:emi:$emiVersion") {
+        exclude("net.fabricmc")
         exclude("net.fabricmc.fabric-api")
     }
 
