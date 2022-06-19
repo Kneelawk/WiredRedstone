@@ -2,6 +2,7 @@ package com.kneelawk.wiredredstone.rei
 
 import com.kneelawk.wiredredstone.WRConstants.gui
 import com.kneelawk.wiredredstone.WRConstants.id
+import com.kneelawk.wiredredstone.WRConstants.tooltip
 import com.kneelawk.wiredredstone.WRConstants.tt
 import com.kneelawk.wiredredstone.block.WRBlocks
 import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.CRAFTING_PATTERN_HEIGHT
@@ -25,6 +26,9 @@ import net.minecraft.text.Text
 @Environment(EnvType.CLIENT)
 object RedstoneAssemblerCategory : DisplayCategory<RedstoneAssemblerDisplay> {
     private val TITLE = tt("container", "redstone_assembler")
+    private val SPRITE_SHEET = id("textures/gui/rei/recipe_sprite_sheet.png")
+    private val SHAPELESS_TOOLTIP = tooltip("redstone_assembler.shapeless")
+    private val SHAPED_TOOLTIP = tooltip("redstone_assembler.shaped")
 
     override fun getIcon(): Renderer {
         return EntryStacks.of(WRBlocks.REDSTONE_ASSEMBLER)
@@ -39,8 +43,8 @@ object RedstoneAssemblerCategory : DisplayCategory<RedstoneAssemblerDisplay> {
     }
 
     override fun setupDisplay(display: RedstoneAssemblerDisplay, bounds: Rectangle): List<Widget> {
-        val originX = bounds.centerX - 63
-        val originY = bounds.centerY - 27
+        val originX = bounds.x + 12
+        val originY = bounds.y + 6
 
         val input = display.input
         val output = display.output
@@ -48,11 +52,20 @@ object RedstoneAssemblerCategory : DisplayCategory<RedstoneAssemblerDisplay> {
         val widgets = mutableListOf<Widget>()
         val inputSlots = mutableListOf<Slot>()
 
-        widgets += Widgets.createRecipeBase(bounds).color(0xFF383838u.toInt(), 0xFF383838u.toInt())
+        widgets += Widgets.createTexturedWidget(SPRITE_SHEET, bounds.x, bounds.y, 0f, 0f, 150, 66)
 
-        widgets += Widgets.createTexturedWidget(
-            id("textures/gui/container/redstone_assembler.png"), originX, originY, 34f, 16f, 54, 54
-        )
+        val arrowBounds = Rectangle(originX + 3 * 18, originY + 18, 2 * 18, 18)
+        widgets += if (display.isShapeless) {
+            Widgets.withTooltip(
+                Widgets.withBounds(Widgets.createTexturedWidget(SPRITE_SHEET, arrowBounds, 150f, 18f), arrowBounds),
+                SHAPELESS_TOOLTIP
+            )
+        } else {
+            Widgets.withTooltip(
+                Widgets.withBounds(Widgets.createTexturedWidget(SPRITE_SHEET, arrowBounds, 150f, 0f), arrowBounds),
+                SHAPED_TOOLTIP
+            )
+        }
 
         for (y in 0 until CRAFTING_PATTERN_HEIGHT) {
             for (x in 0 until CRAFTING_PATTERN_WIDTH) {
@@ -67,10 +80,6 @@ object RedstoneAssemblerCategory : DisplayCategory<RedstoneAssemblerDisplay> {
             val slot = RecipeUtil.recipeToSlotIndex(i, display.width, display.height, CRAFTING_PATTERN_WIDTH)
             inputSlots[slot].markInput().entries(input[i])
         }
-
-        widgets += Widgets.createTexturedWidget(
-            id("textures/gui/container/redstone_assembler.png"), originX + 90, originY + 9, 124f, 16f, 36, 36
-        )
 
         for (y in 0 until OUTPUT_HEIGHT) {
             for (x in 0 until OUTPUT_WIDTH) {
@@ -88,11 +97,6 @@ object RedstoneAssemblerCategory : DisplayCategory<RedstoneAssemblerDisplay> {
         }
 
         widgets.add(
-            Widgets.createArrow(Point(originX + 54 + 6, originY + 18))
-                .animationDurationTicks(display.cookTime.toDouble())
-        )
-
-        widgets.add(
             Widgets.createLabel(
                 Point(originX + 72, originY + 36), gui("redstone_assembler.cook_time", display.cookTime)
             ).noShadow()
@@ -103,10 +107,6 @@ object RedstoneAssemblerCategory : DisplayCategory<RedstoneAssemblerDisplay> {
                 gui("redstone_assembler.energy_per_tick", display.energyPerTick)
             ).noShadow()
         )
-
-        if (display.isShapeless) {
-            widgets.add(Widgets.createShapelessIcon(bounds))
-        }
 
         return widgets
     }

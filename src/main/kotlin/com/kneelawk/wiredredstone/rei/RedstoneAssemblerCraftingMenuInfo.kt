@@ -1,38 +1,33 @@
 package com.kneelawk.wiredredstone.rei
 
 import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity
-import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.CRAFTING_PATTERN_WIDTH
 import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.CRAFTING_START_SLOT
 import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.CRAFTING_STOP_SLOT
 import com.kneelawk.wiredredstone.screenhandler.RedstoneAssemblerScreenHandler
-import com.kneelawk.wiredredstone.util.RecipeUtil
+import me.shedaniel.rei.api.common.display.SimpleGridMenuDisplay
 import me.shedaniel.rei.api.common.transfer.info.MenuInfoContext
 import me.shedaniel.rei.api.common.transfer.info.clean.InputCleanHandler
 import me.shedaniel.rei.api.common.transfer.info.simple.SimplePlayerInventoryMenuInfo
 import me.shedaniel.rei.api.common.transfer.info.stack.SlotAccessor
 
-class RedstoneAssemblerMenuInfo(private val display: RedstoneAssemblerDisplay) :
-    SimplePlayerInventoryMenuInfo<RedstoneAssemblerScreenHandler, RedstoneAssemblerDisplay> {
+class RedstoneAssemblerCraftingMenuInfo<D : SimpleGridMenuDisplay>(private val display: D) :
+    SimplePlayerInventoryMenuInfo<RedstoneAssemblerScreenHandler, D> {
     override fun getInputSlots(
-        context: MenuInfoContext<RedstoneAssemblerScreenHandler, *, RedstoneAssemblerDisplay>
+        context: MenuInfoContext<RedstoneAssemblerScreenHandler, *, D>
     ): Iterable<SlotAccessor> {
-        val handler = context.menu
-        val display = context.display
-
-        return display.input.indices.map {
-            val slot = RecipeUtil.recipeToSlotIndex(it, display.width, display.height, CRAFTING_PATTERN_WIDTH)
-            SlotAccessor.fromSlot(handler.getSlot(slot))
+        return (CRAFTING_START_SLOT until CRAFTING_STOP_SLOT).map { i ->
+            SlotAccessor.fromSlot(context.menu.getSlot(i))
         }
     }
 
-    override fun getDisplay(): RedstoneAssemblerDisplay = display
+    override fun getDisplay(): D = display
 
-    override fun getInputCleanHandler(): InputCleanHandler<RedstoneAssemblerScreenHandler, RedstoneAssemblerDisplay> {
+    override fun getInputCleanHandler(): InputCleanHandler<RedstoneAssemblerScreenHandler, D> {
         return InputCleanHandler { context ->
             val handler = context.menu
 
             // set the handler to redstone-assembler mode in preparation for the recipe being added
-            handler.mode = RedstoneAssemblerBlockEntity.Mode.ASSEMBLER
+            handler.mode = RedstoneAssemblerBlockEntity.Mode.CRAFTING_TABLE
 
             for (i in CRAFTING_START_SLOT until CRAFTING_STOP_SLOT) {
                 val accessor = SlotAccessor.fromSlot(handler.getSlot(i))

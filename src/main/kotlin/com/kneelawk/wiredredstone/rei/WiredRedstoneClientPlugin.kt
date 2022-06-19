@@ -9,6 +9,7 @@ import me.shedaniel.rei.api.client.registry.category.CategoryRegistry
 import me.shedaniel.rei.api.client.registry.display.DisplayRegistry
 import me.shedaniel.rei.api.client.registry.screen.ScreenRegistry
 import me.shedaniel.rei.api.common.util.EntryStacks
+import me.shedaniel.rei.plugin.common.BuiltinPlugin
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 
@@ -21,6 +22,7 @@ class WiredRedstoneClientPlugin : REIClientPlugin {
         registry.addWorkstations(
             WiredRedstoneREI.REDSTONE_ASSEMBLER_CATEGORY, EntryStacks.of(WRBlocks.REDSTONE_ASSEMBLER)
         )
+        registry.addWorkstations(BuiltinPlugin.CRAFTING, EntryStacks.of(WRBlocks.REDSTONE_ASSEMBLER))
     }
 
     override fun registerDisplays(registry: DisplayRegistry) {

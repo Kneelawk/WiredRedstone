@@ -83,6 +83,7 @@ dependencies {
     // REI
     val reiVersion: String by project
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:$reiVersion")
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:$reiVersion")
 
     // EMI
     val emiVersion: String by project
@@ -121,6 +122,7 @@ dependencies {
 //        exclude("net.fabricmc.fabric-api")
 //    }
 
+    // EMI
     modRuntimeOnly("dev.emi:emi:$emiVersion") {
         exclude("net.fabricmc")
         exclude("net.fabricmc.fabric-api")

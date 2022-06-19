@@ -57,15 +57,11 @@ class RedstoneAssemblerScreenHandler(
 
         private val NET_SET_USE_CRAFTING_ITEMS =
             NET_PARENT.idData("set_use_crafting_items").toServerOnly().setRecv { buf, _ ->
-                if (inventory is RedstoneAssemblerBlockEntity) {
-                    inventory.updateUseCraftingItems(buf.readBoolean())
-                }
+                useCraftingItems = buf.readBoolean()
             }
 
         private val NET_SET_MODE = NET_PARENT.idData("set_mode").toServerOnly().setRecv { buf, _ ->
-            if (inventory is RedstoneAssemblerBlockEntity) {
-                inventory.updateMode(buf.readByte().toEnum())
-            }
+            mode = buf.readByte().toEnum()
         }
     }
 
@@ -152,11 +148,23 @@ class RedstoneAssemblerScreenHandler(
 
     var useCraftingItems: Boolean
         get() = delegate.get(USE_CRAFTING_ITEMS_PROPERTY) != 0
-        set(value) = NET_SET_USE_CRAFTING_ITEMS.sendToServer { buf, _ -> buf.writeBoolean(value) }
+        set(value) {
+            if (player.world.isClient) {
+                NET_SET_USE_CRAFTING_ITEMS.sendToServer { buf, _ -> buf.writeBoolean(value) }
+            } else if (inventory is RedstoneAssemblerBlockEntity) {
+                inventory.updateUseCraftingItems(value)
+            }
+        }
 
     var mode: RedstoneAssemblerBlockEntity.Mode
         get() = delegate.get(MODE_PROPERTY).toEnum()
-        set(value) = NET_SET_MODE.sendToServer { buf, _ -> buf.writeByte(value.toByte().toInt()) }
+        set(value) {
+            if (player.world.isClient) {
+                NET_SET_MODE.sendToServer { buf, _ -> buf.writeByte(value.toByte().toInt()) }
+            } else if (inventory is RedstoneAssemblerBlockEntity) {
+                inventory.updateMode(value)
+            }
+        }
 
     override fun close(player: PlayerEntity) {
         super.close(player)
