@@ -1,0 +1,14 @@
+{
+  "type": "wiredredstone:redstone_assembler_shapeless",
+  "ingredients": [
+    { "item": "wiredredstone:bundled_cable" },
+    { "item": "minecraft:paper" },
+    { "tag": "c:green_dyes" }
+  ],
+  "result": {
+    "item": "wiredredstone:green_bundled_cable",
+    "count": 1
+  },
+  "cookingtime": 20,
+  "energypertick": 5
+}

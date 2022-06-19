@@ -54,5 +54,11 @@
   "tooltip.wiredredstone.redstone_assembler.use_crafting_items.false": "Will only use input items, keeping crafting-pattern intact.",
   "tooltip.wiredredstone.redstone_assembler.shaped": "Shaped Recipe",
   "tooltip.wiredredstone.redstone_assembler.shapeless": "Shapeless Recipe",
-  "emi.category.wiredredstone.redstone_assembler": "Redstone Assembler"
+  "emi.category.wiredredstone.redstone_assembler": "Redstone Assembling",
+  "tag.c.furnaces": "Furnaces",
+  "tag.c.red_alloy_ingots": "Red Alloy Ingots",
+  "tag.c.redstone_blocks": "Redstone Blocks",
+  "tag.c.workbench": "Crafting Tables",
+  "tag.wiredredstone.colored_bundled_cables": "Colored Bundled Cables",
+  "tag.wiredredstone.insulated_wires": "Insulated Wires"
 }

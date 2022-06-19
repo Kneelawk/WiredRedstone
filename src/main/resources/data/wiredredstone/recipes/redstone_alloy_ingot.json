@@ -1,11 +1,11 @@
 {
   "type": "wiredredstone:redstone_assembler_shapeless",
   "ingredients": [
-    { "item": "minecraft:iron_ingot" },
-    { "item": "minecraft:redstone" },
-    { "item": "minecraft:redstone" },
-    { "item": "minecraft:redstone" },
-    { "item": "minecraft:redstone" }
+    { "tag": "c:iron_ingots" },
+    { "tag": "c:redstone_dusts" },
+    { "tag": "c:redstone_dusts" },
+    { "tag": "c:redstone_dusts" },
+    { "tag": "c:redstone_dusts" }
   ],
   "result": {
     "item": "wiredredstone:redstone_alloy_ingot",

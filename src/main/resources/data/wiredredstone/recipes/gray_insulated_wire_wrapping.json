@@ -1,0 +1,14 @@
+{
+  "type": "wiredredstone:redstone_assembler_shapeless",
+  "ingredients": [
+    { "item": "wiredredstone:red_alloy_wire" },
+    { "item": "wiredredstone:red_alloy_wire" },
+    { "item": "minecraft:gray_wool" }
+  ],
+  "result": {
+    "item": "wiredredstone:gray_insulated_wire",
+    "count": 2
+  },
+  "cookingtime": 20,
+  "energypertick": 5
+}

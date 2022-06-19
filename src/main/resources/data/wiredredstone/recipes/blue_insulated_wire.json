@@ -1,17 +1,20 @@
 {
   "type": "wiredredstone:redstone_assembler_shaped",
   "pattern": [
-    "R",
-    "R",
-    "R"
+    "WIW",
+    "WIW",
+    "WIW"
   ],
   "key": {
-    "R": {
+    "W": {
+      "item": "minecraft:blue_wool"
+    },
+    "I": {
       "tag": "c:red_alloy_ingots"
     }
   },
   "result": {
-    "item": "wiredredstone:red_alloy_wire",
+    "item": "wiredredstone:blue_insulated_wire",
     "count": 12
   },
   "cookingtime": 100,
