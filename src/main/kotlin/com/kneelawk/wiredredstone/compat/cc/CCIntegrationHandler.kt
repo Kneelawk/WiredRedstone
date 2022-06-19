@@ -1,4 +1,4 @@
-package com.kneelawk.wiredredstone.cc
+package com.kneelawk.wiredredstone.compat.cc
 
 import com.kneelawk.graphlib.util.SidedPos
 import com.kneelawk.wiredredstone.util.ReflectionUtils
@@ -12,7 +12,8 @@ object CCIntegrationHandler {
 
     fun init() {
         if (FabricLoader.getInstance().isModLoaded("computercraft")) {
-            integration = ReflectionUtils.loadObject<CCIntegration>("com.kneelawk.wiredredstone.cc.CCIntegrationImpl")
+            integration =
+                ReflectionUtils.loadObject<CCIntegration>("com.kneelawk.wiredredstone.compat.cc.CCIntegrationImpl")
             integration?.init()
         }
     }

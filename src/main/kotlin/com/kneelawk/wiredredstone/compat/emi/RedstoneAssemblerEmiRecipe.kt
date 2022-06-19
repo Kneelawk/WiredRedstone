@@ -1,4 +1,4 @@
-package com.kneelawk.wiredredstone.emi
+package com.kneelawk.wiredredstone.compat.emi
 
 import dev.emi.emi.api.recipe.EmiRecipe
 

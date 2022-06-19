@@ -1,4 +1,4 @@
-package com.kneelawk.wiredredstone.rei
+package com.kneelawk.wiredredstone.compat.rei
 
 import com.kneelawk.wiredredstone.recipe.RedstoneAssemblerRecipe
 import com.kneelawk.wiredredstone.recipe.RedstoneAssemblerShapedRecipe

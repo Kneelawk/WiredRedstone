@@ -1,4 +1,4 @@
-package com.kneelawk.wiredredstone.rei
+package com.kneelawk.wiredredstone.compat.rei
 
 import com.kneelawk.wiredredstone.block.WRBlocks
 import com.kneelawk.wiredredstone.client.screen.RedstoneAssemblerScreen
@@ -26,7 +26,7 @@ class WiredRedstoneClientPlugin : REIClientPlugin {
     }
 
     override fun registerDisplays(registry: DisplayRegistry) {
-        registry.registerFiller(RedstoneAssemblerRecipe::class.java, RedstoneAssemblerDisplay::of)
+        registry.registerFiller(RedstoneAssemblerRecipe::class.java, RedstoneAssemblerDisplay.Companion::of)
     }
 
     override fun registerScreens(registry: ScreenRegistry) {

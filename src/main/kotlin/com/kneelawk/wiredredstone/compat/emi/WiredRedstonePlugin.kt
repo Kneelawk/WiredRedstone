@@ -1,4 +1,4 @@
-package com.kneelawk.wiredredstone.emi
+package com.kneelawk.wiredredstone.compat.emi
 
 import com.kneelawk.wiredredstone.WRConstants
 import com.kneelawk.wiredredstone.WRLog

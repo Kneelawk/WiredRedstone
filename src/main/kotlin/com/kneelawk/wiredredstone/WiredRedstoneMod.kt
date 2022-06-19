@@ -2,7 +2,7 @@ package com.kneelawk.wiredredstone
 
 import com.kneelawk.wiredredstone.block.WRBlocks
 import com.kneelawk.wiredredstone.blockentity.WRBlockEntities
-import com.kneelawk.wiredredstone.cc.CCIntegrationHandler
+import com.kneelawk.wiredredstone.compat.cc.CCIntegrationHandler
 import com.kneelawk.wiredredstone.item.WRItems
 import com.kneelawk.wiredredstone.net.WRNetworking
 import com.kneelawk.wiredredstone.node.WRBlockNodeDiscoverer

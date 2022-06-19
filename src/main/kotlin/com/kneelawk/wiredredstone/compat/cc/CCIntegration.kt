@@ -1,4 +1,4 @@
-package com.kneelawk.wiredredstone.cc
+package com.kneelawk.wiredredstone.compat.cc
 
 import com.kneelawk.graphlib.util.SidedPos
 import net.minecraft.server.world.ServerWorld

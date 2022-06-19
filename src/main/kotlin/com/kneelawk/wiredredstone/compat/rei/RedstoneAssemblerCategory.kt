@@ -1,4 +1,4 @@
-package com.kneelawk.wiredredstone.rei
+package com.kneelawk.wiredredstone.compat.rei
 
 import com.kneelawk.wiredredstone.WRConstants.gui
 import com.kneelawk.wiredredstone.WRConstants.id

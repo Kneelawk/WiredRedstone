@@ -1,4 +1,4 @@
-package com.kneelawk.wiredredstone.emi
+package com.kneelawk.wiredredstone.compat.emi
 
 import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity
 import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.CRAFTING_PATTERN_WIDTH

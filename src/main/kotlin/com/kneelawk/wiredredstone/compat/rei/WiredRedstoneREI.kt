@@ -1,4 +1,4 @@
-package com.kneelawk.wiredredstone.rei
+package com.kneelawk.wiredredstone.compat.rei
 
 import com.kneelawk.wiredredstone.WRConstants.id
 import me.shedaniel.rei.api.common.category.CategoryIdentifier

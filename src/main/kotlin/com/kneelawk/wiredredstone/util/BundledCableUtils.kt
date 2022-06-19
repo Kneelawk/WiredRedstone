@@ -2,7 +2,7 @@ package com.kneelawk.wiredredstone.util
 
 import alexiil.mc.lib.multipart.api.MultipartUtil
 import com.kneelawk.graphlib.util.SidedPos
-import com.kneelawk.wiredredstone.cc.CCIntegrationHandler
+import com.kneelawk.wiredredstone.compat.cc.CCIntegrationHandler
 import com.kneelawk.wiredredstone.part.BundledPowerablePart
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.DyeColor
