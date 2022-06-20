@@ -9,3 +9,4 @@ Changes:
   also be used as an auto-crafting-table, when used in crafting-table mode.
 * The Redstone Assembler should also work with most special crafting-recipes (has been tested with map-cloning).
 * The Redstone Assembler also has REI & EMI support.
+* Updates GraphLib to v0.2.4+1.18.2.
