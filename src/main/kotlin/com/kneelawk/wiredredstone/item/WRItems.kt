@@ -13,9 +13,10 @@ import net.minecraft.util.DyeColor
 import net.minecraft.util.registry.Registry
 
 object WRItems {
-    private val WIRED_REDSTONE_ITEM_GROUP: ItemGroup =
+    private val WIRED_REDSTONE_ITEM_GROUP: ItemGroup by lazy {
         FabricItemGroupBuilder.build(WRConstants.id("wiredredstone")) { ItemStack(RED_ALLOY_WIRE) }
-    private val WIRED_REDSTONE_ITEM_SETTINGS = Item.Settings().group(WIRED_REDSTONE_ITEM_GROUP)
+    }
+    val WIRED_REDSTONE_ITEM_SETTINGS: Item.Settings by lazy { Item.Settings().group(WIRED_REDSTONE_ITEM_GROUP) }
 
     // Wires
     val RED_ALLOY_WIRE by lazy { RedAlloyWireItem(WIRED_REDSTONE_ITEM_SETTINGS) }
@@ -72,6 +73,15 @@ object WRItems {
         }
     }
 
+    // Crafting Materials
+    val REDSTONE_ALLOY_INGOT by lazy { Item(WIRED_REDSTONE_ITEM_SETTINGS) }
+    val STONE_PLATE by lazy { Item(WIRED_REDSTONE_ITEM_SETTINGS) }
+    val REDSTONE_ANODE by lazy { Item(WIRED_REDSTONE_ITEM_SETTINGS) }
+    val REDSTONE_CATHODE by lazy { Item(WIRED_REDSTONE_ITEM_SETTINGS) }
+    val REDSTONE_INVERTING_CATHODE by lazy { Item(WIRED_REDSTONE_ITEM_SETTINGS) }
+    val REDSTONE_DELAY_LINE by lazy { Item(WIRED_REDSTONE_ITEM_SETTINGS) }
+    val REDSTONE_WIRE_PLATE by lazy { Item(WIRED_REDSTONE_ITEM_SETTINGS) }
+
     fun init() {
         register(RED_ALLOY_WIRE, "red_alloy_wire")
 
@@ -113,6 +123,14 @@ object WRItems {
         register(GATE_DIODE, "gate_diode")
         register(GATE_NOT, "gate_not")
         register(GATE_REPEATER, "gate_repeater")
+
+        register(REDSTONE_ALLOY_INGOT, "redstone_alloy_ingot")
+        register(STONE_PLATE, "stone_plate")
+        register(REDSTONE_ANODE, "redstone_anode")
+        register(REDSTONE_CATHODE, "redstone_cathode")
+        register(REDSTONE_INVERTING_CATHODE, "redstone_inverting_cathode")
+        register(REDSTONE_DELAY_LINE, "redstone_delay_line")
+        register(REDSTONE_WIRE_PLATE, "redstone_wire_plate")
     }
 
     private fun register(item: Item, name: String) {

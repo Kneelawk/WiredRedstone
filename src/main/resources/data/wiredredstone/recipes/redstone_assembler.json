@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "DRD",
+    "RCR",
+    "SFS"
+  ],
+  "key": {
+    "D": {
+      "item": "minecraft:polished_deepslate"
+    },
+    "C": {
+      "tag": "c:workbench"
+    },
+    "F": {
+      "tag": "c:furnaces"
+    },
+    "R": {
+      "tag": "c:redstone_blocks"
+    },
+    "S": {
+      "item": "minecraft:smooth_stone"
+    }
+  },
+  "result": {
+    "item": "wiredredstone:redstone_assembler",
+    "count": 1
+  }
+}

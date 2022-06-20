@@ -1,0 +1,16 @@
+{
+  "type": "wiredredstone:redstone_assembler_shapeless",
+  "ingredients": [
+    { "tag": "c:iron_ingots" },
+    { "tag": "c:redstone_dusts" },
+    { "tag": "c:redstone_dusts" },
+    { "tag": "c:redstone_dusts" },
+    { "tag": "c:redstone_dusts" }
+  ],
+  "result": {
+    "item": "wiredredstone:redstone_alloy_ingot",
+    "count": 1
+  },
+  "cookingtime": 100,
+  "energypertick": 5
+}

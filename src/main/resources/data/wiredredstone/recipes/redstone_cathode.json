@@ -1,0 +1,25 @@
+{
+  "type": "wiredredstone:redstone_assembler_shaped",
+  "pattern": [
+    "RR",
+    "RR",
+    "PW"
+  ],
+  "key": {
+    "P": {
+      "item": "wiredredstone:stone_plate"
+    },
+    "W": {
+      "item": "wiredredstone:redstone_wire_plate"
+    },
+    "R": {
+      "tag": "c:redstone_dusts"
+    }
+  },
+  "result": {
+    "item": "wiredredstone:redstone_cathode",
+    "count": 2
+  },
+  "cookingtime": 20,
+  "energypertick": 5
+}

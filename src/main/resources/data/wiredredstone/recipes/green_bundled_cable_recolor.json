@@ -1,0 +1,13 @@
+{
+  "type": "wiredredstone:redstone_assembler_shapeless",
+  "ingredients": [
+    { "tag": "wiredredstone:colored_bundled_cables" },
+    { "tag": "c:green_dyes" }
+  ],
+  "result": {
+    "item": "wiredredstone:green_bundled_cable",
+    "count": 1
+  },
+  "cookingtime": 10,
+  "energypertick": 5
+}

@@ -64,6 +64,14 @@ dependencies {
     modImplementation("com.kneelawk:graphlib:$graphlibVersion")
     include("com.kneelawk:graphlib:$graphlibVersion")
 
+    // TechReborn Lightweight Energy API
+    val energyVersion: String by project
+    modApi("teamreborn:energy:$energyVersion") {
+        exclude("net.fabricmc.fabric-api")
+        exclude("net.fabricmc")
+    }
+    include("teamreborn:energy:$energyVersion")
+
     // WTHIT API
     val wthitVersion: String by project
     modCompileOnly("mcp.mobius.waila:wthit-api:fabric-$wthitVersion")
@@ -71,6 +79,15 @@ dependencies {
     // CC: Restitched
     val ccRestitchedVersion: String by project
     modCompileOnly("maven.modrinth:cc-restitched:$ccRestitchedVersion")
+
+    // REI
+    val reiVersion: String by project
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:$reiVersion")
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:$reiVersion")
+
+    // EMI
+    val emiVersion: String by project
+    modCompileOnly("dev.emi:emi:$emiVersion")
 
     //
     // Optional Mod Dependencies
@@ -99,6 +116,17 @@ dependencies {
     }
     val nightConfigVersion: String by project
     runtimeOnly("com.electronwill.night-config:toml:$nightConfigVersion")
+
+    // REI
+//    modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:$reiVersion") {
+//        exclude("net.fabricmc.fabric-api")
+//    }
+
+    // EMI
+    modRuntimeOnly("dev.emi:emi:$emiVersion") {
+        exclude("net.fabricmc")
+        exclude("net.fabricmc.fabric-api")
+    }
 
     // Quiltflower
     // Probably best to just use the IDEA plugin instead

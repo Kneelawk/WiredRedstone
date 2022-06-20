@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/orientable_with_bottom",
+  "textures": {
+    "top": "wiredredstone:block/redstone_assembler_top",
+    "front": "wiredredstone:block/redstone_assembler_front",
+    "side": "wiredredstone:block/redstone_assembler_side",
+    "bottom": "wiredredstone:block/redstone_assembler_bottom"
+  }
+}

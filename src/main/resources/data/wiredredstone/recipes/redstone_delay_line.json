@@ -1,0 +1,22 @@
+{
+  "type": "wiredredstone:redstone_assembler_shaped",
+  "pattern": [
+    " RW",
+    "RW ",
+    "W  "
+  ],
+  "key": {
+    "W": {
+      "item": "wiredredstone:redstone_wire_plate"
+    },
+    "R": {
+      "tag": "c:redstone_dusts"
+    }
+  },
+  "result": {
+    "item": "wiredredstone:redstone_delay_line",
+    "count": 3
+  },
+  "cookingtime": 30,
+  "energypertick": 5
+}

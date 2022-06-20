@@ -1,0 +1,13 @@
+{
+  "type": "wiredredstone:redstone_assembler_shapeless",
+  "ingredients": [
+    { "tag": "wiredredstone:insulated_wires" },
+    { "tag": "c:cyan_dyes" }
+  ],
+  "result": {
+    "item": "wiredredstone:cyan_insulated_wire",
+    "count": 1
+  },
+  "cookingtime": 10,
+  "energypertick": 5
+}

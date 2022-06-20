@@ -24,4 +24,8 @@ object WRConstants {
     fun tooltip(path: String, vararg args: Any?): MutableText {
         return tt("tooltip", path, *args)
     }
+
+    fun gui(path: String, vararg args: Any?): MutableText {
+        return tt("gui", path, *args)
+    }
 }

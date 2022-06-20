@@ -26,6 +26,21 @@
       {
         "value": "com.kneelawk.wiredredstone.client.WiredRedstoneClientModKt::init"
       }
+    ],
+    "rei_client": [
+      {
+        "value": "com.kneelawk.wiredredstone.compat.rei.WiredRedstoneClientPlugin"
+      }
+    ],
+    "rei_common": [
+      {
+        "value": "com.kneelawk.wiredredstone.compat.rei.WiredRedstoneCommonPlugin"
+      }
+    ],
+    "emi": [
+      {
+        "value": "com.kneelawk.wiredredstone.compat.emi.WiredRedstonePlugin"
+      }
     ]
   },
   "mixins": [
@@ -46,7 +61,7 @@
     "waila:plugins": [
       {
         "id": "wiredredstone:part_plugin",
-        "initializer": "com.kneelawk.wiredredstone.wthit.PartPlugin"
+        "initializer": "com.kneelawk.wiredredstone.compat.wthit.PartPlugin"
       }
     ]
   }

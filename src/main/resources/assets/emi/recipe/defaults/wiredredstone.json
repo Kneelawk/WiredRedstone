@@ -1,0 +1,29 @@
+{
+  "recipes": [
+    "wiredredstone:bundled_cable",
+    "wiredredstone:white_insulated_wire",
+    "wiredredstone:orange_insulated_wire",
+    "wiredredstone:magenta_insulated_wire",
+    "wiredredstone:light_blue_insulated_wire",
+    "wiredredstone:yellow_insulated_wire",
+    "wiredredstone:lime_insulated_wire",
+    "wiredredstone:pink_insulated_wire",
+    "wiredredstone:gray_insulated_wire",
+    "wiredredstone:light_gray_insulated_wire",
+    "wiredredstone:cyan_insulated_wire",
+    "wiredredstone:purple_insulated_wire",
+    "wiredredstone:blue_insulated_wire",
+    "wiredredstone:brown_insulated_wire",
+    "wiredredstone:green_insulated_wire",
+    "wiredredstone:red_insulated_wire",
+    "wiredredstone:black_insulated_wire",
+    "wiredredstone:red_alloy_wire",
+    "wiredredstone:redstone_alloy_ingot",
+    "wiredredstone:stone_plate",
+    "wiredredstone:redstone_anode",
+    "wiredredstone:redstone_cathode",
+    "wiredredstone:redstone_inverting_cathode",
+    "wiredredstone:redstone_delay_line",
+    "wiredredstone:redstone_wire_plate"
+  ]
+}
