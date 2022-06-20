@@ -1,0 +1,28 @@
+{
+  "type": "wiredredstone:redstone_assembler_shaped",
+  "pattern": [
+    "PAP",
+    "PIP",
+    "PWP"
+  ],
+  "key": {
+    "P": {
+      "item": "wiredredstone:stone_plate"
+    },
+    "W": {
+      "item": "wiredredstone:redstone_wire_plate"
+    },
+    "A": {
+      "item": "wiredredstone:redstone_anode"
+    },
+    "I": {
+      "item": "wiredredstone:redstone_inverting_cathode"
+    }
+  },
+  "result": {
+    "item": "wiredredstone:gate_not",
+    "count": 1
+  },
+  "cookingtime": 50,
+  "energypertick": 5
+}

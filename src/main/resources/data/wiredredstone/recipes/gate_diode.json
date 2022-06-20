@@ -1,0 +1,28 @@
+{
+  "type": "wiredredstone:redstone_assembler_shaped",
+  "pattern": [
+    "PAP",
+    "PCP",
+    "PWP"
+  ],
+  "key": {
+    "P": {
+      "item": "wiredredstone:stone_plate"
+    },
+    "W": {
+      "item": "wiredredstone:redstone_wire_plate"
+    },
+    "A": {
+      "item": "wiredredstone:redstone_anode"
+    },
+    "C": {
+      "item": "wiredredstone:redstone_cathode"
+    }
+  },
+  "result": {
+    "item": "wiredredstone:gate_diode",
+    "count": 1
+  },
+  "cookingtime": 50,
+  "energypertick": 5
+}
