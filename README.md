@@ -2,12 +2,17 @@
 <p align="center"><img src="https://raw.githubusercontent.com/Kneelawk/WiredRedstone/main/src/main/resources/assets/wiredredstone/icon-256.png" alt="Logo" width="200"></p>
 <h1 align="center">Wired Redstone</h1>
 <h3 align="center">Adds redstone wires and stuff</h3>
+<p align="center">
+<a href="https://discord.gg/6vgpHcKmxg"><img src="https://kneelawk.com/assets/discord-64x64.png" alt="Discord"></a>
+<a href="https://github.com/Kneelawk/WiredRedstone"><img src="https://kneelawk.com/assets/github-white-64x64.png" alt="Github"></a>
+<a href="https://modrinth.com/mod/wiredredstone"><img src="https://kneelawk.com/assets/modrinth-64x64.png" alt="Modrinth"></a>
+</p>
 </center>
 
 ## Beta
 
 This project is currently in beta. Expect bugs, missing items, and sometimes needing to use a command to fix
-things.
+things. Please make regular backups.
 
 ## Wired Redstone & RSWires
 
