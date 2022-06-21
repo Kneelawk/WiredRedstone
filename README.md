@@ -38,10 +38,27 @@ Please go checkout [RSWires][RSWires CF] if you haven't already.
 
 [RSWires CF]: https://www.curseforge.com/minecraft/mc-mods/rswires/
 
+## Screenshots
+
+Here is a picture of one of my dev worlds:<br/>
+![Dev World Image](https://cdn-raw.modrinth.com//data/lyYGrdho/images/68625d24a76d7f37ee8e24a4f3f1a99500396656.png)
+
 ## Recipes
 
 As of version 0.3.0, survival-based recipes have been added. Most circuit components are crafted using a machine called
 the Redstone Assembler. Redstone assembler recipes are visible in REI and EMI.
+
+The Redstone Assembler can be crafted in a normal crafting table like such:<br/>
+![Redstone Assembler Recipe](https://raw.githubusercontent.com/Kneelawk/WiredRedstone/main/screenshots/redstone_assembler_recipe.png)
+
+Redstone Alloy Ingots can be crafted in the Redstone Assembler:<br/>
+![Redstone Alloy Ingot Recipe](https://raw.githubusercontent.com/Kneelawk/WiredRedstone/main/screenshots/redstone_alloy_recipe.png)
+
+Red Alloy Wire can then be crafted:<br/>
+![Red Alloy Wire Recipe](https://raw.githubusercontent.com/Kneelawk/WiredRedstone/main/screenshots/red_alloy_wire_recipe.png)
+
+Or Insulated Wire can be crafted:<br/>
+![Insulated Wire Recipe](https://raw.githubusercontent.com/Kneelawk/WiredRedstone/main/screenshots/insulated_wire_recipe.png)
 
 ## Mod Integrations
 
@@ -80,7 +97,7 @@ right, GraphLib has some commands that can help. These commands can be accessed 
 
 [GraphLib]: https://github.com/Kneelawk/GraphLib
 
-## Screenshots
+## License
 
-Here is a picture of one of my dev worlds:
-![Dev World Image](https://cdn-raw.modrinth.com//data/lyYGrdho/images/68625d24a76d7f37ee8e24a4f3f1a99500396656.png)
+This mod is licensed under the MIT license. This means you can redistribute it, make derivatives of it, and include it
+in modpacks.
