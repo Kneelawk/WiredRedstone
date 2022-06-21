@@ -43,15 +43,42 @@ Please go checkout [RSWires][RSWires CF] if you haven't already.
 As of version 0.3.0, survival-based recipes have been added. Most circuit components are crafted using a machine called
 the Redstone Assembler. Redstone assembler recipes are visible in REI and EMI.
 
-## Sometimes things might break
+## Mod Integrations
 
-Sometimes you might encounter a bug or a strange mod interaction that causes wires to stop behaving correctly. Wired
-Redstone uses [GraphLib] for managing its wires connections. If something doesn't seem right, GraphLib has some commands
-that can help. These commands can be accessed via:
+Wired Redstone has integrations support for [CC: Restitched], [EMI], [REI], and [WTHIT].
+
+### [CC: Restitched]
+
+Wired Redstone Bundled Cables can connect to CC: Restitched computers, allowing those computers to send and receive
+bundled signals.
+
+### [EMI] & [REI]
+
+Wired Redstone machines have recipe support in both EMI and REI.
+
+### [WTHIT]
+
+Many Wired Redstone gates and wires will show extra information in the WTHIT HUD.
+
+[CC: Restitched]: https://modrinth.com/mod/cc-restitched
+
+[EMI]: https://modrinth.com/mod/emi
+
+[REI]: https://www.curseforge.com/minecraft/mc-mods/roughly-enough-items
+
+[WTHIT]: https://modrinth.com/mod/wthit
+
+## Powered by GraphLib
+
+Wired Redstone uses [GraphLib] for managing its wires connections. Sometimes you might encounter a strange mod
+interaction or corruption caused by a crash that causes wires to stop behaving correctly. If something doesn't seem
+right, GraphLib has some commands that can help. These commands can be accessed via:
 
 ```
 /graphlib <sub-command>
 ```
+
+[GraphLib]: https://github.com/Kneelawk/GraphLib
 
 ## Screenshots
 
