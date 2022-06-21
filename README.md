@@ -4,9 +4,9 @@
 <h3 align="center">Adds redstone wires and stuff</h3>
 </center>
 
-## Pre-Alpha
+## Beta
 
-This project is currently in pre-alpha. Expect bugs, missing items, and sometimes needing to use a command to fix
+This project is currently in beta. Expect bugs, missing items, and sometimes needing to use a command to fix
 things.
 
 ## Wired Redstone & RSWires
@@ -33,32 +33,22 @@ Please go checkout [RSWires][RSWires CF] if you haven't already.
 
 [RSWires CF]: https://www.curseforge.com/minecraft/mc-mods/rswires/
 
-## Breaking Changes
-
-Version 0.2.0 introduces changes to how wire networks are saved. ~~All wires from before version 0.2.0 will not function
-when updated until they are fixed using a command.~~ Fixed in 0.2.1.
-
-The command to fix wires is:
-
-```
-/graphlib updatewires <from> <to>
-```
-
-This command can be used for more than just fixing wires from old versions. It can also be used if wires just aren't
-connecting for some reason or another. This command can cause significant amounts of lag if used over a large area, so
-it is restricted to only be usable with operator privileges. For reference, updating a 100x100x100 area on my machine
-took about 16 seconds. During that time, the server thread was completely stopped.
-
 ## Recipes
 
-Recipes? What are those? Who would ever want to use this mod in survival?
+As of version 0.3.0, survival-based recipes have been added. Most circuit components are crafted using a machine called
+the Redstone Assembler. Redstone assembler recipes are visible in REI and EMI.
 
-I'll add recipes eventually, but I first need to add the machine that the recipes will be in :)
+## Sometimes things might break
 
-If you really want to use this mod in your survival world, you'll probably want to make a datapack that adds recipes for
-the parts you need.
+Sometimes you might encounter a bug or a strange mod interaction that causes wires to stop behaving correctly. Wired
+Redstone uses [GraphLib] for managing its wires connections. If something doesn't seem right, GraphLib has some commands
+that can help. These commands can be accessed via:
+
+```
+/graphlib <sub-command>
+```
 
 ## Screenshots
 
 Here is a picture of one of my dev worlds:
-![Dev World Image](https://cdn-raw.modrinth.com//data/lyYGrdho/images/30a01e05b57c42f363c58aabe2d35051cb6eee04.png)
+![Dev World Image](https://cdn-raw.modrinth.com//data/lyYGrdho/images/68625d24a76d7f37ee8e24a4f3f1a99500396656.png)
