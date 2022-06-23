@@ -184,7 +184,7 @@ class BundledCablePart : AbstractBlockablePart, BundledPowerablePart {
         getBlockEntity().markDirty()
 
         if (changed) {
-            WorldUtils.strongUpdateNeighbors(getWorld(), getPos(), side)
+            WorldUtils.strongUpdateAllNeighbors(getWorld(), getPos(), side)
         }
     }
 

@@ -100,7 +100,7 @@ abstract class AbstractInputOutputGatePart : AbstractGatePart {
 
                     // Update neighbors
                     val edge = RotationUtils.rotatedDirection(side, direction)
-                    WorldUtils.strongUpdateNeighbors(world, pos, edge)
+                    WorldUtils.strongUpdateOutputNeighbors(world, pos, edge)
                 }
             }
         }
@@ -115,7 +115,7 @@ abstract class AbstractInputOutputGatePart : AbstractGatePart {
 
         if (!isClientSide()) {
             val edge = RotationUtils.rotatedDirection(side, direction)
-            WorldUtils.strongUpdateNeighbors(getWorld(), getPos(), edge)
+            WorldUtils.strongUpdateOutputNeighbors(getWorld(), getPos(), edge)
         }
     }
 
@@ -157,17 +157,25 @@ abstract class AbstractInputOutputGatePart : AbstractGatePart {
     }
 
     fun updateOutputReversePower(power: Int) {
+        val changed = this.outputReversePower != power
         this.outputReversePower = power
-        redraw()
-        getBlockEntity().markDirty()
+
+        if (changed) {
+            redraw()
+            getBlockEntity().markDirty()
+        }
 
 //        val edge = RotationUtils.rotatedDirection(side, direction)
 //        WorldUtils.strongUpdateNeighbors(getWorld(), getPos(), edge)
     }
 
     open fun updateInputPower(power: Int) {
+        val changed = this.inputPower != power
         this.inputPower = power
-        redraw()
-        getBlockEntity().markDirty()
+
+        if (changed) {
+            redraw()
+            getBlockEntity().markDirty()
+        }
     }
 }

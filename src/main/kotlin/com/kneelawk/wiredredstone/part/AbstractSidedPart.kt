@@ -38,7 +38,7 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
 
     private var ctx: SidedPartContext? = null
 
-    private val shapeCache = mutableMapOf<Direction, VoxelShape>()
+    private val shapeCache = mutableMapOf<BlockPos, VoxelShape>()
 
     constructor(definition: PartDefinition, holder: MultipartHolder, tag: NbtCompound) : this(
         definition, holder, Direction.byId(tag.getByte("side").toInt())
@@ -73,6 +73,7 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
                 if (shouldBreak()) {
                     removeAndDrop()
                 } else {
+                    // updating connections is expensive, so we want to make sure we *really* need to do it first
                     if (ConnectableUtils.shouldUpdateConnectionsForNeighborUpdate(
                             shapeCache, world, getPos(), it.pos
                         )

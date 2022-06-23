@@ -8,17 +8,34 @@ import net.minecraft.util.math.Direction
 import net.minecraft.world.World
 
 object WorldUtils {
-    fun strongUpdateNeighbors(world: World, pos: BlockPos, edge: Direction) {
+    fun strongUpdateOutputNeighbors(world: World, pos: BlockPos, edge: Direction) {
+        val state = world.getBlockState(pos)
+        val offset = pos.offset(edge)
+
+        updateNeighbor(world, offset, state.block, pos)
+
+        if (world.getBlockState(offset).isSolidBlock(world, offset)) {
+            for (dir in Direction.values()) {
+                if (dir != edge.opposite) {
+                    updateNeighbor(world, offset.offset(dir), state.block, pos)
+                }
+            }
+        }
+    }
+
+    fun strongUpdateAllNeighbors(world: World, pos: BlockPos, edge: Direction) {
         val state = world.getBlockState(pos)
         val offset = pos.offset(edge)
 
         updateNeighbors(world, pos, state.block)
 
-        Direction.values()
-            .asSequence()
-            .filter { it != edge.opposite }
-            .map { offset.offset(it) }
-            .forEach { updateNeighbor(world, it, state.block, pos) }
+        if (world.getBlockState(offset).isSolidBlock(world, offset)) {
+            for (dir in Direction.values()) {
+                if (dir != edge.opposite) {
+                    updateNeighbor(world, offset.offset(dir), state.block, pos)
+                }
+            }
+        }
     }
 
     fun updateNeighbors(world: World, sourcePos: BlockPos, sourceBlock: Block) {

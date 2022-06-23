@@ -17,6 +17,7 @@ import net.minecraft.block.Blocks
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.server.world.ServerWorld
+import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.shape.VoxelShape
 import net.minecraft.util.shape.VoxelShapes
@@ -24,6 +25,8 @@ import net.minecraft.util.shape.VoxelShapes
 abstract class AbstractRedstoneWirePart : AbstractBlockablePart, PowerablePart {
     var power: Int
         private set
+
+    private val redstoneCache = mutableMapOf<BlockPos, Boolean>()
 
     abstract val wireWidth: Double
     abstract val wireHeight: Double
@@ -79,48 +82,57 @@ abstract class AbstractRedstoneWirePart : AbstractBlockablePart, PowerablePart {
             // Sometimes this gets called after this part has been removed already
             if (isRemoved()) return@addListener
 
-            handleUpdates()
+            val world = getWorld()
+            if (world is ServerWorld) {
+                // updating connections, so we want to make sure we *really* need to do it first
+                if (ConnectableUtils.shouldUpdateForNeighborUpdate(
+                        redstoneCache, getPos(), it.pos,
+                        { world.getBlockState(it.pos).emitsRedstonePower() },
+                        { prev, cur -> prev != cur })
+                ) {
+                    updateConnections(world)
+                }
+
+                maybeScheduleUpdate(world)
+            }
         }
 
         bus.addListener(this, PartAddedEvent::class.java) { e ->
             // NetNodeContainers update our connections directly when changed
-            if (e.part !is BlockNodeContainer) {
-                handleUpdates()
+            val world = getWorld()
+            if (world is ServerWorld && e.part !is BlockNodeContainer) {
+                updateConnections(world)
+                maybeScheduleUpdate(world)
             }
         }
 
         bus.addListener(this, PartRemovedEvent::class.java) { e ->
             // NetNodeContainers update our connections directly when changed
-            if (e.removed !is BlockNodeContainer) {
-                handleUpdates()
+            val world = getWorld()
+            if (world is ServerWorld && e.removed !is BlockNodeContainer) {
+                updateConnections(world)
+                maybeScheduleUpdate(world)
             }
         }
     }
 
-    private fun handleUpdates() {
-        val world = getWorld()
-        if (world is ServerWorld) {
-            updateConnections()
-            RedstoneLogic.wiresGivePower = false
-            if (getReceivingPower() != power) {
-                RedstoneLogic.scheduleUpdate(world, getPos())
-            }
-            RedstoneLogic.wiresGivePower = true
+    private fun maybeScheduleUpdate(world: ServerWorld) {
+        RedstoneLogic.wiresGivePower = false
+        if (getReceivingPower() != power) {
+            RedstoneLogic.scheduleUpdate(world, getPos())
         }
+        RedstoneLogic.wiresGivePower = true
     }
 
-    fun updateConnections() {
-        val world = getWorld()
-        if (world is ServerWorld) {
-            ConnectableUtils.updateBlockageAndConnections(world, this, wireWidth, wireHeight)
-        }
+    fun updateConnections(world: ServerWorld) {
+        ConnectableUtils.updateBlockageAndConnections(world, this, wireWidth, wireHeight)
     }
 
     override fun onRemoved() {
         super.onRemoved()
 
         if (!isClientSide()) {
-            WorldUtils.strongUpdateNeighbors(getWorld(), getPos(), side)
+            WorldUtils.strongUpdateAllNeighbors(getWorld(), getPos(), side)
         }
     }
 
@@ -178,7 +190,7 @@ abstract class AbstractRedstoneWirePart : AbstractBlockablePart, PowerablePart {
             // update neighbors
             val world = getWorld()
             val pos = getPos()
-            WorldUtils.strongUpdateNeighbors(world, pos, side)
+            WorldUtils.strongUpdateAllNeighbors(world, pos, side)
         }
     }
 }

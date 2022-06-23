@@ -128,26 +128,33 @@ object ConnectableUtils {
     }
 
     fun shouldUpdateConnectionsForNeighborUpdate(
-        shapeCache: MutableMap<Direction, VoxelShape>, world: ServerWorld, yourPos: BlockPos, otherPos: BlockPos
+        shapeCache: MutableMap<BlockPos, VoxelShape>, world: ServerWorld, yourPos: BlockPos, otherPos: BlockPos
     ): Boolean {
-        val direction = Direction.fromVector(otherPos.subtract(yourPos))
-        return if (direction != null) {
-            val previousShape = shapeCache[direction]
+        return shouldUpdateForNeighborUpdate(shapeCache, yourPos, otherPos, {
             val state = world.getBlockState(otherPos)
-            val curShape = state.getOutlineShape(world, otherPos)
+            state.getOutlineShape(world, otherPos)
+        }, { prev, cur ->
+            // Identity checking here is about the best we can do if we want to be fast. This works because most
+            // blocks re-use the same VoxelShape objects if they want to keep their shapes.
+            prev !== cur
+        })
+    }
 
-            if (previousShape != null) {
-                // Identity checking here is about the best we can do if we want to be fast. This works because most
-                // blocks re-use the same VoxelShape objects if they want to keep their shapes.
-                if (previousShape !== curShape) {
-                    shapeCache[direction] = curShape
-                    true
-                } else false
-            } else {
-                shapeCache[direction] = curShape
+    inline fun <T> shouldUpdateForNeighborUpdate(
+        cache: MutableMap<BlockPos, T>, yourPos: BlockPos, otherPos: BlockPos, getCur: () -> T,
+        compare: (T, T) -> Boolean
+    ): Boolean {
+        val offset = otherPos.subtract(yourPos)
+        val previous = cache[offset]
+        val current = getCur()
+
+        return if (previous != null) {
+            if (compare(previous, current)) {
+                cache[offset] = current
                 true
-            }
+            } else false
         } else {
+            cache[offset] = current
             true
         }
     }

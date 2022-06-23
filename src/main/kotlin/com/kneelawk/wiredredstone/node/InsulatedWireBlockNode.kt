@@ -62,7 +62,7 @@ data class InsulatedWireBlockNode(private val side: Direction, val color: DyeCol
 
     override fun onConnectionsChanged(world: ServerWorld, pos: BlockPos, self: NetNode) {
         RedstoneLogic.scheduleUpdate(world, pos)
-        getPart(world, pos)?.updateConnections()
+        getPart(world, pos)?.updateConnections(world)
     }
 
     override fun toTag(): NbtElement {
