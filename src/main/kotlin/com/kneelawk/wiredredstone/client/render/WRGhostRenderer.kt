@@ -48,7 +48,7 @@ object WRGhostRenderer : VertexConsumerProvider {
                         val offer = item.getOfferForPlacementGhost(context)
                         if (offer != null) {
                             val mesh = offer.holder.part.modelKey?.let { key ->
-                                WRPartRenderers.bakerFor(key::class).getMeshForPlacementGhost(key)
+                                WRPartRenderers.bakerFor(key::class)?.getMeshForPlacementGhost(key)
                             }
 
                             if (mesh != null) {

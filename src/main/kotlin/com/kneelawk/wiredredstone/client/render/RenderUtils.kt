@@ -10,14 +10,20 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView
 import net.minecraft.client.MinecraftClient
+import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.render.OverlayTexture
 import net.minecraft.client.render.VertexConsumer
+import net.minecraft.client.render.VertexConsumerProvider
 import net.minecraft.client.render.model.BakedModel
 import net.minecraft.client.texture.Sprite
 import net.minecraft.client.texture.SpriteAtlasTexture
 import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.text.OrderedText
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.Direction
+import net.minecraft.util.math.MathHelper.HALF_PI
+import net.minecraft.util.math.MathHelper.PI
+import net.minecraft.util.math.Quaternion
 import net.minecraft.util.math.Vec3f
 import java.util.*
 import kotlin.math.sqrt
@@ -26,6 +32,31 @@ object RenderUtils {
     val MESH_BUILDER: MeshBuilder by threadLocal {
         RendererAccess.INSTANCE.renderer.requireNonNull("Renderer is null").meshBuilder()
     }
+    private val FLAT_QUATERNION = Quaternion.fromEulerXyz(-HALF_PI, 0f, 0f)
+
+    private val ROTATION_QUATERNIONS = arrayOf(
+        Quaternion.IDENTITY,
+        Quaternion(Vec3f.POSITIVE_X, PI, false),
+        Quaternion(Vec3f.POSITIVE_X, HALF_PI, false),
+        Quaternion(Vec3f.POSITIVE_Y, PI, false).apply { hamiltonProduct(Quaternion(Vec3f.POSITIVE_X, HALF_PI, false)) },
+        Quaternion(Vec3f.POSITIVE_Y, HALF_PI, false).apply {
+            hamiltonProduct(
+                Quaternion(Vec3f.POSITIVE_X, HALF_PI, false)
+            )
+        },
+        Quaternion(Vec3f.POSITIVE_Y, -HALF_PI, false).apply {
+            hamiltonProduct(
+                Quaternion(Vec3f.POSITIVE_X, HALF_PI, false)
+            )
+        }
+    )
+
+    private val CARDINAL_QUATERNIONS = arrayOf(
+        Quaternion.IDENTITY,
+        Quaternion(Vec3f.POSITIVE_Y, PI, false),
+        Quaternion(Vec3f.POSITIVE_Y, HALF_PI, false),
+        Quaternion(Vec3f.POSITIVE_Y, -HALF_PI, false)
+    )
 
     fun getBlockSprite(id: Identifier): Sprite {
         return MinecraftClient.getInstance().getSpriteAtlas(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE).apply(id)
@@ -68,6 +99,41 @@ object RenderUtils {
                     .next()
             }
         }
+    }
+
+    fun renderPortText(
+        text: OrderedText, side: Direction, rotation: Direction, height: Double, tr: TextRenderer, stack: MatrixStack,
+        provider: VertexConsumerProvider, light: Int
+    ) {
+        stack.push()
+        stack.translate(0.5, 0.5, 0.5)
+        stack.multiply(rotationQuaternion(side))
+        stack.multiply(cardinalQuaternion(rotation))
+        stack.translate(-0.5, -0.5, -0.5)
+
+        stack.multiply(FLAT_QUATERNION)
+
+        stack.scale(1f / 32f, -1f / 32f, 1f / 32f)
+
+        val width = tr.getWidth(text).toDouble()
+        stack.translate(16.0 - width / 2.0, -tr.fontHeight.toDouble(), height * 2.0)
+
+        stack.push()
+        stack.translate(1.0, 1.0, 0.0)
+        tr.draw(text, 0f, 0f, 0xFF000000u.toInt(), false, stack.peek().positionMatrix, provider, true, 0, light)
+        stack.pop()
+
+        tr.draw(text, 0f, 0f, -1, false, stack.peek().positionMatrix, provider, true, 0, light)
+
+        stack.pop()
+    }
+
+    fun rotationQuaternion(side: Direction): Quaternion {
+        return ROTATION_QUATERNIONS[side.id]
+    }
+
+    fun cardinalQuaternion(rotation: Direction): Quaternion {
+        return CARDINAL_QUATERNIONS[rotation.id - 2]
     }
 
     fun calculateFaceNormal(saveTo: Vec3f, q: QuadView) {

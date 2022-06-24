@@ -50,8 +50,8 @@ object WRPartRenderers {
     fun bakers(): Sequence<WRPartBaker<*>> = BAKERS.asSequence().map { it.baker }
 
     @Suppress("UNCHECKED_CAST")
-    fun <K : PartModelKey> bakerFor(clazz: KClass<out K>): WRPartBaker<K> {
-        return BAKER_MAP[clazz] as WRPartBaker<K>
+    fun <K : PartModelKey> bakerFor(clazz: KClass<out K>): WRPartBaker<K>? {
+        return BAKER_MAP[clazz] as WRPartBaker<K>?
     }
 
     private data class PartBaker<K : PartModelKey>(val baker: WRPartBaker<K>, val clazz: KClass<K>)
