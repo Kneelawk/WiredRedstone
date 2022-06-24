@@ -10,6 +10,8 @@ import java.util.function.Consumer
 interface WRPartBaker<K : PartModelKey> : PartModelBaker<K> {
     fun getMeshForPlacementGhost(key: K): Mesh? = null
 
+    fun renderPortText(key: K) {}
+
     fun registerModels(out: Consumer<Identifier>) {}
 
     // Note: sprites only need be registered if they are not referenced from an existing model.
