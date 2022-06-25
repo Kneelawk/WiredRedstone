@@ -3,11 +3,9 @@ package com.kneelawk.wiredredstone.client.render
 import alexiil.mc.lib.multipart.api.AbstractPart
 import alexiil.mc.lib.multipart.api.MultipartContainer
 import alexiil.mc.lib.multipart.api.MultipartUtil
-import com.google.common.cache.CacheBuilder
-import com.google.common.cache.CacheLoader
-import com.google.common.cache.LoadingCache
 import com.kneelawk.wiredredstone.WRConstants
 import com.kneelawk.wiredredstone.client.render.part.WRPartRenderers
+import com.mojang.blaze3d.systems.RenderSystem
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
@@ -31,43 +29,9 @@ import net.minecraft.util.math.Vec3d
 object WRTextRenderer {
     data class TextKey(val text: Text, val color: Int, val shadow: Boolean, val background: Int)
 
-    private val TEXTURE_MANAGER by lazy { MinecraftClient.getInstance().textureManager }
-    private val TEXT_RENDERER by lazy { MinecraftClient.getInstance().textRenderer }
-    private val FRAMEBUFFER_CACHE: LoadingCache<TextKey, Identifier> =
-        CacheBuilder.newBuilder().build(CacheLoader.from(::makeTexture))
-    private val TEXT_ID_MAP = mutableMapOf<TextKey, Int>()
+    private val MC = MinecraftClient.getInstance()
+    private val TEXT_ID_MAP = mutableMapOf<TextKey, Identifier>()
     private var CUR_TEXT_ID = 1
-
-    private fun makeTexture(key: TextKey): Identifier {
-        val addedSize = if (key.shadow) 1 else 0
-
-        val text = key.text.asOrderedText()
-
-        val width = TEXT_RENDERER.getWidth(text) + addedSize
-        val height = TEXT_RENDERER.fontHeight + addedSize
-        val textMat = Matrix4f()
-
-        val fb = SimpleFramebuffer(width, height, false, MinecraftClient.IS_SYSTEM_MAC)
-
-        fb.beginWrite(true)
-        fb.clear(MinecraftClient.IS_SYSTEM_MAC)
-        val immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().buffer)
-        TEXT_RENDERER.draw(text, 0f, 0f, key.color, key.shadow, textMat, immediate, false, key.background, 15728880)
-        immediate.draw()
-        fb.endWrite()
-        MinecraftClient.getInstance().framebuffer.beginWrite(true)
-
-        val texture = FramebufferTexture(fb)
-        val id = textureId(key)
-        TEXTURE_MANAGER.registerTexture(id, texture)
-
-        return id
-    }
-
-    private fun textureId(key: TextKey): Identifier {
-        val id = TEXT_ID_MAP.computeIfAbsent(key) { CUR_TEXT_ID++ }
-        return WRConstants.id("text_fb/$id")
-    }
 
     fun init() {
         WorldRenderEvents.AFTER_ENTITIES.register(::render)
@@ -77,20 +41,19 @@ object WRTextRenderer {
         text: Text, color: Int, shadow: Boolean, model: Matrix4f, provider: VertexConsumerProvider,
         seeThrough: Boolean, background: Int, light: Int
     ) {
-        val addedSize = if (shadow) 1 else 0
+        val width = MC.textRenderer.getWidth(text).toFloat()
+        val height = MC.textRenderer.fontHeight.toFloat()
 
-        val width = (TEXT_RENDERER.getWidth(text) + addedSize).toFloat()
-        val height = (TEXT_RENDERER.fontHeight + addedSize).toFloat()
-
-        val id = FRAMEBUFFER_CACHE[TextKey(text, color, shadow, background)]
+        val id = TEXT_ID_MAP.computeIfAbsent(TextKey(text, color, shadow, background), ::makeTexture)
 
         val renderLayer = if (seeThrough) RenderLayer.getTextSeeThrough(id) else RenderLayer.getText(id)
         val consumer = provider.getBuffer(renderLayer)
 
-        consumer.vertex(model, 0f, height, 0f).color(-1).texture(0f, 1f).light(light).next()
-        consumer.vertex(model, width, height, 0f).color(-1).texture(1f, 1f).light(light).next()
-        consumer.vertex(model, width, 0f, 0f).color(-1).texture(1f, 0f).light(light).next()
-        consumer.vertex(model, 0f, 0f, 0f).color(-1).texture(0f, 0f).light(light).next()
+        // the texture ends up up-side-down for some reason, so we flip it here
+        consumer.vertex(model, 0f, height, 0f).color(-1).texture(0f, 0f).light(light).next()
+        consumer.vertex(model, width, height, 0f).color(-1).texture(1f, 0f).light(light).next()
+        consumer.vertex(model, width, 0f, 0f).color(-1).texture(1f, 1f).light(light).next()
+        consumer.vertex(model, 0f, 0f, 0f).color(-1).texture(0f, 1f).light(light).next()
     }
 
     private fun render(context: WorldRenderContext) {
@@ -131,5 +94,76 @@ object WRTextRenderer {
 
             false
         }
+    }
+
+    private fun makeTexture(key: TextKey): Identifier {
+        // render everything to a framebuffer first because I like pain
+
+        val text = key.text.asOrderedText()
+
+        val width = MC.textRenderer.getWidth(text)
+        val height = MC.textRenderer.fontHeight
+        val textMat = Matrix4f()
+        textMat.loadIdentity()
+        textMat.multiplyByTranslation(-1f, 1f, 0f)
+        textMat.multiply(Matrix4f.scale(2f / width.toFloat(), -2f / height.toFloat(), 1f))
+        textMat.multiplyByTranslation(0f, 0f, 0.05f)
+
+        val fb = SimpleFramebuffer(width, height, true, MinecraftClient.IS_SYSTEM_MAC)
+
+        val redBg = (key.background shr 16 and 0xFF).toFloat() / 255.0f
+        val greenBg = (key.background shr 8 and 0xFF).toFloat() / 255.0f
+        val blueBg = (key.background and 0xFF).toFloat() / 255.0f
+        val alphaBg = (key.background shr 24 and 0xFF).toFloat() / 255.0f
+        fb.setClearColor(redBg, greenBg, blueBg, alphaBg)
+
+        fb.clear(MinecraftClient.IS_SYSTEM_MAC)
+        fb.beginWrite(true)
+
+        val modelViewStack = RenderSystem.getModelViewStack()
+        modelViewStack.push()
+        modelViewStack.loadIdentity()
+        RenderSystem.applyModelViewMatrix()
+        val backupProjMat = RenderSystem.getProjectionMatrix()
+        RenderSystem.setProjectionMatrix(Matrix4f().apply { loadIdentity() })
+
+        val immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().buffer)
+
+        if (key.shadow) {
+            val shadowColor = multiplyBrightness(key.color, 0.25f)
+            MC.textRenderer.draw(text, 1f, 1f, shadowColor, false, textMat, immediate, false, 0, 15728880)
+            textMat.multiplyByTranslation(0f, 0f, -0.025f)
+        }
+
+        MC.textRenderer.draw(text, 0f, 0f, key.color, false, textMat, immediate, false, 0, 15728880)
+        immediate.draw()
+
+        RenderSystem.setProjectionMatrix(backupProjMat)
+        RenderSystem.getModelViewStack().pop()
+        RenderSystem.applyModelViewMatrix()
+
+        fb.endWrite()
+        MinecraftClient.getInstance().framebuffer.beginWrite(true)
+
+        val texture = FramebufferTexture(fb)
+
+        val number = CUR_TEXT_ID++
+        val id = WRConstants.id("text_fb/$number")
+
+        MC.textureManager.registerTexture(id, texture)
+
+        return id
+    }
+
+    private fun multiplyBrightness(color: Int, brightness: Float): Int {
+        val red = (color shr 16 and 0xFF).toFloat() / 255.0f * brightness
+        val green = (color shr 8 and 0xFF).toFloat() / 255.0f * brightness
+        val blue = (color and 0xFF).toFloat() / 255.0f * brightness
+        val alpha = (color shr 24 and 0xFF).toFloat() / 255.0f
+
+        return (((alpha * 255.0f).toInt() and 0xFF) shl 24) or
+                (((red * 255.0f).toInt() and 0xFF) shl 16) or
+                (((green * 255.0f).toInt() and 0xFF) shl 8) or
+                ((blue * 255.0f).toInt() and 0xFF)
     }
 }

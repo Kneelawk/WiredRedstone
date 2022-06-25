@@ -32,7 +32,7 @@ object RenderUtils {
         RendererAccess.INSTANCE.renderer.requireNonNull("Renderer is null").meshBuilder()
     }
 
-    private val TEXT_RENDERER by lazy { MinecraftClient.getInstance().textRenderer }
+    private val MC = MinecraftClient.getInstance()
 
     private val FLAT_QUATERNION = Quaternion.fromEulerXyz(-HALF_PI, 0f, 0f)
 
@@ -119,8 +119,8 @@ object RenderUtils {
 
         stack.scale(1f / 32f, -1f / 32f, 1f / 32f)
 
-        val width = TEXT_RENDERER.getWidth(text).toDouble()
-        stack.translate(16.0 - width / 2.0, -TEXT_RENDERER.fontHeight.toDouble(), 0.0)
+        val width = MC.textRenderer.getWidth(text).toDouble()
+        stack.translate(16.0 - width / 2.0, -MC.textRenderer.fontHeight.toDouble(), 0.0)
 
         WRTextRenderer.drawText(text, -1, true, stack.peek().positionMatrix, provider, true, 0, light)
 
@@ -143,7 +143,7 @@ object RenderUtils {
 
         stack.scale(1f / 32f, -1f / 32f, 1f / 32f)
 
-        stack.translate(alignment.offset(TEXT_RENDERER.getWidth(text)), 0.0, 0.0)
+        stack.translate(alignment.offset(MC.textRenderer.getWidth(text)), 0.0, 0.0)
 
         WRTextRenderer.drawText(text, -1, true, stack.peek().positionMatrix, provider, true, 0, light)
 
