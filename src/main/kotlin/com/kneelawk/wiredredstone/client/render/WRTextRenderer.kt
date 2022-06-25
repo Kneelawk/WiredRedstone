@@ -41,7 +41,7 @@ object WRTextRenderer {
                 stack.push()
                 stack.translate(hitPos.x - cameraPos.x, hitPos.y - cameraPos.y, hitPos.z - cameraPos.z)
 
-                WRPartRenderers.bakerFor(key::class)?.renderPortText(key, mc.textRenderer, stack, provider, light)
+                WRPartRenderers.bakerFor(key::class)?.renderOverlayText(key, mc.textRenderer, stack, provider, light)
 
                 stack.pop()
             }

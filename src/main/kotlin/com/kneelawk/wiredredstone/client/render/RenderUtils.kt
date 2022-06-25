@@ -111,17 +111,38 @@ object RenderUtils {
         stack.multiply(cardinalQuaternion(rotation))
         stack.translate(-0.5, -0.5, -0.5)
 
+        stack.translate(0.0, height, 0.0)
+
         stack.multiply(FLAT_QUATERNION)
 
         stack.scale(1f / 32f, -1f / 32f, 1f / 32f)
 
         val width = tr.getWidth(text).toDouble()
-        stack.translate(16.0 - width / 2.0, -tr.fontHeight.toDouble(), height * 2.0)
+        stack.translate(16.0 - width / 2.0, -tr.fontHeight.toDouble(), 0.0)
 
-        stack.push()
-        stack.translate(1.0, 1.0, 0.0)
-        tr.draw(text, 0f, 0f, 0xFF000000u.toInt(), false, stack.peek().positionMatrix, provider, true, 0, light)
+        tr.draw(text, 0f, 0f, -1, false, stack.peek().positionMatrix, provider, true, 0, light)
+
         stack.pop()
+    }
+
+    fun renderOverlayText(
+        text: OrderedText, side: Direction, rotation: Direction, x: Double, y: Double, z: Double,
+        alignment: HorizontalAlignment, tr: TextRenderer, stack: MatrixStack, provider: VertexConsumerProvider,
+        light: Int
+    ) {
+        stack.push()
+        stack.translate(0.5, 0.5, 0.5)
+        stack.multiply(rotationQuaternion(side))
+        stack.multiply(cardinalQuaternion(rotation))
+        stack.translate(-0.5, -0.5, -0.5)
+
+        stack.translate(x, y, z)
+
+        stack.multiply(FLAT_QUATERNION)
+
+        stack.scale(1f / 32f, -1f / 32f, 1f / 32f)
+
+        stack.translate(alignment.offset(tr.getWidth(text)), 0.0, 0.0)
 
         tr.draw(text, 0f, 0f, -1, false, stack.peek().positionMatrix, provider, true, 0, light)
 

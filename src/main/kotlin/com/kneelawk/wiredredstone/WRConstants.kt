@@ -28,4 +28,8 @@ object WRConstants {
     fun gui(path: String, vararg args: Any?): MutableText {
         return tt("gui", path, *args)
     }
+    
+    fun overlay(path: String, vararg args: Any?): MutableText {
+        return tt("overlay", path, *args)
+    }
 }
