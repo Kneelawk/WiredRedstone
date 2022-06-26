@@ -97,7 +97,7 @@ object BundledCableUtils {
             for (i in 0 until 16) {
                 val mask = mask(i)
                 if (acc and mask < input and mask) {
-                    res = (acc and mask.inv()) or (input and mask)
+                    res = (res and mask.inv()) or (input and mask)
                 }
             }
 
