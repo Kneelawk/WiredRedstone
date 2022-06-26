@@ -3,6 +3,9 @@ package com.kneelawk.wiredredstone.client.render
 import alexiil.mc.lib.multipart.api.AbstractPart
 import alexiil.mc.lib.multipart.api.MultipartContainer
 import alexiil.mc.lib.multipart.api.MultipartUtil
+import com.google.common.cache.CacheBuilder
+import com.google.common.cache.CacheLoader
+import com.google.common.cache.LoadingCache
 import com.kneelawk.wiredredstone.WRConstants
 import com.kneelawk.wiredredstone.client.render.part.WRPartRenderers
 import com.mojang.blaze3d.systems.RenderSystem
@@ -21,6 +24,7 @@ import net.minecraft.util.Identifier
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.Matrix4f
 import net.minecraft.util.math.Vec3d
+import java.util.concurrent.TimeUnit
 
 /**
  * Gets part bakers to render text for each of their ports.
@@ -28,9 +32,13 @@ import net.minecraft.util.math.Vec3d
 @Environment(EnvType.CLIENT)
 object WRTextRenderer {
     data class TextKey(val text: Text, val color: Int, val shadow: Boolean, val background: Int)
+    data class TextTexture(val texture: FramebufferTexture, val id: Identifier)
 
     private val MC = MinecraftClient.getInstance()
-    private val TEXT_ID_MAP = mutableMapOf<TextKey, Identifier>()
+    private val TEXT_FB_CACHE: LoadingCache<TextKey, TextTexture> =
+        CacheBuilder.newBuilder().expireAfterAccess(10, TimeUnit.MINUTES)
+            .removalListener<TextKey, TextTexture> { it.value?.texture?.close() }.build(CacheLoader.from(::makeTexture))
+    private var TEXT_ID_MAP = mutableMapOf<TextKey, Identifier>()
     private var CUR_TEXT_ID = 1
 
     fun init() {
@@ -44,7 +52,7 @@ object WRTextRenderer {
         val width = MC.textRenderer.getWidth(text).toFloat()
         val height = MC.textRenderer.fontHeight.toFloat()
 
-        val id = TEXT_ID_MAP.computeIfAbsent(TextKey(text, color, shadow, background), ::makeTexture)
+        val id = TEXT_FB_CACHE[TextKey(text, color, shadow, background)].id
 
         val renderLayer = if (seeThrough) RenderLayer.getTextSeeThrough(id) else RenderLayer.getText(id)
         val consumer = provider.getBuffer(renderLayer)
@@ -96,7 +104,7 @@ object WRTextRenderer {
         }
     }
 
-    private fun makeTexture(key: TextKey): Identifier {
+    private fun makeTexture(key: TextKey): TextTexture {
         // render everything to a framebuffer first because I like pain
 
         val text = key.text.asOrderedText()
@@ -147,12 +155,14 @@ object WRTextRenderer {
 
         val texture = FramebufferTexture(fb)
 
-        val number = CUR_TEXT_ID++
-        val id = WRConstants.id("text_fb/$number")
+        val id = TEXT_ID_MAP.computeIfAbsent(key) {
+            val number = CUR_TEXT_ID++
+            WRConstants.id("text_fb/$number")
+        }
 
         MC.textureManager.registerTexture(id, texture)
 
-        return id
+        return TextTexture(texture, id)
     }
 
     private fun multiplyBrightness(color: Int, brightness: Float): Int {
