@@ -10,7 +10,6 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView
 import net.minecraft.client.MinecraftClient
-import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.render.OverlayTexture
 import net.minecraft.client.render.VertexConsumer
 import net.minecraft.client.render.VertexConsumerProvider
@@ -18,7 +17,7 @@ import net.minecraft.client.render.model.BakedModel
 import net.minecraft.client.texture.Sprite
 import net.minecraft.client.texture.SpriteAtlasTexture
 import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.text.OrderedText
+import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.MathHelper.HALF_PI
@@ -32,6 +31,9 @@ object RenderUtils {
     val MESH_BUILDER: MeshBuilder by threadLocal {
         RendererAccess.INSTANCE.renderer.requireNonNull("Renderer is null").meshBuilder()
     }
+
+    private val MC = MinecraftClient.getInstance()
+
     private val FLAT_QUATERNION = Quaternion.fromEulerXyz(-HALF_PI, 0f, 0f)
 
     private val ROTATION_QUATERNIONS = arrayOf(
@@ -102,7 +104,7 @@ object RenderUtils {
     }
 
     fun renderPortText(
-        text: OrderedText, side: Direction, rotation: Direction, height: Double, tr: TextRenderer, stack: MatrixStack,
+        text: Text, side: Direction, rotation: Direction, height: Double, stack: MatrixStack,
         provider: VertexConsumerProvider, light: Int
     ) {
         stack.push()
@@ -117,18 +119,17 @@ object RenderUtils {
 
         stack.scale(1f / 32f, -1f / 32f, 1f / 32f)
 
-        val width = tr.getWidth(text).toDouble()
-        stack.translate(16.0 - width / 2.0, -tr.fontHeight.toDouble(), 0.0)
+        val width = MC.textRenderer.getWidth(text).toDouble()
+        stack.translate(16.0 - width / 2.0, -MC.textRenderer.fontHeight.toDouble(), 0.0)
 
-        tr.draw(text, 0f, 0f, -1, false, stack.peek().positionMatrix, provider, true, 0, light)
+        WRTextRenderer.drawText(text, -1, true, stack.peek().positionMatrix, provider, true, 0, light)
 
         stack.pop()
     }
 
     fun renderOverlayText(
-        text: OrderedText, side: Direction, rotation: Direction, x: Double, y: Double, z: Double,
-        alignment: HorizontalAlignment, tr: TextRenderer, stack: MatrixStack, provider: VertexConsumerProvider,
-        light: Int
+        text: Text, side: Direction, rotation: Direction, x: Double, y: Double, z: Double,
+        alignment: HorizontalAlignment, stack: MatrixStack, provider: VertexConsumerProvider, light: Int
     ) {
         stack.push()
         stack.translate(0.5, 0.5, 0.5)
@@ -142,9 +143,9 @@ object RenderUtils {
 
         stack.scale(1f / 32f, -1f / 32f, 1f / 32f)
 
-        stack.translate(alignment.offset(tr.getWidth(text)), 0.0, 0.0)
+        stack.translate(alignment.offset(MC.textRenderer.getWidth(text)), 0.0, 0.0)
 
-        tr.draw(text, 0f, 0f, -1, false, stack.peek().positionMatrix, provider, true, 0, light)
+        WRTextRenderer.drawText(text, -1, true, stack.peek().positionMatrix, provider, true, 0, light)
 
         stack.pop()
     }

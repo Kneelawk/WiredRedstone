@@ -10,7 +10,6 @@ import com.kneelawk.wiredredstone.client.render.WRSprites.RED_ALLOY_WIRE_UNPOWER
 import com.kneelawk.wiredredstone.part.key.GateNotPartKey
 import com.kneelawk.wiredredstone.util.ConnectionUtils
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh
-import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.render.VertexConsumerProvider
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.util.Identifier
@@ -80,14 +79,13 @@ object GateNotPartBaker : AbstractPartBaker<GateNotPartKey>() {
     }
 
     override fun renderOverlayText(
-        key: GateNotPartKey, tr: TextRenderer, stack: MatrixStack, provider: VertexConsumerProvider, light: Int
+        key: GateNotPartKey, stack: MatrixStack, provider: VertexConsumerProvider, light: Int
     ) {
         RenderUtils.renderPortText(
-            overlay("gate_not.out").asOrderedText(), key.side, key.direction, 2.0 / 16.0, tr, stack, provider, light
+            overlay("gate_not.out"), key.side, key.direction, 2.0 / 16.0, stack, provider, light
         )
         RenderUtils.renderPortText(
-            overlay("gate_not.in").asOrderedText(), key.side, key.direction.opposite, 2.0 / 16.0, tr, stack, provider,
-            light
+            overlay("gate_not.in"), key.side, key.direction.opposite, 2.0 / 16.0, stack, provider, light
         )
     }
 }

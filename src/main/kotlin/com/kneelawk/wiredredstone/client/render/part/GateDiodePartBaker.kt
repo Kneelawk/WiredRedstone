@@ -6,7 +6,6 @@ import com.kneelawk.wiredredstone.client.render.*
 import com.kneelawk.wiredredstone.part.key.GateDiodePartKey
 import com.kneelawk.wiredredstone.util.ConnectionUtils
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh
-import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.render.VertexConsumerProvider
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.util.Identifier
@@ -68,14 +67,13 @@ object GateDiodePartBaker : AbstractPartBaker<GateDiodePartKey>() {
     }
 
     override fun renderOverlayText(
-        key: GateDiodePartKey, tr: TextRenderer, stack: MatrixStack, provider: VertexConsumerProvider, light: Int
+        key: GateDiodePartKey, stack: MatrixStack, provider: VertexConsumerProvider, light: Int
     ) {
         RenderUtils.renderPortText(
-            overlay("gate_diode.out").asOrderedText(), key.side, key.direction, 2.0 / 16.0, tr, stack, provider, light
+            overlay("gate_diode.out"), key.side, key.direction, 2.0 / 16.0, stack, provider, light
         )
         RenderUtils.renderPortText(
-            overlay("gate_diode.in").asOrderedText(), key.side, key.direction.opposite, 2.0 / 16.0, tr, stack, provider,
-            light
+            overlay("gate_diode.in"), key.side, key.direction.opposite, 2.0 / 16.0, stack, provider, light
         )
     }
 }

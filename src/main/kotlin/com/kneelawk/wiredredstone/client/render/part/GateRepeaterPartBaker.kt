@@ -10,7 +10,6 @@ import com.kneelawk.wiredredstone.client.render.WRSprites.RED_ALLOY_WIRE_UNPOWER
 import com.kneelawk.wiredredstone.part.key.GateRepeaterPartKey
 import com.kneelawk.wiredredstone.util.ConnectionUtils
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh
-import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.render.VertexConsumerProvider
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.util.Identifier
@@ -101,19 +100,17 @@ object GateRepeaterPartBaker : AbstractPartBaker<GateRepeaterPartKey>() {
     }
 
     override fun renderOverlayText(
-        key: GateRepeaterPartKey, tr: TextRenderer, stack: MatrixStack, provider: VertexConsumerProvider, light: Int
+        key: GateRepeaterPartKey, stack: MatrixStack, provider: VertexConsumerProvider, light: Int
     ) {
         RenderUtils.renderPortText(
-            overlay("gate_repeater.out").asOrderedText(), key.side, key.direction, 2.0 / 16.0, tr, stack, provider,
-            light
+            overlay("gate_repeater.out"), key.side, key.direction, 2.0 / 16.0, stack, provider, light
         )
         RenderUtils.renderPortText(
-            overlay("gate_repeater.in").asOrderedText(), key.side, key.direction.opposite, 2.0 / 16.0, tr, stack,
-            provider, light
+            overlay("gate_repeater.in"), key.side, key.direction.opposite, 2.0 / 16.0, stack, provider, light
         )
         RenderUtils.renderOverlayText(
-            overlay("gate_repeater.delay", (key.delay.toFloat() + 1f) / 2f).asOrderedText(), key.side, key.direction,
-            0.5, 2.0 / 16.0, 6.0 / 16.0, HorizontalAlignment.CENTER, tr, stack, provider, light
+            overlay("gate_repeater.delay", (key.delay.toFloat() + 1f) / 2f), key.side, key.direction, 0.5, 2.0 / 16.0,
+            6.0 / 16.0, HorizontalAlignment.CENTER, stack, provider, light
         )
     }
 }
