@@ -17,4 +17,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = "WiredRedstone"
+rootProject.name = "wired-redstone"

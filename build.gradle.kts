@@ -4,6 +4,7 @@ plugins {
     id("fabric-loom")
     val kotlinVersion: String by System.getProperties()
     kotlin("jvm").version(kotlinVersion)
+    `maven-publish`
     id("io.github.juuxel.loom-quiltflower")
     id("com.modrinth.minotaur")
 }
@@ -13,7 +14,17 @@ base {
     archivesName.set(archivesBaseName)
 }
 
-val modVersion: String by project
+// System to get the release version if this project is being built as part of a release
+val modVersion: String = if (System.getenv("RELEASE_TAG") != null) {
+    val releaseTag = System.getenv("RELEASE_TAG")
+    val modVersion = releaseTag.substring(1)
+    println("Detected Release Version: $modVersion")
+    modVersion
+} else {
+    val modVersion: String by project
+    println("Detected Local Version: $modVersion")
+    modVersion
+}
 version = modVersion
 val mavenGroup: String by project
 group = mavenGroup
@@ -195,4 +206,25 @@ modrinth {
         )
     )
     syncBodyFrom.set(rootProject.file("README.md").readText())
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("mavenJava") {
+            groupId = mavenGroup
+            artifactId = project.name
+            version = modVersion
+
+            from(components["java"])
+        }
+    }
+
+    repositories {
+        if (System.getenv("PUBLISH_REPO") != null) {
+            maven {
+                name = "publishRepo"
+                url = uri(System.getenv("PUBLISH_REPO"))
+            }
+        }
+    }
 }

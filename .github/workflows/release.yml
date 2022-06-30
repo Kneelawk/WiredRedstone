@@ -3,7 +3,10 @@ name: release
 on:
   push:
     tags:
-      - 'v[0-9]+.[0-9]+.[0-9]+'
+      # matches things like v0.3.3+1.18.2
+      - 'v[0-9]+.[0-9]+.[0-9]+\+[0-9]+.[0-9]+.[0-9]+'
+      # matches things like v0.4.0+1.19
+      - 'v[0-9]+.[0-9]+.[0-9]+\+[0-9]+.[0-9]+'
 
 jobs:
   build:
@@ -22,14 +25,75 @@ jobs:
         run: chmod +x ./gradlew
       - name: Build
         run: ./gradlew build
+        env:
+          RELEASE_TAG: ${{ steps.tag_version.outputs.tag }}
       - name: Github Release
         uses: softprops/action-gh-release@v1
         with:
           body_path: changelogs/changelog-${{ steps.tag_version.outputs.tag }}.md
           files: build/libs/*
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
       - name: Modrinth Release
         run: ./gradlew modrinth modrinthSyncBody
         env:
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+          RELEASE_TAG: ${{ steps.tag_version.outputs.tag }}
+      # Next is the rather cursed maven deployment mechanism
+      - name: Checkout Deployment Repository
+        uses: actions/checkout@v2
+        with:
+          repository: Kneelawk/kneelawk.github.io
+          ref: src
+          path: deploy
+          persist-credentials: false
+      - name: Publish To Deployment Repository Maven
+        run: ./gradlew publishAllPublicationsToPublishRepoRepository
+        env:
+          RELEASE_TAG: ${{ steps.tag_version.outputs.tag }}
+          PUBLISH_REPO: deploy/src/maven/
+      - name: Commit Deployment Repository Changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m 'Publish Wired Redstone ${{ steps.tag_version.outputs.tag }}'
+        working-directory: deploy
+      - name: Push Deployment Repository
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.PUBLISH_TOKEN }}
+          branch: src
+          directory: deploy
+          repository: Kneelawk/kneelawk.github.io
+      # This is the mess that publishes discord notifications
+      - name: Read Changelog File
+        uses: juliangruber/read-file-action@v1
+        id: changelog
+        with:
+          path: changelogs/changelog-${{ steps.tag_version.outputs.tag }}.md
+      - name: Process Changelog for Announcement
+        uses: actions/github-script@v6
+        id: announcement_text
+        env:
+          CHANGELOG: ${{ steps.changelog.outputs.content }}
+          TAG_VERSION: ${{ steps.tag_version.outputs.tag }}
+        with:
+          script: |
+            let fullVersion = process.env.TAG_VERSION;
+            let versions = fullVersion.split('+');
+            let modVersion = fullVersion.substring(1);
+            let lines = process.env.CHANGELOG.split('\n');
+            let changesStart = lines.findIndex(line => line.startsWith('*'));
+            lines.splice(0, changesStart);
+            lines.unshift(`**Wired Redstone ${versions[0]} has been released for Minecraft ${versions[1]}!**`, '', '__Changes:__');
+            lines.push(`Available on Modrinth: https://modrinth.com/mod/wiredredstone/version/${modVersion}`);
+            lines.push("Or on Kneelawk's maven: https://kneelawk.com/maven/", `With the identifier: \`com.kneelawk:wired-redstone:${modVersion}\``);
+            return lines.join('\n');
+          result-encoding: string
+      - name: Make Release Announcement
+        uses: Ilshidur/action-discord@0.3.2
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        with:
+          args: ${{ steps.announcement_text.outputs.result }}
