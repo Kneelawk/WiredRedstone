@@ -87,7 +87,7 @@ abstract class AbstractRedstoneWirePart : AbstractBlockablePart, PowerablePart {
                 // updating connections, so we want to make sure we *really* need to do it first
                 if (ConnectableUtils.shouldUpdateForNeighborUpdate(
                         redstoneCache, getPos(), it.pos,
-                        { world.getBlockState(it.pos).emitsRedstonePower() },
+                        { RedstoneLogic.shouldWireConnect(world.getBlockState(it.pos)) },
                         { prev, cur -> prev != cur })
                 ) {
                     updateConnections(world)
@@ -171,7 +171,7 @@ abstract class AbstractRedstoneWirePart : AbstractBlockablePart, PowerablePart {
                         newConn = ConnectionUtils.setExternal(newConn, cardinal)
                     }
                 } else {
-                    if (state.emitsRedstonePower()) {
+                    if (RedstoneLogic.shouldWireConnect(state)) {
                         newConn = ConnectionUtils.setExternal(newConn, cardinal)
                     }
                 }

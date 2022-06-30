@@ -4,8 +4,10 @@ import com.kneelawk.graphlib.GraphLib
 import com.kneelawk.graphlib.graph.BlockGraph
 import com.kneelawk.graphlib.util.SidedPos
 import com.kneelawk.wiredredstone.node.RedstoneCarrierBlockNode
+import com.kneelawk.wiredredstone.tag.WRBlockTags
 import it.unimi.dsi.fastutil.longs.LongLinkedOpenHashSet
 import it.unimi.dsi.fastutil.longs.LongSet
+import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.BlockPos
@@ -92,5 +94,10 @@ object RedstoneLogic {
                 )
             }
         )
+    }
+
+    fun shouldWireConnect(state: BlockState): Boolean {
+        return (state.emitsRedstonePower() || state.isIn(WRBlockTags.WIRE_FORCE_CONNECTABLE))
+                && !state.isIn(WRBlockTags.WIRE_FORCE_NOT_CONNECTABLE)
     }
 }
