@@ -258,7 +258,7 @@ sealed class TransformingQuadEmitter(private val emitter: QuadEmitter) : QuadEmi
         val normal = Vec3f(normalI.x.toFloat(), normalI.y.toFloat(), normalI.z.toFloat())
 
         MemoryStack.stackPush().use { memoryStack ->
-            val byteBuffer = memoryStack.malloc(VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL.vertexSize)
+            val byteBuffer = memoryStack.malloc(VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL.vertexSizeByte)
             val intBuffer = byteBuffer.asIntBuffer()
 
             for (vertexIndex in 0 until 4) {

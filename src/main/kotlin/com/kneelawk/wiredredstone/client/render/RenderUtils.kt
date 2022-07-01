@@ -24,7 +24,7 @@ import net.minecraft.util.math.MathHelper.HALF_PI
 import net.minecraft.util.math.MathHelper.PI
 import net.minecraft.util.math.Quaternion
 import net.minecraft.util.math.Vec3f
-import java.util.*
+import net.minecraft.util.math.random.Random
 import kotlin.math.sqrt
 
 object RenderUtils {
@@ -70,7 +70,7 @@ object RenderUtils {
     }
 
     fun fromVanilla(from: BakedModel, to: QuadEmitter, material: RenderMaterial) {
-        val random = Random(42)
+        val random = Random.create(42)
 
         for (dir in Direction.values()) {
             val quads = from.getQuads(null, dir, random)

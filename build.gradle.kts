@@ -47,7 +47,7 @@ repositories {
             includeGroup("maven.modrinth")
         }
     }
-//    mavenLocal()
+    mavenLocal()
 }
 
 dependencies {
@@ -98,7 +98,9 @@ dependencies {
 
     // EMI
     val emiVersion: String by project
-    modCompileOnly("dev.emi:emi:$emiVersion")
+    modCompileOnly("dev.emi:emi:$emiVersion") {
+        isTransitive = false
+    }
 
     //
     // Optional Mod Dependencies
@@ -135,8 +137,7 @@ dependencies {
 
     // EMI
     modRuntimeOnly("dev.emi:emi:$emiVersion") {
-        exclude("net.fabricmc")
-        exclude("net.fabricmc.fabric-api")
+        isTransitive = false
     }
 
     // Quiltflower
@@ -157,8 +158,6 @@ tasks {
 
     withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         kotlinOptions { jvmTarget = javaVersion.toString() }
-        sourceCompatibility = javaVersion.toString()
-        targetCompatibility = javaVersion.toString()
     }
 
     jar { from("LICENSE") { rename { "${it}_${base.archivesName.get()}" } } }

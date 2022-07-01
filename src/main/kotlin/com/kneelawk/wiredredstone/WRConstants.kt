@@ -1,7 +1,7 @@
 package com.kneelawk.wiredredstone
 
 import net.minecraft.text.MutableText
-import net.minecraft.text.TranslatableText
+import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 
 object WRConstants {
@@ -18,7 +18,7 @@ object WRConstants {
     }
 
     fun tt(prefix: String, path: String, vararg args: Any?): MutableText {
-        return TranslatableText("$prefix.$MOD_ID.$path", *args)
+        return Text.translatable("$prefix.$MOD_ID.$path", *args)
     }
 
     fun tooltip(path: String, vararg args: Any?): MutableText {
@@ -28,7 +28,7 @@ object WRConstants {
     fun gui(path: String, vararg args: Any?): MutableText {
         return tt("gui", path, *args)
     }
-    
+
     fun overlay(path: String, vararg args: Any?): MutableText {
         return tt("overlay", path, *args)
     }
