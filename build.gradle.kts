@@ -47,7 +47,7 @@ repositories {
             includeGroup("maven.modrinth")
         }
     }
-    mavenLocal()
+//    mavenLocal()
 }
 
 dependencies {
