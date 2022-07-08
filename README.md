@@ -6,6 +6,7 @@
 <a href="https://discord.gg/6vgpHcKmxg"><img src="https://kneelawk.com/assets/discord-64x64.png" alt="Discord"></a>
 <a href="https://github.com/Kneelawk/WiredRedstone"><img src="https://kneelawk.com/assets/github-white-64x64.png" alt="Github"></a>
 <a href="https://modrinth.com/mod/wiredredstone"><img src="https://kneelawk.com/assets/modrinth-64x64.png" alt="Modrinth"></a>
+<a href="https://www.curseforge.com/minecraft/mc-mods/wired-redstone"><img src="https://kneelawk.com/assets/curseforge-64x64.png" alt="CurseForge"></a>
 </p>
 </center>
 
