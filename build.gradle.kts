@@ -1,3 +1,6 @@
+import com.matthewprenger.cursegradle.CurseProject
+import com.matthewprenger.cursegradle.CurseRelation
+import com.matthewprenger.cursegradle.Options
 import com.modrinth.minotaur.dependencies.ModDependency
 
 plugins {
@@ -7,6 +10,7 @@ plugins {
     `maven-publish`
     id("io.github.juuxel.loom-quiltflower")
     id("com.modrinth.minotaur")
+    id("com.matthewprenger.cursegradle")
 }
 
 base {
@@ -178,8 +182,9 @@ tasks {
     }
 }
 
+val commaRegex = Regex("\\s*,\\s*")
+
 modrinth {
-    val commaRegex = Regex("\\s*,\\s*")
     token.set(System.getenv("MODRINTH_TOKEN"))
     val mrProjectId: String by project
     projectId.set(mrProjectId)
@@ -205,6 +210,38 @@ modrinth {
         )
     )
     syncBodyFrom.set(rootProject.file("README.md").readText())
+}
+
+System.getenv("CURSE_API_KEY")?.let { curseApiKey ->
+    curseforge {
+        apiKey = curseApiKey
+        project(closureOf<CurseProject> {
+            id = "639871"
+            changelogType = "markdown"
+            changelog = project.file("changelogs/changelog-v${modVersion}.md")
+            val cfReleaseType: String by project
+            releaseType = cfReleaseType
+            val cfMinecraftVersions: String by project
+            cfMinecraftVersions.split(commaRegex).forEach {
+                addGameVersion(it)
+            }
+            addGameVersion("Java 17")
+            addGameVersion("Fabric")
+            addGameVersion("Quilt")
+            mainArtifact(tasks.remapJar.get())
+            relations(closureOf<CurseRelation> {
+                requiredDependency("fabric-api")
+                requiredDependency("fabric-language-kotlin")
+            })
+        })
+        options(closureOf<Options> {
+            forgeGradleIntegration = false
+        })
+    }
+
+    afterEvaluate {
+        tasks.getByName("curseforge639871").dependsOn(tasks.remapJar.get())
+    }
 }
 
 publishing {
