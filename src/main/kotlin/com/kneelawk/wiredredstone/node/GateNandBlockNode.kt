@@ -5,7 +5,7 @@ import com.kneelawk.graphlib.graph.BlockNodeDecoder
 import com.kneelawk.graphlib.wire.SidedWireConnectionFilter
 import com.kneelawk.wiredredstone.part.AbstractGatePart
 import com.kneelawk.wiredredstone.part.AbstractThreeInputGatePart
-import com.kneelawk.wiredredstone.part.GateNorPart
+import com.kneelawk.wiredredstone.part.GateNandPart
 import com.kneelawk.wiredredstone.util.*
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.nbt.NbtElement
@@ -14,7 +14,7 @@ import net.minecraft.util.Identifier
 import net.minecraft.util.math.Direction
 import kotlin.math.max
 
-sealed class GateNorBlockNode : AbstractGateBlockNode<GateNorPart>(GateNorPart::class) {
+sealed class GateNandBlockNode : AbstractGateBlockNode<GateNandPart>(GateNandPart::class) {
     override val filter: SidedWireConnectionFilter by lazy {
         RedstoneCarrierFilter.and(
             WireCornerBlockageFilter(side, AbstractGatePart.CONNECTION_WIDTH, AbstractGatePart.CONNECTION_HEIGHT)
@@ -27,17 +27,17 @@ sealed class GateNorBlockNode : AbstractGateBlockNode<GateNorPart>(GateNorPart::
 
     open fun writeExtra(tag: NbtCompound) {}
 
-    override fun getTypeId(): Identifier = WRBlockNodes.GATE_NOR_ID
+    override fun getTypeId(): Identifier = WRBlockNodes.GATE_NAND_ID
 
     override fun toTag(): NbtElement? = BlockNodeUtil.writeSidedType(side, type, ::writeExtra)
 
     data class Input(private val side: Direction, private val inputType: AbstractThreeInputGatePart.InputType) :
-        GateNorBlockNode() {
+        GateNandBlockNode() {
         override val type = Type.INPUT
 
         override fun getSide(): Direction = side
 
-        override fun getConnectDirection(part: GateNorPart): Direction = part.getInputSide(inputType)
+        override fun getConnectDirection(part: GateNandPart): Direction = part.getInputSide(inputType)
 
         override fun getState(world: ServerWorld, self: NetNode): Int = 0
 
@@ -55,12 +55,12 @@ sealed class GateNorBlockNode : AbstractGateBlockNode<GateNorPart>(GateNorPart::
         }
     }
 
-    data class Output(private val side: Direction) : GateNorBlockNode() {
+    data class Output(private val side: Direction) : GateNandBlockNode() {
         override val type = Type.OUTPUT
 
         override fun getSide(): Direction = side
 
-        override fun getConnectDirection(part: GateNorPart): Direction = part.getOutputSide()
+        override fun getConnectDirection(part: GateNandPart): Direction = part.getOutputSide()
 
         override fun getState(world: ServerWorld, self: NetNode): Int {
             return getPart(world, self.pos)?.getTotalOutputPower() ?: 0

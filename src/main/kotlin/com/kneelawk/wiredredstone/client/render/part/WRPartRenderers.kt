@@ -21,6 +21,7 @@ object WRPartRenderers {
         register(InsulatedWirePartBaker, InsulatedWirePartKey::class)
         register(BundledCablePartBaker, BundledCablePartKey::class)
         register(GateDiodePartBaker, GateDiodePartKey::class)
+        register(GateNandPartBaker, GateNandPartKey::class)
         register(GateNorPartBaker, GateNorPartKey::class)
         register(GateNotPartBaker, GateNotPartKey::class)
         register(GateRepeaterPartBaker, GateRepeaterPartKey::class)

@@ -59,6 +59,11 @@ object WRItems {
             GateDiodePart(WRParts.GATE_DIODE, holder, side, 0u, direction, 0, 0, 0)
         }
     }
+    val GATE_NAND by lazy {
+        SimpleGateItem(WIRED_REDSTONE_ITEM_SETTINGS) { holder, side, direction ->
+            GateNandPart(WRParts.GATE_NAND, holder, side, 0u, direction, 0, 0, 0, 15, 0)
+        }
+    }
     val GATE_NOR by lazy {
         SimpleGateItem(WIRED_REDSTONE_ITEM_SETTINGS) { holder, side, direction ->
             GateNorPart(WRParts.GATE_NOR, holder, side, 0u, direction, 0, 0, 0, 15, 0)
@@ -123,6 +128,7 @@ object WRItems {
         register(BLACK_BUNDLED_CABLE, "black_bundled_cable")
 
         register(GATE_DIODE, "gate_diode")
+        register(GATE_NAND, "gate_nand")
         register(GATE_NOR, "gate_nor")
         register(GATE_NOT, "gate_not")
         register(GATE_REPEATER, "gate_repeater")

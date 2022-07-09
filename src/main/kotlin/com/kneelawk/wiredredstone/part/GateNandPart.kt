@@ -7,8 +7,8 @@ import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.NetByteBuf
 import com.kneelawk.graphlib.graph.BlockNode
 import com.kneelawk.wiredredstone.item.WRItems
-import com.kneelawk.wiredredstone.node.GateNorBlockNode
-import com.kneelawk.wiredredstone.part.key.GateNorPartKey
+import com.kneelawk.wiredredstone.node.GateNandBlockNode
+import com.kneelawk.wiredredstone.part.key.GateNandPartKey
 import com.kneelawk.wiredredstone.util.LootTableUtil
 import com.kneelawk.wiredredstone.util.getWorld
 import net.minecraft.item.ItemStack
@@ -17,7 +17,7 @@ import net.minecraft.nbt.NbtCompound
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.Direction
 
-class GateNorPart : AbstractThreeInputGatePart {
+class GateNandPart : AbstractThreeInputGatePart {
     constructor(
         definition: PartDefinition, holder: MultipartHolder, side: Direction, connections: UByte, direction: Direction,
         inputRightPower: Int, inputBackPower: Int, inputLeftPower: Int, outputPower: Int, outputReversePower: Int
@@ -33,33 +33,33 @@ class GateNorPart : AbstractThreeInputGatePart {
 
     override fun createBlockNodes(): Collection<BlockNode> {
         return listOf(
-            GateNorBlockNode.Input(side, InputType.RIGHT),
-            GateNorBlockNode.Input(side, InputType.BACK),
-            GateNorBlockNode.Input(side, InputType.LEFT),
-            GateNorBlockNode.Output(side)
+            GateNandBlockNode.Input(side, InputType.RIGHT),
+            GateNandBlockNode.Input(side, InputType.BACK),
+            GateNandBlockNode.Input(side, InputType.LEFT),
+            GateNandBlockNode.Output(side)
         )
     }
 
     override fun shouldRecalculate(): Boolean {
-        return ((inputRightPower == 0) && (inputBackPower == 0) && (inputLeftPower == 0)) == (outputPower == 0)
+        return ((inputRightPower == 0) || (inputBackPower == 0) || (inputLeftPower == 0)) == (outputPower == 0)
     }
 
     override fun recalculate() {
-        outputPower = if ((inputRightPower == 0) && (inputBackPower == 0) && (inputLeftPower == 0)) 15 else 0
+        outputPower = if ((inputRightPower == 0) || (inputBackPower == 0) || (inputLeftPower == 0)) 15 else 0
     }
 
     override fun getModelKey(): PartModelKey {
-        return GateNorPartKey(
+        return GateNandPartKey(
             side, direction, connections, inputRightPower != 0, inputBackPower != 0, inputLeftPower != 0,
-            outputPower != 0, getTotalOutputPower() != 0
+            getTotalOutputPower() != 0
         )
     }
 
     override fun getPickStack(hitResult: BlockHitResult?): ItemStack {
-        return ItemStack(WRItems.GATE_NOR)
+        return ItemStack(WRItems.GATE_NAND)
     }
 
     override fun addDrops(target: ItemDropTarget, context: LootContext) {
-        LootTableUtil.addPartDrops(getWorld(), target, context, WRParts.GATE_NOR.identifier)
+        LootTableUtil.addPartDrops(getWorld(), target, context, WRParts.GATE_NAND.identifier)
     }
 }

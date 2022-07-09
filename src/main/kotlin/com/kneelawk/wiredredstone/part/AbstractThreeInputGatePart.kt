@@ -141,9 +141,9 @@ abstract class AbstractThreeInputGatePart : AbstractGatePart {
     }
 
     override fun shouldScheduleUpdate(): Boolean {
-        return calculateInputRightPower() != inputRightPower
-                || calculateInputBackPower() != inputBackPower
-                || calculateInputLeftPower() != inputLeftPower
+        return calculateInputPower(InputType.RIGHT) != inputRightPower
+                || calculateInputPower(InputType.BACK) != inputBackPower
+                || calculateInputPower(InputType.LEFT) != inputLeftPower
                 || calculateOutputReversePower() != outputReversePower
     }
 
@@ -156,16 +156,8 @@ abstract class AbstractThreeInputGatePart : AbstractGatePart {
         return getWorld().getEmittedRedstonePower(getPos().offset(edge), edge)
     }
 
-    fun calculateInputRightPower(): Int {
-        return calculatePortPower(getInputRightSide())
-    }
-
-    fun calculateInputBackPower(): Int {
-        return calculatePortPower(getInputBackSide())
-    }
-
-    fun calculateInputLeftPower(): Int {
-        return calculatePortPower(getInputLeftSide())
+    fun calculateInputPower(type: InputType): Int {
+        return calculatePortPower(getInputSide(type))
     }
 
     fun calculateOutputReversePower(): Int {
@@ -173,24 +165,10 @@ abstract class AbstractThreeInputGatePart : AbstractGatePart {
     }
 
     /**
-     * Gets the cardinal direction of the right input side.
+     * Gets the cardinal direction of the corresponding input side.
      */
-    fun getInputRightSide(): Direction {
-        return RotationUtils.cardinalRotatedDirection(Direction.EAST, direction)
-    }
-
-    /**
-     * Gets the cardinal direction of the back input side.
-     */
-    fun getInputBackSide(): Direction {
-        return RotationUtils.cardinalRotatedDirection(Direction.SOUTH, direction)
-    }
-
-    /**
-     * Gets the cardinal direction of the left input side.
-     */
-    fun getInputLeftSide(): Direction {
-        return RotationUtils.cardinalRotatedDirection(Direction.WEST, direction)
+    fun getInputSide(type: InputType): Direction {
+        return RotationUtils.cardinalRotatedDirection(type.cardinal, direction)
     }
 
     /**
@@ -210,9 +188,24 @@ abstract class AbstractThreeInputGatePart : AbstractGatePart {
         }
     }
 
-    open fun updateInputRightPower(power: Int) {
-        val changed = this.inputRightPower != power
-        this.inputRightPower = power
+    open fun updateInputPower(power: Int, type: InputType) {
+        val changed = when (type) {
+            InputType.RIGHT -> {
+                val changed = inputRightPower != power
+                inputRightPower = power
+                changed
+            }
+            InputType.BACK -> {
+                val changed = inputBackPower != power
+                inputBackPower = power
+                changed
+            }
+            InputType.LEFT -> {
+                val changed = inputLeftPower != power
+                inputLeftPower = power
+                changed
+            }
+        }
 
         if (changed) {
             redraw()
@@ -220,23 +213,9 @@ abstract class AbstractThreeInputGatePart : AbstractGatePart {
         }
     }
 
-    open fun updateInputBackPower(power: Int) {
-        val changed = this.inputBackPower != power
-        this.inputBackPower = power
-
-        if (changed) {
-            redraw()
-            getBlockEntity().markDirty()
-        }
-    }
-
-    open fun updateInputLeftPower(power: Int) {
-        val changed = this.inputLeftPower != power
-        this.inputLeftPower = power
-
-        if (changed) {
-            redraw()
-            getBlockEntity().markDirty()
-        }
+    enum class InputType(val cardinal: Direction) {
+        RIGHT(Direction.EAST),
+        BACK(Direction.SOUTH),
+        LEFT(Direction.WEST)
     }
 }
