@@ -44,21 +44,6 @@ sealed class GateNotBlockNode : AbstractGateBlockNode<GateNotPart>(GateNotPart::
             val part = getPart(world, self.pos) ?: return 0
             return part.calculateInputPower()
         }
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (javaClass != other?.javaClass) return false
-
-            other as Input
-
-            if (side != other.side) return false
-
-            return true
-        }
-
-        override fun hashCode(): Int {
-            return side.hashCode() xor -1891208086
-        }
     }
 
     data class Output(private val side: Direction) : GateNotBlockNode() {
@@ -80,26 +65,11 @@ sealed class GateNotBlockNode : AbstractGateBlockNode<GateNotPart>(GateNotPart::
             val part = getPart(world, self.pos) ?: return 0
             return max(part.outputPower, part.calculateOutputReversePower())
         }
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (javaClass != other?.javaClass) return false
-
-            other as Output
-
-            if (side != other.side) return false
-
-            return true
-        }
-
-        override fun hashCode(): Int {
-            return side.hashCode() xor -361062015
-        }
     }
 
     object Decoder : BlockNodeDecoder {
         override fun createBlockNodeFromTag(tag: NbtElement?): BlockNode? {
-            return BlockNodeUtil.readSidedTyped<Type>(tag) { side, type ->
+            return BlockNodeUtil.readSidedTyped<Type>(tag) { side, type, _ ->
                 when (type) {
                     Type.INPUT -> Input(side)
                     Type.OUTPUT -> Output(side)

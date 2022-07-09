@@ -4,17 +4,17 @@ import com.kneelawk.graphlib.graph.BlockNode
 import com.kneelawk.graphlib.graph.BlockNodeDecoder
 import com.kneelawk.graphlib.wire.SidedWireConnectionFilter
 import com.kneelawk.wiredredstone.part.AbstractGatePart
-import com.kneelawk.wiredredstone.part.GateDiodePart
+import com.kneelawk.wiredredstone.part.GateNorPart
 import com.kneelawk.wiredredstone.util.*
+import net.minecraft.nbt.NbtCompound
 import net.minecraft.nbt.NbtElement
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.Direction
 import kotlin.math.max
 
-sealed class GateDiodeBlockNode : AbstractGateBlockNode<GateDiodePart>(GateDiodePart::class) {
+sealed class GateNorBlockNode : AbstractGateBlockNode<GateNorPart>(GateNorPart::class) {
     override val filter: SidedWireConnectionFilter by lazy {
-        // must be lazy or this would be initialized before side
         RedstoneCarrierFilter.and(
             WireCornerBlockageFilter(side, AbstractGatePart.CONNECTION_WIDTH, AbstractGatePart.CONNECTION_HEIGHT)
         )
@@ -24,40 +24,41 @@ sealed class GateDiodeBlockNode : AbstractGateBlockNode<GateDiodePart>(GateDiode
 
     protected abstract val type: Type
 
-    override fun getTypeId(): Identifier = WRBlockNodes.GATE_DIODE_ID
+    open fun writeExtra(tag: NbtCompound) {}
 
-    override fun toTag(): NbtElement? = BlockNodeUtil.writeSidedType(side, type)
+    override fun getTypeId(): Identifier = WRBlockNodes.GATE_NOR_ID
 
-    data class Input(private val side: Direction) : GateDiodeBlockNode() {
+    override fun toTag(): NbtElement? = BlockNodeUtil.writeSidedType(side, type, ::writeExtra)
+
+    data class Input(private val side: Direction, private val inputType: InputType) : GateNorBlockNode() {
         override val type = Type.INPUT
 
         override fun getSide(): Direction = side
 
-        override fun getConnectDirection(part: GateDiodePart): Direction = part.getInputSide()
+        override fun getConnectDirection(part: GateNorPart): Direction = with(inputType) { part.connectDirection() }
 
         override fun getState(world: ServerWorld, self: NetNode): Int = 0
 
         override fun setState(world: ServerWorld, self: NetNode, state: Int) {
-            getPart(world, self.pos)?.updateInputPower(state)
+            with(inputType) { getPart(world, self.pos)?.updatePower(state) }
         }
 
         override fun getInput(world: ServerWorld, self: NetNode): Int {
             val part = getPart(world, self.pos) ?: return 0
-            val input = part.calculateInputPower()
+            return with(inputType) { part.calculatePower() }
+        }
 
-            // Even though this gate's input does not output any signal to anything else in the network,
-            // the gate's input itself is a network of one node, meaning that what's returned here gets
-            // sent to setState anyways.
-            return input
+        override fun writeExtra(tag: NbtCompound) {
+            tag.putByte("inputType", inputType.toByte())
         }
     }
 
-    data class Output(private val side: Direction) : GateDiodeBlockNode() {
+    data class Output(private val side: Direction) : GateNorBlockNode() {
         override val type = Type.OUTPUT
 
         override fun getSide(): Direction = side
 
-        override fun getConnectDirection(part: GateDiodePart): Direction = part.getOutputSide()
+        override fun getConnectDirection(part: GateNorPart): Direction = part.getOutputSide()
 
         override fun getState(world: ServerWorld, self: NetNode): Int {
             return getPart(world, self.pos)?.getTotalOutputPower() ?: 0
@@ -69,19 +70,15 @@ sealed class GateDiodeBlockNode : AbstractGateBlockNode<GateDiodePart>(GateDiode
 
         override fun getInput(world: ServerWorld, self: NetNode): Int {
             val part = getPart(world, self.pos) ?: return 0
-
-            // This is asking about input to the network, so we return either our output value or the value calculated
-            // by redstone in the world.
-
             return max(part.outputPower, part.calculateOutputReversePower())
         }
     }
 
     object Decoder : BlockNodeDecoder {
         override fun createBlockNodeFromTag(tag: NbtElement?): BlockNode? {
-            return BlockNodeUtil.readSidedTyped<Type>(tag) { side, type, _ ->
+            return BlockNodeUtil.readSidedTyped<Type>(tag) { side, type, nbt ->
                 when (type) {
-                    Type.INPUT -> Input(side)
+                    Type.INPUT -> Input(side, nbt.getByte("inputType").toEnum())
                     Type.OUTPUT -> Output(side)
                 }
             }
@@ -90,5 +87,16 @@ sealed class GateDiodeBlockNode : AbstractGateBlockNode<GateDiodePart>(GateDiode
 
     protected enum class Type {
         INPUT, OUTPUT
+    }
+
+    enum class InputType(
+        val connectDirection: GateNorPart.() -> Direction, val updatePower: GateNorPart.(Int) -> Unit,
+        val calculatePower: GateNorPart.() -> Int
+    ) {
+        RIGHT(
+            GateNorPart::getInputRightSide, GateNorPart::updateInputRightPower, GateNorPart::calculateInputRightPower
+        ),
+        BACK(GateNorPart::getInputBackSide, GateNorPart::updateInputBackPower, GateNorPart::calculateInputBackPower),
+        LEFT(GateNorPart::getInputLeftSide, GateNorPart::updateInputLeftPower, GateNorPart::calculateInputLeftPower)
     }
 }

@@ -14,9 +14,13 @@ import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.Direction
 import kotlin.math.max
 
-abstract class AbstractInputOutputGatePart : AbstractGatePart {
+abstract class AbstractThreeInputGatePart : AbstractGatePart {
 
-    var inputPower: Int
+    var inputRightPower: Int
+        private set
+    var inputBackPower: Int
+        private set
+    var inputLeftPower: Int
         private set
     var outputPower: Int
         protected set
@@ -25,9 +29,11 @@ abstract class AbstractInputOutputGatePart : AbstractGatePart {
 
     constructor(
         definition: PartDefinition, holder: MultipartHolder, side: Direction, connections: UByte, direction: Direction,
-        inputPower: Int, outputPower: Int, outputReversePower: Int
+        inputRightPower: Int, inputBackPower: Int, inputLeftPower: Int, outputPower: Int, outputReversePower: Int
     ) : super(definition, holder, side, connections, direction) {
-        this.inputPower = inputPower
+        this.inputRightPower = inputRightPower
+        this.inputBackPower = inputBackPower
+        this.inputLeftPower = inputLeftPower
         this.outputPower = outputPower
         this.outputReversePower = outputReversePower
     }
@@ -35,7 +41,9 @@ abstract class AbstractInputOutputGatePart : AbstractGatePart {
     constructor(definition: PartDefinition, holder: MultipartHolder, tag: NbtCompound) : super(
         definition, holder, tag
     ) {
-        inputPower = tag.getByte("inputPower").toInt().coerceIn(0..15)
+        inputRightPower = tag.getByte("inputRightPower").toInt().coerceIn(0..15)
+        inputBackPower = tag.getByte("inputBackPower").toInt().coerceIn(0..15)
+        inputLeftPower = tag.getByte("inputLeftPower").toInt().coerceIn(0..15)
         outputPower = tag.getByte("outputPower").toInt().coerceIn(0..15)
         outputReversePower = tag.getByte("outputReversePower").toInt().coerceIn(0..15)
     }
@@ -43,7 +51,9 @@ abstract class AbstractInputOutputGatePart : AbstractGatePart {
     constructor(definition: PartDefinition, holder: MultipartHolder, buffer: NetByteBuf, ctx: IMsgReadCtx) : super(
         definition, holder, buffer, ctx
     ) {
-        inputPower = buffer.readFixedBits(4).coerceIn(0..15)
+        inputRightPower = buffer.readFixedBits(4).coerceIn(0..15)
+        inputBackPower = buffer.readFixedBits(4).coerceIn(0..15)
+        inputLeftPower = buffer.readFixedBits(4).coerceIn(0..15)
         outputPower = buffer.readFixedBits(4).coerceIn(0..15)
         outputReversePower = buffer.readFixedBits(4).coerceIn(0..15)
     }
@@ -54,29 +64,39 @@ abstract class AbstractInputOutputGatePart : AbstractGatePart {
 
     override fun toTag(): NbtCompound {
         val tag = super.toTag()
-        tag.putByte("inputPower", inputPower.toByte())
+
+        tag.putByte("inputRightPower", inputRightPower.toByte())
+        tag.putByte("inputBackPower", inputBackPower.toByte())
+        tag.putByte("inputLeftPower", inputLeftPower.toByte())
         tag.putByte("outputPower", outputPower.toByte())
         tag.putByte("outputReversePower", outputReversePower.toByte())
+
         return tag
     }
 
     override fun writeCreationData(buffer: NetByteBuf, ctx: IMsgWriteCtx) {
         super.writeCreationData(buffer, ctx)
-        buffer.writeFixedBits(inputPower, 4)
+        buffer.writeFixedBits(inputRightPower, 4)
+        buffer.writeFixedBits(inputBackPower, 4)
+        buffer.writeFixedBits(inputLeftPower, 4)
         buffer.writeFixedBits(outputPower, 4)
         buffer.writeFixedBits(outputReversePower, 4)
     }
 
     override fun writeRenderData(buffer: NetByteBuf, ctx: IMsgWriteCtx) {
         super.writeRenderData(buffer, ctx)
-        buffer.writeFixedBits(inputPower, 4)
+        buffer.writeFixedBits(inputRightPower, 4)
+        buffer.writeFixedBits(inputBackPower, 4)
+        buffer.writeFixedBits(inputLeftPower, 4)
         buffer.writeFixedBits(outputPower, 4)
         buffer.writeFixedBits(outputReversePower, 4)
     }
 
     override fun readRenderData(buffer: NetByteBuf, ctx: IMsgReadCtx) {
         super.readRenderData(buffer, ctx)
-        inputPower = buffer.readFixedBits(4).coerceIn(0..15)
+        inputRightPower = buffer.readFixedBits(4).coerceIn(0..15)
+        inputBackPower = buffer.readFixedBits(4).coerceIn(0..15)
+        inputLeftPower = buffer.readFixedBits(4).coerceIn(0..15)
         outputPower = buffer.readFixedBits(4).coerceIn(0..15)
         outputReversePower = buffer.readFixedBits(4).coerceIn(0..15)
     }
@@ -87,8 +107,6 @@ abstract class AbstractInputOutputGatePart : AbstractGatePart {
         bus.addListener(this, PartTickEvent::class.java) {
             val world = getWorld()
             if (world is ServerWorld) {
-                // We do this here so that the delay between input and output is always the same
-                // regardless of wirenet update order.
                 if (shouldRecalculate()) {
                     recalculate()
 
@@ -96,7 +114,7 @@ abstract class AbstractInputOutputGatePart : AbstractGatePart {
                     RedstoneLogic.scheduleUpdate(world, pos)
                     redraw()
 
-                    // Update neighbors
+                    // update neighbors
                     val edge = RotationUtils.rotatedDirection(side, direction)
                     WorldUtils.strongUpdateOutputNeighbors(world, pos, edge)
                 }
@@ -123,28 +141,56 @@ abstract class AbstractInputOutputGatePart : AbstractGatePart {
     }
 
     override fun shouldScheduleUpdate(): Boolean {
-        return calculateInputPower() != inputPower || calculateOutputReversePower() != outputReversePower
+        return calculateInputRightPower() != inputRightPower
+                || calculateInputBackPower() != inputBackPower
+                || calculateInputLeftPower() != inputLeftPower
+                || calculateOutputReversePower() != outputReversePower
     }
 
     fun getTotalOutputPower(): Int {
         return max(outputPower, outputReversePower)
     }
 
-    fun calculateInputPower(): Int {
-        val edge = RotationUtils.rotatedDirection(side, getInputSide())
+    private fun calculatePortPower(portSide: Direction): Int {
+        val edge = RotationUtils.rotatedDirection(side, portSide)
         return getWorld().getEmittedRedstonePower(getPos().offset(edge), edge)
+    }
+
+    fun calculateInputRightPower(): Int {
+        return calculatePortPower(getInputRightSide())
+    }
+
+    fun calculateInputBackPower(): Int {
+        return calculatePortPower(getInputBackSide())
+    }
+
+    fun calculateInputLeftPower(): Int {
+        return calculatePortPower(getInputLeftSide())
     }
 
     fun calculateOutputReversePower(): Int {
-        val edge = RotationUtils.rotatedDirection(side, getOutputSide())
-        return getWorld().getEmittedRedstonePower(getPos().offset(edge), edge)
+        return calculatePortPower(getOutputSide())
     }
 
     /**
-     * Gets the cardinal direction of the input side.
+     * Gets the cardinal direction of the right input side.
      */
-    fun getInputSide(): Direction {
-        return direction.opposite
+    fun getInputRightSide(): Direction {
+        return RotationUtils.cardinalRotatedDirection(Direction.EAST, direction)
+    }
+
+    /**
+     * Gets the cardinal direction of the back input side.
+     */
+    fun getInputBackSide(): Direction {
+        return RotationUtils.cardinalRotatedDirection(Direction.SOUTH, direction)
+    }
+
+    /**
+     * Gets the cardinal direction of the left input side.
+     */
+    fun getInputLeftSide(): Direction {
+        return RotationUtils.cardinalRotatedDirection(Direction.WEST, direction)
     }
 
     /**
@@ -162,14 +208,31 @@ abstract class AbstractInputOutputGatePart : AbstractGatePart {
             redraw()
             getBlockEntity().markDirty()
         }
-
-//        val edge = RotationUtils.rotatedDirection(side, direction)
-//        WorldUtils.strongUpdateNeighbors(getWorld(), getPos(), edge)
     }
 
-    open fun updateInputPower(power: Int) {
-        val changed = this.inputPower != power
-        this.inputPower = power
+    open fun updateInputRightPower(power: Int) {
+        val changed = this.inputRightPower != power
+        this.inputRightPower = power
+
+        if (changed) {
+            redraw()
+            getBlockEntity().markDirty()
+        }
+    }
+
+    open fun updateInputBackPower(power: Int) {
+        val changed = this.inputBackPower != power
+        this.inputBackPower = power
+
+        if (changed) {
+            redraw()
+            getBlockEntity().markDirty()
+        }
+    }
+
+    open fun updateInputLeftPower(power: Int) {
+        val changed = this.inputLeftPower != power
+        this.inputLeftPower = power
 
         if (changed) {
             redraw()
