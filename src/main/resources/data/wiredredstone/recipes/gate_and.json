@@ -1,7 +1,7 @@
 {
   "type": "wiredredstone:redstone_assembler_shaped",
   "pattern": [
-    "AAA",
+    "AIA",
     "III",
     "PWP"
   ],
@@ -20,7 +20,7 @@
     }
   },
   "result": {
-    "item": "wiredredstone:gate_nand",
+    "item": "wiredredstone:gate_and",
     "count": 1
   },
   "cookingtime": 50,

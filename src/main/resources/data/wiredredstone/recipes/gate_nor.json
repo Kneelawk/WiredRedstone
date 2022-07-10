@@ -20,7 +20,7 @@
     }
   },
   "result": {
-    "item": "wiredredstone:gate_not",
+    "item": "wiredredstone:gate_nor",
     "count": 1
   },
   "cookingtime": 50,

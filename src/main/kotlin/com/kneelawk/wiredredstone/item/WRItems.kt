@@ -54,6 +54,11 @@ object WRItems {
     val BLACK_BUNDLED_CABLE by lazy { BundledCableItem(DyeColor.BLACK, WIRED_REDSTONE_ITEM_SETTINGS) }
 
     // Gates
+    val GATE_AND by lazy {
+        SimpleGateItem(WIRED_REDSTONE_ITEM_SETTINGS) { holder, side, direction ->
+            GateAndPart(WRParts.GATE_AND, holder, side, 0u, direction, 0, 0, 0, 0, 0)
+        }
+    }
     val GATE_DIODE by lazy {
         SimpleGateItem(WIRED_REDSTONE_ITEM_SETTINGS) { holder, side, direction ->
             GateDiodePart(WRParts.GATE_DIODE, holder, side, 0u, direction, 0, 0, 0)
@@ -127,6 +132,7 @@ object WRItems {
         register(RED_BUNDLED_CABLE, "red_bundled_cable")
         register(BLACK_BUNDLED_CABLE, "black_bundled_cable")
 
+        register(GATE_AND, "gate_and")
         register(GATE_DIODE, "gate_diode")
         register(GATE_NAND, "gate_nand")
         register(GATE_NOR, "gate_nor")

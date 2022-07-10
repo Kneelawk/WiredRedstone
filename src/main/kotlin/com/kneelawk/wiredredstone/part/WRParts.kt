@@ -10,6 +10,7 @@ object WRParts {
     val BUNDLED_CABLE by lazy { definition("bundled_cable", ::BundledCablePart, ::BundledCablePart) }
 
     // Gates
+    val GATE_AND by lazy { definition("gate_and", ::GateAndPart, ::GateAndPart) }
     val GATE_DIODE by lazy { definition("gate_diode", ::GateDiodePart, ::GateDiodePart) }
     val GATE_NAND by lazy { definition("gate_nand", ::GateNandPart, ::GateNandPart) }
     val GATE_NOR by lazy { definition("gate_nor", ::GateNorPart, ::GateNorPart) }
@@ -26,6 +27,7 @@ object WRParts {
         PartDefinition.PARTS[RED_ALLOY_WIRE.identifier] = RED_ALLOY_WIRE
         PartDefinition.PARTS[INSULATED_WIRE.identifier] = INSULATED_WIRE
         PartDefinition.PARTS[BUNDLED_CABLE.identifier] = BUNDLED_CABLE
+        PartDefinition.PARTS[GATE_AND.identifier] = GATE_AND
         PartDefinition.PARTS[GATE_DIODE.identifier] = GATE_DIODE
         PartDefinition.PARTS[GATE_NAND.identifier] = GATE_NAND
         PartDefinition.PARTS[GATE_NOR.identifier] = GATE_NOR
