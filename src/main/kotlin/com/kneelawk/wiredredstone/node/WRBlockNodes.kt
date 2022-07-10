@@ -13,6 +13,7 @@ object WRBlockNodes {
     val GATE_NAND_ID = id("gate_nand")
     val GATE_NOR_ID = id("gate_nor")
     val GATE_NOT_ID = id("gate_not")
+    val GATE_OR_ID = id("gate_or")
     val GATE_REPEATER_ID = id("gate_repeater")
 
     fun init() {
@@ -24,6 +25,7 @@ object WRBlockNodes {
         Registry.register(GraphLib.BLOCK_NODE_DECODER, GATE_NAND_ID, GateNandBlockNode.Decoder)
         Registry.register(GraphLib.BLOCK_NODE_DECODER, GATE_NOR_ID, GateNorBlockNode.Decoder)
         Registry.register(GraphLib.BLOCK_NODE_DECODER, GATE_NOT_ID, GateNotBlockNode.Decoder)
+        Registry.register(GraphLib.BLOCK_NODE_DECODER, GATE_OR_ID, GateOrBlockNode.Decoder)
         Registry.register(GraphLib.BLOCK_NODE_DECODER, GATE_REPEATER_ID, GateRepeaterBlockNode.Decoder)
     }
 }

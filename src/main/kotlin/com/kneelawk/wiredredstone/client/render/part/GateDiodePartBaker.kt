@@ -1,6 +1,6 @@
 package com.kneelawk.wiredredstone.client.render.part
 
-import com.kneelawk.wiredredstone.WRConstants
+import com.kneelawk.wiredredstone.WRConstants.id
 import com.kneelawk.wiredredstone.WRConstants.overlay
 import com.kneelawk.wiredredstone.client.render.*
 import com.kneelawk.wiredredstone.part.key.GateDiodePartKey
@@ -12,11 +12,11 @@ import net.minecraft.util.Identifier
 import java.util.function.Consumer
 
 object GateDiodePartBaker : AbstractPartBaker<GateDiodePartKey>() {
-    private val BACKGROUND = WRConstants.id("block/gate_diode/background")
-    private val INPUT_ON = WRConstants.id("block/gate_diode/redstone_input_on")
-    private val INPUT_OFF = WRConstants.id("block/gate_diode/redstone_input_off")
-    private val OUTPUT_ON = WRConstants.id("block/gate_diode/redstone_output_on")
-    private val OUTPUT_OFF = WRConstants.id("block/gate_diode/redstone_output_off")
+    private val BACKGROUND = id("block/gate_diode/background")
+    private val INPUT_ON = id("block/gate_diode/redstone_input_on")
+    private val INPUT_OFF = id("block/gate_diode/redstone_input_off")
+    private val OUTPUT_ON = id("block/gate_diode/redstone_output_on")
+    private val OUTPUT_OFF = id("block/gate_diode/redstone_output_off")
 
     override fun makeMesh(key: GateDiodePartKey): Mesh {
         val outputWireSpriteId =

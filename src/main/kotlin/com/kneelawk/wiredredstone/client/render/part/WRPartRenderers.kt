@@ -25,6 +25,7 @@ object WRPartRenderers {
         register(GateNandPartBaker, GateNandPartKey::class)
         register(GateNorPartBaker, GateNorPartKey::class)
         register(GateNotPartBaker, GateNotPartKey::class)
+        register(GateOrPartBaker, GateOrPartKey::class)
         register(GateRepeaterPartBaker, GateRepeaterPartKey::class)
 
         PartStaticModelRegisterEvent.EVENT.register { event: PartStaticModelRegisterEvent.StaticModelRenderer ->

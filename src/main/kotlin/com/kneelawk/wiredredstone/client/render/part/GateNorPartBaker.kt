@@ -1,6 +1,6 @@
 package com.kneelawk.wiredredstone.client.render.part
 
-import com.kneelawk.wiredredstone.WRConstants
+import com.kneelawk.wiredredstone.WRConstants.id
 import com.kneelawk.wiredredstone.WRConstants.overlay
 import com.kneelawk.wiredredstone.client.render.*
 import com.kneelawk.wiredredstone.part.key.GateNorPartKey
@@ -14,17 +14,17 @@ import net.minecraft.util.math.Direction.*
 import java.util.function.Consumer
 
 object GateNorPartBaker : AbstractPartBaker<GateNorPartKey>() {
-    private val BACKGROUND = WRConstants.id("block/gate_nor/background")
-    private val INPUT_RIGHT_ON = WRConstants.id("block/gate_nor/redstone_input_right_on")
-    private val INPUT_RIGHT_OFF = WRConstants.id("block/gate_nor/redstone_input_right_off")
-    private val INPUT_BACK_ON = WRConstants.id("block/gate_nor/redstone_input_back_on")
-    private val INPUT_BACK_OFF = WRConstants.id("block/gate_nor/redstone_input_back_off")
-    private val INPUT_LEFT_ON = WRConstants.id("block/gate_nor/redstone_input_left_on")
-    private val INPUT_LEFT_OFF = WRConstants.id("block/gate_nor/redstone_input_left_off")
-    private val OUTPUT_ON = WRConstants.id("block/gate_nor/redstone_output_on")
-    private val OUTPUT_OFF = WRConstants.id("block/gate_nor/redstone_output_off")
-    private val TORCH_ON = WRConstants.id("block/gate_nor/torch_on")
-    private val TORCH_OFF = WRConstants.id("block/gate_nor/torch_off")
+    private val BACKGROUND = id("block/gate_nor/background")
+    private val INPUT_RIGHT_ON = id("block/gate_nor/redstone_input_right_on")
+    private val INPUT_RIGHT_OFF = id("block/gate_nor/redstone_input_right_off")
+    private val INPUT_BACK_ON = id("block/gate_nor/redstone_input_back_on")
+    private val INPUT_BACK_OFF = id("block/gate_nor/redstone_input_back_off")
+    private val INPUT_LEFT_ON = id("block/gate_nor/redstone_input_left_on")
+    private val INPUT_LEFT_OFF = id("block/gate_nor/redstone_input_left_off")
+    private val OUTPUT_ON = id("block/gate_nor/redstone_output_on")
+    private val OUTPUT_OFF = id("block/gate_nor/redstone_output_off")
+    private val TORCH_ON = id("block/gate_nor/torch_on")
+    private val TORCH_OFF = id("block/gate_nor/torch_off")
 
     override fun makeMesh(key: GateNorPartKey): Mesh {
         val outputWireSpriteId =

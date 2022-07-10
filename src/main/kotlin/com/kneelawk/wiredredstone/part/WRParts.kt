@@ -15,6 +15,7 @@ object WRParts {
     val GATE_NAND by lazy { definition("gate_nand", ::GateNandPart, ::GateNandPart) }
     val GATE_NOR by lazy { definition("gate_nor", ::GateNorPart, ::GateNorPart) }
     val GATE_NOT by lazy { definition("gate_not", ::GateNotPart, ::GateNotPart) }
+    val GATE_OR by lazy { definition("gate_or", ::GateOrPart, ::GateOrPart) }
     val GATE_REPEATER by lazy { definition("gate_repeater", ::GateRepeaterPart, ::GateRepeaterPart) }
 
     private fun definition(
@@ -32,6 +33,7 @@ object WRParts {
         PartDefinition.PARTS[GATE_NAND.identifier] = GATE_NAND
         PartDefinition.PARTS[GATE_NOR.identifier] = GATE_NOR
         PartDefinition.PARTS[GATE_NOT.identifier] = GATE_NOT
+        PartDefinition.PARTS[GATE_OR.identifier] = GATE_OR
         PartDefinition.PARTS[GATE_REPEATER.identifier] = GATE_REPEATER
     }
 }

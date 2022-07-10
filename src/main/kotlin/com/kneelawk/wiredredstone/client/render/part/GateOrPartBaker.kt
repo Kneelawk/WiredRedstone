@@ -7,7 +7,7 @@ import com.kneelawk.wiredredstone.client.render.WRMaterials.POWERED_MATERIAL
 import com.kneelawk.wiredredstone.client.render.WRMaterials.UNPOWERED_MATERIAL
 import com.kneelawk.wiredredstone.client.render.WRSprites.RED_ALLOY_WIRE_POWERED_ID
 import com.kneelawk.wiredredstone.client.render.WRSprites.RED_ALLOY_WIRE_UNPOWERED_ID
-import com.kneelawk.wiredredstone.part.key.GateAndPartKey
+import com.kneelawk.wiredredstone.part.key.GateOrPartKey
 import com.kneelawk.wiredredstone.util.ConnectionUtils
 import com.kneelawk.wiredredstone.util.RotationUtils.cardinalRotatedDirection
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh
@@ -17,26 +17,22 @@ import net.minecraft.util.Identifier
 import net.minecraft.util.math.Direction.*
 import java.util.function.Consumer
 
-object GateAndPartBaker : AbstractPartBaker<GateAndPartKey>() {
-    private val BACKGROUND = id("block/gate_and/background")
-    private val INPUT_RIGHT_ON = id("block/gate_and/redstone_input_right_on")
-    private val INPUT_RIGHT_OFF = id("block/gate_and/redstone_input_right_off")
-    private val INPUT_BACK_ON = id("block/gate_and/redstone_input_back_on")
-    private val INPUT_BACK_OFF = id("block/gate_and/redstone_input_back_off")
-    private val INPUT_LEFT_ON = id("block/gate_and/redstone_input_left_on")
-    private val INPUT_LEFT_OFF = id("block/gate_and/redstone_input_left_off")
-    private val TORCH_RIGHT_ON = id("block/gate_and/torch_input_right_on")
-    private val TORCH_RIGHT_OFF = id("block/gate_and/torch_input_right_off")
-    private val TORCH_BACK_ON = id("block/gate_and/torch_input_back_on")
-    private val TORCH_BACK_OFF = id("block/gate_and/torch_input_back_off")
-    private val TORCH_LEFT_ON = id("block/gate_and/torch_input_left_on")
-    private val TORCH_LEFT_OFF = id("block/gate_and/torch_input_left_off")
-    private val ANODE_ON = id("block/gate_and/redstone_anode_on")
-    private val ANODE_OFF = id("block/gate_and/redstone_anode_off")
-    private val TORCH_OUTPUT_ON = id("block/gate_and/torch_output_on")
-    private val TORCH_OUTPUT_OFF = id("block/gate_and/torch_output_off")
+object GateOrPartBaker : AbstractPartBaker<GateOrPartKey>() {
+    private val BACKGROUND = id("block/gate_or/background")
+    private val INPUT_RIGHT_ON = id("block/gate_or/redstone_input_right_on")
+    private val INPUT_RIGHT_OFF = id("block/gate_or/redstone_input_right_off")
+    private val INPUT_BACK_ON = id("block/gate_or/redstone_input_back_on")
+    private val INPUT_BACK_OFF = id("block/gate_or/redstone_input_back_off")
+    private val INPUT_LEFT_ON = id("block/gate_or/redstone_input_left_on")
+    private val INPUT_LEFT_OFF = id("block/gate_or/redstone_input_left_off")
+    private val TORCH_INPUT_ON = id("block/gate_or/torch_input_on")
+    private val TORCH_INPUT_OFF = id("block/gate_or/torch_input_off")
+    private val ANODE_ON = id("block/gate_or/redstone_anode_on")
+    private val ANODE_OFF = id("block/gate_or/redstone_anode_off")
+    private val TORCH_OUTPUT_ON = id("block/gate_or/torch_output_on")
+    private val TORCH_OUTPUT_OFF = id("block/gate_or/torch_output_off")
 
-    override fun makeMesh(key: GateAndPartKey): Mesh {
+    override fun makeMesh(key: GateOrPartKey): Mesh {
         val inputRightWireSpriteId =
             if (key.inputRightPowered) RED_ALLOY_WIRE_POWERED_ID else RED_ALLOY_WIRE_UNPOWERED_ID
         val inputBackWireSpriteId = if (key.inputBackPowered) RED_ALLOY_WIRE_POWERED_ID else RED_ALLOY_WIRE_UNPOWERED_ID
@@ -51,9 +47,7 @@ object GateAndPartBaker : AbstractPartBaker<GateAndPartKey>() {
         val inputRightModelId = if (key.inputRightPowered) INPUT_RIGHT_ON else INPUT_RIGHT_OFF
         val inputBackModelId = if (key.inputBackPowered) INPUT_BACK_ON else INPUT_BACK_OFF
         val inputLeftModelId = if (key.inputLeftPowered) INPUT_LEFT_ON else INPUT_LEFT_OFF
-        val torchRightModelId = if (!key.inputRightPowered) TORCH_RIGHT_ON else TORCH_RIGHT_OFF
-        val torchBackModelId = if (!key.inputBackPowered) TORCH_BACK_ON else TORCH_BACK_OFF
-        val torchLeftModelId = if (!key.inputLeftPowered) TORCH_LEFT_ON else TORCH_LEFT_OFF
+        val torchInputModelId = if (!key.outputPowered) TORCH_INPUT_ON else TORCH_INPUT_OFF
         val anodeModelId = if (!key.outputPowered) ANODE_ON else ANODE_OFF
         val torchOutputModelId = if (key.outputPowered) TORCH_OUTPUT_ON else TORCH_OUTPUT_OFF
 
@@ -61,9 +55,7 @@ object GateAndPartBaker : AbstractPartBaker<GateAndPartKey>() {
         val inputRightModel = RenderUtils.getModel(inputRightModelId)
         val inputBackModel = RenderUtils.getModel(inputBackModelId)
         val inputLeftModel = RenderUtils.getModel(inputLeftModelId)
-        val torchRightModel = RenderUtils.getModel(torchRightModelId)
-        val torchBackModel = RenderUtils.getModel(torchBackModelId)
-        val torchLeftModel = RenderUtils.getModel(torchLeftModelId)
+        val torchInputModel = RenderUtils.getModel(torchInputModelId)
         val anodeModel = RenderUtils.getModel(anodeModelId)
         val torchOutputModel = RenderUtils.getModel(torchOutputModelId)
 
@@ -71,9 +63,7 @@ object GateAndPartBaker : AbstractPartBaker<GateAndPartKey>() {
         val inputRightMaterial = if (key.inputRightPowered) POWERED_MATERIAL else UNPOWERED_MATERIAL
         val inputBackMaterial = if (key.inputBackPowered) POWERED_MATERIAL else UNPOWERED_MATERIAL
         val inputLeftMaterial = if (key.inputLeftPowered) POWERED_MATERIAL else UNPOWERED_MATERIAL
-        val torchRightMaterial = if (!key.inputRightPowered) POWERED_MATERIAL else UNPOWERED_MATERIAL
-        val torchBackMaterial = if (!key.inputBackPowered) POWERED_MATERIAL else UNPOWERED_MATERIAL
-        val torchLeftMaterial = if (!key.inputLeftPowered) POWERED_MATERIAL else UNPOWERED_MATERIAL
+        val torchInputMaterial = if (!key.outputPowered) POWERED_MATERIAL else UNPOWERED_MATERIAL
         val anodeMaterial = if (!key.outputPowered) POWERED_MATERIAL else UNPOWERED_MATERIAL
         val torchOutputMaterial = if (key.outputPowered) POWERED_MATERIAL else UNPOWERED_MATERIAL
 
@@ -86,9 +76,7 @@ object GateAndPartBaker : AbstractPartBaker<GateAndPartKey>() {
         RenderUtils.fromVanilla(inputRightModel, emitter, inputRightMaterial)
         RenderUtils.fromVanilla(inputBackModel, emitter, inputBackMaterial)
         RenderUtils.fromVanilla(inputLeftModel, emitter, inputLeftMaterial)
-        RenderUtils.fromVanilla(torchRightModel, emitter, torchRightMaterial)
-        RenderUtils.fromVanilla(torchBackModel, emitter, torchBackMaterial)
-        RenderUtils.fromVanilla(torchLeftModel, emitter, torchLeftMaterial)
+        RenderUtils.fromVanilla(torchInputModel, emitter, torchInputMaterial)
         RenderUtils.fromVanilla(anodeModel, emitter, anodeMaterial)
         RenderUtils.fromVanilla(torchOutputModel, emitter, torchOutputMaterial)
 
@@ -121,12 +109,8 @@ object GateAndPartBaker : AbstractPartBaker<GateAndPartKey>() {
         out.accept(INPUT_BACK_OFF)
         out.accept(INPUT_LEFT_ON)
         out.accept(INPUT_LEFT_OFF)
-        out.accept(TORCH_RIGHT_ON)
-        out.accept(TORCH_RIGHT_OFF)
-        out.accept(TORCH_BACK_ON)
-        out.accept(TORCH_BACK_OFF)
-        out.accept(TORCH_LEFT_ON)
-        out.accept(TORCH_LEFT_OFF)
+        out.accept(TORCH_INPUT_ON)
+        out.accept(TORCH_INPUT_OFF)
         out.accept(ANODE_ON)
         out.accept(ANODE_OFF)
         out.accept(TORCH_OUTPUT_ON)
@@ -134,21 +118,21 @@ object GateAndPartBaker : AbstractPartBaker<GateAndPartKey>() {
     }
 
     override fun renderOverlayText(
-        key: GateAndPartKey, stack: MatrixStack, provider: VertexConsumerProvider, light: Int
+        key: GateOrPartKey, stack: MatrixStack, provider: VertexConsumerProvider, light: Int
     ) {
         RenderUtils.renderPortText(
-            overlay("gate_and.out"), key.side, key.direction, 2.0 / 16.0, stack, provider, light
+            overlay("gate_or.out"), key.side, key.direction, 2.0 / 16.0, stack, provider, light
         )
         RenderUtils.renderPortText(
-            overlay("gate_and.in"), key.side, cardinalRotatedDirection(EAST, key.direction), 2.0 / 16.0, stack,
+            overlay("gate_or.in"), key.side, cardinalRotatedDirection(EAST, key.direction), 2.0 / 16.0, stack,
             provider, light
         )
         RenderUtils.renderPortText(
-            overlay("gate_and.in"), key.side, cardinalRotatedDirection(SOUTH, key.direction), 2.0 / 16.0, stack,
+            overlay("gate_or.in"), key.side, cardinalRotatedDirection(SOUTH, key.direction), 2.0 / 16.0, stack,
             provider, light
         )
         RenderUtils.renderPortText(
-            overlay("gate_and.in"), key.side, cardinalRotatedDirection(WEST, key.direction), 2.0 / 16.0, stack,
+            overlay("gate_or.in"), key.side, cardinalRotatedDirection(WEST, key.direction), 2.0 / 16.0, stack,
             provider, light
         )
     }
