@@ -4,4 +4,4 @@ Wired Redstone version 0.4.1 for Minecraft 1.19
 
 Changes:
 
-* Adds NAND and NOR gates.
+* Adds AND, NAND and NOR gates.
