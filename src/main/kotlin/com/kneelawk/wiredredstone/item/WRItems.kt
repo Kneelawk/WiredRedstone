@@ -66,7 +66,7 @@ object WRItems {
     }
     val GATE_OR by lazy {
         SimpleGateItem(WIRED_REDSTONE_ITEM_SETTINGS) { holder, side, direction ->
-            GateOrPart(WRParts.GATE_OR, holder, side, 0u, direction, 0, 0, 0, 0, 0)
+            GateOrPart(WRParts.GATE_OR, holder, side, 0u, direction, 0, 0, 0, 0, 0, true, true, true)
         }
     }
     val GATE_NAND by lazy {
@@ -76,7 +76,7 @@ object WRItems {
     }
     val GATE_NOR by lazy {
         SimpleGateItem(WIRED_REDSTONE_ITEM_SETTINGS) { holder, side, direction ->
-            GateNorPart(WRParts.GATE_NOR, holder, side, 0u, direction, 0, 0, 0, 15, 0)
+            GateNorPart(WRParts.GATE_NOR, holder, side, 0u, direction, 0, 0, 0, 15, 0, true, true, true)
         }
     }
     val GATE_NOT by lazy {

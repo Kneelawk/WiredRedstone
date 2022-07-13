@@ -21,9 +21,9 @@ import net.minecraft.util.math.Direction
 
 class GateAndPart : AbstractDisableableThreeInputGatePart {
     companion object {
-        private val INPUT_SHAPES = BoundingBoxMap.of(
+        private val INPUT_SHAPES = BoundingBoxMap.ofBoxes(
             InputType.RIGHT to PixelBox(12, 0, 7, 15, 2, 10),
-            InputType.BACK to PixelBox(6, 0, 10, 10, 2, 15),
+            InputType.BACK to PixelBox(7, 0, 10, 9, 2, 15),
             InputType.LEFT to PixelBox(1, 0, 7, 4, 2, 10)
         )
     }

@@ -3,6 +3,10 @@ package com.kneelawk.wiredredstone.client.render.part
 import com.kneelawk.wiredredstone.WRConstants.id
 import com.kneelawk.wiredredstone.WRConstants.overlay
 import com.kneelawk.wiredredstone.client.render.*
+import com.kneelawk.wiredredstone.client.render.WRMaterials.POWERED_MATERIAL
+import com.kneelawk.wiredredstone.client.render.WRMaterials.UNPOWERED_MATERIAL
+import com.kneelawk.wiredredstone.client.render.WRSprites.RED_ALLOY_WIRE_POWERED_ID
+import com.kneelawk.wiredredstone.client.render.WRSprites.RED_ALLOY_WIRE_UNPOWERED_ID
 import com.kneelawk.wiredredstone.part.key.GateNorPartKey
 import com.kneelawk.wiredredstone.util.ConnectionUtils
 import com.kneelawk.wiredredstone.util.RotationUtils.cardinalRotatedDirection
@@ -17,24 +21,24 @@ object GateNorPartBaker : AbstractPartBaker<GateNorPartKey>() {
     private val BACKGROUND = id("block/gate_nor/background")
     private val INPUT_RIGHT_ON = id("block/gate_nor/redstone_input_right_on")
     private val INPUT_RIGHT_OFF = id("block/gate_nor/redstone_input_right_off")
+    private val INPUT_RIGHT_DISABLED = id("block/gate_nor/redstone_input_right_disabled")
     private val INPUT_BACK_ON = id("block/gate_nor/redstone_input_back_on")
     private val INPUT_BACK_OFF = id("block/gate_nor/redstone_input_back_off")
+    private val INPUT_BACK_DISABLED = id("block/gate_nor/redstone_input_back_disabled")
     private val INPUT_LEFT_ON = id("block/gate_nor/redstone_input_left_on")
     private val INPUT_LEFT_OFF = id("block/gate_nor/redstone_input_left_off")
+    private val INPUT_LEFT_DISABLED = id("block/gate_nor/redstone_input_left_disabled")
     private val OUTPUT_ON = id("block/gate_nor/redstone_output_on")
     private val OUTPUT_OFF = id("block/gate_nor/redstone_output_off")
     private val TORCH_ON = id("block/gate_nor/torch_on")
     private val TORCH_OFF = id("block/gate_nor/torch_off")
 
     override fun makeMesh(key: GateNorPartKey): Mesh {
-        val outputWireSpriteId =
-            if (key.outputPowered) WRSprites.RED_ALLOY_WIRE_POWERED_ID else WRSprites.RED_ALLOY_WIRE_UNPOWERED_ID
+        val outputWireSpriteId = if (key.outputPowered) RED_ALLOY_WIRE_POWERED_ID else RED_ALLOY_WIRE_UNPOWERED_ID
         val inputRightWireSpriteId =
-            if (key.inputRightPowered) WRSprites.RED_ALLOY_WIRE_POWERED_ID else WRSprites.RED_ALLOY_WIRE_UNPOWERED_ID
-        val inputBackWireSpriteId =
-            if (key.inputBackPowered) WRSprites.RED_ALLOY_WIRE_POWERED_ID else WRSprites.RED_ALLOY_WIRE_UNPOWERED_ID
-        val inputLeftWireSpriteId =
-            if (key.inputLeftPowered) WRSprites.RED_ALLOY_WIRE_POWERED_ID else WRSprites.RED_ALLOY_WIRE_UNPOWERED_ID
+            if (key.inputRightPowered) RED_ALLOY_WIRE_POWERED_ID else RED_ALLOY_WIRE_UNPOWERED_ID
+        val inputBackWireSpriteId = if (key.inputBackPowered) RED_ALLOY_WIRE_POWERED_ID else RED_ALLOY_WIRE_UNPOWERED_ID
+        val inputLeftWireSpriteId = if (key.inputLeftPowered) RED_ALLOY_WIRE_POWERED_ID else RED_ALLOY_WIRE_UNPOWERED_ID
 
         val outputWireSprite = RenderUtils.getBlockSprite(outputWireSpriteId)
         val inputRightWireSprite = RenderUtils.getBlockSprite(inputRightWireSpriteId)
@@ -42,9 +46,12 @@ object GateNorPartBaker : AbstractPartBaker<GateNorPartKey>() {
         val inputLeftWireSprite = RenderUtils.getBlockSprite(inputLeftWireSpriteId)
 
         val outputModelId = if (key.outputPowered) OUTPUT_ON else OUTPUT_OFF
-        val inputRightModelId = if (key.inputRightPowered) INPUT_RIGHT_ON else INPUT_RIGHT_OFF
-        val inputBackModelId = if (key.inputBackPowered) INPUT_BACK_ON else INPUT_BACK_OFF
-        val inputLeftModelId = if (key.inputLeftPowered) INPUT_LEFT_ON else INPUT_LEFT_OFF
+        val inputRightModelId =
+            if (key.inputRightEnabled) if (key.inputRightPowered) INPUT_RIGHT_ON else INPUT_RIGHT_OFF else INPUT_RIGHT_DISABLED
+        val inputBackModelId =
+            if (key.inputBackEnabled) if (key.inputBackPowered) INPUT_BACK_ON else INPUT_BACK_OFF else INPUT_BACK_DISABLED
+        val inputLeftModelId =
+            if (key.inputLeftEnabled) if (key.inputLeftPowered) INPUT_LEFT_ON else INPUT_LEFT_OFF else INPUT_LEFT_DISABLED
         val torchModelId = if (key.torchPowered) TORCH_ON else TORCH_OFF
 
         val backgroundModel = RenderUtils.getModel(BACKGROUND)
@@ -54,21 +61,21 @@ object GateNorPartBaker : AbstractPartBaker<GateNorPartKey>() {
         val inputLeftModel = RenderUtils.getModel(inputLeftModelId)
         val torchModel = RenderUtils.getModel(torchModelId)
 
-        val outputMaterial = if (key.outputPowered) WRMaterials.POWERED_MATERIAL else WRMaterials.UNPOWERED_MATERIAL
+        val outputMaterial = if (key.outputPowered) POWERED_MATERIAL else UNPOWERED_MATERIAL
         val inputRightMaterial =
-            if (key.inputRightPowered) WRMaterials.POWERED_MATERIAL else WRMaterials.UNPOWERED_MATERIAL
+            if (key.inputRightPowered && key.inputRightEnabled) POWERED_MATERIAL else UNPOWERED_MATERIAL
         val inputBackMaterial =
-            if (key.inputBackPowered) WRMaterials.POWERED_MATERIAL else WRMaterials.UNPOWERED_MATERIAL
+            if (key.inputBackPowered && key.inputBackEnabled) POWERED_MATERIAL else UNPOWERED_MATERIAL
         val inputLeftMaterial =
-            if (key.inputLeftPowered) WRMaterials.POWERED_MATERIAL else WRMaterials.UNPOWERED_MATERIAL
-        val torchMaterial = if (key.torchPowered) WRMaterials.POWERED_MATERIAL else WRMaterials.UNPOWERED_MATERIAL
+            if (key.inputLeftPowered && key.inputLeftEnabled) POWERED_MATERIAL else UNPOWERED_MATERIAL
+        val torchMaterial = if (key.torchPowered) POWERED_MATERIAL else UNPOWERED_MATERIAL
 
         val builder = RenderUtils.MESH_BUILDER
         val emitter = TransformingQuadEmitter.Multi(
             builder.emitter, arrayOf(RotateQuadTransform(key.direction), SideQuadTransform(key.side))
         )
 
-        RenderUtils.fromVanilla(backgroundModel, emitter, WRMaterials.UNPOWERED_MATERIAL)
+        RenderUtils.fromVanilla(backgroundModel, emitter, UNPOWERED_MATERIAL)
         RenderUtils.fromVanilla(outputModel, emitter, outputMaterial)
         RenderUtils.fromVanilla(inputRightModel, emitter, inputRightMaterial)
         RenderUtils.fromVanilla(inputBackModel, emitter, inputBackMaterial)
@@ -100,10 +107,13 @@ object GateNorPartBaker : AbstractPartBaker<GateNorPartKey>() {
         out.accept(BACKGROUND)
         out.accept(INPUT_RIGHT_ON)
         out.accept(INPUT_RIGHT_OFF)
+        out.accept(INPUT_RIGHT_DISABLED)
         out.accept(INPUT_BACK_ON)
         out.accept(INPUT_BACK_OFF)
+        out.accept(INPUT_BACK_DISABLED)
         out.accept(INPUT_LEFT_ON)
         out.accept(INPUT_LEFT_OFF)
+        out.accept(INPUT_LEFT_DISABLED)
         out.accept(OUTPUT_ON)
         out.accept(OUTPUT_OFF)
         out.accept(TORCH_ON)

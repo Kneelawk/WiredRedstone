@@ -57,3 +57,7 @@ inline fun <reified E : Enum<E>> Int.toEnum(): E {
 
 // From https://discuss.kotlinlang.org/t/arrays-from-ranges/5216/3
 fun IntProgression.toArray() = IntArray(this.count()).also { forEachIndexed { index, i -> it[index] = i } }
+
+fun <K, V : Any> MutableMap<K, V>.mergeAll(other: Map<K, V>, remappingFunction: (cur: V, V) -> V) {
+    other.forEach { (k, v) -> merge(k, v, remappingFunction) }
+}

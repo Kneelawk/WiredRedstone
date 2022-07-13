@@ -114,6 +114,13 @@ object BoundingBoxUtils {
         return map
     }
 
+    fun getOrientedShapes(shape: VoxelShape): Map<SidedOrientation, VoxelShape> {
+        val acc = mutableMapOf<SidedOrientation, VoxelShape>()
+        shape.boundingBoxes.map { getOrientedShapes(it) }
+            .forEach { map -> acc.mergeAll(map, VoxelShapes::union) }
+        return acc
+    }
+
     fun getWireConflictShapes(wireWidth: Double, wireHeight: Double): EnumMap<Direction, VoxelShape> {
         return getRotatedShapes(
             Box(

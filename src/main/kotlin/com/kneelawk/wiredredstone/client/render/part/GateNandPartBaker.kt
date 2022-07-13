@@ -3,6 +3,10 @@ package com.kneelawk.wiredredstone.client.render.part
 import com.kneelawk.wiredredstone.WRConstants.id
 import com.kneelawk.wiredredstone.WRConstants.overlay
 import com.kneelawk.wiredredstone.client.render.*
+import com.kneelawk.wiredredstone.client.render.WRMaterials.POWERED_MATERIAL
+import com.kneelawk.wiredredstone.client.render.WRMaterials.UNPOWERED_MATERIAL
+import com.kneelawk.wiredredstone.client.render.WRSprites.RED_ALLOY_WIRE_POWERED_ID
+import com.kneelawk.wiredredstone.client.render.WRSprites.RED_ALLOY_WIRE_UNPOWERED_ID
 import com.kneelawk.wiredredstone.part.key.GateNandPartKey
 import com.kneelawk.wiredredstone.util.ConnectionUtils
 import com.kneelawk.wiredredstone.util.RotationUtils.cardinalRotatedDirection
@@ -34,14 +38,11 @@ object GateNandPartBaker : AbstractPartBaker<GateNandPartKey>() {
     private val OUTPUT_OFF = id("block/gate_nand/redstone_output_off")
 
     override fun makeMesh(key: GateNandPartKey): Mesh {
-        val outputWireSpriteId =
-            if (key.outputPowered) WRSprites.RED_ALLOY_WIRE_POWERED_ID else WRSprites.RED_ALLOY_WIRE_UNPOWERED_ID
+        val outputWireSpriteId = if (key.outputPowered) RED_ALLOY_WIRE_POWERED_ID else RED_ALLOY_WIRE_UNPOWERED_ID
         val inputRightWireSpriteId =
-            if (key.inputRightPowered) WRSprites.RED_ALLOY_WIRE_POWERED_ID else WRSprites.RED_ALLOY_WIRE_UNPOWERED_ID
-        val inputBackWireSpriteId =
-            if (key.inputBackPowered) WRSprites.RED_ALLOY_WIRE_POWERED_ID else WRSprites.RED_ALLOY_WIRE_UNPOWERED_ID
-        val inputLeftWireSpriteId =
-            if (key.inputLeftPowered) WRSprites.RED_ALLOY_WIRE_POWERED_ID else WRSprites.RED_ALLOY_WIRE_UNPOWERED_ID
+            if (key.inputRightPowered) RED_ALLOY_WIRE_POWERED_ID else RED_ALLOY_WIRE_UNPOWERED_ID
+        val inputBackWireSpriteId = if (key.inputBackPowered) RED_ALLOY_WIRE_POWERED_ID else RED_ALLOY_WIRE_UNPOWERED_ID
+        val inputLeftWireSpriteId = if (key.inputLeftPowered) RED_ALLOY_WIRE_POWERED_ID else RED_ALLOY_WIRE_UNPOWERED_ID
 
         val outputWireSprite = RenderUtils.getBlockSprite(outputWireSpriteId)
         val inputRightWireSprite = RenderUtils.getBlockSprite(inputRightWireSpriteId)
@@ -68,26 +69,26 @@ object GateNandPartBaker : AbstractPartBaker<GateNandPartKey>() {
         val torchBackModel = RenderUtils.getModel(torchBackModelId)
         val torchLeftModel = RenderUtils.getModel(torchLeftModelId)
 
-        val outputMaterial = if (key.outputPowered) WRMaterials.POWERED_MATERIAL else WRMaterials.UNPOWERED_MATERIAL
+        val outputMaterial = if (key.outputPowered) POWERED_MATERIAL else UNPOWERED_MATERIAL
         val inputRightMaterial =
-            if (key.inputRightPowered && key.inputRightEnabled) WRMaterials.POWERED_MATERIAL else WRMaterials.UNPOWERED_MATERIAL
+            if (key.inputRightPowered && key.inputRightEnabled) POWERED_MATERIAL else UNPOWERED_MATERIAL
         val inputBackMaterial =
-            if (key.inputBackPowered && key.inputBackEnabled) WRMaterials.POWERED_MATERIAL else WRMaterials.UNPOWERED_MATERIAL
+            if (key.inputBackPowered && key.inputBackEnabled) POWERED_MATERIAL else UNPOWERED_MATERIAL
         val inputLeftMaterial =
-            if (key.inputLeftPowered && key.inputLeftEnabled) WRMaterials.POWERED_MATERIAL else WRMaterials.UNPOWERED_MATERIAL
+            if (key.inputLeftPowered && key.inputLeftEnabled) POWERED_MATERIAL else UNPOWERED_MATERIAL
         val torchRightMaterial =
-            if (!key.inputRightPowered && key.inputRightEnabled) WRMaterials.POWERED_MATERIAL else WRMaterials.UNPOWERED_MATERIAL
+            if (!key.inputRightPowered && key.inputRightEnabled) POWERED_MATERIAL else UNPOWERED_MATERIAL
         val torchBackMaterial =
-            if (!key.inputBackPowered && key.inputBackEnabled) WRMaterials.POWERED_MATERIAL else WRMaterials.UNPOWERED_MATERIAL
+            if (!key.inputBackPowered && key.inputBackEnabled) POWERED_MATERIAL else UNPOWERED_MATERIAL
         val torchLeftMaterial =
-            if (!key.inputLeftPowered && key.inputLeftEnabled) WRMaterials.POWERED_MATERIAL else WRMaterials.UNPOWERED_MATERIAL
+            if (!key.inputLeftPowered && key.inputLeftEnabled) POWERED_MATERIAL else UNPOWERED_MATERIAL
 
         val builder = RenderUtils.MESH_BUILDER
         val emitter = TransformingQuadEmitter.Multi(
             builder.emitter, arrayOf(RotateQuadTransform(key.direction), SideQuadTransform(key.side))
         )
 
-        RenderUtils.fromVanilla(backgroundModel, emitter, WRMaterials.UNPOWERED_MATERIAL)
+        RenderUtils.fromVanilla(backgroundModel, emitter, UNPOWERED_MATERIAL)
         RenderUtils.fromVanilla(outputModel, emitter, outputMaterial)
         RenderUtils.fromVanilla(inputRightModel, emitter, inputRightMaterial)
         RenderUtils.fromVanilla(inputBackModel, emitter, inputBackMaterial)

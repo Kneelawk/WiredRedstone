@@ -6,7 +6,11 @@ import net.minecraft.util.shape.VoxelShape
 
 class BoundingBoxMap<K>(private val shapes: List<Pair<K, Map<SidedOrientation, VoxelShape>>>) {
     companion object {
-        fun <K> of(vararg pairs: Pair<K, Box>): BoundingBoxMap<K> {
+        fun <K> ofBoxes(vararg pairs: Pair<K, Box>): BoundingBoxMap<K> {
+            return BoundingBoxMap(pairs.map { p -> p.first to BoundingBoxUtils.getOrientedShapes(p.second) })
+        }
+
+        fun <K> ofVoxelShapes(vararg pairs: Pair<K, VoxelShape>): BoundingBoxMap<K> {
             return BoundingBoxMap(pairs.map { p -> p.first to BoundingBoxUtils.getOrientedShapes(p.second) })
         }
     }
