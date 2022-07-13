@@ -21,10 +21,13 @@ object GateAndPartBaker : AbstractPartBaker<GateAndPartKey>() {
     private val BACKGROUND = id("block/gate_and/background")
     private val INPUT_RIGHT_ON = id("block/gate_and/redstone_input_right_on")
     private val INPUT_RIGHT_OFF = id("block/gate_and/redstone_input_right_off")
+    private val INPUT_RIGHT_DISABLED = id("block/gate_and/redstone_input_right_disabled")
     private val INPUT_BACK_ON = id("block/gate_and/redstone_input_back_on")
     private val INPUT_BACK_OFF = id("block/gate_and/redstone_input_back_off")
+    private val INPUT_BACK_DISABLED = id("block/gate_and/redstone_input_back_disabled")
     private val INPUT_LEFT_ON = id("block/gate_and/redstone_input_left_on")
     private val INPUT_LEFT_OFF = id("block/gate_and/redstone_input_left_off")
+    private val INPUT_LEFT_DISABLED = id("block/gate_and/redstone_input_left_disabled")
     private val TORCH_RIGHT_ON = id("block/gate_and/torch_input_right_on")
     private val TORCH_RIGHT_OFF = id("block/gate_and/torch_input_right_off")
     private val TORCH_BACK_ON = id("block/gate_and/torch_input_back_on")
@@ -48,12 +51,15 @@ object GateAndPartBaker : AbstractPartBaker<GateAndPartKey>() {
         val inputLeftWireSprite = RenderUtils.getBlockSprite(inputLeftWireSpriteId)
         val outputWireSprite = RenderUtils.getBlockSprite(outputWireSpriteId)
 
-        val inputRightModelId = if (key.inputRightPowered) INPUT_RIGHT_ON else INPUT_RIGHT_OFF
-        val inputBackModelId = if (key.inputBackPowered) INPUT_BACK_ON else INPUT_BACK_OFF
-        val inputLeftModelId = if (key.inputLeftPowered) INPUT_LEFT_ON else INPUT_LEFT_OFF
-        val torchRightModelId = if (!key.inputRightPowered) TORCH_RIGHT_ON else TORCH_RIGHT_OFF
-        val torchBackModelId = if (!key.inputBackPowered) TORCH_BACK_ON else TORCH_BACK_OFF
-        val torchLeftModelId = if (!key.inputLeftPowered) TORCH_LEFT_ON else TORCH_LEFT_OFF
+        val inputRightModelId =
+            if (key.inputRightEnabled) if (key.inputRightPowered) INPUT_RIGHT_ON else INPUT_RIGHT_OFF else INPUT_RIGHT_DISABLED
+        val inputBackModelId =
+            if (key.inputBackEnabled) if (key.inputBackPowered) INPUT_BACK_ON else INPUT_BACK_OFF else INPUT_BACK_DISABLED
+        val inputLeftModelId =
+            if (key.inputLeftEnabled) if (key.inputLeftPowered) INPUT_LEFT_ON else INPUT_LEFT_OFF else INPUT_LEFT_DISABLED
+        val torchRightModelId = if (!key.inputRightPowered && key.inputRightEnabled) TORCH_RIGHT_ON else TORCH_RIGHT_OFF
+        val torchBackModelId = if (!key.inputBackPowered && key.inputBackEnabled) TORCH_BACK_ON else TORCH_BACK_OFF
+        val torchLeftModelId = if (!key.inputLeftPowered && key.inputLeftEnabled) TORCH_LEFT_ON else TORCH_LEFT_OFF
         val anodeModelId = if (!key.outputPowered) ANODE_ON else ANODE_OFF
         val torchOutputModelId = if (key.outputPowered) TORCH_OUTPUT_ON else TORCH_OUTPUT_OFF
 
@@ -68,12 +74,18 @@ object GateAndPartBaker : AbstractPartBaker<GateAndPartKey>() {
         val torchOutputModel = RenderUtils.getModel(torchOutputModelId)
 
         val outputMaterial = if (key.outputPowered) POWERED_MATERIAL else UNPOWERED_MATERIAL
-        val inputRightMaterial = if (key.inputRightPowered) POWERED_MATERIAL else UNPOWERED_MATERIAL
-        val inputBackMaterial = if (key.inputBackPowered) POWERED_MATERIAL else UNPOWERED_MATERIAL
-        val inputLeftMaterial = if (key.inputLeftPowered) POWERED_MATERIAL else UNPOWERED_MATERIAL
-        val torchRightMaterial = if (!key.inputRightPowered) POWERED_MATERIAL else UNPOWERED_MATERIAL
-        val torchBackMaterial = if (!key.inputBackPowered) POWERED_MATERIAL else UNPOWERED_MATERIAL
-        val torchLeftMaterial = if (!key.inputLeftPowered) POWERED_MATERIAL else UNPOWERED_MATERIAL
+        val inputRightMaterial =
+            if (key.inputRightPowered && key.inputRightEnabled) POWERED_MATERIAL else UNPOWERED_MATERIAL
+        val inputBackMaterial =
+            if (key.inputBackPowered && key.inputBackEnabled) POWERED_MATERIAL else UNPOWERED_MATERIAL
+        val inputLeftMaterial =
+            if (key.inputLeftPowered && key.inputLeftEnabled) POWERED_MATERIAL else UNPOWERED_MATERIAL
+        val torchRightMaterial =
+            if (!key.inputRightPowered && key.inputRightEnabled) POWERED_MATERIAL else UNPOWERED_MATERIAL
+        val torchBackMaterial =
+            if (!key.inputBackPowered && key.inputBackEnabled) POWERED_MATERIAL else UNPOWERED_MATERIAL
+        val torchLeftMaterial =
+            if (!key.inputLeftPowered && key.inputLeftEnabled) POWERED_MATERIAL else UNPOWERED_MATERIAL
         val anodeMaterial = if (!key.outputPowered) POWERED_MATERIAL else UNPOWERED_MATERIAL
         val torchOutputMaterial = if (key.outputPowered) POWERED_MATERIAL else UNPOWERED_MATERIAL
 
@@ -117,10 +129,13 @@ object GateAndPartBaker : AbstractPartBaker<GateAndPartKey>() {
         out.accept(BACKGROUND)
         out.accept(INPUT_RIGHT_ON)
         out.accept(INPUT_RIGHT_OFF)
+        out.accept(INPUT_RIGHT_DISABLED)
         out.accept(INPUT_BACK_ON)
         out.accept(INPUT_BACK_OFF)
+        out.accept(INPUT_BACK_DISABLED)
         out.accept(INPUT_LEFT_ON)
         out.accept(INPUT_LEFT_OFF)
+        out.accept(INPUT_LEFT_DISABLED)
         out.accept(TORCH_RIGHT_ON)
         out.accept(TORCH_RIGHT_OFF)
         out.accept(TORCH_BACK_ON)
