@@ -21,7 +21,7 @@ import net.minecraft.util.math.Direction
 
 class GateAndPart : AbstractDisableableThreeInputGatePart {
     companion object {
-        private val SPECIAL_SHAPES = BoundingBoxMap.of(
+        private val INPUT_SHAPES = BoundingBoxMap.of(
             InputType.RIGHT to PixelBox(12, 0, 7, 15, 2, 10),
             InputType.BACK to PixelBox(6, 0, 10, 10, 2, 15),
             InputType.LEFT to PixelBox(1, 0, 7, 4, 2, 10)
@@ -42,7 +42,7 @@ class GateAndPart : AbstractDisableableThreeInputGatePart {
         definition, holder, buffer, ctx
     )
 
-    override val inputShapes = SPECIAL_SHAPES
+    override val inputShapes = INPUT_SHAPES
 
     override fun createBlockNodes(): Collection<BlockNode> {
         val nodes = mutableListOf<BlockNode>()

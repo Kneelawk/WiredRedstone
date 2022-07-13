@@ -71,7 +71,7 @@ object WRItems {
     }
     val GATE_NAND by lazy {
         SimpleGateItem(WIRED_REDSTONE_ITEM_SETTINGS) { holder, side, direction ->
-            GateNandPart(WRParts.GATE_NAND, holder, side, 0u, direction, 0, 0, 0, 15, 0)
+            GateNandPart(WRParts.GATE_NAND, holder, side, 0u, direction, 0, 0, 0, 15, 0, true, true, true)
         }
     }
     val GATE_NOR by lazy {
