@@ -104,7 +104,7 @@ object RenderUtils {
     }
 
     fun renderPortText(
-        text: Text, side: Direction, rotation: Direction, height: Double, stack: MatrixStack,
+        text: Text, side: Direction, rotation: Direction, height: Double, color: UInt, stack: MatrixStack,
         provider: VertexConsumerProvider, light: Int
     ) {
         stack.push()
@@ -122,14 +122,14 @@ object RenderUtils {
         val width = MC.textRenderer.getWidth(text).toDouble()
         stack.translate(16.0 - width / 2.0, -MC.textRenderer.fontHeight.toDouble(), 0.0)
 
-        WRTextRenderer.drawText(text, -1, true, stack.peek().positionMatrix, provider, true, 0, light)
+        WRTextRenderer.drawText(text, color.toInt(), true, stack.peek().positionMatrix, provider, true, 0, light)
 
         stack.pop()
     }
 
     fun renderOverlayText(
         text: Text, side: Direction, rotation: Direction, x: Double, y: Double, z: Double,
-        alignment: HorizontalAlignment, stack: MatrixStack, provider: VertexConsumerProvider, light: Int
+        alignment: HorizontalAlignment, color: UInt, stack: MatrixStack, provider: VertexConsumerProvider, light: Int
     ) {
         stack.push()
         stack.translate(0.5, 0.5, 0.5)
@@ -145,7 +145,7 @@ object RenderUtils {
 
         stack.translate(alignment.offset(MC.textRenderer.getWidth(text)), 0.0, 0.0)
 
-        WRTextRenderer.drawText(text, -1, true, stack.peek().positionMatrix, provider, true, 0, light)
+        WRTextRenderer.drawText(text, color.toInt(), true, stack.peek().positionMatrix, provider, true, 0, light)
 
         stack.pop()
     }

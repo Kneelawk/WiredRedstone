@@ -3,6 +3,7 @@ package com.kneelawk.wiredredstone.client.render.part
 import com.kneelawk.wiredredstone.WRConstants.id
 import com.kneelawk.wiredredstone.WRConstants.overlay
 import com.kneelawk.wiredredstone.client.render.*
+import com.kneelawk.wiredredstone.client.render.Colors.WHITE
 import com.kneelawk.wiredredstone.client.render.WRMaterials.POWERED_MATERIAL
 import com.kneelawk.wiredredstone.client.render.WRMaterials.UNPOWERED_MATERIAL
 import com.kneelawk.wiredredstone.client.render.WRSprites.RED_ALLOY_WIRE_POWERED_ID
@@ -103,14 +104,14 @@ object GateRepeaterPartBaker : AbstractPartBaker<GateRepeaterPartKey>() {
         key: GateRepeaterPartKey, stack: MatrixStack, provider: VertexConsumerProvider, light: Int
     ) {
         RenderUtils.renderPortText(
-            overlay("gate_repeater.out"), key.side, key.direction, 2.0 / 16.0, stack, provider, light
+            overlay("gate_repeater.out"), key.side, key.direction, 2.0 / 16.0, WHITE, stack, provider, light
         )
         RenderUtils.renderPortText(
-            overlay("gate_repeater.in"), key.side, key.direction.opposite, 2.0 / 16.0, stack, provider, light
+            overlay("gate_repeater.in"), key.side, key.direction.opposite, 2.0 / 16.0, WHITE, stack, provider, light
         )
         RenderUtils.renderOverlayText(
             overlay("gate_repeater.delay", (key.delay.toFloat() + 1f) / 2f), key.side, key.direction, 0.5, 2.0 / 16.0,
-            6.0 / 16.0, HorizontalAlignment.CENTER, stack, provider, light
+            6.0 / 16.0, HorizontalAlignment.CENTER, WHITE, stack, provider, light
         )
     }
 }
