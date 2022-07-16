@@ -104,8 +104,8 @@ object RenderUtils {
     }
 
     fun renderPortText(
-        text: Text, side: Direction, rotation: Direction, height: Double, color: UInt, stack: MatrixStack,
-        provider: VertexConsumerProvider, light: Int
+        text: Text, side: Direction, rotation: Direction, height: Double, stack: MatrixStack,
+        provider: VertexConsumerProvider, light: Int, color: UInt = Colors.WHITE, overline: Boolean = false
     ) {
         stack.push()
         stack.translate(0.5, 0.5, 0.5)
@@ -120,16 +120,20 @@ object RenderUtils {
         stack.scale(1f / 32f, -1f / 32f, 1f / 32f)
 
         val width = MC.textRenderer.getWidth(text).toDouble()
-        stack.translate(16.0 - width / 2.0, -MC.textRenderer.fontHeight.toDouble(), 0.0)
+        val yOffset = if (overline) 2.0 else 0.0
+        stack.translate(16.0 - width / 2.0, -(MC.textRenderer.fontHeight.toDouble() + yOffset), 0.0)
 
-        WRTextRenderer.drawText(text, color.toInt(), true, stack.peek().positionMatrix, provider, true, 0, light)
+        WRTextRenderer.drawText(
+            text, color.toInt(), true, overline, stack.peek().positionMatrix, provider, true, 0, light
+        )
 
         stack.pop()
     }
 
     fun renderOverlayText(
         text: Text, side: Direction, rotation: Direction, x: Double, y: Double, z: Double,
-        alignment: HorizontalAlignment, color: UInt, stack: MatrixStack, provider: VertexConsumerProvider, light: Int
+        alignment: HorizontalAlignment, stack: MatrixStack, provider: VertexConsumerProvider, light: Int,
+        color: UInt = Colors.WHITE, overline: Boolean = false
     ) {
         stack.push()
         stack.translate(0.5, 0.5, 0.5)
@@ -145,7 +149,9 @@ object RenderUtils {
 
         stack.translate(alignment.offset(MC.textRenderer.getWidth(text)), 0.0, 0.0)
 
-        WRTextRenderer.drawText(text, color.toInt(), true, stack.peek().positionMatrix, provider, true, 0, light)
+        WRTextRenderer.drawText(
+            text, color.toInt(), true, overline, stack.peek().positionMatrix, provider, true, 0, light
+        )
 
         stack.pop()
     }

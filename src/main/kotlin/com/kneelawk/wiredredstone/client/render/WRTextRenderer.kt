@@ -15,10 +15,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gl.SimpleFramebuffer
-import net.minecraft.client.render.RenderLayer
-import net.minecraft.client.render.Tessellator
-import net.minecraft.client.render.VertexConsumerProvider
-import net.minecraft.client.render.WorldRenderer
+import net.minecraft.client.render.*
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 import net.minecraft.util.hit.BlockHitResult
@@ -31,7 +28,7 @@ import java.util.concurrent.TimeUnit
  */
 @Environment(EnvType.CLIENT)
 object WRTextRenderer {
-    data class TextKey(val text: Text, val color: Int, val shadow: Boolean, val background: Int)
+    data class TextKey(val text: Text, val color: Int, val shadow: Boolean, val overline: Boolean, val background: Int)
     data class TextTexture(val texture: FramebufferTexture, val id: Identifier)
 
     private val MC = MinecraftClient.getInstance()
@@ -46,13 +43,13 @@ object WRTextRenderer {
     }
 
     fun drawText(
-        text: Text, color: Int, shadow: Boolean, model: Matrix4f, provider: VertexConsumerProvider,
+        text: Text, color: Int, shadow: Boolean, overline: Boolean, model: Matrix4f, provider: VertexConsumerProvider,
         seeThrough: Boolean, background: Int, light: Int
     ) {
         val width = MC.textRenderer.getWidth(text).toFloat()
-        val height = MC.textRenderer.fontHeight.toFloat()
+        val height = MC.textRenderer.fontHeight.toFloat() + if (overline) 2 else 0
 
-        val id = TEXT_FB_CACHE[TextKey(text, color, shadow, background)].id
+        val id = TEXT_FB_CACHE[TextKey(text, color, shadow, overline, background)].id
 
         val renderLayer = if (seeThrough) RenderLayer.getTextSeeThrough(id) else RenderLayer.getText(id)
         val consumer = provider.getBuffer(renderLayer)
@@ -109,8 +106,11 @@ object WRTextRenderer {
 
         val text = key.text.asOrderedText()
 
+        val yOffset = if (key.overline) 2 else 0
+        val yOffsetF = yOffset.toFloat()
         val width = MC.textRenderer.getWidth(text)
-        val height = MC.textRenderer.fontHeight
+        val height = MC.textRenderer.fontHeight + yOffset
+
         val textMat = Matrix4f()
         textMat.loadIdentity()
         textMat.multiplyByTranslation(-1f, 1f, 0f)
@@ -139,11 +139,21 @@ object WRTextRenderer {
 
         if (key.shadow) {
             val shadowColor = multiplyBrightness(key.color, 0.25f)
-            MC.textRenderer.draw(text, 1f, 1f, shadowColor, false, textMat, immediate, false, 0, 15728880)
+
+            if (key.overline) {
+                drawRect(1f, 1f, width.toFloat() - 1f, 1f, shadowColor, textMat)
+            }
+
+            MC.textRenderer.draw(text, 1f, 1f + yOffsetF, shadowColor, false, textMat, immediate, false, 0, 15728880)
+            immediate.draw()
             textMat.multiplyByTranslation(0f, 0f, -0.025f)
         }
 
-        MC.textRenderer.draw(text, 0f, 0f, key.color, false, textMat, immediate, false, 0, 15728880)
+        if (key.overline) {
+            drawRect(0f, 0f, width.toFloat() - 1f, 1f, key.color, textMat)
+        }
+
+        MC.textRenderer.draw(text, 0f, yOffsetF, key.color, false, textMat, immediate, false, 0, 15728880)
         immediate.draw()
 
         RenderSystem.setProjectionMatrix(backupProjMat)
@@ -175,5 +185,22 @@ object WRTextRenderer {
                 (((red * 255.0f).toInt() and 0xFF) shl 16) or
                 (((green * 255.0f).toInt() and 0xFF) shl 8) or
                 ((blue * 255.0f).toInt() and 0xFF)
+    }
+
+    private fun drawRect(x: Float, y: Float, width: Float, height: Float, color: Int, matrix4f: Matrix4f) {
+        RenderSystem.setShader(GameRenderer::getPositionColorShader)
+        val tessellator = Tessellator.getInstance()
+        val buffer = tessellator.buffer
+
+        val x2 = x + width
+        val y2 = y + height
+
+        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR)
+        buffer.vertex(matrix4f, x2, y, 0f).color(color).next()
+        buffer.vertex(matrix4f, x, y, 0f).color(color).next()
+        buffer.vertex(matrix4f, x, y2, 0f).color(color).next()
+        buffer.vertex(matrix4f, x2, y2, 0f).color(color).next()
+
+        tessellator.draw()
     }
 }

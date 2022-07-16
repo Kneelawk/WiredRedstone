@@ -3,7 +3,6 @@ package com.kneelawk.wiredredstone.client.render.part
 import com.kneelawk.wiredredstone.WRConstants.id
 import com.kneelawk.wiredredstone.WRConstants.overlay
 import com.kneelawk.wiredredstone.client.render.*
-import com.kneelawk.wiredredstone.client.render.Colors.WHITE
 import com.kneelawk.wiredredstone.part.key.GateDiodePartKey
 import com.kneelawk.wiredredstone.util.ConnectionUtils
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh
@@ -71,10 +70,10 @@ object GateDiodePartBaker : AbstractPartBaker<GateDiodePartKey>() {
         key: GateDiodePartKey, stack: MatrixStack, provider: VertexConsumerProvider, light: Int
     ) {
         RenderUtils.renderPortText(
-            overlay("gate_diode.out"), key.side, key.direction, 2.0 / 16.0, WHITE, stack, provider, light
+            overlay("gate_diode.out"), key.side, key.direction, 2.0 / 16.0, stack, provider, light
         )
         RenderUtils.renderPortText(
-            overlay("gate_diode.in"), key.side, key.direction.opposite, 2.0 / 16.0, WHITE, stack, provider, light
+            overlay("gate_diode.in"), key.side, key.direction.opposite, 2.0 / 16.0, stack, provider, light
         )
     }
 }

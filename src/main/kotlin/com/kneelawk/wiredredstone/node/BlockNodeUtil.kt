@@ -11,7 +11,7 @@ import net.minecraft.util.math.Direction
 
 object BlockNodeUtil {
     inline fun <reified T : Enum<T>> readSidedTyped(
-        tag: NbtElement?, constructor: (Direction, T, NbtCompound) -> BlockNode
+        tag: NbtElement?, constructor: (side: Direction, type: T, tag: NbtCompound) -> BlockNode
     ): BlockNode? {
         if (tag !is NbtCompound) {
             WRLog.warn("tag is not a compound tag")

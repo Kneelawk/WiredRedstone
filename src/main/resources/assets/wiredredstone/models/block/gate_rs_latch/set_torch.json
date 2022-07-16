@@ -1,0 +1,36 @@
+{
+  "credit": "Made with Blockbench",
+  "parent": "wiredredstone:block/flat",
+  "textures": {
+    "particle": "wiredredstone:block/gate_rs_latch/particle",
+    "torch": "wiredredstone:block/redstone_torch_off"
+  },
+  "elements": [
+    {
+      "from": [ 0, 3, 2 ],
+      "to": [ 16, 12, 4 ],
+      "shade": false,
+      "faces": {
+        "north": { "uv": [ 0, 0, 16, 9 ], "texture": "#torch" },
+        "south": { "uv": [ 0, 0, 16, 9 ], "texture": "#torch" }
+      }
+    },
+    {
+      "from": [ 7, 3, -5 ],
+      "to": [ 9, 12, 11 ],
+      "shade": false,
+      "faces": {
+        "east": { "uv": [ 0, 0, 16, 9 ], "texture": "#torch" },
+        "west": { "uv": [ 0, 0, 16, 9 ], "texture": "#torch" }
+      }
+    },
+    {
+      "from": [ 7, 3, 2 ],
+      "to": [ 9, 6, 4 ],
+      "shade": false,
+      "faces": {
+        "up": { "uv": [ 7, 6, 9, 8 ], "texture": "#torch" }
+      }
+    }
+  ]
+}

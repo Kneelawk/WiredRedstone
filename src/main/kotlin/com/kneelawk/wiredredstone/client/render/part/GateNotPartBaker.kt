@@ -3,7 +3,6 @@ package com.kneelawk.wiredredstone.client.render.part
 import com.kneelawk.wiredredstone.WRConstants.id
 import com.kneelawk.wiredredstone.WRConstants.overlay
 import com.kneelawk.wiredredstone.client.render.*
-import com.kneelawk.wiredredstone.client.render.Colors.WHITE
 import com.kneelawk.wiredredstone.client.render.WRMaterials.POWERED_MATERIAL
 import com.kneelawk.wiredredstone.client.render.WRMaterials.UNPOWERED_MATERIAL
 import com.kneelawk.wiredredstone.client.render.WRSprites.RED_ALLOY_WIRE_POWERED_ID
@@ -83,10 +82,10 @@ object GateNotPartBaker : AbstractPartBaker<GateNotPartKey>() {
         key: GateNotPartKey, stack: MatrixStack, provider: VertexConsumerProvider, light: Int
     ) {
         RenderUtils.renderPortText(
-            overlay("gate_not.out"), key.side, key.direction, 2.0 / 16.0, WHITE, stack, provider, light
+            overlay("gate_not.out"), key.side, key.direction, 2.0 / 16.0, stack, provider, light
         )
         RenderUtils.renderPortText(
-            overlay("gate_not.in"), key.side, key.direction.opposite, 2.0 / 16.0, WHITE, stack, provider, light
+            overlay("gate_not.in"), key.side, key.direction.opposite, 2.0 / 16.0, stack, provider, light
         )
     }
 }

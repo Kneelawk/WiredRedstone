@@ -168,7 +168,7 @@ abstract class AbstractThreeInputGatePart : AbstractGatePart {
      * Gets the cardinal direction of the corresponding input side.
      */
     fun getInputSide(type: InputType): Direction {
-        return RotationUtils.cardinalRotatedDirection(type.cardinal, direction)
+        return RotationUtils.cardinalRotatedDirection(direction, type.cardinal)
     }
 
     /**
