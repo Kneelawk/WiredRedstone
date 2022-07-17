@@ -89,6 +89,13 @@ object WRItems {
             GateRepeaterPart(WRParts.GATE_REPEATER, holder, side, 0u, direction, 0, 0, 0, 0, 0, false)
         }
     }
+    val GATE_RS_LATCH by lazy {
+        SimpleGateItem(WIRED_REDSTONE_ITEM_SETTINGS) { holder, side, direction ->
+            GateRSLatchPart(
+                WRParts.GATE_RS_LATCH, holder, side, 0u, direction, GateRSLatchPart.LatchState.RESET, true, 0, 0, 0, 0
+            )
+        }
+    }
 
     // Crafting Materials
     val REDSTONE_ALLOY_INGOT by lazy { Item(WIRED_REDSTONE_ITEM_SETTINGS) }
@@ -144,6 +151,7 @@ object WRItems {
         register(GATE_NOR, "gate_nor")
         register(GATE_NOT, "gate_not")
         register(GATE_REPEATER, "gate_repeater")
+        register(GATE_RS_LATCH, "gate_rs_latch")
 
         register(REDSTONE_ALLOY_INGOT, "redstone_alloy_ingot")
         register(STONE_PLATE, "stone_plate")

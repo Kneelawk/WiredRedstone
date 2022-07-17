@@ -1,0 +1,7 @@
+{
+  "credit": "Made with Blockbench",
+  "parent": "wiredredstone:block/gate_rs_latch/torch_reset",
+  "textures": {
+    "torch": "wiredredstone:block/redstone_torch"
+  }
+}

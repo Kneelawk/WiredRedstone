@@ -12,7 +12,10 @@ import net.minecraft.item.ItemUsageContext
 import net.minecraft.util.ActionResult
 import net.minecraft.util.math.Direction
 
-class SimpleGateItem(settings: Settings, private val creator: (MultipartHolder, Direction, Direction) -> AbstractPart) :
+class SimpleGateItem(
+    settings: Settings,
+    private val creator: (holder: MultipartHolder, side: Direction, direction: Direction) -> AbstractPart
+) :
     Item(settings), GateItem {
     override fun useOnBlock(context: ItemUsageContext): ActionResult {
         val world = context.world

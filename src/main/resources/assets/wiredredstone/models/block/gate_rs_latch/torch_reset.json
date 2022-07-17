@@ -2,8 +2,7 @@
   "credit": "Made with Blockbench",
   "parent": "wiredredstone:block/flat",
   "textures": {
-    "particle": "wiredredstone:block/gate_rs_latch/particle",
-    "torch": "wiredredstone:block/redstone_torch_off"
+    "particle": "wiredredstone:block/gate_rs_latch/particle"
   },
   "elements": [
     {

@@ -10,10 +10,15 @@ import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
 import com.kneelawk.graphlib.graph.BlockNode
+import com.kneelawk.wiredredstone.item.WRItems
 import com.kneelawk.wiredredstone.node.GateRSLatchBlockNode
+import com.kneelawk.wiredredstone.part.key.GateRSLatchPartKey
 import com.kneelawk.wiredredstone.util.*
+import net.minecraft.item.ItemStack
+import net.minecraft.loot.context.LootContext
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.server.world.ServerWorld
+import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Direction.*
 import kotlin.math.max
@@ -21,6 +26,8 @@ import kotlin.math.max
 class GateRSLatchPart : AbstractGatePart {
 
     var latchState: LatchState
+        private set
+    var outputEnabled: Boolean
         private set
     var inputSetPower: Int
         private set
@@ -33,10 +40,11 @@ class GateRSLatchPart : AbstractGatePart {
 
     constructor(
         definition: PartDefinition, holder: MultipartHolder, side: Direction, connections: UByte, direction: Direction,
-        latchState: LatchState, inputSetPower: Int, inputResetPower: Int, outputSetReversePower: Int,
-        outputResetReversePower: Int
+        latchState: LatchState, outputEnabled: Boolean, inputSetPower: Int, inputResetPower: Int,
+        outputSetReversePower: Int, outputResetReversePower: Int
     ) : super(definition, holder, side, connections, direction) {
         this.latchState = latchState
+        this.outputEnabled = outputEnabled
         this.inputSetPower = inputSetPower
         this.inputResetPower = inputResetPower
         this.outputSetReversePower = outputSetReversePower
@@ -47,6 +55,7 @@ class GateRSLatchPart : AbstractGatePart {
         definition, holder, tag
     ) {
         latchState = tag.getByte("latchState").toEnum()
+        outputEnabled = tag.getBoolean("outputEnabled")
         inputSetPower = tag.getByte("inputSetPower").toInt().coerceIn(0..15)
         inputResetPower = tag.getByte("inputResetPower").toInt().coerceIn(0..15)
         outputSetReversePower = tag.getByte("outputSetReversePower").toInt().coerceIn(0..15)
@@ -57,6 +66,7 @@ class GateRSLatchPart : AbstractGatePart {
         definition, holder, buffer, ctx
     ) {
         latchState = buffer.readFixedBits(1).toEnum()
+        outputEnabled = buffer.readBoolean()
         inputSetPower = buffer.readFixedBits(4)
         inputResetPower = buffer.readFixedBits(4)
         outputSetReversePower = buffer.readFixedBits(4)
@@ -66,6 +76,7 @@ class GateRSLatchPart : AbstractGatePart {
     override fun toTag(): NbtCompound {
         val tag = super.toTag()
         tag.putByte("latchState", latchState.toByte())
+        tag.putBoolean("outputEnabled", outputEnabled)
         tag.putByte("inputSetPower", inputSetPower.toByte())
         tag.putByte("inputResetPower", inputResetPower.toByte())
         tag.putByte("outputSetReversePower", outputSetReversePower.toByte())
@@ -76,6 +87,7 @@ class GateRSLatchPart : AbstractGatePart {
     override fun writeCreationData(buffer: NetByteBuf, ctx: IMsgWriteCtx) {
         super.writeCreationData(buffer, ctx)
         buffer.writeFixedBits(latchState.toInt(), 1)
+        buffer.writeBoolean(outputEnabled)
         buffer.writeFixedBits(inputSetPower, 4)
         buffer.writeFixedBits(inputResetPower, 4)
         buffer.writeFixedBits(outputSetReversePower, 4)
@@ -85,6 +97,7 @@ class GateRSLatchPart : AbstractGatePart {
     override fun writeRenderData(buffer: NetByteBuf, ctx: IMsgWriteCtx) {
         super.writeRenderData(buffer, ctx)
         buffer.writeFixedBits(latchState.toInt(), 1)
+        buffer.writeBoolean(outputEnabled)
         buffer.writeFixedBits(inputSetPower, 4)
         buffer.writeFixedBits(inputResetPower, 4)
         buffer.writeFixedBits(outputSetReversePower, 4)
@@ -94,6 +107,7 @@ class GateRSLatchPart : AbstractGatePart {
     override fun readRenderData(buffer: NetByteBuf, ctx: IMsgReadCtx) {
         super.readRenderData(buffer, ctx)
         latchState = buffer.readFixedBits(1).toEnum()
+        outputEnabled = buffer.readBoolean()
         inputSetPower = buffer.readFixedBits(4)
         inputResetPower = buffer.readFixedBits(4)
         outputSetReversePower = buffer.readFixedBits(4)
@@ -106,7 +120,35 @@ class GateRSLatchPart : AbstractGatePart {
         bus.addListener(this, PartTickEvent::class.java) {
             val world = getWorld()
             if (world is ServerWorld) {
-                // TODO: recalculate
+                var changed: Boolean
+
+                if (inputSetPower != 0 && inputResetPower != 0) {
+                    changed = outputEnabled == true
+                    outputEnabled = false
+                } else {
+                    changed = outputEnabled == false
+                    outputEnabled = true
+
+                    // both will never happen at the same time, but there could be a situation where neither happen
+                    if (inputSetPower != 0) {
+                        changed = true
+                        latchState = LatchState.SET
+                    }
+                    if (inputResetPower != 0) {
+                        changed = true
+                        latchState = LatchState.RESET
+                    }
+                }
+
+                if (changed) {
+                    val pos = getPos()
+                    RedstoneLogic.scheduleUpdate(world, pos)
+                    redraw()
+
+                    // update neighbors
+                    WorldUtils.strongUpdateOutputNeighbors(world, pos, getOutputEdge(LatchState.SET))
+                    WorldUtils.strongUpdateOutputNeighbors(world, pos, getOutputEdge(LatchState.RESET))
+                }
             }
         }
 
@@ -140,21 +182,30 @@ class GateRSLatchPart : AbstractGatePart {
                 calculateOutputReversePower(LatchState.RESET) != outputResetReversePower
     }
 
-    override fun getModelKey(): PartModelKey? {
-        TODO("Not yet implemented")
+    override fun getModelKey(): PartModelKey {
+        return GateRSLatchPartKey(
+            side, direction, connections, latchState == LatchState.SET, outputEnabled, inputSetPower != 0,
+            inputResetPower != 0, getTotalOutputPower(LatchState.SET) != 0, getTotalOutputPower(LatchState.RESET) != 0
+        )
+    }
+
+    override fun getPickStack(hitResult: BlockHitResult?): ItemStack {
+        return ItemStack(WRItems.GATE_RS_LATCH)
+    }
+
+    override fun addDrops(target: ItemDropTarget, context: LootContext) {
+        LootTableUtil.addPartDrops(getWorld(), target, context, WRParts.GATE_RS_LATCH.identifier)
     }
 
     private fun getRedstoneOutputPower(edge: Direction): Int {
         val poweredEdge = getOutputEdge(latchState)
-        return if (RedstoneLogic.wiresGivePower && poweredEdge == edge && isOutputEnabled()) 15 else 0
+        return if (RedstoneLogic.wiresGivePower && poweredEdge == edge && outputEnabled) 15 else 0
     }
 
     private fun calculatePortPower(portSide: Direction): Int {
         val edge = RotationUtils.rotatedDirection(side, portSide)
         return getWorld().getEmittedRedstonePower(getPos().offset(edge), edge)
     }
-
-    private fun isOutputEnabled() = inputSetPower == 0 || inputResetPower == 0
 
     fun calculateInputPower(state: LatchState): Int = calculatePortPower(getInputSide(state))
 
@@ -170,7 +221,7 @@ class GateRSLatchPart : AbstractGatePart {
         RotationUtils.rotatedDirection(this.side, getOutputSide(state))
 
     fun getOutputPower(state: LatchState): Int {
-        return if (state == latchState && isOutputEnabled()) 15 else 0
+        return if (state == latchState && outputEnabled) 15 else 0
     }
 
     fun getTotalOutputPower(state: LatchState): Int {
@@ -224,6 +275,6 @@ class GateRSLatchPart : AbstractGatePart {
     }
 
     enum class LatchState(val inputCardinal: Direction, val outputCardinal: Direction) {
-        SET(EAST, NORTH), RESET(WEST, SOUTH)
+        SET(WEST, NORTH), RESET(EAST, SOUTH)
     }
 }
