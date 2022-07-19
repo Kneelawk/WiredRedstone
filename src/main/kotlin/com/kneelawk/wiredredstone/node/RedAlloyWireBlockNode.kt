@@ -6,9 +6,14 @@ import com.kneelawk.graphlib.graph.NodeView
 import com.kneelawk.graphlib.util.SidedPos
 import com.kneelawk.graphlib.wire.SidedWireBlockNode
 import com.kneelawk.graphlib.wire.WireConnectionDiscoverers
+import com.kneelawk.wiredredstone.logic.RedstoneCarrierFilter
+import com.kneelawk.wiredredstone.logic.RedstoneLogic
+import com.kneelawk.wiredredstone.logic.RedstoneWireType
 import com.kneelawk.wiredredstone.part.RedAlloyWirePart
 import com.kneelawk.wiredredstone.part.SidedPart
-import com.kneelawk.wiredredstone.util.*
+import com.kneelawk.wiredredstone.util.NetNode
+import com.kneelawk.wiredredstone.util.connectable.WireBlockageFilter
+import com.kneelawk.wiredredstone.util.pos
 import net.minecraft.nbt.NbtByte
 import net.minecraft.nbt.NbtElement
 import net.minecraft.server.world.ServerWorld

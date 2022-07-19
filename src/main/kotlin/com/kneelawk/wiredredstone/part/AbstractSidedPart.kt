@@ -8,9 +8,9 @@ import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
 import com.kneelawk.graphlib.GraphLib
-import com.kneelawk.wiredredstone.util.ConnectableUtils
-import com.kneelawk.wiredredstone.util.ConnectableUtils.isValidFace
+import com.kneelawk.wiredredstone.util.PlacementUtils
 import com.kneelawk.wiredredstone.util.SimpleItemDropTarget
+import com.kneelawk.wiredredstone.util.connectable.ConnectableUtils
 import com.kneelawk.wiredredstone.util.getWorld
 import com.kneelawk.wiredredstone.util.requireNonNull
 import net.fabricmc.api.EnvType
@@ -116,7 +116,7 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
         val world = getWorld()
         val offset = getPos().offset(side)
         val state = world.getBlockState(offset)
-        return !isValidFace(state, world, offset, side.opposite)
+        return !PlacementUtils.isValidFace(state, world, offset, side.opposite)
     }
 
     fun removeAndDrop() {

@@ -3,9 +3,9 @@ package com.kneelawk.wiredredstone.item
 import alexiil.mc.lib.multipart.api.MultipartHolder
 import com.kneelawk.wiredredstone.part.BundledCablePart
 import com.kneelawk.wiredredstone.part.WRParts
-import com.kneelawk.wiredredstone.util.BlockageUtils
 import com.kneelawk.wiredredstone.util.DyeColorUtil
 import com.kneelawk.wiredredstone.util.PlacementUtils
+import com.kneelawk.wiredredstone.util.bits.BlockageUtils
 import net.minecraft.block.Blocks
 import net.minecraft.item.Item
 import net.minecraft.item.ItemUsageContext

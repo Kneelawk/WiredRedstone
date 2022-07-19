@@ -1,9 +1,9 @@
 package com.kneelawk.wiredredstone.client.render
 
-import com.kneelawk.wiredredstone.util.ConnectionUtils.isCorner
-import com.kneelawk.wiredredstone.util.ConnectionUtils.isDisconnected
-import com.kneelawk.wiredredstone.util.ConnectionUtils.isExternal
-import com.kneelawk.wiredredstone.util.ConnectionUtils.isInternal
+import com.kneelawk.wiredredstone.util.bits.ConnectionUtils.isCorner
+import com.kneelawk.wiredredstone.util.bits.ConnectionUtils.isDisconnected
+import com.kneelawk.wiredredstone.util.bits.ConnectionUtils.isExternal
+import com.kneelawk.wiredredstone.util.bits.ConnectionUtils.isInternal
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter
 import net.minecraft.client.texture.Sprite

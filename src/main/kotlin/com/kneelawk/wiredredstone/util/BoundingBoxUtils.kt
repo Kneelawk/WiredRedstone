@@ -3,6 +3,7 @@ package com.kneelawk.wiredredstone.util
 import com.google.common.cache.CacheBuilder
 import com.google.common.cache.CacheLoader
 import com.google.common.cache.LoadingCache
+import com.kneelawk.wiredredstone.util.bits.ConnectionUtils
 import net.minecraft.util.math.Box
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Vec3d

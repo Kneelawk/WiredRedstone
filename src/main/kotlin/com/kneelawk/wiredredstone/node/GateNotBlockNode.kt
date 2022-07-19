@@ -3,9 +3,13 @@ package com.kneelawk.wiredredstone.node
 import com.kneelawk.graphlib.graph.BlockNode
 import com.kneelawk.graphlib.graph.BlockNodeDecoder
 import com.kneelawk.graphlib.wire.SidedWireConnectionFilter
+import com.kneelawk.wiredredstone.logic.RedstoneCarrierFilter
+import com.kneelawk.wiredredstone.logic.RedstoneWireType
 import com.kneelawk.wiredredstone.part.AbstractGatePart
 import com.kneelawk.wiredredstone.part.GateNotPart
-import com.kneelawk.wiredredstone.util.*
+import com.kneelawk.wiredredstone.util.NetNode
+import com.kneelawk.wiredredstone.util.connectable.WireCornerBlockageFilter
+import com.kneelawk.wiredredstone.util.pos
 import net.minecraft.nbt.NbtElement
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.Identifier

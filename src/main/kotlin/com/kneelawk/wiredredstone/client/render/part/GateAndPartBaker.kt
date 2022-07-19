@@ -9,8 +9,8 @@ import com.kneelawk.wiredredstone.client.render.WRMaterials.UNPOWERED_MATERIAL
 import com.kneelawk.wiredredstone.client.render.WRSprites.RED_ALLOY_WIRE_POWERED_ID
 import com.kneelawk.wiredredstone.client.render.WRSprites.RED_ALLOY_WIRE_UNPOWERED_ID
 import com.kneelawk.wiredredstone.part.key.GateAndPartKey
-import com.kneelawk.wiredredstone.util.ConnectionUtils
 import com.kneelawk.wiredredstone.util.RotationUtils.cardinalRotatedDirection
+import com.kneelawk.wiredredstone.util.bits.ConnectionUtils
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh
 import net.minecraft.client.render.VertexConsumerProvider
 import net.minecraft.client.util.math.MatrixStack

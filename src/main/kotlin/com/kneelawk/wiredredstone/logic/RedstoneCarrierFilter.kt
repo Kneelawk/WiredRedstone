@@ -1,4 +1,4 @@
-package com.kneelawk.wiredredstone.util
+package com.kneelawk.wiredredstone.logic
 
 import com.kneelawk.graphlib.graph.BlockNode
 import com.kneelawk.graphlib.wire.WireConnectionFilter

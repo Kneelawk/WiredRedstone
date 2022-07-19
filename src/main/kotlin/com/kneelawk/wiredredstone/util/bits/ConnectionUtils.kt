@@ -1,5 +1,6 @@
-package com.kneelawk.wiredredstone.util
+package com.kneelawk.wiredredstone.util.bits
 
+import com.kneelawk.wiredredstone.util.RotationUtils
 import net.minecraft.util.math.Direction
 
 object ConnectionUtils {

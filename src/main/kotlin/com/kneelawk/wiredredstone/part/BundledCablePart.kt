@@ -11,9 +11,14 @@ import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
 import com.kneelawk.graphlib.graph.BlockNode
+import com.kneelawk.wiredredstone.logic.BundledCableLogic
+import com.kneelawk.wiredredstone.logic.RedstoneLogic
 import com.kneelawk.wiredredstone.node.BundledCableBlockNode
 import com.kneelawk.wiredredstone.part.key.BundledCablePartKey
 import com.kneelawk.wiredredstone.util.*
+import com.kneelawk.wiredredstone.util.bits.BlockageUtils
+import com.kneelawk.wiredredstone.util.bits.ConnectionUtils
+import com.kneelawk.wiredredstone.util.connectable.ConnectableUtils
 import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
 import net.minecraft.entity.player.PlayerEntity
@@ -113,7 +118,7 @@ class BundledCablePart : AbstractBlockablePart, BundledPowerablePart {
         val world = getWorld()
         if (world is ServerWorld) {
             ConnectableUtils.updateBlockageAndConnections(world, this, WIRE_WIDTH, WIRE_HEIGHT)
-            if (BundledCableUtils.getBundledCableInput(world, getSidedPos(), connections, blockage) != power) {
+            if (BundledCableLogic.getBundledCableInput(world, getSidedPos(), connections, blockage) != power) {
                 RedstoneLogic.scheduleUpdate(world, getPos())
             }
         }
@@ -168,7 +173,7 @@ class BundledCablePart : AbstractBlockablePart, BundledPowerablePart {
             if (ConnectionUtils.isDisconnected(newConn, cardinal) && !BlockageUtils.isBlocked(blockage, cardinal)) {
                 val edge = RotationUtils.rotatedDirection(side, cardinal)
                 val offset = pos.offset(edge)
-                if (BundledCableUtils.hasBundledCableOutput(world, offset)) {
+                if (BundledCableLogic.hasBundledCableOutput(world, offset)) {
                     newConn = ConnectionUtils.setExternal(newConn, cardinal)
                 }
             }
@@ -189,11 +194,11 @@ class BundledCablePart : AbstractBlockablePart, BundledPowerablePart {
     }
 
     override fun updatePower(inner: DyeColor, power: Int) {
-        updatePower(BundledCableUtils.set(this.power, inner, power))
+        updatePower(BundledCableLogic.set(this.power, inner, power))
     }
 
     override fun getPower(inner: DyeColor): Int {
-        return BundledCableUtils.get(power, inner)
+        return BundledCableLogic.get(power, inner)
     }
 
     override fun getPower(side: Direction): ULong {

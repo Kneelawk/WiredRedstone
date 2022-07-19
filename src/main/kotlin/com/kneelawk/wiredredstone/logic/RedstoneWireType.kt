@@ -1,4 +1,4 @@
-package com.kneelawk.wiredredstone.util
+package com.kneelawk.wiredredstone.logic
 
 import net.minecraft.util.DyeColor
 

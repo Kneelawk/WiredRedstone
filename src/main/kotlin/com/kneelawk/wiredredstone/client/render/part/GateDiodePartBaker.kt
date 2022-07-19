@@ -4,7 +4,7 @@ import com.kneelawk.wiredredstone.WRConstants.id
 import com.kneelawk.wiredredstone.WRConstants.overlay
 import com.kneelawk.wiredredstone.client.render.*
 import com.kneelawk.wiredredstone.part.key.GateDiodePartKey
-import com.kneelawk.wiredredstone.util.ConnectionUtils
+import com.kneelawk.wiredredstone.util.bits.ConnectionUtils
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh
 import net.minecraft.client.render.VertexConsumerProvider
 import net.minecraft.client.util.math.MatrixStack

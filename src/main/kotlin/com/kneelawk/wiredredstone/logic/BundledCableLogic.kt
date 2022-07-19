@@ -1,16 +1,21 @@
-package com.kneelawk.wiredredstone.util
+package com.kneelawk.wiredredstone.logic
 
 import alexiil.mc.lib.multipart.api.MultipartUtil
 import com.kneelawk.graphlib.util.SidedPos
 import com.kneelawk.wiredredstone.compat.cc.CCIntegrationHandler
 import com.kneelawk.wiredredstone.part.BundledPowerablePart
+import com.kneelawk.wiredredstone.util.DirectionUtils
+import com.kneelawk.wiredredstone.util.RotationUtils
+import com.kneelawk.wiredredstone.util.bits.BlockageUtils
+import com.kneelawk.wiredredstone.util.bits.ConnectionUtils
+import com.kneelawk.wiredredstone.util.constrainedMaxOf
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.DyeColor
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.world.World
 
-object BundledCableUtils {
+object BundledCableLogic {
     fun getBundledCableInput(world: ServerWorld, pos: SidedPos, connections: UByte, blockage: UByte): ULong {
         return receivingSides(pos, connections, blockage).map {
             getSingleBundledCableInput(world, SidedPos(pos.pos, it))

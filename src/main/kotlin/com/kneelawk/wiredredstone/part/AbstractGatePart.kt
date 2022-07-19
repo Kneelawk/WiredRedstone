@@ -7,7 +7,12 @@ import alexiil.mc.lib.multipart.api.event.NeighbourUpdateEvent
 import alexiil.mc.lib.multipart.api.property.MultipartProperties
 import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.NetByteBuf
-import com.kneelawk.wiredredstone.util.*
+import com.kneelawk.wiredredstone.logic.RedstoneLogic
+import com.kneelawk.wiredredstone.util.BoundingBoxUtils
+import com.kneelawk.wiredredstone.util.connectable.ConnectableUtils
+import com.kneelawk.wiredredstone.util.getProperties
+import com.kneelawk.wiredredstone.util.getWorld
+import com.kneelawk.wiredredstone.util.isRemoved
 import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
 import net.minecraft.nbt.NbtCompound

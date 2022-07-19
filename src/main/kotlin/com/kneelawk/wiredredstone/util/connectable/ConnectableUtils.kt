@@ -1,4 +1,4 @@
-package com.kneelawk.wiredredstone.util
+package com.kneelawk.wiredredstone.util.connectable
 
 import alexiil.mc.lib.multipart.api.MultipartUtil
 import com.kneelawk.graphlib.GraphLib
@@ -9,7 +9,9 @@ import com.kneelawk.graphlib.wire.WireConnectionType
 import com.kneelawk.wiredredstone.part.BlockablePart
 import com.kneelawk.wiredredstone.part.ConnectablePart
 import com.kneelawk.wiredredstone.part.RedrawablePart
-import net.minecraft.block.BlockState
+import com.kneelawk.wiredredstone.util.*
+import com.kneelawk.wiredredstone.util.bits.BlockageUtils
+import com.kneelawk.wiredredstone.util.bits.ConnectionUtils
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Box
@@ -157,13 +159,6 @@ object ConnectableUtils {
             cache[offset] = current
             true
         }
-    }
-
-    /**
-     * Checks whether a side of a block is valid to have a wire on.
-     */
-    fun isValidFace(state: BlockState, world: BlockView, pos: BlockPos, side: Direction): Boolean {
-        return state.isSideSolidFullSquare(world, pos, side)
     }
 
     /**

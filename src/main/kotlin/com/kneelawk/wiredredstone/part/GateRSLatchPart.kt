@@ -11,6 +11,7 @@ import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
 import com.kneelawk.graphlib.graph.BlockNode
 import com.kneelawk.wiredredstone.item.WRItems
+import com.kneelawk.wiredredstone.logic.RedstoneLogic
 import com.kneelawk.wiredredstone.node.GateRSLatchBlockNode
 import com.kneelawk.wiredredstone.part.key.GateRSLatchPartKey
 import com.kneelawk.wiredredstone.util.*

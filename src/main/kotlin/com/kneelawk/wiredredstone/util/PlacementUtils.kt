@@ -59,17 +59,17 @@ object PlacementUtils {
         val sideSide = closestSideSide(hitPos, side)
 
         return if (isOnExternalSide(hitPos, side)) {
-            (if (ConnectableUtils.isValidFace(state, world, pos, side)) {
+            (if (isValidFace(state, world, pos, side)) {
                 MultipartUtil.offerNewPart(world, offsetPos, creatorFactory(side.opposite))
             } else null) ?: tryOffsetSide(offsetPos, sideSide, world, creatorFactory)
         } else {
             val offsetState = world.getBlockState(offsetPos)
-            if (ConnectableUtils.isValidFace(offsetState, world, offsetPos, side.opposite)) {
+            if (isValidFace(offsetState, world, offsetPos, side.opposite)) {
                 MultipartUtil.offerNewPart(world, pos, creatorFactory(side))
             } else {
                 val sidePos1 = pos.offset(sideSide)
                 val sideState1 = world.getBlockState(sidePos1)
-                (if (ConnectableUtils.isValidFace(sideState1, world, sidePos1, sideSide.opposite)) {
+                (if (isValidFace(sideState1, world, sidePos1, sideSide.opposite)) {
                     MultipartUtil.offerNewPart(world, pos, creatorFactory(sideSide))
                 } else null) ?: tryOffsetSide(offsetPos, sideSide, world, creatorFactory)
             }
@@ -88,7 +88,7 @@ object PlacementUtils {
         val sideSide = closestSideSide(hitPos, side)
         val direction = DirectionUtils.makeHorizontal(RotationUtils.unrotatedDirection(side.opposite, sideSide))
 
-        return if (ConnectableUtils.isValidFace(state, world, pos, side)) {
+        return if (isValidFace(state, world, pos, side)) {
             MultipartUtil.offerNewPart(world, offsetPos, creatorFactory(side.opposite, direction))
         } else null
     }
@@ -99,7 +99,7 @@ object PlacementUtils {
     ): MultipartContainer.PartOffer? {
         val sidePos = offsetPos.offset(sideSide)
         val sideState = world.getBlockState(sidePos)
-        return if (ConnectableUtils.isValidFace(sideState, world, sidePos, sideSide.opposite)) {
+        return if (isValidFace(sideState, world, sidePos, sideSide.opposite)) {
             MultipartUtil.offerNewPart(world, offsetPos, creatorFactory(sideSide))
         } else {
             findValidFace(world, offsetPos)?.let {
@@ -126,10 +126,17 @@ object PlacementUtils {
         for (side in Direction.values()) {
             val sidePos = pos.offset(side)
             val sideState = world.getBlockState(sidePos)
-            if (ConnectableUtils.isValidFace(sideState, world, sidePos, side.opposite)) {
+            if (isValidFace(sideState, world, sidePos, side.opposite)) {
                 return side
             }
         }
         return null
+    }
+
+    /**
+     * Checks whether a side of a block is valid to have a wire on.
+     */
+    fun isValidFace(state: BlockState, world: BlockView, pos: BlockPos, side: Direction): Boolean {
+        return state.isSideSolidFullSquare(world, pos, side)
     }
 }

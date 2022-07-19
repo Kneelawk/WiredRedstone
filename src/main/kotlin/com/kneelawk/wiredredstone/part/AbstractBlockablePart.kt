@@ -4,7 +4,7 @@ import alexiil.mc.lib.multipart.api.MultipartHolder
 import alexiil.mc.lib.multipart.api.PartDefinition
 import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.NetByteBuf
-import com.kneelawk.wiredredstone.util.BlockageUtils
+import com.kneelawk.wiredredstone.util.bits.BlockageUtils
 import com.kneelawk.wiredredstone.util.getBlockEntity
 import com.kneelawk.wiredredstone.util.maybeGetByte
 import net.minecraft.nbt.NbtCompound

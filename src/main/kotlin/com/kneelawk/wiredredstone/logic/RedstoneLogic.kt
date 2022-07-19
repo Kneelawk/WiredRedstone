@@ -1,10 +1,15 @@
-package com.kneelawk.wiredredstone.util
+package com.kneelawk.wiredredstone.logic
 
 import com.kneelawk.graphlib.GraphLib
 import com.kneelawk.graphlib.graph.BlockGraph
 import com.kneelawk.graphlib.util.SidedPos
 import com.kneelawk.wiredredstone.node.RedstoneCarrierBlockNode
 import com.kneelawk.wiredredstone.tag.WRBlockTags
+import com.kneelawk.wiredredstone.util.RotationUtils
+import com.kneelawk.wiredredstone.util.bits.BlockageUtils
+import com.kneelawk.wiredredstone.util.bits.ConnectionUtils
+import com.kneelawk.wiredredstone.util.constrainedMaxOf
+import com.kneelawk.wiredredstone.util.node
 import it.unimi.dsi.fastutil.longs.LongLinkedOpenHashSet
 import it.unimi.dsi.fastutil.longs.LongSet
 import net.minecraft.block.BlockState

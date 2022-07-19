@@ -8,10 +8,10 @@ import com.kneelawk.graphlib.wire.SidedWireBlockNode
 import com.kneelawk.graphlib.wire.SidedWireConnectionFilter
 import com.kneelawk.graphlib.wire.WireConnectionDiscoverers
 import com.kneelawk.graphlib.wire.WireConnectionType
+import com.kneelawk.wiredredstone.logic.RedstoneLogic
 import com.kneelawk.wiredredstone.part.AbstractGatePart
 import com.kneelawk.wiredredstone.part.SidedPart
 import com.kneelawk.wiredredstone.util.NetNode
-import com.kneelawk.wiredredstone.util.RedstoneLogic
 import com.kneelawk.wiredredstone.util.RotationUtils
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.BlockPos

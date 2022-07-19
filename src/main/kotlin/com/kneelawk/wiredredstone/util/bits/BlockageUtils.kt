@@ -1,4 +1,4 @@
-package com.kneelawk.wiredredstone.util
+package com.kneelawk.wiredredstone.util.bits
 
 import net.minecraft.util.math.Direction
 

@@ -2,7 +2,7 @@ package com.kneelawk.wiredredstone.compat.cc
 
 import com.kneelawk.graphlib.util.SidedPos
 import com.kneelawk.wiredredstone.WRLog
-import com.kneelawk.wiredredstone.util.BundledCableUtils
+import com.kneelawk.wiredredstone.logic.BundledCableLogic
 import dan200.computercraft.api.ComputerCraftAPI
 import dan200.computercraft.shared.common.IBundledRedstoneBlock
 import net.minecraft.server.world.ServerWorld
@@ -15,9 +15,9 @@ object CCIntegrationImpl : CCIntegration {
         WRLog.log.info("Wired Redstone: enabling Computer Craft integration!")
 
         ComputerCraftAPI.registerBundledRedstoneProvider { world, pos, side ->
-            val output = BundledCableUtils.getBundledCableOutput(world, SidedPos(pos, side))
+            val output = BundledCableLogic.getBundledCableOutput(world, SidedPos(pos, side))
                 ?: return@registerBundledRedstoneProvider -1
-            BundledCableUtils.long2Short(output).toInt()
+            BundledCableLogic.long2Short(output).toInt()
         }
     }
 

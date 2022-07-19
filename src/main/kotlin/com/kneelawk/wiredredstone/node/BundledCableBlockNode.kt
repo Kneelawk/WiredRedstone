@@ -6,9 +6,14 @@ import com.kneelawk.graphlib.graph.NodeView
 import com.kneelawk.graphlib.util.SidedPos
 import com.kneelawk.graphlib.wire.SidedWireBlockNode
 import com.kneelawk.graphlib.wire.WireConnectionDiscoverers
+import com.kneelawk.wiredredstone.logic.BundledCableLogic
+import com.kneelawk.wiredredstone.logic.RedstoneCarrierFilter
+import com.kneelawk.wiredredstone.logic.RedstoneWireType
 import com.kneelawk.wiredredstone.part.BundledCablePart
 import com.kneelawk.wiredredstone.part.SidedPart
-import com.kneelawk.wiredredstone.util.*
+import com.kneelawk.wiredredstone.util.NetNode
+import com.kneelawk.wiredredstone.util.connectable.WireBlockageFilter
+import com.kneelawk.wiredredstone.util.pos
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.nbt.NbtElement
 import net.minecraft.server.world.ServerWorld
@@ -53,7 +58,7 @@ data class BundledCableBlockNode(private val side: Direction, val color: DyeColo
 
     override fun getInput(world: ServerWorld, self: NetNode): Int {
         val part = getPart(world, self.pos) ?: return 0
-        return BundledCableUtils.getBundledCableInput(
+        return BundledCableLogic.getBundledCableInput(
             world, SidedPos(self.pos, side), inner, part.connections, part.blockage
         )
     }

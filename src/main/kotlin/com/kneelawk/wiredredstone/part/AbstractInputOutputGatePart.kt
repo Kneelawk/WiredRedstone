@@ -8,6 +8,7 @@ import alexiil.mc.lib.multipart.api.event.PartTickEvent
 import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
+import com.kneelawk.wiredredstone.logic.RedstoneLogic
 import com.kneelawk.wiredredstone.util.*
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.server.world.ServerWorld
