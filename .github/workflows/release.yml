@@ -89,6 +89,7 @@ jobs:
             lines.splice(0, changesStart);
             lines.unshift(`**Wired Redstone ${versions[0]} has been released for Minecraft ${versions[1]}!**`, '', '__Changes:__');
             lines.push(`Available on Modrinth: https://modrinth.com/mod/wiredredstone/version/${modVersion}`);
+            lines.push('Available on CurseForge: https://www.curseforge.com/minecraft/mc-mods/wired-redstone');
             lines.push("Or on Kneelawk's maven: https://kneelawk.com/maven/", `With the identifier: \`com.kneelawk:wired-redstone:${modVersion}\``);
             return lines.join('\n');
           result-encoding: string
