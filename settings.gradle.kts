@@ -14,6 +14,8 @@ pluginManagement {
         id("io.github.juuxel.loom-quiltflower") version loomQuiltflowerVersion
         val minotaurVersion: String by settings
         id("com.modrinth.minotaur") version minotaurVersion
+        val curseGradleVersion: String by settings
+        id("com.matthewprenger.cursegradle") version curseGradleVersion
     }
 }
 
