@@ -6,12 +6,16 @@ import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
 import com.kneelawk.wiredredstone.util.DirectionUtils
+import com.kneelawk.wiredredstone.util.SidedOrientation
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.util.math.Direction
 
 abstract class AbstractRotatedPart : AbstractConnectablePart, RotatedPart {
     var direction: Direction
         private set
+
+    val orientation: SidedOrientation
+        get() = SidedOrientation(side, direction)
 
     constructor(
         definition: PartDefinition, holder: MultipartHolder, side: Direction, connections: UByte, direction: Direction

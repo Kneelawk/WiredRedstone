@@ -20,9 +20,14 @@ object WRPartRenderers {
         register(RedAlloyWirePartBaker, RedAlloyWirePartKey::class)
         register(InsulatedWirePartBaker, InsulatedWirePartKey::class)
         register(BundledCablePartBaker, BundledCablePartKey::class)
+        register(GateAndPartBaker, GateAndPartKey::class)
         register(GateDiodePartBaker, GateDiodePartKey::class)
+        register(GateNandPartBaker, GateNandPartKey::class)
+        register(GateNorPartBaker, GateNorPartKey::class)
         register(GateNotPartBaker, GateNotPartKey::class)
+        register(GateOrPartBaker, GateOrPartKey::class)
         register(GateRepeaterPartBaker, GateRepeaterPartKey::class)
+        register(GateRSLatchPartBaker, GateRSLatchPartKey::class)
 
         PartStaticModelRegisterEvent.EVENT.register { event: PartStaticModelRegisterEvent.StaticModelRenderer ->
             for ((baker, clazz) in BAKERS) {

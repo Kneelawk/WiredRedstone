@@ -5,6 +5,7 @@ import com.google.common.cache.CacheLoader
 import com.google.common.cache.LoadingCache
 import net.minecraft.util.math.Box
 import net.minecraft.util.math.Direction
+import net.minecraft.util.math.Vec3d
 import net.minecraft.util.shape.VoxelShape
 import net.minecraft.util.shape.VoxelShapes
 import java.util.*
@@ -100,6 +101,26 @@ object BoundingBoxUtils {
         return map
     }
 
+    fun getOrientedShapes(base: Box): Map<SidedOrientation, VoxelShape> {
+        val map = mutableMapOf<SidedOrientation, VoxelShape>()
+        for (side in Direction.values()) {
+            for (direction in DirectionUtils.HORIZONTALS) {
+                val orientation = SidedOrientation(side, direction)
+                map[orientation] = VoxelShapes.cuboid(
+                    RotationUtils.rotatedBox(side, RotationUtils.cardinalRotatedBox(direction, base))
+                )
+            }
+        }
+        return map
+    }
+
+    fun getOrientedShapes(shape: VoxelShape): Map<SidedOrientation, VoxelShape> {
+        val acc = mutableMapOf<SidedOrientation, VoxelShape>()
+        shape.boundingBoxes.map { getOrientedShapes(it) }
+            .forEach { map -> acc.mergeAll(map, VoxelShapes::union) }
+        return acc
+    }
+
     fun getWireConflictShapes(wireWidth: Double, wireHeight: Double): EnumMap<Direction, VoxelShape> {
         return getRotatedShapes(
             Box(
@@ -155,5 +176,14 @@ object BoundingBoxUtils {
                 }
             )
         )
+    }
+
+    fun isTouching(hitVec: Vec3d, shape: VoxelShape): Boolean {
+        for (box in shape.boundingBoxes) {
+            if (box.expand(0.01).contains(hitVec)) {
+                return true
+            }
+        }
+        return false
     }
 }

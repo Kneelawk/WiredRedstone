@@ -99,7 +99,7 @@ sealed class GateNotBlockNode : AbstractGateBlockNode<GateNotPart>(GateNotPart::
 
     object Decoder : BlockNodeDecoder {
         override fun createBlockNodeFromTag(tag: NbtElement?): BlockNode? {
-            return BlockNodeUtil.readSidedTyped<Type>(tag) { side, type ->
+            return BlockNodeUtil.readSidedTyped<Type>(tag) { side, type, _ ->
                 when (type) {
                     Type.INPUT -> Input(side)
                     Type.OUTPUT -> Output(side)

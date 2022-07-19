@@ -1,10 +1,7 @@
 package com.kneelawk.wiredredstone.item
 
 import com.kneelawk.wiredredstone.WRConstants
-import com.kneelawk.wiredredstone.part.GateDiodePart
-import com.kneelawk.wiredredstone.part.GateNotPart
-import com.kneelawk.wiredredstone.part.GateRepeaterPart
-import com.kneelawk.wiredredstone.part.WRParts
+import com.kneelawk.wiredredstone.part.*
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder
 import net.minecraft.item.Item
 import net.minecraft.item.ItemGroup
@@ -62,6 +59,26 @@ object WRItems {
             GateDiodePart(WRParts.GATE_DIODE, holder, side, 0u, direction, 0, 0, 0)
         }
     }
+    val GATE_AND by lazy {
+        SimpleGateItem(WIRED_REDSTONE_ITEM_SETTINGS) { holder, side, direction ->
+            GateAndPart(WRParts.GATE_AND, holder, side, 0u, direction, 0, 0, 0, 0, 0, true, true, true)
+        }
+    }
+    val GATE_OR by lazy {
+        SimpleGateItem(WIRED_REDSTONE_ITEM_SETTINGS) { holder, side, direction ->
+            GateOrPart(WRParts.GATE_OR, holder, side, 0u, direction, 0, 0, 0, 0, 0, true, true, true)
+        }
+    }
+    val GATE_NAND by lazy {
+        SimpleGateItem(WIRED_REDSTONE_ITEM_SETTINGS) { holder, side, direction ->
+            GateNandPart(WRParts.GATE_NAND, holder, side, 0u, direction, 0, 0, 0, 15, 0, true, true, true)
+        }
+    }
+    val GATE_NOR by lazy {
+        SimpleGateItem(WIRED_REDSTONE_ITEM_SETTINGS) { holder, side, direction ->
+            GateNorPart(WRParts.GATE_NOR, holder, side, 0u, direction, 0, 0, 0, 15, 0, true, true, true)
+        }
+    }
     val GATE_NOT by lazy {
         SimpleGateItem(WIRED_REDSTONE_ITEM_SETTINGS) { holder, side, direction ->
             GateNotPart(WRParts.GATE_NOT, holder, side, 0u, direction, 0, 15, 0)
@@ -70,6 +87,13 @@ object WRItems {
     val GATE_REPEATER by lazy {
         SimpleGateItem(WIRED_REDSTONE_ITEM_SETTINGS) { holder, side, direction ->
             GateRepeaterPart(WRParts.GATE_REPEATER, holder, side, 0u, direction, 0, 0, 0, 0, 0, false)
+        }
+    }
+    val GATE_RS_LATCH by lazy {
+        SimpleGateItem(WIRED_REDSTONE_ITEM_SETTINGS) { holder, side, direction ->
+            GateRSLatchPart(
+                WRParts.GATE_RS_LATCH, holder, side, 0u, direction, GateRSLatchPart.LatchState.RESET, true, 0, 0, 0, 0
+            )
         }
     }
 
@@ -121,8 +145,13 @@ object WRItems {
         register(BLACK_BUNDLED_CABLE, "black_bundled_cable")
 
         register(GATE_DIODE, "gate_diode")
+        register(GATE_AND, "gate_and")
+        register(GATE_OR, "gate_or")
+        register(GATE_NAND, "gate_nand")
+        register(GATE_NOR, "gate_nor")
         register(GATE_NOT, "gate_not")
         register(GATE_REPEATER, "gate_repeater")
+        register(GATE_RS_LATCH, "gate_rs_latch")
 
         register(REDSTONE_ALLOY_INGOT, "redstone_alloy_ingot")
         register(STONE_PLATE, "stone_plate")

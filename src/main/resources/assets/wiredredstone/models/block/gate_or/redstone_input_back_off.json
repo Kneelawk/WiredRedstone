@@ -1,0 +1,7 @@
+{
+  "credit": "Made with Blockbench",
+  "parent": "wiredredstone:block/gate_or/redstone_input_back",
+  "textures": {
+    "redstone": "wiredredstone:block/gate_or/redstone_input_back_off"
+  }
+}

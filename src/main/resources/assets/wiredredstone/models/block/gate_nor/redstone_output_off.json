@@ -1,0 +1,7 @@
+{
+  "credit": "Made with Blockbench",
+  "parent": "wiredredstone:block/gate_nor/redstone_output",
+  "textures": {
+    "redstone": "wiredredstone:block/gate_nor/redstone_output_off"
+  }
+}
