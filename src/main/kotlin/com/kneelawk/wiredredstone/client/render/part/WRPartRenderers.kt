@@ -26,6 +26,7 @@ object WRPartRenderers {
         register(GateNorPartBaker, GateNorPartKey::class)
         register(GateNotPartBaker, GateNotPartKey::class)
         register(GateOrPartBaker, GateOrPartKey::class)
+        register(GateProjectorSimplePartBaker, GateProjectorSimplePartKey::class)
         register(GateRepeaterPartBaker, GateRepeaterPartKey::class)
         register(GateRSLatchPartBaker, GateRSLatchPartKey::class)
 

@@ -1,0 +1,35 @@
+{
+  "credit": "Made with Blockbench",
+  "parent": "wiredredstone:block/flat",
+  "textures": {
+    "particle": "wiredredstone:block/gate_projector_simple/particle"
+  },
+  "elements": [
+    {
+      "from": [ 7, 3, 10 ],
+      "to": [ 9, 6, 12 ],
+      "shade": false,
+      "faces": {
+        "up": { "uv": [ 7, 6, 9, 8 ], "texture": "#torch" }
+      }
+    },
+    {
+      "from": [ 0, 3, 10 ],
+      "to": [ 16, 12, 12 ],
+      "shade": false,
+      "faces": {
+        "north": { "uv": [ 0, 0, 16, 9 ], "texture": "#torch" },
+        "south": { "uv": [ 0, 0, 16, 9 ], "texture": "#torch" }
+      }
+    },
+    {
+      "from": [ 7, 3, 3 ],
+      "to": [ 9, 12, 19 ],
+      "shade": false,
+      "faces": {
+        "east": { "uv": [ 0, 0, 16, 9 ], "texture": "#torch" },
+        "west": { "uv": [ 0, 0, 16, 9 ], "texture": "#torch" }
+      }
+    }
+  ]
+}

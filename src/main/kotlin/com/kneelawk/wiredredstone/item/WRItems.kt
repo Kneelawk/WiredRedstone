@@ -96,6 +96,11 @@ object WRItems {
             )
         }
     }
+    val GATE_PROJECTOR_SIMPLE by lazy {
+        SimpleGateItem(WIRED_REDSTONE_ITEM_SETTINGS) { holder, side, direction ->
+            GateProjectorSimplePart(WRParts.GATE_PROJECTOR_SIMPLE, holder, side, 0u, direction, 0, 0)
+        }
+    }
 
     // Crafting Materials
     val REDSTONE_ALLOY_INGOT by lazy { Item(WIRED_REDSTONE_ITEM_SETTINGS) }
@@ -152,6 +157,7 @@ object WRItems {
         register(GATE_NOT, "gate_not")
         register(GATE_REPEATER, "gate_repeater")
         register(GATE_RS_LATCH, "gate_rs_latch")
+        register(GATE_PROJECTOR_SIMPLE, "gate_projector_simple")
 
         register(REDSTONE_ALLOY_INGOT, "redstone_alloy_ingot")
         register(STONE_PLATE, "stone_plate")

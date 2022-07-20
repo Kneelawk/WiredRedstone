@@ -82,7 +82,7 @@ class PhantomRedstoneChunk : StorageChunk {
         nbt.put("refs", list)
     }
 
-    fun get(pos: BlockPos): Set<PhantomRedstoneRef> = refs.get(ChunkSectionPos.packLocal(pos))
+    fun get(pos: BlockPos): Set<PhantomRedstoneRef> = refs.getOrDefault(ChunkSectionPos.packLocal(pos), emptySet())
 
     fun add(pos: BlockPos, ref: PhantomRedstoneRef) {
         val localCoord = ChunkSectionPos.packLocal(pos)
