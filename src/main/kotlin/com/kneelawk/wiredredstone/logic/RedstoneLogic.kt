@@ -12,6 +12,7 @@ import com.kneelawk.wiredredstone.util.constrainedMaxOf
 import com.kneelawk.wiredredstone.util.node
 import it.unimi.dsi.fastutil.longs.LongLinkedOpenHashSet
 import it.unimi.dsi.fastutil.longs.LongSet
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
 import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
 import net.minecraft.server.world.ServerWorld
@@ -25,13 +26,17 @@ object RedstoneLogic {
     val scheduled = mutableMapOf<RegistryKey<World>, LongSet>()
     var wiresGivePower = true
 
+    fun init() {
+        ServerTickEvents.END_WORLD_TICK.register(::flushUpdates)
+    }
+
     fun scheduleUpdate(world: ServerWorld, pos: BlockPos) {
         // Could probably be optimised to only update the networks it needs to, but I can do that later.
         val set = scheduled.computeIfAbsent(world.registryKey) { LongLinkedOpenHashSet() }
         GraphLib.getController(world).getGraphsAt(pos).forEach(set::add)
     }
 
-    fun flushUpdates(world: ServerWorld) {
+    private fun flushUpdates(world: ServerWorld) {
         // I could theoretically do this in two passes, one for updating inputs, and one for updating outputs, but that
         // would not remove the 1-tick delay between wires connecting to inputs and outputs of gates, only the delay
         // between redstone dust connecting to inputs and wires connecting to outputs, causing inconsistent behavior

@@ -9,4 +9,13 @@ object WRLog {
     fun warn(msg: Any?) {
         log.warn(msg)
     }
+
+    fun warn(msg: String, p0: Any?, p1: Any?) {
+        log.warn(msg, p0, p1)
+    }
+
+    @JvmStatic
+    fun error(msg: String, p0: Any?, p1: Any?, p2: Any?) {
+        log.error(msg, p0, p1, p2)
+    }
 }

@@ -51,6 +51,12 @@ repositories {
             includeGroup("maven.modrinth")
         }
     }
+    maven("https://jitpack.io") {
+        name = "JitPack"
+        content {
+            includeGroup("com.github.LlamaLad7")
+        }
+    }
 //    mavenLocal()
 }
 
@@ -65,6 +71,12 @@ dependencies {
     modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
     val fabricKotlinVersion: String by project
     modImplementation("net.fabricmc:fabric-language-kotlin:$fabricKotlinVersion")
+
+    // Mixin Extras
+    val mixinExtrasVersion: String by project
+    implementation("com.github.LlamaLad7:MixinExtras:$mixinExtrasVersion")
+    annotationProcessor("com.github.LlamaLad7:MixinExtras:$mixinExtrasVersion")
+    include("com.github.LlamaLad7:MixinExtras:$mixinExtrasVersion")
 
     // LibMultiPart dependency
     val lmpVersion: String by project

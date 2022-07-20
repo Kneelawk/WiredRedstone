@@ -5,13 +5,13 @@ import com.kneelawk.wiredredstone.blockentity.WRBlockEntities
 import com.kneelawk.wiredredstone.compat.cc.CCIntegrationHandler
 import com.kneelawk.wiredredstone.item.WRItems
 import com.kneelawk.wiredredstone.logic.RedstoneLogic
+import com.kneelawk.wiredredstone.logic.phantom.PhantomRedstone
 import com.kneelawk.wiredredstone.net.WRNetworking
 import com.kneelawk.wiredredstone.node.WRBlockNodeDiscoverer
 import com.kneelawk.wiredredstone.node.WRBlockNodes
 import com.kneelawk.wiredredstone.part.WRParts
 import com.kneelawk.wiredredstone.recipe.WRRecipes
 import com.kneelawk.wiredredstone.screenhandler.WRScreenHandlers
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
 
 @Suppress("unused")
 fun init() {
@@ -27,8 +27,6 @@ fun init() {
 
     CCIntegrationHandler.init()
 
-    // Not sure where better to do this
-    ServerTickEvents.END_WORLD_TICK.register { world ->
-        RedstoneLogic.flushUpdates(world)
-    }
+    RedstoneLogic.init()
+    PhantomRedstone.init()
 }

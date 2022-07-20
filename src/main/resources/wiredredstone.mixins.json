@@ -12,5 +12,8 @@
     "RenderLayerAccessor",
     "RenderPhaseAccessor"
   ],
-  "mixins": [ ]
+  "mixins": [
+    "AbstractBlockStateMixin",
+    "ThreadedAnvilChunkStorageMixin"
+  ]
 }
