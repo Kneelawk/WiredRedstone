@@ -1,0 +1,22 @@
+{
+  "type": "wiredredstone:redstone_assembler_shaped",
+  "pattern": [
+    " R ",
+    "RER",
+    " R "
+  ],
+  "key": {
+    "R": {
+      "tag": "c:redstone_dusts"
+    },
+    "E": {
+      "tag": "c:ender_pearls"
+    }
+  },
+  "result": {
+    "item": "wiredredstone:ender_redstone_mixture",
+    "count": 1
+  },
+  "cookingtime": 40,
+  "energypertick": 5
+}

@@ -54,6 +54,10 @@
   "item.wiredredstone.redstone_inverting_cathode": "Redstone Inverting Cathode",
   "item.wiredredstone.redstone_delay_line": "Redstone Delay Line",
   "item.wiredredstone.redstone_wire_plate": "Redstone Wire Plate",
+  "item.wiredredstone.ender_redstone_mixture": "Ender Redstone Mixture",
+  "item.wiredredstone.obsidian_stick": "Obsidian Stick",
+  "item.wiredredstone.redstone_projector_torch": "Redstone Projector Torch",
+  "item.wiredredstone.redstone_projector_cathode": "Redstone Projector Cathode",
   "itemGroup.wiredredstone.wiredredstone": "Wired Redstone",
   "tooltip.wiredredstone.mod_name": "Wired Redstone",
   "tooltip.wiredredstone.redstone_wire.power": "Power: %d",
@@ -78,6 +82,8 @@
   "overlay.wiredredstone.gate_not.out": "OUT",
   "overlay.wiredredstone.gate_or.in": "IN",
   "overlay.wiredredstone.gate_or.out": "OUT",
+  "overlay.wiredredstone.gate_projector_simple.in": "IN",
+  "overlay.wiredredstone.gate_projector_simple.distance": "%d m",
   "overlay.wiredredstone.gate_repeater.in": "IN",
   "overlay.wiredredstone.gate_repeater.out": "OUT",
   "overlay.wiredredstone.gate_repeater.delay": "%.1f t",
@@ -90,6 +96,7 @@
   "tag.c.red_alloy_ingots": "Red Alloy Ingots",
   "tag.c.redstone_blocks": "Redstone Blocks",
   "tag.c.workbench": "Crafting Tables",
+  "tag.c.obsidian_rods": "Obsidian Rods",
   "tag.wiredredstone.colored_bundled_cables": "Colored Bundled Cables",
   "tag.wiredredstone.insulated_wires": "Insulated Wires"
 }

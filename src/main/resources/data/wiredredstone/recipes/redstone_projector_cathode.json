@@ -1,0 +1,21 @@
+{
+  "type": "wiredredstone:redstone_assembler_shaped",
+  "pattern": [
+    "T",
+    "C"
+  ],
+  "key": {
+    "T": {
+      "item": "wiredredstone:redstone_projector_torch"
+    },
+    "C": {
+      "item": "wiredredstone:redstone_cathode"
+    }
+  },
+  "result": {
+    "item": "wiredredstone:redstone_projector_cathode",
+    "count": 1
+  },
+  "cookingtime": 10,
+  "energypertick": 5
+}

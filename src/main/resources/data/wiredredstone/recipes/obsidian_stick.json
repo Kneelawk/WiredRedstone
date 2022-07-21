@@ -1,0 +1,18 @@
+{
+  "type": "wiredredstone:redstone_assembler_shaped",
+  "pattern": [
+    "O",
+    "O"
+  ],
+  "key": {
+    "O": {
+      "item": "minecraft:obsidian"
+    }
+  },
+  "result": {
+    "item": "wiredredstone:obsidian_stick",
+    "count": 1
+  },
+  "cookingtime": 200,
+  "energypertick": 5
+}

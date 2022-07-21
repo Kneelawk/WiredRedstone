@@ -1,15 +1,22 @@
 package com.kneelawk.wiredredstone.client.render.part
 
 import com.kneelawk.wiredredstone.WRConstants.id
+import com.kneelawk.wiredredstone.WRConstants.overlay
 import com.kneelawk.wiredredstone.client.render.*
 import com.kneelawk.wiredredstone.client.render.WRMaterials.POWERED_MATERIAL
 import com.kneelawk.wiredredstone.client.render.WRMaterials.UNPOWERED_MATERIAL
 import com.kneelawk.wiredredstone.client.render.WRSprites.RED_ALLOY_WIRE_POWERED_ID
 import com.kneelawk.wiredredstone.client.render.WRSprites.RED_ALLOY_WIRE_UNPOWERED_ID
 import com.kneelawk.wiredredstone.part.key.GateProjectorSimplePartKey
+import com.kneelawk.wiredredstone.util.FaceUtils
+import com.kneelawk.wiredredstone.util.RotationUtils
 import com.kneelawk.wiredredstone.util.bits.ConnectionUtils
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh
+import net.minecraft.client.render.RenderLayer
+import net.minecraft.client.render.VertexConsumerProvider
+import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.util.Identifier
+import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Vec3f
 import java.util.function.Consumer
 
@@ -20,6 +27,9 @@ object GateProjectorSimplePartBaker : AbstractPartBaker<GateProjectorSimplePartK
     private val TORCH_BASE = id("block/gate_projector_simple/torch_base")
     private val TORCH_OFF = id("block/gate_projector_simple/torch_off")
     private val TORCH_ON = id("block/gate_projector_simple/torch_on")
+
+    private val PROJECTOR_TARGET = id("textures/block/projector_target.png")
+    private val PROJECTOR_TARGET_HIGHLIGHT = id("textures/block/projector_target_highlight.png")
 
     override fun makeMesh(key: GateProjectorSimplePartKey): Mesh {
         val inputWireSpriteId =
@@ -70,5 +80,45 @@ object GateProjectorSimplePartBaker : AbstractPartBaker<GateProjectorSimplePartK
         out.accept(TORCH_BASE)
         out.accept(TORCH_OFF)
         out.accept(TORCH_ON)
+    }
+
+    override fun renderOverlayText(
+        key: GateProjectorSimplePartKey, stack: MatrixStack, provider: VertexConsumerProvider, light: Int
+    ) {
+        RenderUtils.renderPortText(
+            overlay("gate_projector_simple.in"), key.side, key.direction.opposite, 2.0 / 16.0, stack, provider, light
+        )
+        RenderUtils.renderOverlayText(
+            overlay("gate_projector_simple.distance", key.distance), key.side, key.direction, 0.5, 2.0 / 16.0,
+            6.0 / 16.0, HorizontalAlignment.CENTER, stack, provider, light
+        )
+
+        val outputEdge = RotationUtils.rotatedDirection(key.side, key.direction)
+
+        stack.push()
+        stack.translate(
+            (outputEdge.offsetX * key.distance).toDouble(), (outputEdge.offsetY * key.distance).toDouble(),
+            (outputEdge.offsetZ * key.distance).toDouble()
+        )
+
+        val model = stack.peek().positionMatrix
+
+        for (side in Direction.values()) {
+            val face = FaceUtils.getFaceForSide(side)
+            val tex = if (side == outputEdge) PROJECTOR_TARGET_HIGHLIGHT else PROJECTOR_TARGET
+            val buf = provider.getBuffer(RenderLayer.getTextSeeThrough(tex))
+
+            buf.vertex(model, face[0][0], face[0][1], face[0][2]).color(-1).texture(0f, 0f).light(15728880).next()
+            buf.vertex(model, face[1][0], face[1][1], face[1][2]).color(-1).texture(0f, 1f).light(15728880).next()
+            buf.vertex(model, face[2][0], face[2][1], face[2][2]).color(-1).texture(1f, 1f).light(15728880).next()
+            buf.vertex(model, face[3][0], face[3][1], face[3][2]).color(-1).texture(1f, 0f).light(15728880).next()
+
+            buf.vertex(model, face[3][0], face[3][1], face[3][2]).color(-1).texture(1f, 0f).light(15728880).next()
+            buf.vertex(model, face[2][0], face[2][1], face[2][2]).color(-1).texture(1f, 1f).light(15728880).next()
+            buf.vertex(model, face[1][0], face[1][1], face[1][2]).color(-1).texture(0f, 1f).light(15728880).next()
+            buf.vertex(model, face[0][0], face[0][1], face[0][2]).color(-1).texture(0f, 0f).light(15728880).next()
+        }
+
+        stack.pop()
     }
 }

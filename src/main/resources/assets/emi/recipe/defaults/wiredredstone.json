@@ -24,6 +24,10 @@
     "wiredredstone:redstone_cathode",
     "wiredredstone:redstone_inverting_cathode",
     "wiredredstone:redstone_delay_line",
-    "wiredredstone:redstone_wire_plate"
+    "wiredredstone:redstone_wire_plate",
+    "wiredredstone:ender_redstone_mixture",
+    "wiredredstone:obsidian_stick",
+    "wiredredstone:redstone_projector_torch",
+    "wiredredstone:redstone_projector_cathode"
   ]
 }

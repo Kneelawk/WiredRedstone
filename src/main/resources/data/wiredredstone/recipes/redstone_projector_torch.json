@@ -1,0 +1,21 @@
+{
+  "type": "wiredredstone:redstone_assembler_shaped",
+  "pattern": [
+    "M",
+    "S"
+  ],
+  "key": {
+    "M": {
+      "item": "wiredredstone:ender_redstone_mixture"
+    },
+    "S": {
+      "tag": "c:obsidian_rods"
+    }
+  },
+  "result": {
+    "item": "wiredredstone:redstone_projector_torch",
+    "count": 1
+  },
+  "cookingtime": 10,
+  "energypertick": 5
+}

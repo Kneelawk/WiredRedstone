@@ -110,6 +110,10 @@ object WRItems {
     val REDSTONE_INVERTING_CATHODE by lazy { Item(WIRED_REDSTONE_ITEM_SETTINGS) }
     val REDSTONE_DELAY_LINE by lazy { Item(WIRED_REDSTONE_ITEM_SETTINGS) }
     val REDSTONE_WIRE_PLATE by lazy { Item(WIRED_REDSTONE_ITEM_SETTINGS) }
+    val ENDER_REDSTONE_MIXTURE by lazy { Item(WIRED_REDSTONE_ITEM_SETTINGS) }
+    val OBSIDIAN_STICK by lazy { Item(WIRED_REDSTONE_ITEM_SETTINGS) }
+    val REDSTONE_PROJECTOR_TORCH by lazy { Item(WIRED_REDSTONE_ITEM_SETTINGS) }
+    val REDSTONE_PROJECTOR_CATHODE by lazy { Item(WIRED_REDSTONE_ITEM_SETTINGS) }
 
     fun init() {
         register(RED_ALLOY_WIRE, "red_alloy_wire")
@@ -166,6 +170,10 @@ object WRItems {
         register(REDSTONE_INVERTING_CATHODE, "redstone_inverting_cathode")
         register(REDSTONE_DELAY_LINE, "redstone_delay_line")
         register(REDSTONE_WIRE_PLATE, "redstone_wire_plate")
+        register(ENDER_REDSTONE_MIXTURE, "ender_redstone_mixture")
+        register(OBSIDIAN_STICK, "obsidian_stick")
+        register(REDSTONE_PROJECTOR_TORCH, "redstone_projector_torch")
+        register(REDSTONE_PROJECTOR_CATHODE, "redstone_projector_cathode")
     }
 
     private fun register(item: Item, name: String) {
