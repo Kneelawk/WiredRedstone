@@ -9,8 +9,7 @@ object WRConstants {
     const val SHADER_PREFIX = "shaders/core/"
     const val SHADER_CHECK_PREFIX = "shaders/core/$MOD_ID:"
 
-    const val DATA_DIRNAME = "data"
-    const val PHANTOM_REDSTONE_DIRNAME = "phantom_redstone"
+    const val PHANTOM_REDSTONE_NAME = "phantom_redstone"
 
     fun id(path: String): Identifier {
         return Identifier(MOD_ID, path)

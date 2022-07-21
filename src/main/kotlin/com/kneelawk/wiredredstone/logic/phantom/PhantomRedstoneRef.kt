@@ -15,17 +15,17 @@ interface PhantomRedstoneRef {
 
     fun getWeakRedstonePower(original: Int, world: ServerWorld, pos: BlockPos, oppositeFace: Direction): Lookup
 
-    sealed class Lookup {
-        abstract val power: Int
-        abstract val found: Boolean
+    sealed interface Lookup {
+        val power: Int
+        val found: Boolean
     }
 
-    data class Found(override val power: Int) : Lookup() {
+    data class Found(override val power: Int) : Lookup {
         override val found: Boolean
             get() = true
     }
 
-    object NotFound : Lookup() {
+    object NotFound : Lookup {
         override val power: Int
             get() = 0
         override val found: Boolean
