@@ -12,6 +12,7 @@ object WRBlocks {
     val REDSTONE_ASSEMBLER by lazy {
         RedstoneAssemblerBlock(
             FabricBlockSettings.of(Material.STONE, MapColor.RED)
+                .requiresTool().strength(3.5f)
                 .luminance { if (it[RedstoneAssemblerBlock.LIT] == true) 13 else 0 })
     }
 
