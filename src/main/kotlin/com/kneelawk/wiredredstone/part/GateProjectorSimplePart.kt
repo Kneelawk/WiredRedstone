@@ -8,7 +8,7 @@ import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
 import com.kneelawk.graphlib.graph.BlockNode
-import com.kneelawk.wiredredstone.item.ProjectionerItem
+import com.kneelawk.wiredredstone.item.ProjectionViewerItem
 import com.kneelawk.wiredredstone.item.WRItems
 import com.kneelawk.wiredredstone.logic.phantom.PhantomRedstone
 import com.kneelawk.wiredredstone.logic.phantom.SidedPartPhantomRedstoneRef
@@ -149,8 +149,8 @@ class GateProjectorSimplePart : AbstractGatePart, PhantomRedstoneProviderPart {
         } else {
             val stack = player.getStackInHand(hand)
 
-            if (player.isSneaking && stack.item == WRItems.PROJECTIONER) {
-                ProjectionerItem.setRef(stack, SidedPartPhantomRedstoneRef(getSidedPos()))
+            if (player.isSneaking && stack.item == WRItems.PROJECTION_VIEWER) {
+                ProjectionViewerItem.setRef(stack, SidedPartPhantomRedstoneRef(getSidedPos()))
             } else {
                 updateDistance((storedDistance + 1) % MAX_DISTANCE)
             }

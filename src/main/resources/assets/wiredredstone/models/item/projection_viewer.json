@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "wiredredstone:item/projectioner"
+    "layer0": "wiredredstone:item/projection_viewer"
   }
 }

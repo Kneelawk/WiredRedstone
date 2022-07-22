@@ -18,5 +18,5 @@ fun init() {
     WRGhostRenderer.init()
     WRScreens.init()
     WRTextRenderer.init()
-    WRProjectionerRenderer.init()
+    WRProjectionViewerRenderer.init()
 }

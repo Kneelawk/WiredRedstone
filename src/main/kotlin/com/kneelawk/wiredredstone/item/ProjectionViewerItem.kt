@@ -10,9 +10,9 @@ import net.minecraft.util.ActionResult
 import net.minecraft.util.Identifier
 import net.minecraft.util.hit.BlockHitResult
 
-class ProjectionerItem(settings: Settings) : Item(settings) {
+class ProjectionViewerItem(settings: Settings) : Item(settings) {
     companion object {
-        private const val NBT_KEY = "wiredredstone:projectioner"
+        private const val NBT_KEY = "wiredredstone:projection_viewer"
 
         fun setRef(stack: ItemStack, ref: PhantomRedstoneRef) {
             val nbt = NbtCompound()

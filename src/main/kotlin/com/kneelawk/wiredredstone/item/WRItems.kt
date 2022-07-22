@@ -106,7 +106,7 @@ object WRItems {
     }
 
     // Tools
-    val PROJECTIONER by lazy { ProjectionerItem(WIRED_REDSTONE_TOOL_SETTINGS) }
+    val PROJECTION_VIEWER by lazy { ProjectionViewerItem(WIRED_REDSTONE_TOOL_SETTINGS) }
 
     // Crafting Materials
     val REDSTONE_ALLOY_INGOT by lazy { Item(WIRED_REDSTONE_ITEM_SETTINGS) }
@@ -169,7 +169,7 @@ object WRItems {
         register(GATE_RS_LATCH, "gate_rs_latch")
         register(GATE_PROJECTOR_SIMPLE, "gate_projector_simple")
 
-        register(PROJECTIONER, "projectioner")
+        register(PROJECTION_VIEWER, "projection_viewer")
 
         register(REDSTONE_ALLOY_INGOT, "redstone_alloy_ingot")
         register(STONE_PLATE, "stone_plate")

@@ -1,12 +1,12 @@
 package com.kneelawk.wiredredstone.client.render
 
-import com.kneelawk.wiredredstone.item.ProjectionerItem
+import com.kneelawk.wiredredstone.item.ProjectionViewerItem
 import com.kneelawk.wiredredstone.item.WRItems
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 import net.minecraft.client.MinecraftClient
 
-object WRProjectionerRenderer {
+object WRProjectionViewerRenderer {
     fun init() {
         WorldRenderEvents.AFTER_ENTITIES.register(::render)
     }
@@ -15,13 +15,13 @@ object WRProjectionerRenderer {
         val mc = MinecraftClient.getInstance()
         val player = mc.player ?: return
 
-        val stack = if (player.mainHandStack.item == WRItems.PROJECTIONER) {
+        val stack = if (player.mainHandStack.item == WRItems.PROJECTION_VIEWER) {
             player.mainHandStack
-        } else if (player.offHandStack.item == WRItems.PROJECTIONER) {
+        } else if (player.offHandStack.item == WRItems.PROJECTION_VIEWER) {
             player.offHandStack
         } else return
 
-        val ref = ProjectionerItem.getRef(stack) ?: return
+        val ref = ProjectionViewerItem.getRef(stack) ?: return
 
         ref.renderProjection(context)
     }
