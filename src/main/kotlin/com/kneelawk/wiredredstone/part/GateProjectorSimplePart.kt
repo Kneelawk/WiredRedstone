@@ -8,6 +8,7 @@ import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
 import com.kneelawk.graphlib.graph.BlockNode
+import com.kneelawk.wiredredstone.item.ProjectionerItem
 import com.kneelawk.wiredredstone.item.WRItems
 import com.kneelawk.wiredredstone.logic.phantom.PhantomRedstone
 import com.kneelawk.wiredredstone.logic.phantom.SidedPartPhantomRedstoneRef
@@ -142,11 +143,17 @@ class GateProjectorSimplePart : AbstractGatePart, PhantomRedstoneProviderPart {
         }
     }
 
-    override fun onUse(player: PlayerEntity?, hand: Hand?, hit: BlockHitResult?): ActionResult {
+    override fun onUse(player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
         return if (isClientSide()) {
             ActionResult.SUCCESS
         } else {
-            updateDistance((storedDistance + 1) % MAX_DISTANCE)
+            val stack = player.getStackInHand(hand)
+
+            if (player.isSneaking && stack.item == WRItems.PROJECTIONER) {
+                ProjectionerItem.setRef(stack, SidedPartPhantomRedstoneRef(getSidedPos()))
+            } else {
+                updateDistance((storedDistance + 1) % MAX_DISTANCE)
+            }
 
             ActionResult.CONSUME
         }

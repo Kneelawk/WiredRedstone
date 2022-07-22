@@ -1,8 +1,10 @@
 package com.kneelawk.wiredredstone.util
 
 import alexiil.mc.lib.multipart.api.AbstractPart
+import alexiil.mc.lib.multipart.api.MultipartContainer
 import alexiil.mc.lib.multipart.api.property.MultipartPropertyContainer
 import net.minecraft.block.entity.BlockEntity
+import net.minecraft.util.math.Vec3d
 import net.minecraft.world.World
 
 /**
@@ -45,4 +47,19 @@ fun AbstractPart.redrawIfChanged() {
  */
 fun AbstractPart.isRemoved(): Boolean {
     return holder.container.getFirstPart { it === this } == null
+}
+
+/**
+ * Gets a part from a position vector
+ */
+fun MultipartContainer.getSelectedPart(vec: Vec3d): AbstractPart? {
+    return getFirstPart {
+        for (box in it.outlineShape.boundingBoxes) {
+            if (box.expand(0.01).contains(vec)) {
+                return@getFirstPart true
+            }
+        }
+
+        false
+    }
 }

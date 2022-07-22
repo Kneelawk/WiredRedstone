@@ -1,8 +1,14 @@
 package com.kneelawk.wiredredstone.logic.phantom
 
+import alexiil.mc.lib.multipart.api.AbstractPart
 import com.kneelawk.graphlib.util.SidedPos
+import com.kneelawk.wiredredstone.client.render.part.ProjectorPartBaker
+import com.kneelawk.wiredredstone.client.render.part.WRPartRenderers
 import com.kneelawk.wiredredstone.part.PhantomRedstoneProviderPart
 import com.kneelawk.wiredredstone.part.SidedPart
+import net.fabricmc.api.EnvType
+import net.fabricmc.api.Environment
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.nbt.NbtElement
 import net.minecraft.server.world.ServerWorld
@@ -35,6 +41,26 @@ data class SidedPartPhantomRedstoneRef(val pos: SidedPos) : PhantomRedstoneRef {
         val part =
             SidedPart.getPart(world, this.pos) as? PhantomRedstoneProviderPart ?: return PhantomRedstoneRef.NotFound
         return PhantomRedstoneRef.Found(part.getWeakRedstonePower(original, world, pos, oppositeFace))
+    }
+
+    @Environment(EnvType.CLIENT)
+    override fun renderProjection(context: WorldRenderContext) {
+        val stack = context.matrixStack()
+
+        val key = (SidedPart.getPart(context.world(), pos) as? AbstractPart)?.modelKey ?: return
+
+        val baker = WRPartRenderers.bakerFor(key::class) as? ProjectorPartBaker ?: return
+
+        val provider = context.consumers() ?: return
+        val cameraPos = context.camera().pos
+        val projectorPos = pos.pos
+
+        stack.push()
+        stack.translate(projectorPos.x - cameraPos.x, projectorPos.y - cameraPos.y, projectorPos.z - cameraPos.z)
+
+        baker.renderProjectorTarget(key, stack, provider)
+
+        stack.pop()
     }
 
     object Decoder : PhantomRedstoneRefDecoder {

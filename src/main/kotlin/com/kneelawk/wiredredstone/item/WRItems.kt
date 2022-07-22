@@ -14,6 +14,9 @@ object WRItems {
         FabricItemGroupBuilder.build(WRConstants.id("wiredredstone")) { ItemStack(RED_ALLOY_WIRE) }
     }
     val WIRED_REDSTONE_ITEM_SETTINGS: Item.Settings by lazy { Item.Settings().group(WIRED_REDSTONE_ITEM_GROUP) }
+    val WIRED_REDSTONE_TOOL_SETTINGS: Item.Settings by lazy {
+        Item.Settings().group(WIRED_REDSTONE_ITEM_GROUP).maxCount(1)
+    }
 
     // Wires
     val RED_ALLOY_WIRE by lazy { RedAlloyWireItem(WIRED_REDSTONE_ITEM_SETTINGS) }
@@ -102,6 +105,9 @@ object WRItems {
         }
     }
 
+    // Tools
+    val PROJECTIONER by lazy { ProjectionerItem(WIRED_REDSTONE_TOOL_SETTINGS) }
+
     // Crafting Materials
     val REDSTONE_ALLOY_INGOT by lazy { Item(WIRED_REDSTONE_ITEM_SETTINGS) }
     val STONE_PLATE by lazy { Item(WIRED_REDSTONE_ITEM_SETTINGS) }
@@ -162,6 +168,8 @@ object WRItems {
         register(GATE_REPEATER, "gate_repeater")
         register(GATE_RS_LATCH, "gate_rs_latch")
         register(GATE_PROJECTOR_SIMPLE, "gate_projector_simple")
+
+        register(PROJECTIONER, "projectioner")
 
         register(REDSTONE_ALLOY_INGOT, "redstone_alloy_ingot")
         register(STONE_PLATE, "stone_plate")

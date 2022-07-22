@@ -20,7 +20,8 @@ import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Vec3f
 import java.util.function.Consumer
 
-object GateProjectorSimplePartBaker : AbstractPartBaker<GateProjectorSimplePartKey>() {
+object GateProjectorSimplePartBaker : AbstractPartBaker<GateProjectorSimplePartKey>(),
+    ProjectorPartBaker<GateProjectorSimplePartKey> {
     private val BACKGROUND = id("block/gate_projector_simple/background")
     private val INPUT_OFF = id("block/gate_projector_simple/redstone_input_off")
     private val INPUT_ON = id("block/gate_projector_simple/redstone_input_on")
@@ -93,6 +94,12 @@ object GateProjectorSimplePartBaker : AbstractPartBaker<GateProjectorSimplePartK
             6.0 / 16.0, HorizontalAlignment.CENTER, stack, provider, light
         )
 
+        renderProjectorTarget(key, stack, provider)
+    }
+
+    override fun renderProjectorTarget(
+        key: GateProjectorSimplePartKey, stack: MatrixStack, provider: VertexConsumerProvider
+    ) {
         val outputEdge = RotationUtils.rotatedDirection(key.side, key.direction)
 
         stack.push()
