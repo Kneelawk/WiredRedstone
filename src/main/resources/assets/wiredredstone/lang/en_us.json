@@ -63,6 +63,7 @@
   "tooltip.wiredredstone.mod_name": "Wired Redstone",
   "tooltip.wiredredstone.redstone_wire.power": "Power: %d",
   "tooltip.wiredredstone.gate_repeater.delay": "Delay: %.1f Ticks",
+  "tooltip.wiredredstone.projection_viewer.description": "Shift-Right-Click on a Redstone Projector to select",
   "tooltip.wiredredstone.redstone_assembler.energy": "%d / %d E",
   "tooltip.wiredredstone.redstone_assembler.mode": "Mode: %s",
   "tooltip.wiredredstone.redstone_assembler.mode.assembler": "Redstone Assembler",

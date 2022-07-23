@@ -1,14 +1,19 @@
 package com.kneelawk.wiredredstone.item
 
+import com.kneelawk.wiredredstone.WRConstants.tooltip
 import com.kneelawk.wiredredstone.logic.phantom.PhantomRedstone
 import com.kneelawk.wiredredstone.logic.phantom.PhantomRedstoneRef
+import net.minecraft.client.item.TooltipContext
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.item.ItemUsageContext
 import net.minecraft.nbt.NbtCompound
+import net.minecraft.text.Text
 import net.minecraft.util.ActionResult
+import net.minecraft.util.Formatting
 import net.minecraft.util.Identifier
 import net.minecraft.util.hit.BlockHitResult
+import net.minecraft.world.World
 
 class ProjectionViewerItem(settings: Settings) : Item(settings) {
     companion object {
@@ -40,5 +45,11 @@ class ProjectionViewerItem(settings: Settings) : Item(settings) {
             context.world, context.player, context.hand,
             BlockHitResult(context.hitPos, context.side, context.blockPos, context.hitsInsideBlock())
         )
+    }
+
+    override fun appendTooltip(
+        stack: ItemStack, world: World?, tooltip: MutableList<Text>, context: TooltipContext
+    ) {
+        tooltip.add(tooltip("projection_viewer.description").styled { it.withColor(Formatting.GRAY).withItalic(true) })
     }
 }
