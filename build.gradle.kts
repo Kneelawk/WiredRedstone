@@ -45,6 +45,7 @@ repositories {
     maven("https://maven.shedaniel.me/") { name = "shedaniel" }
     maven("https://kneelawk.com/maven/") { name = "Kneelawk" }
     maven("https://maven.bai.lol") { name = "WTHIT" }
+    maven("https://squiddev.cc/maven") { name = "SquidDev" }
     maven("https://api.modrinth.com/maven") {
         name = "Modrinth"
         content {
@@ -143,6 +144,12 @@ dependencies {
     modRuntimeOnly("me.shedaniel.cloth.api:cloth-utils-v1:$clothApiVersion") {
         exclude("net.fabricmc.fabric-api")
     }
+    val cobaltVersion: String by project
+    modRuntimeOnly("org.squiddev:Cobalt:$cobaltVersion") {
+        exclude("net.fabricmc.fabric-api")
+    }
+    val nettyVersion: String by project
+    runtimeOnly("io.netty:netty-codec-http:$nettyVersion")
     val nightConfigVersion: String by project
     runtimeOnly("com.electronwill.night-config:toml:$nightConfigVersion")
 
