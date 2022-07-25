@@ -4,6 +4,7 @@ import alexiil.mc.lib.multipart.api.MultipartUtil
 import com.kneelawk.graphlib.GraphLib
 import com.kneelawk.graphlib.graph.BlockGraphController
 import com.kneelawk.graphlib.graph.SidedBlockNode
+import com.kneelawk.graphlib.util.SidedPos
 import com.kneelawk.graphlib.wire.SidedWireBlockNode
 import com.kneelawk.graphlib.wire.WireConnectionType
 import com.kneelawk.wiredredstone.part.BlockablePart
@@ -130,16 +131,30 @@ object ConnectableUtils {
     }
 
     fun shouldUpdateConnectionsForNeighborUpdate(
-        shapeCache: MutableMap<BlockPos, VoxelShape>, world: ServerWorld, yourPos: BlockPos, otherPos: BlockPos
+        shapeCache: MutableMap<Direction, VoxelShape>, world: ServerWorld, yourPos: SidedPos, otherPos: BlockPos
     ): Boolean {
-        return shouldUpdateForNeighborUpdate(shapeCache, yourPos, otherPos, {
-            val state = world.getBlockState(otherPos)
-            state.getOutlineShape(world, otherPos)
-        }, { prev, cur ->
+        val offset = otherPos.subtract(yourPos.pos)
+        val offsetDir = Direction.fromVector(offset)
+
+        // Things not adjacent to the wire cannot block connections.
+        // Things above or below the wire cannot block connections.
+        if (offsetDir == null || offsetDir.axis == yourPos.side.axis) return false
+
+        // do the actual shape check
+        val previous = shapeCache[offsetDir]
+        val current = world.getBlockState(otherPos).getOutlineShape(world, otherPos)
+
+        return if (previous != null) {
             // Identity checking here is about the best we can do if we want to be fast. This works because most
             // blocks re-use the same VoxelShape objects if they want to keep their shapes.
-            prev !== cur
-        })
+            if (previous !== current) {
+                shapeCache[offsetDir] = current
+                true
+            } else false
+        } else {
+            shapeCache[offsetDir] = current
+            true
+        }
     }
 
     inline fun <T> shouldUpdateForNeighborUpdate(
