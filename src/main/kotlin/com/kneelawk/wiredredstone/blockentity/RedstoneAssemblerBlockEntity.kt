@@ -328,6 +328,8 @@ class RedstoneAssemblerBlockEntity(pos: BlockPos, state: BlockState) :
     }
 
     fun canAcceptOutput(output: ItemStack): Boolean {
+        var remainingOutput = output.count
+
         for (i in OUTPUT_START_SLOT until OUTPUT_STOP_SLOT) {
             val existing = inventory[i]
             if (existing.isEmpty) {
@@ -335,14 +337,14 @@ class RedstoneAssemblerBlockEntity(pos: BlockPos, state: BlockState) :
             }
 
             if (output.isStackable && ItemStack.canCombine(existing, output)) {
-                if (existing.count + output.count <= existing.maxCount) {
+                if (existing.count + remainingOutput <= existing.maxCount) {
                     return true
                 } else if (existing.count < existing.maxCount) {
-                    output.decrement(existing.maxCount - existing.count)
+                    remainingOutput -= existing.maxCount - existing.count
                 }
             }
 
-            if (output.isEmpty) {
+            if (remainingOutput == 0) {
                 return true
             }
         }
