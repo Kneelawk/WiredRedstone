@@ -64,6 +64,9 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
     }
 
     override fun onAdded(bus: MultipartEventBus) {
+        // nothing here needs to be done on the client
+        if (getWorld().isClient) return
+
         ctx = holder.container.getFirstPart(AbstractSidedPart::class.java)?.ctx ?: SidedPartContext(bus)
         ctx!!.setPart(side, this)
 
@@ -144,7 +147,8 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
     }
 
     override fun onRemoved() {
-        ctx!!.setPart(side, null)
+        ctx.requireNonNull("Tried to remove a part before it was added! (SidedPartContext is still null)")
+            .setPart(side, null)
 
         val world = getWorld()
         if (!world.isClient && world is ServerWorld) {

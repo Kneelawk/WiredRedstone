@@ -51,6 +51,30 @@ repositories {
             includeGroup("maven.modrinth")
         }
     }
+
+    // Create stuff
+    maven("https://mvn.devos.one/snapshots/") { name = "Create" }
+    maven("https://ladysnake.jfrog.io/artifactory/mods") { name = "Ladysnake" }
+    maven("https://cursemaven.com") {
+        // for Forge Config API Port
+        name = "Curse"
+        content {
+            includeGroup("curse.maven")
+        }
+    }
+    maven("https://maven.tterrag.com/") { name = "Flywheel" }
+    maven("https://maven.cafeteria.dev") { name = "Cafeteria" } // for Fake Player API
+    maven("https://maven.jamieswhiteshirt.com/libs-release") // for Reach Entity Attributes
+    maven("https://jitpack.io/") {
+        name = "JitPack"
+        content {
+            includeGroup("com.github.AlphaMode")
+            includeGroup("com.github.Chocohead")
+            includeGroup("com.github.Draylar.omega-config")
+            includeGroup("com.github.LlamaLad7")
+        }
+    }
+
 //    mavenLocal()
 }
 
@@ -104,6 +128,51 @@ dependencies {
     val emiVersion: String by project
     modCompileOnly("dev.emi:emi:$emiVersion")
 
+    // Create
+    val createVersion: String by project
+    modCompileOnly("com.simibubi.create:create-fabric-$minecraftVersion:$createVersion") {
+        exclude("net.fabricmc.fabric-api")
+    }
+    val portLibVersion: String by project
+    val portLibHash: String by project
+    modCompileOnly("io.github.fabricators_of_create:Porting-Lib:$portLibVersion+$minecraftVersion-dev.$portLibHash") {
+        exclude("net.fabricmc.fabric-api")
+    }
+    val forgeTagsVersion: String by project
+    modCompileOnly("me.alphamode:ForgeTags:$forgeTagsVersion") {
+        exclude("net.fabricmc.fabric-api")
+    }
+    val nightConfigVersion: String by project
+    compileOnly("com.electronwill.night-config:core:$nightConfigVersion")
+    compileOnly("com.electronwill.night-config:toml:$nightConfigVersion")
+    val configApiId: String by project
+    modCompileOnly("curse.maven:forge-config-api-port-fabric-547434:$configApiId") {
+        exclude("net.fabricmc.fabric-api")
+    }
+    val registrateVersion: String by project
+    modCompileOnly("com.tterrag.registrate:Registrate:$registrateVersion") {
+        exclude("net.fabricmc.fabric-api")
+    }
+    val flywheelVersion: String by project
+    val flywheelMinecraftVersion: String by project
+    modCompileOnly("com.jozufozu.flywheel:flywheel-fabric-$flywheelMinecraftVersion:$flywheelVersion") {
+        exclude("net.fabricmc.fabric-api")
+    }
+    val reachEntityAttributesVersion: String by project
+    modCompileOnly("com.jamieswhiteshirt:reach-entity-attributes:$reachEntityAttributesVersion") {
+        exclude("net.fabricmc.fabric-api")
+    }
+    val fakePlayerApiVersion: String by project
+    modCompileOnly("dev.cafeteria:fake-player-api:$fakePlayerApiVersion") {
+        exclude("net.fabricmc.fabric-api")
+    }
+    val milkLibVersion: String by project
+    modCompileOnly("io.github.tropheusj:milk-lib:$milkLibVersion") {
+        exclude("net.fabricmc.fabric-api")
+    }
+    val jsr305Version: String by project
+    compileOnly("com.google.code.findbugs:jsr305:$jsr305Version")
+
     //
     // Optional Mod Dependencies
     //
@@ -119,6 +188,10 @@ dependencies {
         exclude("net.fabricmc.fabric-api")
     }
 
+    // Common
+    runtimeOnly("com.electronwill.night-config:core:$nightConfigVersion")
+    runtimeOnly("com.electronwill.night-config:toml:$nightConfigVersion")
+
     // CC: Restitched
     modRuntimeOnly("maven.modrinth:cc-restitched:$ccRestitchedVersion")
     val clothConfigVersion: String by project
@@ -129,8 +202,6 @@ dependencies {
     modRuntimeOnly("me.shedaniel.cloth.api:cloth-utils-v1:$clothApiVersion") {
         exclude("net.fabricmc.fabric-api")
     }
-    val nightConfigVersion: String by project
-    runtimeOnly("com.electronwill.night-config:toml:$nightConfigVersion")
 
     // REI
 //    modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:$reiVersion") {
@@ -142,6 +213,36 @@ dependencies {
         exclude("net.fabricmc")
         exclude("net.fabricmc.fabric-api")
     }
+
+    // Create
+    modRuntimeOnly("com.simibubi.create:create-fabric-$minecraftVersion:$createVersion") {
+        exclude("net.fabricmc.fabric-api")
+    }
+    modRuntimeOnly("io.github.fabricators_of_create:Porting-Lib:$portLibVersion+$minecraftVersion-dev.$portLibHash") {
+        exclude("net.fabricmc.fabric-api")
+    }
+    modRuntimeOnly("me.alphamode:ForgeTags:$forgeTagsVersion") {
+        exclude("net.fabricmc.fabric-api")
+    }
+    modRuntimeOnly("curse.maven:forge-config-api-port-fabric-547434:$configApiId") {
+        exclude("net.fabricmc.fabric-api")
+    }
+    modRuntimeOnly("com.tterrag.registrate:Registrate:$registrateVersion") {
+        exclude("net.fabricmc.fabric-api")
+    }
+    modRuntimeOnly("com.jozufozu.flywheel:flywheel-fabric-$flywheelMinecraftVersion:$flywheelVersion") {
+        exclude("net.fabricmc.fabric-api")
+    }
+    modRuntimeOnly("com.jamieswhiteshirt:reach-entity-attributes:$reachEntityAttributesVersion") {
+        exclude("net.fabricmc.fabric-api")
+    }
+    modRuntimeOnly("dev.cafeteria:fake-player-api:$fakePlayerApiVersion") {
+        exclude("net.fabricmc.fabric-api")
+    }
+    modRuntimeOnly("io.github.tropheusj:milk-lib:$milkLibVersion") {
+        exclude("net.fabricmc.fabric-api")
+    }
+    runtimeOnly("com.google.code.findbugs:jsr305:$jsr305Version")
 
     // Quiltflower
     // Probably best to just use the IDEA plugin instead
