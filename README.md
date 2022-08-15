@@ -86,6 +86,12 @@ Many Wired Redstone gates and wires will show extra information in the WTHIT HUD
 
 [WTHIT]: https://modrinth.com/mod/wthit
 
+## Known Issues
+
+* LibMultiPart blocks (meaning all wires, gates, etc.) will crash when moved by Create
+  contraptions (**[#15](https://github.com/Kneelawk/WiredRedstone/issues/15)**). I am working on finding a solution to
+  this, but I am not sure when it will be ready.
+
 ## Powered by GraphLib
 
 Wired Redstone uses [GraphLib] for managing its wires connections. Sometimes you might encounter a strange mod
