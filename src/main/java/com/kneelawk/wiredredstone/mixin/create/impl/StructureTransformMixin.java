@@ -14,9 +14,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 /**
  * This mixin gets Create and LMP to play nice together while also allowing wires' custom rotation logic to work.
  */
-@Mixin(StructureTransform.class)
+@Mixin(value = StructureTransform.class, remap = false)
 public class StructureTransformMixin {
-    @Inject(remap = false, method = "apply(Lnet/minecraft/block/BlockState;)Lnet/minecraft/block/BlockState;", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "apply(Lnet/minecraft/block/BlockState;)Lnet/minecraft/block/BlockState;", at = @At("HEAD"), cancellable = true)
     private void onApplyBlockState(BlockState state, CallbackInfoReturnable<BlockState> cir) {
         if (state.getBlock() == LibMultiPart.BLOCK) {
             // immediately cancel here because otherwise apply will call mirror which crashes
@@ -24,10 +24,10 @@ public class StructureTransformMixin {
         }
     }
 
-    @Inject(remap = false, method = "apply(Lnet/minecraft/block/entity/BlockEntity;)V", at = @At("HEAD"))
+    @Inject(method = "apply(Lnet/minecraft/block/entity/BlockEntity;)V", at = @At("HEAD"))
     private void onApplyTileEntity(BlockEntity te, CallbackInfo ci) {
         if (te instanceof MultipartBlockEntity multi && multi.isServerWorld()) {
-            // For some reason, create forgets to call cancelRemoval on BlockEntities, meaning that parts' onAdded
+            // For some reason, cancelRemoval never gets called on BlockEntities, meaning that parts' onAdded
             // methods never get called.
             multi.cancelRemoval();
 

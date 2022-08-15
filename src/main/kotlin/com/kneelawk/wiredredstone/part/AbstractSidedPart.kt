@@ -3,7 +3,10 @@ package com.kneelawk.wiredredstone.part
 import alexiil.mc.lib.multipart.api.*
 import alexiil.mc.lib.multipart.api.event.NeighbourUpdateEvent
 import alexiil.mc.lib.multipart.api.event.PartAddedEvent
+import alexiil.mc.lib.multipart.api.event.PartContainerState.Invalidate
+import alexiil.mc.lib.multipart.api.event.PartContainerState.Validate
 import alexiil.mc.lib.multipart.api.event.PartRemovedEvent
+import alexiil.mc.lib.multipart.api.event.PartTickEvent
 import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
@@ -40,9 +43,14 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
 
     private val shapeCache = mutableMapOf<BlockPos, VoxelShape>()
 
+    private var noBreak = false
+
     constructor(definition: PartDefinition, holder: MultipartHolder, tag: NbtCompound) : this(
         definition, holder, Direction.byId(tag.getByte("side").toInt())
-    )
+    ) {
+        // defaults to false
+        noBreak = tag.getBoolean("noBreak")
+    }
 
     constructor(definition: PartDefinition, holder: MultipartHolder, buffer: NetByteBuf, ctx: IMsgReadCtx) : this(
         definition, holder, Direction.byId(buffer.readFixedBits(3))
@@ -51,6 +59,11 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
     override fun toTag(): NbtCompound {
         val tag = super.toTag()
         tag.putByte("side", side.id.toByte())
+
+        if (noBreak) {
+            tag.putBoolean("noBreak", true)
+        }
+
         return tag
     }
 
@@ -67,13 +80,20 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
         // nothing here needs to be done on the client
         if (getWorld().isClient) return
 
-        ctx = holder.container.getFirstPart(AbstractSidedPart::class.java)?.ctx ?: SidedPartContext(bus)
+        ctx = holder.container.getFirstPart(AbstractSidedPart::class.java) { it.ctx != null }?.ctx
+            ?: SidedPartContext(bus)
         ctx!!.setPart(side, this)
+
+        bus.addListener(this, PartTickEvent::class.java) {
+            if (!getWorld().isClient) {
+                noBreak = false
+            }
+        }
 
         bus.addListener(this, NeighbourUpdateEvent::class.java) {
             val world = getWorld()
             if (world is ServerWorld) {
-                if (shouldBreak()) {
+                if (shouldBreak() && !noBreak) {
                     removeAndDrop()
                 } else {
                     // updating connections is expensive, so we want to make sure we *really* need to do it first
@@ -163,5 +183,9 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
     @Environment(EnvType.CLIENT)
     override fun getPartName(hitResult: BlockHitResult?): Text {
         return getPickStack(hitResult).name
+    }
+
+    fun setNoBreak() {
+        noBreak = true
     }
 }
