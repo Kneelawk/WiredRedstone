@@ -118,9 +118,16 @@ class RedstoneAssemblerBlockEntity(pos: BlockPos, state: BlockState) :
 
                 // step recipes along, attempting to complete them if possible
                 if (hasEnergy()) {
-                    when (mode) {
-                        Mode.ASSEMBLER -> {
-                            val recipe = getAssemblerRecipe()
+                    if (cachedRecipe == RecipeHolder.None) {
+                        cachedRecipe = when (mode) {
+                            Mode.ASSEMBLER -> RecipeHolder.Assembling(getAssemblerRecipe())
+                            Mode.CRAFTING_TABLE -> RecipeHolder.Crafting(getCraftingRecipe())
+                        }
+                    }
+
+                    when (val cached = cachedRecipe) {
+                        is RecipeHolder.Assembling -> {
+                            val recipe = cached.recipe
 
                             if (recipe != null && energyStorage.amount >= recipe.energyPerTick) {
                                 tryCraft(getValidAssemblerInputInventory(recipe), recipe, recipe.energyPerTick)
@@ -128,15 +135,17 @@ class RedstoneAssemblerBlockEntity(pos: BlockPos, state: BlockState) :
                                 tryDecrementCookTime()
                             }
                         }
-
-                        Mode.CRAFTING_TABLE -> {
-                            val recipe = getCraftingRecipe()
+                        is RecipeHolder.Crafting -> {
+                            val recipe = cached.recipe
 
                             if (recipe != null && energyStorage.amount >= CRAFTING_ENERGY_PER_TICK) {
                                 tryCraft(getValidCraftingInputInventory(recipe), recipe, CRAFTING_ENERGY_PER_TICK)
                             } else {
                                 tryDecrementCookTime()
                             }
+                        }
+                        RecipeHolder.None -> {
+                            // shouldn't happen
                         }
                     }
                 } else {
@@ -171,6 +180,12 @@ class RedstoneAssemblerBlockEntity(pos: BlockPos, state: BlockState) :
 
     enum class Mode {
         ASSEMBLER, CRAFTING_TABLE;
+    }
+
+    private sealed interface RecipeHolder {
+        object None : RecipeHolder
+        data class Assembling(val recipe: RedstoneAssemblerRecipe?) : RecipeHolder
+        data class Crafting(val recipe: CraftingRecipe?) : RecipeHolder
     }
 
     val inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(SLOT_COUNT, ItemStack.EMPTY)
@@ -226,6 +241,8 @@ class RedstoneAssemblerBlockEntity(pos: BlockPos, state: BlockState) :
     }
 
     private val craftingInventory = DelegatingCraftingInventory(this, 3, 3, CRAFTING_START_SLOT)
+
+    private var cachedRecipe: RecipeHolder = RecipeHolder.None
 
     override val width = 3
     override val height = 3
@@ -441,25 +458,67 @@ class RedstoneAssemblerBlockEntity(pos: BlockPos, state: BlockState) :
 
     override fun getStack(slot: Int): ItemStack = inventory[slot]
 
-    override fun removeStack(slot: Int, amount: Int): ItemStack = Inventories.splitStack(inventory, slot, amount)
+    override fun removeStack(slot: Int, amount: Int): ItemStack {
+        if (slot !in 0 until SLOT_COUNT) return ItemStack.EMPTY
 
-    override fun removeStack(slot: Int): ItemStack = Inventories.removeStack(inventory, slot)
+        return if (slot in CRAFTING_START_SLOT until CRAFTING_STOP_SLOT) {
+            val oldStack = inventory[slot].copy()
+            val toReturn = Inventories.splitStack(inventory, slot, amount)
+            val newStack = inventory[slot]
+
+            if (oldStack != newStack) {
+                gridChanged()
+                markDirty()
+            }
+
+            toReturn
+        } else {
+            Inventories.splitStack(inventory, slot, amount)
+        }
+    }
+
+    override fun removeStack(slot: Int): ItemStack {
+        if (slot !in 0 until SLOT_COUNT) return ItemStack.EMPTY
+
+        return if (slot in CRAFTING_START_SLOT until CRAFTING_STOP_SLOT) {
+            val oldStack = inventory[slot].copy()
+            val toReturn = Inventories.removeStack(inventory, slot)
+            val newStack = inventory[slot]
+
+            if (oldStack != newStack) {
+                gridChanged()
+                markDirty()
+            }
+
+            toReturn
+        } else {
+            Inventories.removeStack(inventory, slot)
+        }
+    }
 
     override fun setStack(slot: Int, stack: ItemStack) {
         val itemStack = inventory[slot]
         val sameStack =
             !stack.isEmpty && stack.isItemEqualIgnoreDamage(itemStack) && ItemStack.areNbtEqual(stack, itemStack)
         inventory[slot] = stack
+
         if (stack.count > this.maxCountPerStack) {
             stack.count = this.maxCountPerStack
         }
 
         if (slot in CRAFTING_START_SLOT until CRAFTING_STOP_SLOT && !sameStack) {
-            cookTimeTotal = recipeCookTimeTotal()
-            cookTime = 0
+            gridChanged()
         }
 
         this.markDirty()
+    }
+
+    private fun gridChanged() {
+        // clear recipe cache
+        cachedRecipe = RecipeHolder.None
+
+        cookTimeTotal = recipeCookTimeTotal()
+        cookTime = 0
     }
 
     override fun canPlayerUse(player: PlayerEntity): Boolean {
@@ -536,5 +595,8 @@ class RedstoneAssemblerBlockEntity(pos: BlockPos, state: BlockState) :
         for (i in CRAFTING_START_SLOT until CRAFTING_STOP_SLOT) {
             inventory[i] = ItemStack.EMPTY
         }
+
+        gridChanged()
+        markDirty()
     }
 }
