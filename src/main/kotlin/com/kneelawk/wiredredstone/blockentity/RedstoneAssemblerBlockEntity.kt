@@ -57,10 +57,11 @@ class RedstoneAssemblerBlockEntity(pos: BlockPos, state: BlockState) :
         const val BURN_TIME_TOTAL_PROPERTY = 1
         const val COOK_TIME_PROPERTY = 2
         const val COOK_TIME_TOTAL_PROPERTY = 3
-        const val ENERGY_PROPERTY = 4
-        const val USE_CRAFTING_ITEMS_PROPERTY = 5
-        const val MODE_PROPERTY = 6
-        const val PROPERTY_COUNT = 7
+        const val ENERGY_LOW_PROPERTY = 4
+        const val ENERGY_HIGH_PROPERTY = 5
+        const val USE_CRAFTING_ITEMS_PROPERTY = 6
+        const val MODE_PROPERTY = 7
+        const val PROPERTY_COUNT = 8
 
         const val ENERGY_CAPACITY = 128000L
         const val ENERGY_MAX_INSERT = 128L
@@ -194,7 +195,9 @@ class RedstoneAssemblerBlockEntity(pos: BlockPos, state: BlockState) :
                 BURN_TIME_TOTAL_PROPERTY -> burnTimeTotal
                 COOK_TIME_PROPERTY -> cookTime
                 COOK_TIME_TOTAL_PROPERTY -> cookTimeTotal
-                ENERGY_PROPERTY -> energyStorage.amount.toInt()
+                // for some reason these values seem to be being cast to a short during transmission
+                ENERGY_LOW_PROPERTY -> energyStorage.amount.toInt() and 0xFFFF
+                ENERGY_HIGH_PROPERTY -> (energyStorage.amount.toInt() shr 0x10) and 0xFFFF
                 USE_CRAFTING_ITEMS_PROPERTY -> if (useCraftingItems) 1 else 0
                 MODE_PROPERTY -> mode.toInt()
                 else -> 0
@@ -207,7 +210,10 @@ class RedstoneAssemblerBlockEntity(pos: BlockPos, state: BlockState) :
                 BURN_TIME_TOTAL_PROPERTY -> burnTimeTotal = value
                 COOK_TIME_PROPERTY -> cookTime = value
                 COOK_TIME_TOTAL_PROPERTY -> cookTimeTotal = value
-                ENERGY_PROPERTY -> energyStorage.amount = value.toLong()
+                ENERGY_LOW_PROPERTY -> energyStorage.amount =
+                    (value.toLong() and 0xFFFFL) or (energyStorage.amount and 0xFFFFL.inv())
+                ENERGY_HIGH_PROPERTY -> energyStorage.amount =
+                    ((value.toLong() and 0xFFFFL) shl 0x20) or (energyStorage.amount and 0xFFFFL)
                 USE_CRAFTING_ITEMS_PROPERTY -> useCraftingItems = value != 0
                 MODE_PROPERTY -> mode = value.toEnum()
             }
@@ -489,6 +495,7 @@ class RedstoneAssemblerBlockEntity(pos: BlockPos, state: BlockState) :
                     Items.BUCKET
                 )
             }
+
             in INPUT_START_SLOT until INPUT_STOP_SLOT -> true
             else -> false
         }
