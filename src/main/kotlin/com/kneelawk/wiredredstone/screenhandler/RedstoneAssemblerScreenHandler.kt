@@ -13,7 +13,8 @@ import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Compa
 import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.CRAFTING_SLOT_COUNT
 import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.CRAFTING_START_SLOT
 import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.ENERGY_CAPACITY
-import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.ENERGY_PROPERTY
+import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.ENERGY_HIGH_PROPERTY
+import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.ENERGY_LOW_PROPERTY
 import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.FUEL_SLOT
 import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.INPUT_START_SLOT
 import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.INPUT_STOP_SLOT
@@ -141,10 +142,11 @@ class RedstoneAssemblerScreenHandler(
         get() = delegate.get(BURN_TIME_PROPERTY) > 0
 
     val energyBar: Int
-        get() = delegate.get(ENERGY_PROPERTY) / (ENERGY_CAPACITY.toInt() / 32)
+        get() = energyValue / (ENERGY_CAPACITY.toInt() / 32)
 
     val energyValue: Int
-        get() = delegate.get(ENERGY_PROPERTY)
+        get() = (delegate.get(ENERGY_LOW_PROPERTY) and 0xFFFF) or
+                ((delegate.get(ENERGY_HIGH_PROPERTY) and 0xFFFF) shl 0x10)
 
     var useCraftingItems: Boolean
         get() = delegate.get(USE_CRAFTING_ITEMS_PROPERTY) != 0
