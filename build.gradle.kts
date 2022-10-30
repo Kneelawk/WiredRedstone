@@ -63,7 +63,7 @@ repositories {
         }
     }
     maven("https://maven.tterrag.com/") { name = "Flywheel" }
-    maven("https://maven.cafeteria.dev") { name = "Cafeteria" } // for Fake Player API
+    maven("https://maven.cafeteria.dev/releases/") { name = "Cafeteria" } // for Fake Player API
     maven("https://maven.jamieswhiteshirt.com/libs-release") // for Reach Entity Attributes
     maven("https://jitpack.io/") {
         name = "JitPack"
