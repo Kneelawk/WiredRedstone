@@ -3,6 +3,7 @@ package com.kneelawk.wiredredstone.part
 import alexiil.mc.lib.multipart.api.*
 import alexiil.mc.lib.multipart.api.event.NeighbourUpdateEvent
 import alexiil.mc.lib.multipart.api.event.PartAddedEvent
+import alexiil.mc.lib.multipart.api.event.PartContainerState
 import alexiil.mc.lib.multipart.api.event.PartContainerState.Invalidate
 import alexiil.mc.lib.multipart.api.event.PartContainerState.Validate
 import alexiil.mc.lib.multipart.api.event.PartRemovedEvent
@@ -11,6 +12,7 @@ import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
 import com.kneelawk.graphlib.GraphLib
+import com.kneelawk.graphlib.graph.BlockNode
 import com.kneelawk.wiredredstone.util.ConnectableUtils
 import com.kneelawk.wiredredstone.util.ConnectableUtils.isValidFace
 import com.kneelawk.wiredredstone.util.SimpleItemDropTarget
@@ -37,7 +39,7 @@ import net.minecraft.util.shape.VoxelShape
  * Subtypes of this could be parts for wires, bundle cables, or gates.
  */
 abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHolder, override val side: Direction) :
-    AbstractPart(definition, holder), BlockNodeContainer, SidedPart {
+    AbstractPart(definition, holder), BlockNodeContainer, SidedPart, BlockEntityRemoveListener {
 
     private var ctx: SidedPartContext? = null
 
@@ -167,6 +169,9 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
     }
 
     override fun onRemoved() {
+        // Nothing here needs to be done on the client
+        if (getWorld().isClient) return
+
         ctx.requireNonNull("Tried to remove a part before it was added! (SidedPartContext is still null)")
             .setPart(side, null)
 
@@ -174,6 +179,10 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
         if (!world.isClient && world is ServerWorld) {
             GraphLib.getController(world).updateNodes(getPos())
         }
+    }
+
+    override fun onBlockEntityRemoved() {
+        onRemoved()
     }
 
     override fun getPos(): BlockPos {

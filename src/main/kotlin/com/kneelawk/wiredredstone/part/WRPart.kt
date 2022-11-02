@@ -11,6 +11,4 @@ interface WRPart {
 
     @Environment(EnvType.CLIENT)
     fun getPartName(hitResult: BlockHitResult?): Text
-
-    fun onRemoved()
 }

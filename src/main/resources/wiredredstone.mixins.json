@@ -12,5 +12,7 @@
     "RenderLayerAccessor",
     "RenderPhaseAccessor"
   ],
-  "mixins": [ ]
+  "mixins": [
+    "WorldChunkMixin"
+  ]
 }
