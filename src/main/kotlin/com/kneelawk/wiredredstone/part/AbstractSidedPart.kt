@@ -39,7 +39,7 @@ import net.minecraft.util.shape.VoxelShape
  * Subtypes of this could be parts for wires, bundle cables, or gates.
  */
 abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHolder, side: Direction) :
-    AbstractPart(definition, holder), BlockNodeContainer, SidedPart, BlockEntityRemoveListener {
+    AbstractPart(definition, holder), BlockNodeContainer, SidedPart, BlockEntityRemoveListener, NoBreakPart {
 
     final override var side: Direction = side
         private set
@@ -245,7 +245,7 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
         return getPickStack(hitResult).name
     }
 
-    fun setNoBreak() {
+    override fun setNoBreak() {
         noBreak = true
     }
 }
