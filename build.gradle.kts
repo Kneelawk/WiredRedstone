@@ -75,7 +75,7 @@ repositories {
         }
     }
 
-//    mavenLocal()
+    mavenLocal()
 }
 
 dependencies {

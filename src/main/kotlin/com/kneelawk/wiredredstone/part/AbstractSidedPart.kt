@@ -4,15 +4,15 @@ import alexiil.mc.lib.multipart.api.*
 import alexiil.mc.lib.multipart.api.event.NeighbourUpdateEvent
 import alexiil.mc.lib.multipart.api.event.PartAddedEvent
 import alexiil.mc.lib.multipart.api.event.PartContainerState
-import alexiil.mc.lib.multipart.api.event.PartContainerState.Invalidate
-import alexiil.mc.lib.multipart.api.event.PartContainerState.Validate
+import alexiil.mc.lib.multipart.api.event.PartPostTransformEvent
+import alexiil.mc.lib.multipart.api.event.PartPreTransformEvent
 import alexiil.mc.lib.multipart.api.event.PartRemovedEvent
 import alexiil.mc.lib.multipart.api.event.PartTickEvent
+import alexiil.mc.lib.multipart.api.event.PartTransformEvent
 import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
 import com.kneelawk.graphlib.GraphLib
-import com.kneelawk.graphlib.graph.BlockNode
 import com.kneelawk.wiredredstone.util.ConnectableUtils
 import com.kneelawk.wiredredstone.util.ConnectableUtils.isValidFace
 import com.kneelawk.wiredredstone.util.SimpleItemDropTarget
@@ -38,14 +38,17 @@ import net.minecraft.util.shape.VoxelShape
  *
  * Subtypes of this could be parts for wires, bundle cables, or gates.
  */
-abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHolder, override val side: Direction) :
+abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHolder, side: Direction) :
     AbstractPart(definition, holder), BlockNodeContainer, SidedPart, BlockEntityRemoveListener {
 
+    final override var side: Direction = side
+        private set
     private var ctx: SidedPartContext? = null
 
     private val shapeCache = mutableMapOf<BlockPos, VoxelShape>()
 
     private var noBreak = false
+    private var unloading = false
 
     constructor(definition: PartDefinition, holder: MultipartHolder, tag: NbtCompound) : this(
         definition, holder, Direction.byId(tag.getByte("side").toInt())
@@ -72,6 +75,17 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
     override fun writeCreationData(buffer: NetByteBuf, ctx: IMsgWriteCtx) {
         super.writeCreationData(buffer, ctx)
         buffer.writeFixedBits(side.id, 3)
+    }
+
+    override fun writeRenderData(buffer: NetByteBuf, ctx: IMsgWriteCtx) {
+        super.writeRenderData(buffer, ctx)
+        buffer.writeFixedBits(side.id, 3)
+    }
+
+    override fun readRenderData(buffer: NetByteBuf, ctx: IMsgReadCtx) {
+        super.readRenderData(buffer, ctx)
+        // No SideContex on the client-side
+        side = Direction.byId(buffer.readFixedBits(3))
     }
 
     override fun getSidedContext(): SidedPartContext {
@@ -125,6 +139,43 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
                 GraphLib.getController(world).updateConnections(getSidedPos())
             }
         }
+
+        bus.addContextlessListener(this, PartContainerState.ChunkUnload::class.java) {
+            unloading = true
+        }
+
+        bus.addContextlessListener(this, PartContainerState.Invalidate::class.java) {
+//            if (!unloading) {
+//                onRemoved()
+//            }
+        }
+
+        // Rotation Handling
+
+        bus.addContextlessListener(this, PartPreTransformEvent::class.java) {
+            // Remove self from the sided context until after the transformation so different parts don't trample each
+            // other
+            ctx.requireNonNull("Attempted rotation but ctx is null!")
+                .setPart(side, null)
+        }
+
+        bus.addListener(this, PartTransformEvent::class.java) { e ->
+            side = e.transformation.map(side)
+        }
+
+        bus.addContextlessListener(this, PartPostTransformEvent::class.java) {
+            // Now re-add self since all the transformations are done
+            ctx.requireNonNull("Attempted rotation but ctx is null!")
+                .setPart(side, this)
+
+            // Update the nodes here
+            val world = getWorld()
+            if (world is ServerWorld) {
+                GraphLib.getController(world).updateNodes(getPos())
+            }
+        }
+
+        // Connection Fixing On Load
 
         val world = getWorld()
         if (!world.isClient && world is ServerWorld) {

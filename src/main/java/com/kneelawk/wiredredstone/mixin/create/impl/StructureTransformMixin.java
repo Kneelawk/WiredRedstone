@@ -18,26 +18,26 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class StructureTransformMixin {
     @Inject(method = "apply(Lnet/minecraft/block/BlockState;)Lnet/minecraft/block/BlockState;", at = @At("HEAD"), cancellable = true)
     private void onApplyBlockState(BlockState state, CallbackInfoReturnable<BlockState> cir) {
-        if (state.getBlock() == LibMultiPart.BLOCK) {
-            // immediately cancel here because otherwise apply will call mirror which crashes
-            cir.setReturnValue(state);
-        }
+//        if (state.getBlock() == LibMultiPart.BLOCK) {
+//            // immediately cancel here because otherwise apply will call mirror which crashes
+//            cir.setReturnValue(state);
+//        }
     }
 
     @Inject(method = "apply(Lnet/minecraft/block/entity/BlockEntity;)V", at = @At("HEAD"))
     private void onApplyTileEntity(BlockEntity te, CallbackInfo ci) {
-        if (te instanceof MultipartBlockEntity multi && multi.isServerWorld()) {
-            // For some reason, cancelRemoval never gets called on BlockEntities, meaning that parts' onAdded
-            // methods never get called.
-            multi.cancelRemoval();
-
-            // Transformations could be easily solved if MultipartBlockEntity were to implement ITransformableTE but
-            // that would mean a hard-dependency on Create which is not an option for LMP.
-
-            // I'm choosing not to just call MultipartBlockEntity.mirror or rotate here because: (1) those do not
-            // function in a way that is usable by WR components and are thus not implemented for those components, and
-            // (2) if multiple mods do this, they could cause quite a mess, all rotating each other's components
-            // multiple times.
-        }
+//        if (te instanceof MultipartBlockEntity multi && multi.isServerWorld()) {
+//            // For some reason, cancelRemoval never gets called on BlockEntities, meaning that parts' onAdded
+//            // methods never get called.
+//            multi.cancelRemoval();
+//
+//            // Transformations could be easily solved if MultipartBlockEntity were to implement ITransformableTE but
+//            // that would mean a hard-dependency on Create which is not an option for LMP.
+//
+//            // I'm choosing not to just call MultipartBlockEntity.mirror or rotate here because: (1) those do not
+//            // function in a way that is usable by WR components and are thus not implemented for those components, and
+//            // (2) if multiple mods do this, they could cause quite a mess, all rotating each other's components
+//            // multiple times.
+//        }
     }
 }
