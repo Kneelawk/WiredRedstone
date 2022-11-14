@@ -27,11 +27,6 @@
         "value": "com.kneelawk.wiredredstone.client.WiredRedstoneClientModKt::init"
       }
     ],
-    "preLaunch": [
-      {
-        "value": "com.kneelawk.wiredredstone.WiredRedstonePreLaunchKt::preLaunch"
-      }
-    ],
     "rei_client": [
       {
         "value": "com.kneelawk.wiredredstone.compat.rei.WiredRedstoneClientPlugin"
