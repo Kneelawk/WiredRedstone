@@ -4,6 +4,7 @@ import com.kneelawk.wiredredstone.WRConstants.gui
 import com.kneelawk.wiredredstone.WRConstants.id
 import com.kneelawk.wiredredstone.WRConstants.tooltip
 import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity
+import com.kneelawk.wiredredstone.compat.emi.EMIIntegrationHandler
 import com.kneelawk.wiredredstone.screenhandler.RedstoneAssemblerScreenHandler
 import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.MinecraftClient
@@ -126,6 +127,12 @@ class RedstoneAssemblerScreen(handler: RedstoneAssemblerScreenHandler, playerInv
 
             renderTooltip(matrices, tooltip, x, y)
         }
+
+        if (mx in 95..116 && my in 35..49) {
+            if (EMIIntegrationHandler.loaded) {
+                renderTooltip(matrices, tooltip("redstone_assembler.recipes"), x, y)
+            }
+        }
     }
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
@@ -148,6 +155,13 @@ class RedstoneAssemblerScreen(handler: RedstoneAssemblerScreenHandler, playerInv
             playButtonPressSound()
             handler.useCraftingItems = !handler.useCraftingItems
             return true
+        }
+
+        if (mx in 95..116 && my in 35..49) {
+            if (EMIIntegrationHandler.loaded) {
+                playButtonPressSound()
+                EMIIntegrationHandler.openRedstoneAssemblerRecipes()
+            }
         }
 
         return super.mouseClicked(mouseX, mouseY, button)

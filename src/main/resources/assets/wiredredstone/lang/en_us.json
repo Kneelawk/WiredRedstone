@@ -72,6 +72,7 @@
   "tooltip.wiredredstone.redstone_assembler.use_crafting_items.false": "Will only use input items, keeping crafting-pattern intact.",
   "tooltip.wiredredstone.redstone_assembler.shaped": "Shaped Recipe",
   "tooltip.wiredredstone.redstone_assembler.shapeless": "Shapeless Recipe",
+  "tooltip.wiredredstone.redstone_assembler.recipes": "Redstone Assembler Recipes",
   "overlay.wiredredstone.gate_and.in": "IN",
   "overlay.wiredredstone.gate_and.out": "OUT",
   "overlay.wiredredstone.gate_diode.in": "IN",
