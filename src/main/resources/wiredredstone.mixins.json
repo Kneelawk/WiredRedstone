@@ -7,7 +7,6 @@
   },
   "client": [
     "ClientRecipeBookMixin",
-    "FramebufferAccessor",
     "IdentifierMixin",
     "RenderLayerAccessor",
     "RenderPhaseAccessor"
