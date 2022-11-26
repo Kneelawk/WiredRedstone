@@ -42,7 +42,7 @@ Please go checkout [RSWires][RSWires CF] if you haven't already.
 ## Screenshots
 
 Here is a picture of one of my dev worlds:<br/>
-![Dev World Image](https://cdn-raw.modrinth.com//data/lyYGrdho/images/68625d24a76d7f37ee8e24a4f3f1a99500396656.png)
+![Dev World Image](https://cdn-raw.modrinth.com/data/lyYGrdho/images/68625d24a76d7f37ee8e24a4f3f1a99500396656.png)
 
 ## Recipes
 
