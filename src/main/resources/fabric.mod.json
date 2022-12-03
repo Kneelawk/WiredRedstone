@@ -44,8 +44,7 @@
     ]
   },
   "mixins": [
-    "wiredredstone.mixins.json",
-    "wiredredstone.create-compat.mixins.json"
+    "wiredredstone.mixins.json"
   ],
   "accessWidener": "wiredredstone.accesswidener",
   "depends": {

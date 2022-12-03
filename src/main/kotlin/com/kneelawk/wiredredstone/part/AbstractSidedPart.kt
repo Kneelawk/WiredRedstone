@@ -1,18 +1,12 @@
 package com.kneelawk.wiredredstone.part
 
 import alexiil.mc.lib.multipart.api.*
-import alexiil.mc.lib.multipart.api.event.NeighbourUpdateEvent
-import alexiil.mc.lib.multipart.api.event.PartAddedEvent
-import alexiil.mc.lib.multipart.api.event.PartContainerState
-import alexiil.mc.lib.multipart.api.event.PartPostTransformEvent
-import alexiil.mc.lib.multipart.api.event.PartPreTransformEvent
-import alexiil.mc.lib.multipart.api.event.PartRemovedEvent
-import alexiil.mc.lib.multipart.api.event.PartTickEvent
-import alexiil.mc.lib.multipart.api.event.PartTransformEvent
+import alexiil.mc.lib.multipart.api.event.*
 import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
 import com.kneelawk.graphlib.GraphLib
+import com.kneelawk.wiredredstone.part.event.WRChunkUnloadEvent
 import com.kneelawk.wiredredstone.util.ConnectableUtils
 import com.kneelawk.wiredredstone.util.ConnectableUtils.isValidFace
 import com.kneelawk.wiredredstone.util.SimpleItemDropTarget
@@ -39,7 +33,7 @@ import net.minecraft.util.shape.VoxelShape
  * Subtypes of this could be parts for wires, bundle cables, or gates.
  */
 abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHolder, side: Direction) :
-    AbstractPart(definition, holder), BlockNodeContainer, SidedPart, BlockEntityRemoveListener, NoBreakPart {
+    AbstractPart(definition, holder), BlockNodeContainer, SidedPart, NoBreakPart {
 
     final override var side: Direction = side
         private set
@@ -140,14 +134,14 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
             }
         }
 
-        bus.addContextlessListener(this, PartContainerState.ChunkUnload::class.java) {
+        bus.addContextlessListener(this, WRChunkUnloadEvent::class.java) {
             unloading = true
         }
 
         bus.addContextlessListener(this, PartContainerState.Invalidate::class.java) {
-//            if (!unloading) {
-//                onRemoved()
-//            }
+            if (!unloading) {
+                onRemoved()
+            }
         }
 
         // Rotation Handling
@@ -230,10 +224,6 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
         if (!world.isClient && world is ServerWorld) {
             GraphLib.getController(world).updateNodes(getPos())
         }
-    }
-
-    override fun onBlockEntityRemoved() {
-        onRemoved()
     }
 
     override fun getPos(): BlockPos {

@@ -13,6 +13,5 @@
     "RenderPhaseAccessor"
   ],
   "mixins": [
-    "WorldChunkMixin"
   ]
 }
