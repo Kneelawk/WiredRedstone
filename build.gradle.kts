@@ -103,6 +103,13 @@ dependencies {
     modImplementation("com.kneelawk:graphlib:$graphlibVersion")
     include("com.kneelawk:graphlib:$graphlibVersion")
 
+    // LMP Compat to add support for Create's rotations
+    val lmpCompatVersion: String by project
+    modImplementation("com.kneelawk:lmp-compat:$lmpCompatVersion") {
+        exclude("net.fabricmc.fabric-api")
+    }
+    include("com.kneelawk:lmp-compat:$lmpCompatVersion")
+
     // TechReborn Lightweight Energy API
     val energyVersion: String by project
     modApi("teamreborn:energy:$energyVersion") {
