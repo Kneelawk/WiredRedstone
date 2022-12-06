@@ -12,5 +12,6 @@
     "RenderLayerAccessor",
     "RenderPhaseAccessor"
   ],
-  "mixins": [ ]
+  "mixins": [
+  ]
 }

@@ -51,7 +51,31 @@ repositories {
             includeGroup("maven.modrinth")
         }
     }
-//    mavenLocal()
+
+    // Create stuff
+    maven("https://mvn.devos.one/snapshots/") { name = "Create" }
+    maven("https://ladysnake.jfrog.io/artifactory/mods") { name = "Ladysnake" }
+    maven("https://cursemaven.com") {
+        // for Forge Config API Port
+        name = "Curse"
+        content {
+            includeGroup("curse.maven")
+        }
+    }
+    maven("https://maven.tterrag.com/") { name = "Flywheel" }
+    maven("https://maven.cafeteria.dev/releases/") { name = "Cafeteria" } // for Fake Player API
+    maven("https://maven.jamieswhiteshirt.com/libs-release") // for Reach Entity Attributes
+    maven("https://jitpack.io/") {
+        name = "JitPack"
+        content {
+            includeGroup("com.github.AlphaMode")
+            includeGroup("com.github.Chocohead")
+            includeGroup("com.github.Draylar.omega-config")
+            includeGroup("com.github.LlamaLad7")
+        }
+    }
+
+    mavenLocal()
 }
 
 dependencies {
@@ -79,6 +103,13 @@ dependencies {
     modImplementation("com.kneelawk:graphlib:$graphlibVersion")
     include("com.kneelawk:graphlib:$graphlibVersion")
 
+    // LMP Compat to add support for Create's rotations
+    val lmpCompatVersion: String by project
+    modImplementation("com.kneelawk:lmp-compat:$lmpCompatVersion") {
+        exclude("net.fabricmc.fabric-api")
+    }
+    include("com.kneelawk:lmp-compat:$lmpCompatVersion")
+
     // TechReborn Lightweight Energy API
     val energyVersion: String by project
     modApi("teamreborn:energy:$energyVersion") {
@@ -104,6 +135,12 @@ dependencies {
     val emiVersion: String by project
     modCompileOnly("dev.emi:emi:$emiVersion")
 
+    // Create
+    val createVersion: String by project
+    modCompileOnly("com.simibubi.create:create-fabric-$minecraftVersion:$createVersion") {
+        exclude("net.fabricmc.fabric-api")
+    }
+
     //
     // Optional Mod Dependencies
     //
@@ -119,6 +156,11 @@ dependencies {
         exclude("net.fabricmc.fabric-api")
     }
 
+    // Common
+    val nightConfigVersion: String by project
+    runtimeOnly("com.electronwill.night-config:core:$nightConfigVersion")
+    runtimeOnly("com.electronwill.night-config:toml:$nightConfigVersion")
+
     // CC: Restitched
     modRuntimeOnly("maven.modrinth:cc-restitched:$ccRestitchedVersion")
     val clothConfigVersion: String by project
@@ -129,8 +171,6 @@ dependencies {
     modRuntimeOnly("me.shedaniel.cloth.api:cloth-utils-v1:$clothApiVersion") {
         exclude("net.fabricmc.fabric-api")
     }
-    val nightConfigVersion: String by project
-    runtimeOnly("com.electronwill.night-config:toml:$nightConfigVersion")
 
     // REI
 //    modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:$reiVersion") {
@@ -140,6 +180,11 @@ dependencies {
     // EMI
     modRuntimeOnly("dev.emi:emi:$emiVersion") {
         exclude("net.fabricmc")
+        exclude("net.fabricmc.fabric-api")
+    }
+
+    // Create
+    modRuntimeOnly("com.simibubi.create:create-fabric-$minecraftVersion:$createVersion") {
         exclude("net.fabricmc.fabric-api")
     }
 
