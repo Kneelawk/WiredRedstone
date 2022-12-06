@@ -1,0 +1,37 @@
+# Performs a Modrinth release
+name: release-modrinth
+
+on:
+  push:
+    tags:
+      # matches things like v0.3.3+1.18.2
+      - 'v[0-9]+.[0-9]+.[0-9]+\+[0-9]+.[0-9]+.[0-9]+'
+      # matches things like v0.4.0+1.19
+      - 'v[0-9]+.[0-9]+.[0-9]+\+[0-9]+.[0-9]+'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get Tag Version
+        uses: dawidd6/action-get-tag@v1
+        id: tag_version
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Validate Gradle Wrapper
+        uses: gradle/wrapper-validation-action@v1
+      - name: Setup JDK 17
+        uses: actions/setup-java@v1
+        with:
+          java-version: 17
+      - name: Make Gradle Wrapper Executable
+        run: chmod +x ./gradlew
+      - name: Build
+        run: ./gradlew build
+        env:
+          RELEASE_TAG: ${{ steps.tag_version.outputs.tag }}
+      - name: Modrinth Release
+        run: ./gradlew modrinth modrinthSyncBody
+        env:
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+          RELEASE_TAG: ${{ steps.tag_version.outputs.tag }}
