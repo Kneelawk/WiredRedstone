@@ -1,0 +1,61 @@
+# Performs a Discord release announcement
+name: release-discord
+
+env:
+  PROJECT_NAME: Wired Redstone
+  MODRINTH_URL: 'https://modrinth.com/mod/wiredredstone'
+  CURSEFORGE_URL: 'https://www.curseforge.com/minecraft/mc-mods/wired-redstone'
+  MAVEN_IDENTIFIER: 'com.kneelawk:wired-redstone'
+
+on:
+  push:
+    tags:
+      # matches things like v0.3.3+1.18.2
+      - 'v[0-9]+.[0-9]+.[0-9]+\+[0-9]+.[0-9]+.[0-9]+'
+      # matches things like v0.4.0+1.19
+      - 'v[0-9]+.[0-9]+.[0-9]+\+[0-9]+.[0-9]+'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get Tag Version
+        uses: dawidd6/action-get-tag@v1
+        id: tag_version
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Validate Gradle Wrapper
+        uses: gradle/wrapper-validation-action@v1
+      # This is the mess that publishes discord notifications
+      - name: Read Changelog File
+        uses: juliangruber/read-file-action@v1
+        id: changelog
+        with:
+          path: changelogs/changelog-${{ steps.tag_version.outputs.tag }}.md
+      - name: Process Changelog for Announcement
+        uses: actions/github-script@v6
+        id: announcement_text
+        env:
+          CHANGELOG: ${{ steps.changelog.outputs.content }}
+          TAG_VERSION: ${{ steps.tag_version.outputs.tag }}
+        with:
+          script: |
+            let fullVersion = process.env.TAG_VERSION;
+            let versions = fullVersion.split('+');
+            let modVersion = fullVersion.substring(1);
+            let lines = process.env.CHANGELOG.split('\n');
+            let changesStart = lines.findIndex(line => line.startsWith('*'));
+            lines.splice(0, changesStart);
+            lines.unshift(`**${process.env.PROJECT_NAME} ${versions[0]} has been released for Minecraft ${versions[1]}!**`, '', '__Changes:__');
+            lines.push(`Available on Modrinth: ${process.env.MODRINTH_URL}`);
+            lines.push(`Available on CurseForge: ${process.env.CURSEFORGE_URL}`);
+            lines.push("Available on Kneelawk's maven: https://kneelawk.com/maven/", `With the identifier: \`${process.env.MAVEN_IDENTIFIER}:${modVersion}\``);
+            lines.push('', `Note that when this notification is published, ${process.env.PROJECT_NAME} may still be building but should be available on the mentioned platforms in the next few minutes.`);
+            return lines.join('\n');
+          result-encoding: string
+      - name: Make Release Announcement
+        uses: Ilshidur/action-discord@0.3.2
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        with:
+          args: ${{ steps.announcement_text.outputs.result }}
