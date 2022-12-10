@@ -1,13 +1,13 @@
 package com.kneelawk.wiredredstone.part
 
 import alexiil.mc.lib.multipart.api.*
-import alexiil.mc.lib.multipart.api.event.NeighbourUpdateEvent
-import alexiil.mc.lib.multipart.api.event.PartAddedEvent
-import alexiil.mc.lib.multipart.api.event.PartRemovedEvent
+import alexiil.mc.lib.multipart.api.event.*
 import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
 import com.kneelawk.graphlib.GraphLib
+import com.kneelawk.wiredredstone.part.event.WRChunkUnloadEvent
+import com.kneelawk.wiredredstone.part.event.WRPartPreMoveEvent
 import com.kneelawk.wiredredstone.util.PlacementUtils
 import com.kneelawk.wiredredstone.util.SimpleItemDropTarget
 import com.kneelawk.wiredredstone.util.connectable.ConnectableUtils
@@ -33,16 +33,25 @@ import net.minecraft.util.shape.VoxelShape
  *
  * Subtypes of this could be parts for wires, bundle cables, or gates.
  */
-abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHolder, override val side: Direction) :
+abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHolder, side: Direction) :
     AbstractPart(definition, holder), BlockNodeContainer, SidedPart {
 
+    final override var side: Direction = side
+        private set
     private var ctx: SidedPartContext? = null
 
     private val shapeCache = mutableMapOf<BlockPos, VoxelShape>()
 
+    private var noUpdate = false
+    private var updateRequested = false
+    private var unloading = false
+
     constructor(definition: PartDefinition, holder: MultipartHolder, tag: NbtCompound) : this(
         definition, holder, Direction.byId(tag.getByte("side").toInt())
-    )
+    ) {
+        // defaults to false
+        noUpdate = tag.getBoolean("noBreak")
+    }
 
     constructor(definition: PartDefinition, holder: MultipartHolder, buffer: NetByteBuf, ctx: IMsgReadCtx) : this(
         definition, holder, Direction.byId(buffer.readFixedBits(3))
@@ -51,6 +60,11 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
     override fun toTag(): NbtCompound {
         val tag = super.toTag()
         tag.putByte("side", side.id.toByte())
+
+        if (noUpdate) {
+            tag.putBoolean("noBreak", true)
+        }
+
         return tag
     }
 
@@ -59,18 +73,55 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
         buffer.writeFixedBits(side.id, 3)
     }
 
+    override fun writeRenderData(buffer: NetByteBuf, ctx: IMsgWriteCtx) {
+        super.writeRenderData(buffer, ctx)
+        buffer.writeFixedBits(side.id, 3)
+    }
+
+    override fun readRenderData(buffer: NetByteBuf, ctx: IMsgReadCtx) {
+        super.readRenderData(buffer, ctx)
+        // No SideContext on the client-side
+        side = Direction.byId(buffer.readFixedBits(3))
+    }
+
     override fun getSidedContext(): SidedPartContext {
         return ctx.requireNonNull("SidedPartContext is still null (onAdded must not have been called yet)")
     }
 
     override fun onAdded(bus: MultipartEventBus) {
-        ctx = holder.container.getFirstPart(AbstractSidedPart::class.java)?.ctx ?: SidedPartContext(bus)
+        // nothing here needs to be done on the client
+        if (getWorld().isClient) return
+
+        ctx = holder.container.getFirstPart(AbstractSidedPart::class.java) { it.ctx != null }?.ctx
+            ?: SidedPartContext(bus)
         ctx!!.setPart(side, this)
 
+        // Detects when a block supporting this one is broken
+
+        bus.addRunOnceListener(this, PartTickEvent::class.java) {
+            val world = getWorld()
+            if (world is ServerWorld) {
+                noUpdate = false
+                if (shouldBreak()) {
+                    removeAndDrop()
+                } else {
+                    if (updateRequested) {
+                        GraphLib.getController(world).updateConnections(getSidedPos())
+                    }
+                }
+            }
+        }
+
+        bus.addListener(this, WRPartPreMoveEvent::class.java) {
+            it.setMovementNecessary()
+            noUpdate = true
+        }
+
+        // also handles some connection blockage detection
         bus.addListener(this, NeighbourUpdateEvent::class.java) {
             val world = getWorld()
             if (world is ServerWorld) {
-                if (shouldBreak()) {
+                if (!noUpdate && shouldBreak()) {
                     removeAndDrop()
                 } else {
                     // updating connections is expensive, so we want to make sure we *really* need to do it first
@@ -78,12 +129,19 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
                             shapeCache, world, getPos(), it.pos
                         )
                     ) {
-                        // Something could be blocking our connection
-                        GraphLib.getController(world).updateConnections(getSidedPos())
+                        // wait until our first tick to tell if we should update our connections
+                        if (!noUpdate) {
+                            // Something could be blocking our connection
+                            GraphLib.getController(world).updateConnections(getSidedPos())
+                        } else {
+                            updateRequested = true
+                        }
                     }
                 }
             }
         }
+
+        // Connection Blockage Detection
 
         bus.addListener(this, PartAddedEvent::class.java) {
             val world = getWorld()
@@ -100,6 +158,45 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
                 GraphLib.getController(world).updateConnections(getSidedPos())
             }
         }
+
+        // Removal Detection
+
+        bus.addContextlessListener(this, WRChunkUnloadEvent::class.java) {
+            unloading = true
+        }
+
+        bus.addContextlessListener(this, PartContainerState.Invalidate::class.java) {
+            if (!unloading) {
+                onRemoved()
+            }
+        }
+
+        // Rotation Handling
+
+        bus.addContextlessListener(this, PartPreTransformEvent::class.java) {
+            // Remove self from the sided context until after the transformation so different parts don't trample each
+            // other
+            ctx.requireNonNull("Attempted rotation but ctx is null!")
+                .setPart(side, null)
+        }
+
+        bus.addListener(this, PartTransformEvent::class.java) { e ->
+            side = e.transformation.map(side)
+        }
+
+        bus.addContextlessListener(this, PartPostTransformEvent::class.java) {
+            // Now re-add self since all the transformations are done
+            ctx.requireNonNull("Attempted rotation but ctx is null!")
+                .setPart(side, this)
+
+            // Update the nodes here
+            val world = getWorld()
+            if (world is ServerWorld) {
+                GraphLib.getController(world).updateNodes(getPos())
+            }
+        }
+
+        // Connection Fixing On Load
 
         val world = getWorld()
         if (!world.isClient && world is ServerWorld) {
@@ -144,7 +241,11 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
     }
 
     override fun onRemoved() {
-        ctx!!.setPart(side, null)
+        // Nothing here needs to be done on the client
+        if (getWorld().isClient) return
+
+        ctx.requireNonNull("Tried to remove a part before it was added! (SidedPartContext is still null)")
+            .setPart(side, null)
 
         val world = getWorld()
         if (!world.isClient && world is ServerWorld) {

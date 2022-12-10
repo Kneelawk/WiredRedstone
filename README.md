@@ -88,9 +88,8 @@ Many Wired Redstone gates and wires will show extra information in the WTHIT HUD
 
 ## Known Issues
 
-* LibMultiPart blocks (meaning all wires, gates, etc.) will crash when moved by Create
-  contraptions (**[#15](https://github.com/Kneelawk/WiredRedstone/issues/15)**). I am working on finding a solution to
-  this, but I am not sure when it will be ready.
+* ~~LibMultiPart blocks (meaning all wires, gates, etc.) will crash when moved by Create
+  contraptions (**[#15](https://github.com/Kneelawk/WiredRedstone/issues/15)**).~~ Fixed in `v0.4.11+1.19.2`.
 * Under certain circumstances Not Enough Crashes can get Wired Redstone's rendering system into an invalid state while
   generating a crash report, causing an actual crash (**[#12](https://github.com/Kneelawk/WiredRedstone/issues/12)**).
 * Server crashes can cause wires to stop working correctly and appear disconnected or refuse to connect when placed in

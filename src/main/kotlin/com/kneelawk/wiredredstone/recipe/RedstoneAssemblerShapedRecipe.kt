@@ -249,7 +249,7 @@ class RedstoneAssemblerShapedRecipe(
         val defaultedList = this.ingredients
         return (defaultedList.isEmpty() || defaultedList.stream()
             .filter { ingredient: Ingredient -> !ingredient.isEmpty }
-            .anyMatch { ingredient: Ingredient -> ingredient.matchingStacks.isEmpty() })
+            .anyMatch { ingredient: Ingredient -> ingredient.getMatchingStacks().isEmpty() })
     }
 
     override fun getId(): Identifier = id
