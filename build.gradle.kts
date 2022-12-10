@@ -56,8 +56,27 @@ repositories {
         name = "JitPack"
         content {
             includeGroup("com.github.LlamaLad7")
+
+            // Create stuff
+            includeGroup("com.github.AlphaMode")
+            includeGroup("com.github.Chocohead")
+            includeGroup("com.github.Draylar.omega-config")
         }
     }
+
+    // Create Stuff
+    maven("https://mvn.devos.one/snapshots/") { name = "Create" }
+    maven("https://ladysnake.jfrog.io/artifactory/mods") { name = "Ladysnake" }
+    maven("https://maven.tterrag.com/") { name = "Flywheel" }
+    maven("https://maven.cafeteria.dev/releases/") { name = "Cafeteria" } // for Fake Player API
+    maven("https://maven.jamieswhiteshirt.com/libs-release") // for Reach Entity Attributes
+    maven("https://cursemaven.com") { // for Forge Config API Port
+        name = "Cursemaven"
+        content {
+            includeGroup("curse.maven")
+        }
+    }
+
 //    mavenLocal()
 }
 
@@ -92,6 +111,11 @@ dependencies {
     modImplementation("com.kneelawk:graphlib:$graphlibVersion")
     include("com.kneelawk:graphlib:$graphlibVersion")
 
+    // LMP Compat
+    val lmpCompatVersion: String by project
+    modImplementation("com.kneelawk:lmp-compat:$lmpCompatVersion")
+    include("com.kneelawk:lmp-compat:$lmpCompatVersion")
+
     // TechReborn Lightweight Energy API
     val energyVersion: String by project
     modApi("teamreborn:energy:$energyVersion") {
@@ -117,6 +141,13 @@ dependencies {
     val emiVersion: String by project
     modCompileOnly("dev.emi:emi:$emiVersion") {
         isTransitive = false
+    }
+
+    // Create
+    val createVersion: String by project
+    val createMinecraftVersion: String by project
+    modCompileOnly("com.simibubi.create:create-fabric-$createMinecraftVersion:$createVersion") {
+        exclude("net.fabricmc.fabric-api")
     }
 
     //
@@ -161,6 +192,11 @@ dependencies {
     // EMI
     modRuntimeOnly("dev.emi:emi:$emiVersion") {
         isTransitive = false
+    }
+
+    // Create
+    modRuntimeOnly("com.simibubi.create:create-fabric-$createMinecraftVersion:$createVersion") {
+        exclude("net.fabricmc.fabric-api")
     }
 
     // Quiltflower
