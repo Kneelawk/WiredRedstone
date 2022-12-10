@@ -167,22 +167,6 @@ dependencies {
 
     // CC: Restitched
     modRuntimeOnly("maven.modrinth:cc-restitched:$ccRestitchedVersion")
-    val clothConfigVersion: String by project
-    modRuntimeOnly("me.shedaniel.cloth:cloth-config-fabric:$clothConfigVersion") {
-        exclude("net.fabricmc.fabric-api")
-    }
-    val clothApiVersion: String by project
-    modRuntimeOnly("me.shedaniel.cloth.api:cloth-utils-v1:$clothApiVersion") {
-        exclude("net.fabricmc.fabric-api")
-    }
-    val cobaltVersion: String by project
-    modRuntimeOnly("org.squiddev:Cobalt:$cobaltVersion") {
-        exclude("net.fabricmc.fabric-api")
-    }
-    val nettyVersion: String by project
-    runtimeOnly("io.netty:netty-codec-http:$nettyVersion")
-    val nightConfigVersion: String by project
-    runtimeOnly("com.electronwill.night-config:toml:$nightConfigVersion")
 
     // REI
 //    modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:$reiVersion") {
