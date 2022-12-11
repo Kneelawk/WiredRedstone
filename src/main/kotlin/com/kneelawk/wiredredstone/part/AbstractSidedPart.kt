@@ -19,7 +19,6 @@ import net.minecraft.item.ItemStack
 import net.minecraft.loot.context.LootContext
 import net.minecraft.loot.context.LootContextParameters
 import net.minecraft.nbt.NbtCompound
-import net.minecraft.server.ServerTask
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.text.Text
 import net.minecraft.util.hit.BlockHitResult
@@ -42,15 +41,15 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
 
     private val shapeCache = mutableMapOf<BlockPos, VoxelShape>()
 
-    private var noUpdate = false
-    private var updateRequested = false
+    protected var initialized = false
+    private var noBreak = false
     private var unloading = false
 
     constructor(definition: PartDefinition, holder: MultipartHolder, tag: NbtCompound) : this(
         definition, holder, Direction.byId(tag.getByte("side").toInt())
     ) {
         // defaults to false
-        noUpdate = tag.getBoolean("noBreak")
+        noBreak = tag.getBoolean("noBreak")
     }
 
     constructor(definition: PartDefinition, holder: MultipartHolder, buffer: NetByteBuf, ctx: IMsgReadCtx) : this(
@@ -61,7 +60,7 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
         val tag = super.toTag()
         tag.putByte("side", side.id.toByte())
 
-        if (noUpdate) {
+        if (noBreak) {
             tag.putBoolean("noBreak", true)
         }
 
@@ -99,43 +98,29 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
         // Detects when a block supporting this one is broken
 
         bus.addRunOnceListener(this, PartTickEvent::class.java) {
-            val world = getWorld()
-            if (world is ServerWorld) {
-                noUpdate = false
-                if (shouldBreak()) {
-                    removeAndDrop()
-                } else {
-                    if (updateRequested) {
-                        GraphLib.getController(world).updateConnections(getSidedPos())
-                    }
-                }
-            }
+            onFirstTick()
         }
 
         bus.addListener(this, WRPartPreMoveEvent::class.java) {
             it.setMovementNecessary()
-            noUpdate = true
+            noBreak = true
         }
 
         // also handles some connection blockage detection
         bus.addListener(this, NeighbourUpdateEvent::class.java) {
             val world = getWorld()
             if (world is ServerWorld) {
-                if (!noUpdate && shouldBreak()) {
+                if (!noBreak && shouldBreak()) {
                     removeAndDrop()
                 } else {
                     // updating connections is expensive, so we want to make sure we *really* need to do it first
+                    // wait until our first tick to tell if we should update our connections
                     if (ConnectableUtils.shouldUpdateConnectionsForNeighborUpdate(
                             shapeCache, world, getPos(), it.pos
-                        )
+                        ) && initialized
                     ) {
-                        // wait until our first tick to tell if we should update our connections
-                        if (!noUpdate) {
-                            // Something could be blocking our connection
-                            GraphLib.getController(world).updateConnections(getSidedPos())
-                        } else {
-                            updateRequested = true
-                        }
+                        // Something could be blocking our connection
+                        GraphLib.getController(world).updateConnections(getSidedPos())
                     }
                 }
             }
@@ -195,17 +180,18 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
                 GraphLib.getController(world).updateNodes(getPos())
             }
         }
+    }
 
-        // Connection Fixing On Load
-
+    protected open fun onFirstTick() {
         val world = getWorld()
-        if (!world.isClient && world is ServerWorld) {
-            world.server.send(ServerTask(world.server.ticks) {
-                // run this later to prevent deadlocks
-                if (holder.isPresent) {
-                    GraphLib.getController(world).updateNodes(getPos())
-                }
-            })
+        if (world is ServerWorld) {
+            noBreak = false
+            initialized = true
+            if (shouldBreak()) {
+                removeAndDrop()
+            } else {
+                GraphLib.getController(world).updateNodes(getPos())
+            }
         }
     }
 

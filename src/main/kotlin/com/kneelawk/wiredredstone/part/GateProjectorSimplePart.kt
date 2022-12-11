@@ -1,6 +1,5 @@
 package com.kneelawk.wiredredstone.part
 
-import alexiil.mc.lib.multipart.api.MultipartEventBus
 import alexiil.mc.lib.multipart.api.MultipartHolder
 import alexiil.mc.lib.multipart.api.PartDefinition
 import alexiil.mc.lib.multipart.api.render.PartModelKey
@@ -19,7 +18,6 @@ import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemStack
 import net.minecraft.loot.context.LootContext
 import net.minecraft.nbt.NbtCompound
-import net.minecraft.server.ServerTask
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.ActionResult
 import net.minecraft.util.Hand
@@ -120,17 +118,12 @@ class GateProjectorSimplePart : AbstractGatePart, PhantomRedstoneProviderPart {
         LootTableUtil.addPartDrops(getWorld(), target, context, WRParts.GATE_PROJECTOR_SIMPLE.identifier)
     }
 
-    override fun onAdded(bus: MultipartEventBus) {
-        super.onAdded(bus)
+    override fun onFirstTick() {
+        super.onFirstTick()
 
         val world = getWorld()
-        if (!world.isClient && world is ServerWorld) {
-            world.server.send(ServerTask(world.server.ticks) {
-                // run this later to prevent deadlocks
-                if (holder.isPresent) {
-                    PhantomRedstone.addRef(world, getTarget(), SidedPartPhantomRedstoneRef(getSidedPos()))
-                }
-            })
+        if (world is ServerWorld) {
+            PhantomRedstone.addRef(world, getTarget(), SidedPartPhantomRedstoneRef(getSidedPos()))
         }
     }
 
