@@ -10,6 +10,7 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView
 import net.minecraft.client.MinecraftClient
+import net.minecraft.client.render.LightmapTextureManager
 import net.minecraft.client.render.OverlayTexture
 import net.minecraft.client.render.VertexConsumer
 import net.minecraft.client.render.VertexConsumerProvider
@@ -105,7 +106,7 @@ object RenderUtils {
 
     fun renderPortText(
         text: Text, side: Direction, rotation: Direction, height: Double, stack: MatrixStack,
-        provider: VertexConsumerProvider, light: Int, color: UInt = Colors.WHITE, overline: Boolean = false
+        provider: VertexConsumerProvider, color: UInt = Colors.WHITE, overline: Boolean = false
     ) {
         stack.push()
         stack.translate(0.5, 0.5, 0.5)
@@ -124,7 +125,8 @@ object RenderUtils {
         stack.translate(16.0 - width / 2.0, -(MC.textRenderer.fontHeight.toDouble() + yOffset), 0.0)
 
         WRTextRenderer.drawText(
-            text, color.toInt(), true, overline, stack.peek().positionMatrix, provider, true, 0, light
+            text, color.toInt(), true, overline, stack.peek().positionMatrix, provider, 0,
+            LightmapTextureManager.MAX_LIGHT_COORDINATE
         )
 
         stack.pop()
@@ -132,7 +134,7 @@ object RenderUtils {
 
     fun renderOverlayText(
         text: Text, side: Direction, rotation: Direction, x: Double, y: Double, z: Double,
-        alignment: HorizontalAlignment, stack: MatrixStack, provider: VertexConsumerProvider, light: Int,
+        alignment: HorizontalAlignment, stack: MatrixStack, provider: VertexConsumerProvider,
         color: UInt = Colors.WHITE, overline: Boolean = false
     ) {
         stack.push()
@@ -150,7 +152,8 @@ object RenderUtils {
         stack.translate(alignment.offset(MC.textRenderer.getWidth(text)), 0.0, 0.0)
 
         WRTextRenderer.drawText(
-            text, color.toInt(), true, overline, stack.peek().positionMatrix, provider, true, 0, light
+            text, color.toInt(), true, overline, stack.peek().positionMatrix, provider, 0,
+            LightmapTextureManager.MAX_LIGHT_COORDINATE
         )
 
         stack.pop()

@@ -131,22 +131,22 @@ object GateOrPartBaker : AbstractPartBaker<GateOrPartKey>() {
     }
 
     override fun renderOverlayText(
-        key: GateOrPartKey, stack: MatrixStack, provider: VertexConsumerProvider, light: Int
+        key: GateOrPartKey, stack: MatrixStack, provider: VertexConsumerProvider
     ) {
         RenderUtils.renderPortText(
-            overlay("gate_or.out"), key.side, key.direction, 2.0 / 16.0, stack, provider, light
+            overlay("gate_or.out"), key.side, key.direction, 2.0 / 16.0, stack, provider
         )
         RenderUtils.renderPortText(
             overlay("gate_or.in"), key.side, cardinalRotatedDirection(EAST, key.direction), 2.0 / 16.0,
-            stack, provider, light, portText(key.inputRightEnabled)
+            stack, provider, portText(key.inputRightEnabled)
         )
         RenderUtils.renderPortText(
             overlay("gate_or.in"), key.side, cardinalRotatedDirection(SOUTH, key.direction), 2.0 / 16.0,
-            stack, provider, light, portText(key.inputBackEnabled)
+            stack, provider, portText(key.inputBackEnabled)
         )
         RenderUtils.renderPortText(
             overlay("gate_or.in"), key.side, cardinalRotatedDirection(WEST, key.direction), 2.0 / 16.0,
-            stack, provider, light, portText(key.inputLeftEnabled)
+            stack, provider, portText(key.inputLeftEnabled)
         )
     }
 }

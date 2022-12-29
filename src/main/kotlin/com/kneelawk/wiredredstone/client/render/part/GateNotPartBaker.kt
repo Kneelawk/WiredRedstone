@@ -79,13 +79,13 @@ object GateNotPartBaker : AbstractPartBaker<GateNotPartKey>() {
     }
 
     override fun renderOverlayText(
-        key: GateNotPartKey, stack: MatrixStack, provider: VertexConsumerProvider, light: Int
+        key: GateNotPartKey, stack: MatrixStack, provider: VertexConsumerProvider
     ) {
         RenderUtils.renderPortText(
-            overlay("gate_not.out"), key.side, key.direction, 2.0 / 16.0, stack, provider, light
+            overlay("gate_not.out"), key.side, key.direction, 2.0 / 16.0, stack, provider
         )
         RenderUtils.renderPortText(
-            overlay("gate_not.in"), key.side, key.direction.opposite, 2.0 / 16.0, stack, provider, light
+            overlay("gate_not.in"), key.side, key.direction.opposite, 2.0 / 16.0, stack, provider
         )
     }
 }

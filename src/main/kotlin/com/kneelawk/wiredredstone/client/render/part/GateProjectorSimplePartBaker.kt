@@ -84,14 +84,14 @@ object GateProjectorSimplePartBaker : AbstractPartBaker<GateProjectorSimplePartK
     }
 
     override fun renderOverlayText(
-        key: GateProjectorSimplePartKey, stack: MatrixStack, provider: VertexConsumerProvider, light: Int
+        key: GateProjectorSimplePartKey, stack: MatrixStack, provider: VertexConsumerProvider
     ) {
         RenderUtils.renderPortText(
-            overlay("gate_projector_simple.in"), key.side, key.direction.opposite, 2.0 / 16.0, stack, provider, light
+            overlay("gate_projector_simple.in"), key.side, key.direction.opposite, 2.0 / 16.0, stack, provider
         )
         RenderUtils.renderOverlayText(
             overlay("gate_projector_simple.distance", key.distance), key.side, key.direction, 0.5, 2.0 / 16.0,
-            6.0 / 16.0, HorizontalAlignment.CENTER, stack, provider, light
+            6.0 / 16.0, HorizontalAlignment.CENTER, stack, provider
         )
 
         renderProjectorTarget(key, stack, provider)

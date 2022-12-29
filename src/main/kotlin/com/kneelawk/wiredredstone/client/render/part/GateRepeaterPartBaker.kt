@@ -100,17 +100,17 @@ object GateRepeaterPartBaker : AbstractPartBaker<GateRepeaterPartKey>() {
     }
 
     override fun renderOverlayText(
-        key: GateRepeaterPartKey, stack: MatrixStack, provider: VertexConsumerProvider, light: Int
+        key: GateRepeaterPartKey, stack: MatrixStack, provider: VertexConsumerProvider
     ) {
         RenderUtils.renderPortText(
-            overlay("gate_repeater.out"), key.side, key.direction, 2.0 / 16.0, stack, provider, light
+            overlay("gate_repeater.out"), key.side, key.direction, 2.0 / 16.0, stack, provider
         )
         RenderUtils.renderPortText(
-            overlay("gate_repeater.in"), key.side, key.direction.opposite, 2.0 / 16.0, stack, provider, light
+            overlay("gate_repeater.in"), key.side, key.direction.opposite, 2.0 / 16.0, stack, provider
         )
         RenderUtils.renderOverlayText(
             overlay("gate_repeater.delay", (key.delay.toFloat() + 1f) / 2f), key.side, key.direction, 0.5, 2.0 / 16.0,
-            6.0 / 16.0, HorizontalAlignment.CENTER, stack, provider, light
+            6.0 / 16.0, HorizontalAlignment.CENTER, stack, provider
         )
     }
 }

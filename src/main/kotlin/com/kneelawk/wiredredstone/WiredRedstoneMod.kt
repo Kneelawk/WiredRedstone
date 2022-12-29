@@ -18,6 +18,8 @@ import com.kneelawk.wiredredstone.screenhandler.WRScreenHandlers
 
 @Suppress("unused")
 fun init() {
+    WRLog.log.info("Initializing Wired Redstone...")
+
     WRParts.init()
     WRBlocks.init()
     WRItems.init()
@@ -35,4 +37,6 @@ fun init() {
 
     RedstoneLogic.init()
     PhantomRedstone.init()
+
+    WRLog.log.info("Wired Redstone Initialized.")
 }

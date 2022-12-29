@@ -12,7 +12,7 @@ import java.util.function.Consumer
 interface WRPartBaker<K : PartModelKey> : PartModelBaker<K> {
     fun getMeshForPlacementGhost(key: K): Mesh? = null
 
-    fun renderOverlayText(key: K, stack: MatrixStack, provider: VertexConsumerProvider, light: Int) {}
+    fun renderOverlayText(key: K, stack: MatrixStack, provider: VertexConsumerProvider) {}
 
     fun registerModels(out: Consumer<Identifier>) {}
 

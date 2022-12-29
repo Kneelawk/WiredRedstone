@@ -13,6 +13,7 @@ import net.fabricmc.api.Environment
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 import net.minecraft.client.MinecraftClient
+import net.minecraft.client.gl.Framebuffer
 import net.minecraft.client.gl.SimpleFramebuffer
 import net.minecraft.client.render.*
 import net.minecraft.text.Text
@@ -30,7 +31,9 @@ object WRTextRenderer {
     data class TextKey(val text: Text, val color: Int, val shadow: Boolean, val overline: Boolean, val background: Int)
     data class TextTexture(val texture: FramebufferTexture, val id: Identifier)
 
-    private val MC = MinecraftClient.getInstance()
+    private val immediate = VertexConsumerProvider.immediate(BufferBuilder(256))
+    private var framebuffer: Framebuffer? = null
+    private val MC by lazy { MinecraftClient.getInstance() }
     private val TEXT_FB_CACHE: LoadingCache<TextKey, TextTexture> =
         CacheBuilder.newBuilder().expireAfterAccess(10, TimeUnit.MINUTES)
             .removalListener<TextKey, TextTexture> { it.value?.texture?.close() }.build(CacheLoader.from(::makeTexture))
@@ -38,19 +41,19 @@ object WRTextRenderer {
     private var CUR_TEXT_ID = 1
 
     fun init() {
-        WorldRenderEvents.AFTER_ENTITIES.register(::render)
+        WorldRenderEvents.LAST.register(::render)
     }
 
     fun drawText(
         text: Text, color: Int, shadow: Boolean, overline: Boolean, model: Matrix4f, provider: VertexConsumerProvider,
-        seeThrough: Boolean, background: Int, light: Int
+        background: Int, light: Int
     ) {
         val width = MC.textRenderer.getWidth(text).toFloat()
         val height = MC.textRenderer.fontHeight.toFloat() + if (overline) 2 else 0
 
         val id = TEXT_FB_CACHE[TextKey(text, color, shadow, overline, background)].id
 
-        val renderLayer = if (seeThrough) RenderLayer.getTextSeeThrough(id) else RenderLayer.getText(id)
+        val renderLayer = RenderLayer.getText(id)
         val consumer = provider.getBuffer(renderLayer)
 
         // the texture ends up up-side-down for some reason, so we flip it here
@@ -65,26 +68,58 @@ object WRTextRenderer {
         val mc = MinecraftClient.getInstance()
         val player = mc.player
         val hit = mc.crosshairTarget
-        val provider = context.consumers()!!
+
+        val window = MC.window
+        val framebuffer = framebuffer ?: SimpleFramebuffer(
+            window.framebufferWidth, window.framebufferHeight, true, MinecraftClient.IS_SYSTEM_MAC
+        ).apply {
+            setClearColor(0f, 0f, 0f, 0f)
+        }
+        this.framebuffer = framebuffer
+
+        if (window.framebufferWidth != framebuffer.textureWidth || window.framebufferHeight != framebuffer.textureHeight) {
+            framebuffer.resize(window.framebufferWidth, window.framebufferHeight, MinecraftClient.IS_SYSTEM_MAC)
+        }
+
+        framebuffer.clear(MinecraftClient.IS_SYSTEM_MAC)
+
+        val mv = RenderSystem.getModelViewStack()
+        mv.push()
+        mv.loadIdentity()
+        RenderSystem.applyModelViewMatrix()
+
+        framebuffer.beginWrite(false)
 
         if (player != null && player.isSneaking && hit is BlockHitResult) {
             val hitPos = hit.blockPos
-            val key =
-                MultipartUtil.get(world, hitPos)?.getSelectedPart(hit.pos.subtract(Vec3d.of(hitPos)))?.modelKey
+            val key = MultipartUtil.get(world, hitPos)?.getSelectedPart(hit.pos.subtract(Vec3d.of(hitPos)))?.modelKey
 
             if (key != null) {
-                val light = WorldRenderer.getLightmapCoordinates(world, hitPos)
                 val stack = context.matrixStack()
                 val cameraPos = context.camera().pos
 
                 stack.push()
                 stack.translate(hitPos.x - cameraPos.x, hitPos.y - cameraPos.y, hitPos.z - cameraPos.z)
 
-                WRPartRenderers.bakerFor(key::class)?.renderOverlayText(key, stack, provider, light)
+                WRPartRenderers.bakerFor(key::class)?.renderOverlayText(key, stack, immediate)
 
                 stack.pop()
             }
         }
+
+        immediate.draw()
+
+        MC.framebuffer.beginWrite(false)
+
+        mv.pop()
+        RenderSystem.applyModelViewMatrix()
+
+        // Framebuffer.draw() messes with the projection matrix, so we're keeping a backup.
+        val projBackup = RenderSystem.getProjectionMatrix()
+        RenderSystem.enableBlend()
+        framebuffer.draw(window.framebufferWidth, window.framebufferHeight, false)
+        RenderSystem.disableBlend()
+        RenderSystem.setProjectionMatrix(projBackup)
     }
 
     private fun makeTexture(key: TextKey): TextTexture {
@@ -120,8 +155,6 @@ object WRTextRenderer {
         RenderSystem.applyModelViewMatrix()
         val backupProjMat = RenderSystem.getProjectionMatrix()
         RenderSystem.setProjectionMatrix(Matrix4f().apply { loadIdentity() })
-
-        val immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().buffer)
 
         if (key.shadow) {
             val shadowColor = multiplyBrightness(key.color, 0.25f)
@@ -167,10 +200,7 @@ object WRTextRenderer {
         val blue = (color and 0xFF).toFloat() / 255.0f * brightness
         val alpha = (color shr 24 and 0xFF).toFloat() / 255.0f
 
-        return (((alpha * 255.0f).toInt() and 0xFF) shl 24) or
-                (((red * 255.0f).toInt() and 0xFF) shl 16) or
-                (((green * 255.0f).toInt() and 0xFF) shl 8) or
-                ((blue * 255.0f).toInt() and 0xFF)
+        return (((alpha * 255.0f).toInt() and 0xFF) shl 24) or (((red * 255.0f).toInt() and 0xFF) shl 16) or (((green * 255.0f).toInt() and 0xFF) shl 8) or ((blue * 255.0f).toInt() and 0xFF)
     }
 
     private fun drawRect(x: Float, y: Float, width: Float, height: Float, color: Int, matrix4f: Matrix4f) {

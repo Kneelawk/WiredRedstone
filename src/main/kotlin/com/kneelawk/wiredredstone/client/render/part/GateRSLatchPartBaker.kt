@@ -120,23 +120,23 @@ object GateRSLatchPartBaker : AbstractPartBaker<GateRSLatchPartKey>() {
     }
 
     override fun renderOverlayText(
-        key: GateRSLatchPartKey, stack: MatrixStack, provider: VertexConsumerProvider, light: Int
+        key: GateRSLatchPartKey, stack: MatrixStack, provider: VertexConsumerProvider
     ) {
         RenderUtils.renderPortText(
             overlay("gate_rs_latch.set_out"), key.side, cardinalRotatedDirection(Direction.NORTH, key.direction),
-            2.0 / 16.0, stack, provider, light
+            2.0 / 16.0, stack, provider
         )
         RenderUtils.renderPortText(
             overlay("gate_rs_latch.reset_out"), key.side, cardinalRotatedDirection(Direction.SOUTH, key.direction),
-            2.0 / 16.0, stack, provider, light, overline = true
+            2.0 / 16.0, stack, provider, overline = true
         )
         RenderUtils.renderPortText(
             overlay("gate_rs_latch.set_in"), key.side, cardinalRotatedDirection(Direction.WEST, key.direction),
-            2.0 / 16.0, stack, provider, light
+            2.0 / 16.0, stack, provider
         )
         RenderUtils.renderPortText(
             overlay("gate_rs_latch.reset_in"), key.side, cardinalRotatedDirection(Direction.EAST, key.direction),
-            2.0 / 16.0, stack, provider, light
+            2.0 / 16.0, stack, provider
         )
     }
 }

@@ -67,13 +67,13 @@ object GateDiodePartBaker : AbstractPartBaker<GateDiodePartKey>() {
     }
 
     override fun renderOverlayText(
-        key: GateDiodePartKey, stack: MatrixStack, provider: VertexConsumerProvider, light: Int
+        key: GateDiodePartKey, stack: MatrixStack, provider: VertexConsumerProvider
     ) {
         RenderUtils.renderPortText(
-            overlay("gate_diode.out"), key.side, key.direction, 2.0 / 16.0, stack, provider, light
+            overlay("gate_diode.out"), key.side, key.direction, 2.0 / 16.0, stack, provider
         )
         RenderUtils.renderPortText(
-            overlay("gate_diode.in"), key.side, key.direction.opposite, 2.0 / 16.0, stack, provider, light
+            overlay("gate_diode.in"), key.side, key.direction.opposite, 2.0 / 16.0, stack, provider
         )
     }
 }
