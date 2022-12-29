@@ -30,7 +30,7 @@ jobs:
         run: ./gradlew build
         env:
           RELEASE_TAG: ${{ steps.tag_version.outputs.tag }}
-      - name: Modrinth Release
+      - name: Curseforge Release
         run: ./gradlew curseforge
         env:
           CURSE_API_KEY: ${{ secrets.CURSE_API_KEY }}
