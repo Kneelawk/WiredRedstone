@@ -88,12 +88,13 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
     }
 
     override fun onAdded(bus: MultipartEventBus) {
-        // nothing here needs to be done on the client
-        if (getWorld().isClient) return
-
+        // Ctx is used on both the client and the server
         ctx = holder.container.getFirstPart(AbstractSidedPart::class.java) { it.ctx != null }?.ctx
             ?: SidedPartContext(bus)
         ctx!!.setPart(side, this)
+
+        // nothing else here needs to be done on the client
+        if (getWorld().isClient) return
 
         // Detects when a block supporting this one is broken
 
@@ -227,11 +228,12 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
     }
 
     override fun onRemoved() {
-        // Nothing here needs to be done on the client
-        if (getWorld().isClient) return
-
+        // Ctx is used on both the client and the server
         ctx.requireNonNull("Tried to remove a part before it was added! (SidedPartContext is still null)")
             .setPart(side, null)
+
+        // Nothing else here needs to be done on the client
+        if (getWorld().isClient) return
 
         val world = getWorld()
         if (!world.isClient && world is ServerWorld) {
