@@ -108,18 +108,21 @@ object GateProjectorSimplePartBaker : AbstractPartBaker<GateProjectorSimplePartK
         key: GateProjectorSimplePartKey, stack: MatrixStack, provider: VertexConsumerProvider
     ) {
         val outputEdge = RotationUtils.rotatedDirection(key.side, key.direction)
+        val receivingDistance = key.distance + 1
+        val receivingEdge = outputEdge.opposite
 
         stack.push()
         stack.translate(
-            (outputEdge.offsetX * key.distance).toDouble(), (outputEdge.offsetY * key.distance).toDouble(),
-            (outputEdge.offsetZ * key.distance).toDouble()
+            (outputEdge.offsetX * receivingDistance).toDouble(),
+            (outputEdge.offsetY * receivingDistance).toDouble(),
+            (outputEdge.offsetZ * receivingDistance).toDouble()
         )
 
         val model = stack.peek().positionMatrix
 
         for (side in Direction.values()) {
             val face = FaceUtils.getFaceForSide(side)
-            val tex = if (side == outputEdge) PROJECTOR_TARGET_HIGHLIGHT else PROJECTOR_TARGET
+            val tex = if (side == receivingEdge) PROJECTOR_TARGET_HIGHLIGHT else PROJECTOR_TARGET
             val buf = provider.getBuffer(RenderLayer.getText(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE))
             val sprite = RenderUtils.getBlockSprite(tex)
 
