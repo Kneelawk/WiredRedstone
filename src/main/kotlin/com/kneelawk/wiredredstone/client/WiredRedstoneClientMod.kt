@@ -12,6 +12,7 @@ fun init() {
     WRSprites.init()
     WRModels.init()
     GhostVertexConsumer.init()
+    WROverlayRenderer.init()
     WRPartRenderers.init()
     WROutlineRenderer.init()
     WRGhostRenderer.init()

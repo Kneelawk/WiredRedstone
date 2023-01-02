@@ -11,9 +11,7 @@ import com.mojang.blaze3d.systems.RenderSystem
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 import net.minecraft.client.MinecraftClient
-import net.minecraft.client.gl.Framebuffer
 import net.minecraft.client.gl.SimpleFramebuffer
 import net.minecraft.client.render.*
 import net.minecraft.text.Text
@@ -32,7 +30,6 @@ object WRTextRenderer {
     data class TextTexture(val texture: FramebufferTexture, val id: Identifier)
 
     private val immediate = VertexConsumerProvider.immediate(BufferBuilder(256))
-    private var framebuffer: Framebuffer? = null
     private val MC by lazy { MinecraftClient.getInstance() }
     private val TEXT_FB_CACHE: LoadingCache<TextKey, TextTexture> =
         CacheBuilder.newBuilder().expireAfterAccess(10, TimeUnit.MINUTES)
@@ -41,7 +38,7 @@ object WRTextRenderer {
     private var CUR_TEXT_ID = 1
 
     fun init() {
-        WorldRenderEvents.END.register(::render)
+        WROverlayRenderer.RENDER_TO_OVERLAY.register(::render)
     }
 
     fun drawText(
@@ -65,25 +62,9 @@ object WRTextRenderer {
 
     private fun render(context: WorldRenderContext) {
         val world = context.world()
-        val mc = MinecraftClient.getInstance()
-        val player = mc.player
-        val hit = mc.crosshairTarget
-
-        val window = MC.window
-        val framebuffer = framebuffer ?: SimpleFramebuffer(
-            window.framebufferWidth, window.framebufferHeight, true, MinecraftClient.IS_SYSTEM_MAC
-        ).apply {
-            setClearColor(0f, 0f, 0f, 0f)
-        }
-        this.framebuffer = framebuffer
-
-        if (window.framebufferWidth != framebuffer.textureWidth || window.framebufferHeight != framebuffer.textureHeight) {
-            framebuffer.resize(window.framebufferWidth, window.framebufferHeight, MinecraftClient.IS_SYSTEM_MAC)
-        }
-
-        framebuffer.clear(MinecraftClient.IS_SYSTEM_MAC)
-
-        framebuffer.beginWrite(false)
+        val player = MC.player
+        val hit = MC.crosshairTarget
+        val consumers = context.consumers()!!
 
         if (player != null && player.isSneaking && hit is BlockHitResult) {
             val hitPos = hit.blockPos
@@ -96,22 +77,11 @@ object WRTextRenderer {
                 stack.push()
                 stack.translate(hitPos.x - cameraPos.x, hitPos.y - cameraPos.y, hitPos.z - cameraPos.z)
 
-                WRPartRenderers.bakerFor(key::class)?.renderOverlayText(key, stack, immediate)
+                WRPartRenderers.bakerFor(key::class)?.renderOverlayText(key, stack, consumers)
 
                 stack.pop()
             }
         }
-
-        immediate.draw()
-
-        MC.framebuffer.beginWrite(false)
-
-        // Framebuffer.draw() messes with the projection matrix, so we're keeping a backup.
-        val projBackup = RenderSystem.getProjectionMatrix()
-        RenderSystem.enableBlend()
-        framebuffer.draw(window.framebufferWidth, window.framebufferHeight, false)
-        RenderSystem.disableBlend()
-        RenderSystem.setProjectionMatrix(projBackup)
     }
 
     private fun makeTexture(key: TextKey): TextTexture {

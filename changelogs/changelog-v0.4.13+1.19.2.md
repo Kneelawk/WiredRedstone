@@ -6,3 +6,4 @@ Changes:
 
 * Fixes gate port text rendering on non-vanilla renderers.
 * Fixes Projection Viewer items.
+* Removes deprecated core shader usage to improve compatibility with renderer mods like Canvas and Sodium/Indium/Iris.

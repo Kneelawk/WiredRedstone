@@ -3,12 +3,11 @@ package com.kneelawk.wiredredstone.client.render
 import com.kneelawk.wiredredstone.item.ProjectionViewerItem
 import com.kneelawk.wiredredstone.item.WRItems
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 import net.minecraft.client.MinecraftClient
 
 object WRProjectionViewerRenderer {
     fun init() {
-        WorldRenderEvents.AFTER_ENTITIES.register(::render)
+        WROverlayRenderer.RENDER_TO_OVERLAY.register(::render)
     }
 
     private fun render(context: WorldRenderContext) {

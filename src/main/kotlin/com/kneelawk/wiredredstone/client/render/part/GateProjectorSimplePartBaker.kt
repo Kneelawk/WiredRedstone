@@ -11,9 +11,11 @@ import com.kneelawk.wiredredstone.part.key.GateProjectorSimplePartKey
 import com.kneelawk.wiredredstone.util.FaceUtils
 import com.kneelawk.wiredredstone.util.RotationUtils
 import com.kneelawk.wiredredstone.util.bits.ConnectionUtils
+import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.render.VertexConsumerProvider
+import net.minecraft.client.texture.SpriteAtlasTexture
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.Direction
@@ -29,8 +31,8 @@ object GateProjectorSimplePartBaker : AbstractPartBaker<GateProjectorSimplePartK
     private val TORCH_OFF = id("block/gate_projector_simple/torch_off")
     private val TORCH_ON = id("block/gate_projector_simple/torch_on")
 
-    private val PROJECTOR_TARGET = id("textures/block/projector_target.png")
-    private val PROJECTOR_TARGET_HIGHLIGHT = id("textures/block/projector_target_highlight.png")
+    private val PROJECTOR_TARGET = id("block/projector_target")
+    private val PROJECTOR_TARGET_HIGHLIGHT = id("block/projector_target_highlight")
 
     override fun makeMesh(key: GateProjectorSimplePartKey): Mesh {
         val inputWireSpriteId =
@@ -83,6 +85,11 @@ object GateProjectorSimplePartBaker : AbstractPartBaker<GateProjectorSimplePartK
         out.accept(TORCH_ON)
     }
 
+    override fun registerSprites(registry: ClientSpriteRegistryCallback.Registry) {
+        registry.register(PROJECTOR_TARGET)
+        registry.register(PROJECTOR_TARGET_HIGHLIGHT)
+    }
+
     override fun renderOverlayText(
         key: GateProjectorSimplePartKey, stack: MatrixStack, provider: VertexConsumerProvider
     ) {
@@ -113,17 +120,23 @@ object GateProjectorSimplePartBaker : AbstractPartBaker<GateProjectorSimplePartK
         for (side in Direction.values()) {
             val face = FaceUtils.getFaceForSide(side)
             val tex = if (side == outputEdge) PROJECTOR_TARGET_HIGHLIGHT else PROJECTOR_TARGET
-            val buf = provider.getBuffer(RenderLayer.getTextSeeThrough(tex))
+            val buf = provider.getBuffer(RenderLayer.getText(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE))
+            val sprite = RenderUtils.getBlockSprite(tex)
 
-            buf.vertex(model, face[0][0], face[0][1], face[0][2]).color(-1).texture(0f, 0f).light(15728880).next()
-            buf.vertex(model, face[1][0], face[1][1], face[1][2]).color(-1).texture(0f, 1f).light(15728880).next()
-            buf.vertex(model, face[2][0], face[2][1], face[2][2]).color(-1).texture(1f, 1f).light(15728880).next()
-            buf.vertex(model, face[3][0], face[3][1], face[3][2]).color(-1).texture(1f, 0f).light(15728880).next()
+            val u0 = sprite.getFrameU(0.0)
+            val u1 = sprite.getFrameU(16.0)
+            val v0 = sprite.getFrameV(0.0)
+            val v1 = sprite.getFrameV(16.0)
 
-            buf.vertex(model, face[3][0], face[3][1], face[3][2]).color(-1).texture(1f, 0f).light(15728880).next()
-            buf.vertex(model, face[2][0], face[2][1], face[2][2]).color(-1).texture(1f, 1f).light(15728880).next()
-            buf.vertex(model, face[1][0], face[1][1], face[1][2]).color(-1).texture(0f, 1f).light(15728880).next()
-            buf.vertex(model, face[0][0], face[0][1], face[0][2]).color(-1).texture(0f, 0f).light(15728880).next()
+            buf.vertex(model, face[0][0], face[0][1], face[0][2]).color(-1).texture(u0, v0).light(15728880).next()
+            buf.vertex(model, face[1][0], face[1][1], face[1][2]).color(-1).texture(u0, v1).light(15728880).next()
+            buf.vertex(model, face[2][0], face[2][1], face[2][2]).color(-1).texture(u1, v1).light(15728880).next()
+            buf.vertex(model, face[3][0], face[3][1], face[3][2]).color(-1).texture(u1, v0).light(15728880).next()
+
+            buf.vertex(model, face[3][0], face[3][1], face[3][2]).color(-1).texture(u1, v0).light(15728880).next()
+            buf.vertex(model, face[2][0], face[2][1], face[2][2]).color(-1).texture(u1, v1).light(15728880).next()
+            buf.vertex(model, face[1][0], face[1][1], face[1][2]).color(-1).texture(u0, v1).light(15728880).next()
+            buf.vertex(model, face[0][0], face[0][1], face[0][2]).color(-1).texture(u0, v0).light(15728880).next()
         }
 
         stack.pop()
