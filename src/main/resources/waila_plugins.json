@@ -1,0 +1,5 @@
+{
+  "wiredredstone:part_plugin": {
+    "initializer": "com.kneelawk.wiredredstone.compat.wthit.PartPlugin"
+  }
+}
