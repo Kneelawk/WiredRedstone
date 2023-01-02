@@ -1,39 +1,28 @@
 package com.kneelawk.wiredredstone.client.render
 
+import alexiil.mc.lib.multipart.api.MultipartContainer
 import com.kneelawk.wiredredstone.client.render.part.WRPartRenderers
 import com.kneelawk.wiredredstone.item.GateItem
-import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
+import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh
 import net.minecraft.client.MinecraftClient
-import net.minecraft.client.render.*
+import net.minecraft.client.render.BufferBuilder
+import net.minecraft.client.render.LightmapTextureManager
+import net.minecraft.client.render.VertexConsumerProvider
 import net.minecraft.item.ItemUsageContext
 import net.minecraft.util.Hand
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.hit.HitResult
 
-object WRGhostRenderer : VertexConsumerProvider {
-    private val RENDER_LAYERS = Object2ObjectLinkedOpenHashMap<RenderLayer, BufferBuilder>()
-    private val CONSUMERS: VertexConsumerProvider.Immediate =
-        VertexConsumerProvider.immediate(RENDER_LAYERS, BufferBuilder(1 shl 12))
-
-    init {
-        RENDER_LAYERS[WRRenderLayers.GATE_PLACEMENT] = BufferBuilder(1 shl 12)
-    }
+object WRGhostRenderer {
+    private val immediate = VertexConsumerProvider.immediate(BufferBuilder(256))
 
     fun init() {
-        WorldRenderEvents.END.register { context ->
-            // Render in END because our translucent placement ghost would occlude chests otherwise.
-            draw(context.camera())
-        }
+        WorldRenderEvents.END.register(::draw)
     }
 
-    override fun getBuffer(renderLayer: RenderLayer): VertexConsumer {
-        return CONSUMERS.getBuffer(renderLayer)
-    }
-
-    private fun draw(camera: Camera) {
-        val matrices = WRMatrixFixer.getStack()
-
+    private fun draw(context: WorldRenderContext) {
         val client = MinecraftClient.getInstance()
         client.player?.let { player ->
             // Render the placement ghost
@@ -44,24 +33,15 @@ object WRGhostRenderer : VertexConsumerProvider {
                     val stack = player.getStackInHand(hand)
                     val item = stack.item
                     if (item is GateItem) {
-                        val context = ItemUsageContext(player, hand, target)
-                        val offer = item.getOfferForPlacementGhost(context)
+                        val hitContext = ItemUsageContext(player, hand, target)
+                        val offer = item.getOfferForPlacementGhost(hitContext)
                         if (offer != null) {
                             val mesh = offer.holder.part.modelKey?.let { key ->
                                 WRPartRenderers.bakerFor(key::class)?.getMeshForPlacementGhost(key)
                             }
 
                             if (mesh != null) {
-                                val pos = offer.holder.container.multipartPos
-                                val cameraPos = camera.pos
-                                val x = pos.x - cameraPos.x
-                                val y = pos.y - cameraPos.y
-                                val z = pos.z - cameraPos.z
-                                matrices.push()
-                                matrices.translate(x, y, z)
-                                val consumer = getBuffer(WRRenderLayers.GATE_PLACEMENT)
-                                RenderUtils.renderMesh(matrices, consumer, mesh)
-                                matrices.pop()
+                                renderPlacementGhost(context, offer, mesh)
                             }
 
                             break
@@ -70,9 +50,29 @@ object WRGhostRenderer : VertexConsumerProvider {
                 }
             }
         }
+    }
 
-        WRMatrixFixer.renderSystemPush()
-        CONSUMERS.draw()
-        WRMatrixFixer.renderSystemPop()
+    private fun renderPlacementGhost(
+        context: WorldRenderContext,
+        offer: MultipartContainer.PartOffer,
+        mesh: Mesh
+    ) {
+        val camera = context.camera()
+        val matrices = context.matrixStack()
+
+        val pos = offer.holder.container.multipartPos
+        val cameraPos = camera.pos
+        val x = pos.x - cameraPos.x
+        val y = pos.y - cameraPos.y
+        val z = pos.z - cameraPos.z
+        matrices.push()
+        matrices.translate(x, y, z)
+
+        val consumer = GhostVertexConsumer(immediate.getBuffer(WRRenderLayers.GATE_PLACEMENT))
+        RenderUtils.renderMesh(matrices, consumer, mesh, LightmapTextureManager.MAX_LIGHT_COORDINATE)
+
+        matrices.pop()
+
+        immediate.draw()
     }
 }

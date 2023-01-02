@@ -9,10 +9,9 @@ import net.fabricmc.api.Environment
 @Suppress("unused")
 @Environment(EnvType.CLIENT)
 fun init() {
-    WRMatrixFixer.init()
-    WRShaders.init()
     WRSprites.init()
     WRModels.init()
+    GhostVertexConsumer.init()
     WRPartRenderers.init()
     WROutlineRenderer.init()
     WRGhostRenderer.init()
