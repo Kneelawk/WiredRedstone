@@ -26,6 +26,7 @@ import net.minecraft.util.math.MathHelper.PI
 import net.minecraft.util.math.Quaternion
 import net.minecraft.util.math.Vec3f
 import net.minecraft.util.math.random.Random
+import kotlin.math.max
 import kotlin.math.sqrt
 
 object RenderUtils {
@@ -88,16 +89,27 @@ object RenderUtils {
         }
     }
 
-    fun renderMesh(stack: MatrixStack, consumer: VertexConsumer, mesh: Mesh) {
+    /**
+     * Renders a [Mesh] to a [VertexConsumer].
+     */
+    fun renderMesh(stack: MatrixStack, consumer: VertexConsumer, mesh: Mesh, light: Int) {
+        val mBlockLight = LightmapTextureManager.getBlockLightCoordinates(light)
+        val mSkyLight = LightmapTextureManager.getSkyLightCoordinates(light)
+
         val matrix4f = stack.peek().positionMatrix
         val matrix3f = stack.peek().normalMatrix
         mesh.forEach { quad ->
             for (i in 0 until 4) {
+                val vLight = quad.lightmap(i)
+                val vBlockLight = LightmapTextureManager.getBlockLightCoordinates(vLight)
+                val vSkyLight = LightmapTextureManager.getSkyLightCoordinates(vLight)
+                val fLight = LightmapTextureManager.pack(max(mBlockLight, vBlockLight), max(mSkyLight, vSkyLight))
+
                 consumer.vertex(matrix4f, quad.x(i), quad.y(i), quad.z(i))
                     .color(quad.spriteColor(i, 0))
                     .texture(quad.spriteU(i, 0), quad.spriteV(i, 0))
                     .overlay(OverlayTexture.DEFAULT_UV)
-                    .light(quad.lightmap(i))
+                    .light(fLight)
                     .normal(matrix3f, quad.normalX(i), quad.normalY(i), quad.normalZ(i))
                     .next()
             }

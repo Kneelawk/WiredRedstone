@@ -35,6 +35,8 @@ group = mavenGroup
 
 loom {
     accessWidenerPath.set(file("src/main/resources/wiredredstone.accesswidener"))
+
+//    enableTransitiveAccessWideners.set(false)
 }
 
 repositories {

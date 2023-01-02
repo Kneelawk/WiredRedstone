@@ -7,9 +7,7 @@
   },
   "client": [
     "ClientRecipeBookMixin",
-    "IdentifierMixin",
-    "RenderLayerAccessor",
-    "RenderPhaseAccessor"
+    "RenderLayerAccessor"
   ],
   "mixins": [
     "AbstractBlockStateMixin"
