@@ -8,9 +8,7 @@
   "client": [
     "ClientRecipeBookMixin",
     "FramebufferAccessor",
-    "IdentifierMixin",
-    "RenderLayerAccessor",
-    "RenderPhaseAccessor"
+    "RenderLayerAccessor"
   ],
   "mixins": [
   ]
