@@ -41,7 +41,7 @@ object WRTextRenderer {
     private var CUR_TEXT_ID = 1
 
     fun init() {
-        WorldRenderEvents.LAST.register(::render)
+        WorldRenderEvents.END.register(::render)
     }
 
     fun drawText(
@@ -83,11 +83,6 @@ object WRTextRenderer {
 
         framebuffer.clear(MinecraftClient.IS_SYSTEM_MAC)
 
-        val mv = RenderSystem.getModelViewStack()
-        mv.push()
-        mv.loadIdentity()
-        RenderSystem.applyModelViewMatrix()
-
         framebuffer.beginWrite(false)
 
         if (player != null && player.isSneaking && hit is BlockHitResult) {
@@ -110,9 +105,6 @@ object WRTextRenderer {
         immediate.draw()
 
         MC.framebuffer.beginWrite(false)
-
-        mv.pop()
-        RenderSystem.applyModelViewMatrix()
 
         // Framebuffer.draw() messes with the projection matrix, so we're keeping a backup.
         val projBackup = RenderSystem.getProjectionMatrix()
