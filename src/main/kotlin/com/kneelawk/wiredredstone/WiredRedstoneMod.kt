@@ -12,7 +12,6 @@ import com.kneelawk.wiredredstone.net.WRNetworking
 import com.kneelawk.wiredredstone.node.WRBlockNodeDiscoverer
 import com.kneelawk.wiredredstone.node.WRBlockNodes
 import com.kneelawk.wiredredstone.part.WRParts
-import com.kneelawk.wiredredstone.part.event.WRChunkUnloadEvent
 import com.kneelawk.wiredredstone.recipe.WRRecipes
 import com.kneelawk.wiredredstone.screenhandler.WRScreenHandlers
 
@@ -29,7 +28,6 @@ fun init() {
     WRRecipes.init()
     WRScreenHandlers.init()
     WRNetworking.init()
-    WRChunkUnloadEvent.init()
 
     CCIntegrationHandler.init()
     EMIIntegrationHandler.init()

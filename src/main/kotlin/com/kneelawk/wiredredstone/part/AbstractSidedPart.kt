@@ -6,7 +6,6 @@ import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
 import com.kneelawk.graphlib.GraphLib
-import com.kneelawk.wiredredstone.part.event.WRChunkUnloadEvent
 import com.kneelawk.wiredredstone.part.event.WRPartPreMoveEvent
 import com.kneelawk.wiredredstone.util.PlacementUtils
 import com.kneelawk.wiredredstone.util.SimpleItemDropTarget
@@ -147,7 +146,7 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
 
         // Removal Detection
 
-        bus.addContextlessListener(this, WRChunkUnloadEvent::class.java) {
+        bus.addContextlessListener(this, PartContainerState.ChunkUnload::class.java) {
             unloading = true
         }
 
