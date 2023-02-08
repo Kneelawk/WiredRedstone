@@ -15,7 +15,6 @@ object BoundingBoxUtils {
     data class ShapeKey(val side: Direction, val connections: UByte)
 
     private fun getWireShape(wireWidth: Double, wireHeight: Double, key: ShapeKey): VoxelShape {
-        val axis = key.side.axis
         val connections = key.connections
 
         if (connections == 0u.toUByte()) {
@@ -29,16 +28,16 @@ object BoundingBoxUtils {
             )
         } else {
             val (doZNeg, zNegEnd) = calculateConnection(
-                connections, axis, wireWidth, Direction.NORTH, wireHeight, 0.0, Direction.Axis.Y, true
+                connections, wireWidth, Direction.NORTH, 0.0
             )
             val (doXNeg, xNegEnd) = calculateConnection(
-                connections, axis, wireWidth, Direction.WEST, wireHeight, 0.0, Direction.Axis.X, false
+                connections, wireWidth, Direction.WEST, 0.0
             )
             val (doZPos, zPosEnd) = calculateConnection(
-                connections, axis, wireWidth, Direction.SOUTH, 16.0 - wireHeight, 16.0, Direction.Axis.Y, true
+                connections, wireWidth, Direction.SOUTH, 16.0
             )
             val (doXPos, xPosEnd) = calculateConnection(
-                connections, axis, wireWidth, Direction.EAST, 16.0 - wireHeight, 16.0, Direction.Axis.X, false
+                connections, wireWidth, Direction.EAST, 16.0
             )
 
             var shape = VoxelShapes.empty()
@@ -72,16 +71,10 @@ object BoundingBoxUtils {
     }
 
     private fun calculateConnection(
-        connections: UByte, axis: Direction.Axis, wireWidth: Double, cardinal: Direction, internalEnd: Double,
-        externalEnd: Double, specialAxis: Direction.Axis, axisIsLarger: Boolean
+        connections: UByte, wireWidth: Double, cardinal: Direction, end: Double
     ): Pair<Boolean, Double> {
-        return if (ConnectionUtils.isInternal(connections, cardinal)) {
-            Pair(true, if ((axis == specialAxis) == axisIsLarger) externalEnd else internalEnd)
-        } else if (ConnectionUtils.isExternal(connections, cardinal) || ConnectionUtils.isCorner(
-                connections, cardinal
-            )
-        ) {
-            Pair(true, externalEnd)
+        return if (!ConnectionUtils.isDisconnected(connections, cardinal)) {
+            Pair(true, end)
         } else {
             Pair(
                 false,

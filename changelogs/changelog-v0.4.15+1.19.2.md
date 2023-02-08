@@ -5,3 +5,4 @@ Wired Redstone version 0.4.15 for Minecraft 1.19.2
 Changes:
 
 * Fixes method naming conflict with LMP 0.8.1.
+* Allows wire bounding-boxes to overlap, as the overlap-avoidance code was more trouble than it was worth.
