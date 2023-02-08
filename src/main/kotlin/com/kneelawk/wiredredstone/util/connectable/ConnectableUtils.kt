@@ -105,7 +105,7 @@ object ConnectableUtils {
         part.updateConnections(newConnections)
         (part as? RedrawablePart)?.let {
             it.redraw()
-            it.recalculateShape()
+            it.reshape()
         }
     }
 

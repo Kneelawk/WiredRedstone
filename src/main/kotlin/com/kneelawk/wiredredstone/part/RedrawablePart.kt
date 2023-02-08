@@ -3,5 +3,5 @@ package com.kneelawk.wiredredstone.part
 interface RedrawablePart {
     fun redraw()
 
-    fun recalculateShape()
+    fun reshape()
 }

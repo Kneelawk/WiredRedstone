@@ -24,7 +24,7 @@ abstract class AbstractConnectablePart : AbstractSidedPart, ConnectablePart, Red
 
         private val NET_RECALCULATE_SHAPE: NetIdSignalK<AbstractConnectablePart> =
             NET_PARENT.idSignal("recalculate_shape").toClientOnly().setRecv {
-                recalculateShape()
+                reshape()
             }
     }
 
@@ -86,7 +86,7 @@ abstract class AbstractConnectablePart : AbstractSidedPart, ConnectablePart, Red
         redrawIfChanged()
     }
 
-    override fun recalculateShape() {
+    override fun reshape() {
         // Want to make sure nothing bad happens if this is called after this part has already been removed.
         if (isRemoved()) return
 
