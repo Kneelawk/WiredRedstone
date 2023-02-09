@@ -5,6 +5,7 @@ import com.modrinth.minotaur.dependencies.ModDependency
 
 plugins {
     id("fabric-loom")
+    id("com.github.johnrengelman.shadow")
     val kotlinVersion: String by System.getProperties()
     kotlin("jvm").version(kotlinVersion)
     `maven-publish`
@@ -80,6 +81,8 @@ repositories {
     mavenLocal()
 }
 
+val shadowInclude = configurations.create("shadowInclude")
+
 dependencies {
     val minecraftVersion: String by project
     minecraft("com.mojang:minecraft:$minecraftVersion")
@@ -119,6 +122,14 @@ dependencies {
         exclude("net.fabricmc")
     }
     include("teamreborn:energy:$energyVersion")
+
+    // Quilt-Config
+    val quiltConfigVersion: String by project
+    implementation("org.quiltmc:quilt-config:$quiltConfigVersion")
+    shadowInclude("org.quiltmc:quilt-config:$quiltConfigVersion")
+    val quiltJson5Version: String by project
+    implementation("org.quiltmc:quilt-json5:$quiltJson5Version")
+    shadowInclude("org.quiltmc:quilt-json5:$quiltJson5Version")
 
     // WTHIT API
     val wthitVersion: String by project
@@ -227,6 +238,22 @@ tasks {
         sourceCompatibility = javaVersion
         targetCompatibility = javaVersion
         withSourcesJar()
+    }
+
+    shadowJar {
+        configurations = listOf(shadowInclude)
+        archiveClassifier.set("shadow-dev")
+        dependencies {
+            exclude(dependency("org.jetbrains:annotations"))
+        }
+        relocate("org.quiltmc.config", "com.kneelawk.wiredredstone.shadowlibs.org.quiltmc.config")
+        relocate("org.quiltmc.json5", "com.kneelawk.wiredredstone.shadowlibs.org.quiltmc.json5")
+        destinationDirectory.set(File(project.buildDir, "devlibs"))
+    }
+
+    remapJar {
+        dependsOn(shadowJar)
+        inputFile.set(shadowJar.get().archiveFile)
     }
 }
 

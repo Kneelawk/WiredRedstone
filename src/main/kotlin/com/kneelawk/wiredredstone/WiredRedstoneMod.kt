@@ -4,6 +4,7 @@ import com.kneelawk.wiredredstone.block.WRBlocks
 import com.kneelawk.wiredredstone.blockentity.WRBlockEntities
 import com.kneelawk.wiredredstone.compat.cc.CCIntegrationHandler
 import com.kneelawk.wiredredstone.compat.create.CreateCompatHandler
+import com.kneelawk.wiredredstone.config.CommonConfig
 import com.kneelawk.wiredredstone.item.WRItems
 import com.kneelawk.wiredredstone.net.WRNetworking
 import com.kneelawk.wiredredstone.node.WRBlockNodeDiscoverer
@@ -17,6 +18,9 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
 
 @Suppress("unused")
 fun init() {
+    WRLog.log.info("Initializing Wired Redstone...")
+
+    CommonConfig.ensureInit()
     WRParts.init()
     WRBlocks.init()
     WRItems.init()

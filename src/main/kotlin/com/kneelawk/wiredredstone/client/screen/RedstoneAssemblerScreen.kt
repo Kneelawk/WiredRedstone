@@ -4,6 +4,7 @@ import com.kneelawk.wiredredstone.WRConstants.gui
 import com.kneelawk.wiredredstone.WRConstants.id
 import com.kneelawk.wiredredstone.WRConstants.tooltip
 import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity
+import com.kneelawk.wiredredstone.config.AssemblerConfig
 import com.kneelawk.wiredredstone.screenhandler.RedstoneAssemblerScreenHandler
 import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.MinecraftClient
@@ -97,7 +98,7 @@ class RedstoneAssemblerScreen(handler: RedstoneAssemblerScreenHandler, playerInv
         if (mx in 10..21 && my in 17..50) {
             renderTooltip(
                 matrices,
-                tooltip("redstone_assembler.energy", handler.energyValue, RedstoneAssemblerBlockEntity.ENERGY_CAPACITY),
+                tooltip("redstone_assembler.energy", handler.energyValue, AssemblerConfig.instance.energyCapacity),
                 x, y
             )
         }
