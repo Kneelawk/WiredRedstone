@@ -94,6 +94,7 @@
   "overlay.wiredredstone.gate_rs_latch.reset_out": "Q",
   "overlay.wiredredstone.gate_rs_latch.set_in": "SET",
   "overlay.wiredredstone.gate_rs_latch.reset_in": "RESET",
+  "message.wiredredstone.login.bad_version": "Your client version of Wired Redstone (%s) is incompatible with this server. Please install Wired Redstone version %s.",
   "emi.category.wiredredstone.redstone_assembler": "Redstone Assembling",
   "tag.c.furnaces": "Furnaces",
   "tag.c.red_alloy_ingots": "Red Alloy Ingots",

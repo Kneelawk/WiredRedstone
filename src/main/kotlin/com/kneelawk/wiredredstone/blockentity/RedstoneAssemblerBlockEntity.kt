@@ -2,6 +2,7 @@ package com.kneelawk.wiredredstone.blockentity
 
 import com.kneelawk.wiredredstone.WRConstants.tt
 import com.kneelawk.wiredredstone.block.RedstoneAssemblerBlock
+import com.kneelawk.wiredredstone.config.AssemblerConfig
 import com.kneelawk.wiredredstone.recipe.*
 import com.kneelawk.wiredredstone.screenhandler.RedstoneAssemblerScreenHandler
 import com.kneelawk.wiredredstone.util.toArray
@@ -33,6 +34,7 @@ import net.minecraft.util.math.Direction
 import net.minecraft.util.math.MathHelper
 import net.minecraft.world.World
 import team.reborn.energy.api.base.SimpleEnergyStorage
+import kotlin.math.roundToInt
 
 class RedstoneAssemblerBlockEntity(pos: BlockPos, state: BlockState) :
     LockableContainerBlockEntity(WRBlockEntities.REDSTONE_ASSEMBLER, pos, state), NamedScreenHandlerFactory,
@@ -63,17 +65,11 @@ class RedstoneAssemblerBlockEntity(pos: BlockPos, state: BlockState) :
         const val MODE_PROPERTY = 7
         const val PROPERTY_COUNT = 8
 
-        const val ENERGY_CAPACITY = 128000L
-        const val ENERGY_MAX_INSERT = 128L
-        const val ENERGY_MAX_EXTRACT = 128L
-
         const val DEFAULT_COOK_TIME = 200
-        const val CRAFTING_COOK_TIME = 10
-        const val CRAFTING_ENERGY_PER_TICK = 5
 
-        const val BURN_ENERGY_PER_TICK = 5
         val FUEL_TIME_MAP: Map<Item, Int> by lazy {
-            AbstractFurnaceBlockEntity.createFuelTimeMap().mapValues { it.value / 2 }
+            AbstractFurnaceBlockEntity.createFuelTimeMap()
+                .mapValues { (it.value * AssemblerConfig.instance.burnTimeFactor).roundToInt() }
         }
 
         val TOP_SLOTS = (INPUT_START_SLOT until INPUT_STOP_SLOT).toArray()
@@ -88,10 +84,13 @@ class RedstoneAssemblerBlockEntity(pos: BlockPos, state: BlockState) :
                 var markDirty = false
 
                 // generate more energy while we're burning
-                if (isBurning() && energyStorage.amount + BURN_ENERGY_PER_TICK <= ENERGY_CAPACITY) {
+                if (isBurning() && energyStorage.amount + AssemblerConfig.instance.burnEnergy <= AssemblerConfig.instance.energyCapacity) {
                     burnTime--
                     energyStorage.amount =
-                        MathHelper.clamp(energyStorage.amount + BURN_ENERGY_PER_TICK, 0L, ENERGY_CAPACITY)
+                        MathHelper.clamp(
+                            energyStorage.amount + AssemblerConfig.instance.burnEnergy, 0L,
+                            AssemblerConfig.instance.energyCapacity
+                        )
                     showBurning = true
 
                     markDirty = true
@@ -138,8 +137,11 @@ class RedstoneAssemblerBlockEntity(pos: BlockPos, state: BlockState) :
                         is RecipeHolder.Crafting -> {
                             val recipe = cached.recipe
 
-                            if (recipe != null && energyStorage.amount >= CRAFTING_ENERGY_PER_TICK) {
-                                tryCraft(getValidCraftingInputInventory(recipe), recipe, CRAFTING_ENERGY_PER_TICK)
+                            if (recipe != null && energyStorage.amount >= AssemblerConfig.instance.craftingEnergy) {
+                                tryCraft(
+                                    getValidCraftingInputInventory(recipe), recipe,
+                                    AssemblerConfig.instance.craftingEnergy
+                                )
                             } else {
                                 tryDecrementCookTime()
                             }
@@ -189,7 +191,8 @@ class RedstoneAssemblerBlockEntity(pos: BlockPos, state: BlockState) :
     }
 
     val inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(SLOT_COUNT, ItemStack.EMPTY)
-    val energyStorage = SimpleEnergyStorage(ENERGY_CAPACITY, ENERGY_MAX_INSERT, ENERGY_MAX_EXTRACT)
+    val energyStorage =
+        SimpleEnergyStorage(AssemblerConfig.instance.energyCapacity, AssemblerConfig.instance.maxInsert, 128L)
 
     var burnTime = 0
         private set
@@ -413,7 +416,7 @@ class RedstoneAssemblerBlockEntity(pos: BlockPos, state: BlockState) :
 
     fun recipeCookTimeTotal(): Int = if (mode == Mode.ASSEMBLER) {
         getAssemblerRecipe()?.cookTime ?: DEFAULT_COOK_TIME
-    } else CRAFTING_COOK_TIME
+    } else AssemblerConfig.instance.craftingTime
 
     override fun readNbt(nbt: NbtCompound) {
         super.readNbt(nbt)
@@ -423,7 +426,7 @@ class RedstoneAssemblerBlockEntity(pos: BlockPos, state: BlockState) :
         burnTimeTotal = nbt.getShort("BurnTimeTotal").toInt()
         cookTime = nbt.getShort("CookTime").toInt()
         cookTimeTotal = nbt.getShort("CookTimeTotal").toInt()
-        energyStorage.amount = nbt.getInt("Energy").toLong()
+        energyStorage.amount = nbt.getInt("Energy").toLong().coerceIn(0L, AssemblerConfig.instance.energyCapacity)
         useCraftingItems = nbt.getBoolean("UseCraftingItems")
         mode = nbt.getByte("Mode").toEnum()
     }

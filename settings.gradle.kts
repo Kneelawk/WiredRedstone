@@ -8,6 +8,8 @@ pluginManagement {
     plugins {
         val loomVersion: String by settings
         id("fabric-loom") version loomVersion
+        val shadowVersion: String by settings
+        id("com.github.johnrengelman.shadow") version shadowVersion
         val kotlinVersion: String by System.getProperties()
         kotlin("jvm") version kotlinVersion
         val loomQuiltflowerVersion: String by settings

@@ -3,6 +3,7 @@ package com.kneelawk.wiredredstone.client
 import com.kneelawk.wiredredstone.client.render.*
 import com.kneelawk.wiredredstone.client.render.part.WRPartRenderers
 import com.kneelawk.wiredredstone.client.screen.WRScreens
+import com.kneelawk.wiredredstone.net.WRClientNetworking
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 
@@ -19,4 +20,5 @@ fun init() {
     WRScreens.init()
     WRTextRenderer.init()
     WRProjectionViewerRenderer.init()
+    WRClientNetworking.init()
 }
