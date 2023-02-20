@@ -8,3 +8,5 @@ Changes:
   the `LOGIN` networking phase for improved proxy compatibility.
 * Added config option to disable version checking and config syncing entirely.
 * Cleaned up log messages to be more readable.
+* Cleaned up gradle and prevented runtime dependencies from leaking into others' projects when they depend on Wired
+  Redstone.

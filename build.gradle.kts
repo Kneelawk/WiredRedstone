@@ -169,27 +169,27 @@ dependencies {
 
     // Mod Menu
     val modMenuVersion: String by project
-    modRuntimeOnly("com.terraformersmc:modmenu:$modMenuVersion") {
+    modLocalRuntime("com.terraformersmc:modmenu:$modMenuVersion") {
         exclude("net.fabricmc.fabric-api")
     }
 
     // WTHIT
-    modRuntimeOnly("mcp.mobius.waila:wthit:fabric-$wthitVersion") {
+    modLocalRuntime("mcp.mobius.waila:wthit:fabric-$wthitVersion") {
         exclude("net.fabricmc.fabric-api")
     }
 
     // CC: Restitched
-    modRuntimeOnly("maven.modrinth:cc-restitched:$ccRestitchedVersion")
+    modLocalRuntime("maven.modrinth:cc-restitched:$ccRestitchedVersion")
     val clothConfigVersion: String by project
-    modRuntimeOnly("me.shedaniel.cloth:cloth-config-fabric:$clothConfigVersion") {
+    modLocalRuntime("me.shedaniel.cloth:cloth-config-fabric:$clothConfigVersion") {
         exclude("net.fabricmc.fabric-api")
     }
     val clothApiVersion: String by project
-    modRuntimeOnly("me.shedaniel.cloth.api:cloth-utils-v1:$clothApiVersion") {
+    modLocalRuntime("me.shedaniel.cloth.api:cloth-utils-v1:$clothApiVersion") {
         exclude("net.fabricmc.fabric-api")
     }
     val cobaltVersion: String by project
-    modRuntimeOnly("org.squiddev:Cobalt:$cobaltVersion") {
+    modLocalRuntime("org.squiddev:Cobalt:$cobaltVersion") {
         exclude("net.fabricmc.fabric-api")
     }
     val nettyVersion: String by project
@@ -198,17 +198,17 @@ dependencies {
     runtimeOnly("com.electronwill.night-config:toml:$nightConfigVersion")
 
     // REI
-//    modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:$reiVersion") {
+//    modLocalRuntime("me.shedaniel:RoughlyEnoughItems-fabric:$reiVersion") {
 //        exclude("net.fabricmc.fabric-api")
 //    }
 
     // EMI
-    modRuntimeOnly("dev.emi:emi:$emiVersion") {
+    modLocalRuntime("dev.emi:emi:$emiVersion") {
         isTransitive = false
     }
 
     // Create
-    modRuntimeOnly("com.simibubi.create:create-fabric-$createMinecraftVersion:$createVersion") {
+    modLocalRuntime("com.simibubi.create:create-fabric-$createMinecraftVersion:$createVersion") {
         exclude("net.fabricmc.fabric-api")
     }
 
