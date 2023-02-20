@@ -18,7 +18,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
 
 @Suppress("unused")
 fun init() {
-    WRLog.log.info("Initializing Wired Redstone...")
+    WRLog.log.info("[Wired Redstone] Initializing...")
 
     CommonConfig.ensureInit()
     WRParts.init()
@@ -39,4 +39,6 @@ fun init() {
     ServerTickEvents.END_WORLD_TICK.register { world ->
         RedstoneLogic.flushUpdates(world)
     }
+
+    WRLog.log.info("[Wired Redstone] Initialized.")
 }

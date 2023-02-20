@@ -24,8 +24,7 @@ object WRNetworking {
     val HELLO_CHANNEL = id("hello")
     val CONFIG_SYNC_CHANNEL = id("config_sync")
 
-    private val MISSING_MOD_LOGIN_TEXT = LiteralText("Client is missing Wired Redstone mod version >= 0.4.15")
-    private val MISSING_MOD_PLAY_TEXT = LiteralText("Client is missing Wired Redstone mod version >= 0.4.16")
+    private val MISSING_MOD_TEXT = LiteralText("Client is missing Wired Redstone mod version >= 0.3.11")
 
     private val responseCheckerExecutor = Executors.newSingleThreadScheduledExecutor()
     private val missingResponses = HashSet<SocketAddress>()
@@ -45,16 +44,13 @@ object WRNetworking {
                         HELLO_CHANNEL
                     ) { _, handler, understood, buf, _, sender ->
                         handler.connectionInfo
-                        checkVersionAndSync(
-                            understood, handler.connection.address, handler::disconnect, buf, sender,
-                            MISSING_MOD_LOGIN_TEXT
-                        )
+                        checkVersionAndSync(understood, handler.connection.address, handler::disconnect, buf, sender)
                     }
                     ServerLoginNetworking.registerGlobalReceiver(
                         CONFIG_SYNC_CHANNEL
                     ) { _, handler, understood, _, _, _ ->
                         if (!understood) {
-                            handler.disconnect(MISSING_MOD_LOGIN_TEXT)
+                            handler.disconnect(MISSING_MOD_TEXT)
                         }
                     }
                 }
@@ -63,12 +59,12 @@ object WRNetworking {
                     ServerPlayConnectionEvents.JOIN.register { handler, sender, server ->
                         startVersionCheck(sender)
                         startResponseRequirementCountdown(handler.connection.address, server) {
-                            handler.disconnect(MISSING_MOD_PLAY_TEXT)
+                            handler.disconnect(MISSING_MOD_TEXT)
                         }
                     }
                     ServerPlayNetworking.registerGlobalReceiver(HELLO_CHANNEL) { _, _, handler, buf, sender ->
                         checkVersionAndSync(
-                            true, handler.connection.address, handler::disconnect, buf, sender, MISSING_MOD_PLAY_TEXT
+                            true, handler.connection.address, handler::disconnect, buf, sender
                         )
                     }
                 }
@@ -104,10 +100,10 @@ object WRNetworking {
 
     private fun checkVersionAndSync(
         understood: Boolean, address: SocketAddress, disconnect: (Text) -> Unit, buf: PacketByteBuf?,
-        sender: PacketSender, missingText: Text
+        sender: PacketSender
     ) {
         if (!understood) {
-            disconnect(missingText)
+            disconnect(MISSING_MOD_TEXT)
             return
         }
 
@@ -131,9 +127,9 @@ object WRNetworking {
             sender.sendPacket(CONFIG_SYNC_CHANNEL, toSend)
             missingResponses.remove(address)
         } catch (e: IndexOutOfBoundsException) {
-            disconnect(missingText)
+            disconnect(MISSING_MOD_TEXT)
         } catch (e: DecoderException) {
-            disconnect(missingText)
+            disconnect(MISSING_MOD_TEXT)
         }
     }
 }

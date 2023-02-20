@@ -23,7 +23,7 @@ class WiredRedstonePlugin : EmiPlugin {
     }
 
     override fun register(registry: EmiRegistry) {
-        WRLog.log.info("Loading Wired Redstone EMI Plugin...")
+        WRLog.log.info("[Wired Redstone] Loading EMI Plugin...")
 
         registry.addCategory(CATEGORY)
         registry.addWorkstation(CATEGORY, WORKSTATION_STACK)
