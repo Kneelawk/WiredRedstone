@@ -8,7 +8,7 @@ import com.simibubi.create.content.contraptions.components.structureMovement.Blo
 @Suppress("unused")
 object CreateCompatImpl : CreateCompat {
     override fun init() {
-        WRLog.log.info("Wired Redstone: enabling Create compatibility!")
+        WRLog.log.info("[Wired Redstone] Enabling Create compatibility!")
 
         BlockMovementChecks.registerMovementNecessaryCheck { _, world, pos ->
             val event = WRPartPreMoveEvent()

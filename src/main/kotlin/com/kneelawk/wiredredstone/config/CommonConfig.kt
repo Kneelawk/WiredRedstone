@@ -38,7 +38,7 @@ data class CommonConfig(
 ) : WrappedConfig() {
     companion object {
         init {
-            WRLog.log.info("Wired Redstone: loading common config...")
+            WRLog.log.info("[Wired Redstone] Loading common config...")
         }
 
         private val ENV = ConfigEnvironment(FabricLoader.getInstance().configDir, Json5Serializer)
@@ -68,7 +68,7 @@ data class CommonConfig(
             return executor.submit(Supplier {
                 current = config
 
-                WRLog.log.info("Wired Redstone: synced config values from server.")
+                WRLog.log.info("[Wired Redstone] Synced config values from server.")
 
                 PacketByteBufs.empty()
             })
@@ -76,7 +76,7 @@ data class CommonConfig(
 
         fun restoreDefault(executor: ThreadExecutor<*>) {
             executor.execute {
-                WRLog.log.info("Wired Redstone: restoring local client config values.")
+                WRLog.log.info("[Wired Redstone] Restoring local client config values.")
 
                 current = LOADED
             }

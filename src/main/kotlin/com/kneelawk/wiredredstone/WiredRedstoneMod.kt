@@ -18,7 +18,7 @@ import com.kneelawk.wiredredstone.screenhandler.WRScreenHandlers
 
 @Suppress("unused")
 fun init() {
-    WRLog.log.info("Initializing Wired Redstone...")
+    WRLog.log.info("[Wired Redstone] [v${WRConstants.MOD_VERSION}] Initializing...")
 
     CommonConfig.ensureInit()
     WRParts.init()
@@ -38,5 +38,5 @@ fun init() {
     RedstoneLogic.init()
     PhantomRedstone.init()
 
-    WRLog.log.info("Wired Redstone Initialized.")
+    WRLog.log.info("[Wired Redstone] Initialized.")
 }
