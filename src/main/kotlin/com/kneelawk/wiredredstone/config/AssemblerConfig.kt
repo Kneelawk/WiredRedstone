@@ -4,9 +4,9 @@ import org.quiltmc.config.api.Config
 import org.quiltmc.config.api.annotations.Comment
 
 data class AssemblerConfig(
-    @Comment(
-        "The maximum energy that a Redstone Assembler can hold.\nBy default, 1 Coal generates 4000 energy.\nThis value is synced to the client."
-    )
+    @Comment("The maximum energy that a Redstone Assembler can hold.")
+    @Comment("By default, 1 Coal generates 4000 energy.")
+    @Comment("This value is synced to the client.")
     val energyCapacity: Long = 128000L,
 
     @Comment("The maximum amount of energy that can be inserted per tick.")
@@ -21,9 +21,7 @@ data class AssemblerConfig(
     @Comment("The amount of energy generated per tick by burning something.")
     val burnEnergy: Int = 5,
 
-    @Comment(
-        "The amount by which furnace fuel burn times are multiplied to obtain Redstone Assembler fuel burn times.\nRequires a restart to apply."
-    )
+    @Comment("The amount by which furnace fuel burn times are multiplied to obtain Redstone Assembler fuel burn times.")
     val burnTimeFactor: Float = 0.5f
 ) : Config.Section {
     companion object {
