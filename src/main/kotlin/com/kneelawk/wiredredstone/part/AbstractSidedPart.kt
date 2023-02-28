@@ -12,15 +12,11 @@ import com.kneelawk.wiredredstone.util.SimpleItemDropTarget
 import com.kneelawk.wiredredstone.util.connectable.ConnectableUtils
 import com.kneelawk.wiredredstone.util.getWorld
 import com.kneelawk.wiredredstone.util.requireNonNull
-import net.fabricmc.api.EnvType
-import net.fabricmc.api.Environment
 import net.minecraft.item.ItemStack
 import net.minecraft.loot.context.LootContext
 import net.minecraft.loot.context.LootContextParameters
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.server.world.ServerWorld
-import net.minecraft.text.Text
-import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Vec3d
@@ -242,10 +238,5 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
 
     override fun getPos(): BlockPos {
         return holder.container.multipartPos
-    }
-
-    @Environment(EnvType.CLIENT)
-    override fun getPartName(hitResult: BlockHitResult?): Text {
-        return getPickStack(hitResult).name
     }
 }
