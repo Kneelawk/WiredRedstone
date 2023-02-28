@@ -2,21 +2,23 @@ package com.kneelawk.wiredredstone.item
 
 import com.kneelawk.wiredredstone.WRConstants
 import com.kneelawk.wiredredstone.part.*
-import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup
 import net.minecraft.item.Item
 import net.minecraft.item.ItemGroup
 import net.minecraft.item.ItemStack
+import net.minecraft.registry.Registries
+import net.minecraft.registry.Registry
 import net.minecraft.util.DyeColor
-import net.minecraft.util.registry.Registry
 
 object WRItems {
-    private val WIRED_REDSTONE_ITEM_GROUP: ItemGroup by lazy {
-        FabricItemGroupBuilder.build(WRConstants.id("wiredredstone")) { ItemStack(RED_ALLOY_WIRE) }
+    internal val WIRED_REDSTONE_ITEMS = mutableListOf<ItemStack>()
+    val WIRED_REDSTONE_ITEM_GROUP: ItemGroup by lazy {
+        FabricItemGroup.builder(WRConstants.id("wiredredstone"))
+            .icon { ItemStack(RED_ALLOY_WIRE) }
+            .entries { _, entries, _ -> entries.addAll(WIRED_REDSTONE_ITEMS) }.build()
     }
-    val WIRED_REDSTONE_ITEM_SETTINGS: Item.Settings by lazy { Item.Settings().group(WIRED_REDSTONE_ITEM_GROUP) }
-    val WIRED_REDSTONE_TOOL_SETTINGS: Item.Settings by lazy {
-        Item.Settings().group(WIRED_REDSTONE_ITEM_GROUP).maxCount(1)
-    }
+    val WIRED_REDSTONE_ITEM_SETTINGS: Item.Settings by lazy { Item.Settings() }
+    val WIRED_REDSTONE_TOOL_SETTINGS: Item.Settings by lazy { Item.Settings().maxCount(1) }
 
     // Wires
     val RED_ALLOY_WIRE by lazy { RedAlloyWireItem(WIRED_REDSTONE_ITEM_SETTINGS) }
@@ -182,9 +184,12 @@ object WRItems {
         register(OBSIDIAN_STICK, "obsidian_stick")
         register(REDSTONE_PROJECTOR_TORCH, "redstone_projector_torch")
         register(REDSTONE_PROJECTOR_CATHODE, "redstone_projector_cathode")
+
+        WIRED_REDSTONE_ITEM_GROUP
     }
 
     private fun register(item: Item, name: String) {
-        Registry.register(Registry.ITEM, WRConstants.id(name), item)
+        Registry.register(Registries.ITEM, WRConstants.id(name), item)
+        WIRED_REDSTONE_ITEMS.add(ItemStack(item))
     }
 }

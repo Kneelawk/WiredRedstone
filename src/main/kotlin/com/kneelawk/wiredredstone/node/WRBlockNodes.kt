@@ -2,7 +2,7 @@ package com.kneelawk.wiredredstone.node
 
 import com.kneelawk.graphlib.GraphLib
 import com.kneelawk.wiredredstone.WRConstants.id
-import net.minecraft.util.registry.Registry
+import net.minecraft.registry.Registry
 
 object WRBlockNodes {
     val RED_ALLOY_WIRE_ID = id("red_alloy_wire")

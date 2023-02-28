@@ -12,10 +12,10 @@ import net.minecraft.item.Items
 import net.minecraft.network.PacketByteBuf
 import net.minecraft.recipe.Ingredient
 import net.minecraft.recipe.RecipeSerializer
+import net.minecraft.registry.Registries
 import net.minecraft.util.Identifier
 import net.minecraft.util.JsonHelper
 import net.minecraft.util.collection.DefaultedList
-import net.minecraft.util.registry.Registry
 import net.minecraft.world.World
 import kotlin.math.max
 import kotlin.math.min
@@ -186,7 +186,7 @@ class RedstoneAssemblerShapedRecipe(
 
         private fun getItem(json: JsonObject): Item {
             val string = JsonHelper.getString(json, "item")
-            val item = Registry.ITEM.getOrEmpty(Identifier(string)).orElseThrow {
+            val item = Registries.ITEM.getOrEmpty(Identifier(string)).orElseThrow {
                 JsonSyntaxException(
                     "Unknown item '$string'"
                 )

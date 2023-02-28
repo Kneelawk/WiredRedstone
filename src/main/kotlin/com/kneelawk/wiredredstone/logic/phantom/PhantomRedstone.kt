@@ -2,25 +2,26 @@ package com.kneelawk.wiredredstone.logic.phantom
 
 import com.kneelawk.wiredredstone.WRConstants.id
 import com.mojang.serialization.Lifecycle
+import net.minecraft.registry.Registries
+import net.minecraft.registry.Registry
+import net.minecraft.registry.RegistryKey
+import net.minecraft.registry.SimpleRegistry
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
-import net.minecraft.util.registry.Registry
-import net.minecraft.util.registry.RegistryKey
-import net.minecraft.util.registry.SimpleRegistry
 import net.minecraft.world.BlockView
 
 object PhantomRedstone {
     private val REF_DECODER_ID = id("phantom_redstone_ref_decoder")
     private val REF_DECODER_KEY = RegistryKey.ofRegistry<PhantomRedstoneRefDecoder>(REF_DECODER_ID)
 
-    val REF_DECODER_REGISTRY = SimpleRegistry(REF_DECODER_KEY, Lifecycle.experimental(), null)
+    val REF_DECODER_REGISTRY = SimpleRegistry(REF_DECODER_KEY, Lifecycle.experimental())
 
     val SIDED_PART_ID = id("sided_part")
 
     @Suppress("unchecked")
     fun init() {
-        Registry.register(Registry.REGISTRIES as Registry<Registry<*>>, REF_DECODER_ID, REF_DECODER_REGISTRY)
+        Registry.register(Registries.REGISTRIES as Registry<Registry<*>>, REF_DECODER_ID, REF_DECODER_REGISTRY)
 
         Registry.register(REF_DECODER_REGISTRY, SIDED_PART_ID, SidedPartPhantomRedstoneRef.Decoder)
     }

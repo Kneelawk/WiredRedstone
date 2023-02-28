@@ -34,7 +34,7 @@ class RedstoneAssemblerScreen(handler: RedstoneAssemblerScreenHandler, playerInv
     }
 
     override fun drawBackground(matrices: MatrixStack, delta: Float, mouseX: Int, mouseY: Int) {
-        RenderSystem.setShader(GameRenderer::getPositionShader)
+        RenderSystem.setShader(GameRenderer::getPositionProgram)
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f)
         RenderSystem.setShaderTexture(0, TEXTURE)
 

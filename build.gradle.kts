@@ -40,6 +40,17 @@ loom {
 //    enableTransitiveAccessWideners.set(false)
 }
 
+sourceSets {
+    named("main") {
+        kotlin {
+            val createEnabled: String by project
+            if (!createEnabled.toBoolean()) {
+                exclude("com/kneelawk/wiredredstone/compat/create/**")
+            }
+        }
+    }
+}
+
 repositories {
     maven("https://mod-buildcraft.com/maven") { name = "BuildCraft" }
     maven("https://maven.terraformersmc.com/releases/") { name = "TerraformersMC" }
@@ -117,9 +128,9 @@ dependencies {
     include("com.kneelawk:graphlib:$graphlibVersion")
 
     // LMP Compat
-    val lmpCompatVersion: String by project
-    modImplementation("com.kneelawk:lmp-compat:$lmpCompatVersion")
-    include("com.kneelawk:lmp-compat:$lmpCompatVersion")
+//    val lmpCompatVersion: String by project
+//    modImplementation("com.kneelawk:lmp-compat:$lmpCompatVersion")
+//    include("com.kneelawk:lmp-compat:$lmpCompatVersion")
 
     // TechReborn Lightweight Energy API
     val energyVersion: String by project
@@ -157,10 +168,13 @@ dependencies {
     }
 
     // Create
+    val createEnabled: String by project
     val createVersion: String by project
     val createMinecraftVersion: String by project
-    modCompileOnly("com.simibubi.create:create-fabric-$createMinecraftVersion:$createVersion") {
-        exclude("net.fabricmc.fabric-api")
+    if (createEnabled.toBoolean()) {
+        modCompileOnly("com.simibubi.create:create-fabric-$createMinecraftVersion:$createVersion") {
+            exclude("net.fabricmc.fabric-api")
+        }
     }
 
     //
@@ -180,14 +194,6 @@ dependencies {
 
     // CC: Restitched
     modLocalRuntime("maven.modrinth:cc-restitched:$ccRestitchedVersion")
-    val clothConfigVersion: String by project
-    modLocalRuntime("me.shedaniel.cloth:cloth-config-fabric:$clothConfigVersion") {
-        exclude("net.fabricmc.fabric-api")
-    }
-    val clothApiVersion: String by project
-    modLocalRuntime("me.shedaniel.cloth.api:cloth-utils-v1:$clothApiVersion") {
-        exclude("net.fabricmc.fabric-api")
-    }
     val cobaltVersion: String by project
     modLocalRuntime("org.squiddev:Cobalt:$cobaltVersion") {
         exclude("net.fabricmc.fabric-api")
@@ -208,8 +214,10 @@ dependencies {
     }
 
     // Create
-    modLocalRuntime("com.simibubi.create:create-fabric-$createMinecraftVersion:$createVersion") {
-        exclude("net.fabricmc.fabric-api")
+    if (createEnabled.toBoolean()) {
+        modLocalRuntime("com.simibubi.create:create-fabric-$createMinecraftVersion:$createVersion") {
+            exclude("net.fabricmc.fabric-api")
+        }
     }
 
     // Quiltflower

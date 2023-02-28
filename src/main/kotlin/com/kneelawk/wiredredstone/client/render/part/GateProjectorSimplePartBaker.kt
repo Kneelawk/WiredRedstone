@@ -11,7 +11,6 @@ import com.kneelawk.wiredredstone.part.key.GateProjectorSimplePartKey
 import com.kneelawk.wiredredstone.util.FaceUtils
 import com.kneelawk.wiredredstone.util.RotationUtils
 import com.kneelawk.wiredredstone.util.bits.ConnectionUtils
-import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.render.VertexConsumerProvider
@@ -19,7 +18,7 @@ import net.minecraft.client.texture.SpriteAtlasTexture
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.Direction
-import net.minecraft.util.math.Vec3f
+import org.joml.Vector3f
 import java.util.function.Consumer
 
 object GateProjectorSimplePartBaker : AbstractPartBaker<GateProjectorSimplePartKey>(),
@@ -56,7 +55,7 @@ object GateProjectorSimplePartBaker : AbstractPartBaker<GateProjectorSimplePartK
         )
         val emitter2 = TransformingQuadEmitter.Multi(
             emitter0, arrayOf(
-                TranslateQuadTransform(Vec3f(0f, 0f, -key.distance.toFloat() / 32f)),
+                TranslateQuadTransform(Vector3f(0f, 0f, -key.distance.toFloat() / 32f)),
                 RotateQuadTransform(key.direction),
                 SideQuadTransform(key.side)
             )
@@ -83,11 +82,6 @@ object GateProjectorSimplePartBaker : AbstractPartBaker<GateProjectorSimplePartK
         out.accept(TORCH_BASE)
         out.accept(TORCH_OFF)
         out.accept(TORCH_ON)
-    }
-
-    override fun registerSprites(registry: ClientSpriteRegistryCallback.Registry) {
-        registry.register(PROJECTOR_TARGET)
-        registry.register(PROJECTOR_TARGET_HIGHLIGHT)
     }
 
     override fun renderOverlayText(

@@ -23,9 +23,9 @@ import net.minecraft.util.Identifier
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.MathHelper.HALF_PI
 import net.minecraft.util.math.MathHelper.PI
-import net.minecraft.util.math.Quaternion
-import net.minecraft.util.math.Vec3f
 import net.minecraft.util.math.random.Random
+import org.joml.Quaternionf
+import org.joml.Vector3f
 import kotlin.math.max
 import kotlin.math.sqrt
 
@@ -36,30 +36,22 @@ object RenderUtils {
 
     private val MC = MinecraftClient.getInstance()
 
-    private val FLAT_QUATERNION = Quaternion.fromEulerXyz(-HALF_PI, 0f, 0f)
+    private val FLAT_QUATERNION = Quaternionf().rotationX(-HALF_PI)
 
     private val ROTATION_QUATERNIONS = arrayOf(
-        Quaternion.IDENTITY,
-        Quaternion(Vec3f.POSITIVE_X, PI, false),
-        Quaternion(Vec3f.POSITIVE_X, HALF_PI, false),
-        Quaternion(Vec3f.POSITIVE_Y, PI, false).apply { hamiltonProduct(Quaternion(Vec3f.POSITIVE_X, HALF_PI, false)) },
-        Quaternion(Vec3f.POSITIVE_Y, HALF_PI, false).apply {
-            hamiltonProduct(
-                Quaternion(Vec3f.POSITIVE_X, HALF_PI, false)
-            )
-        },
-        Quaternion(Vec3f.POSITIVE_Y, -HALF_PI, false).apply {
-            hamiltonProduct(
-                Quaternion(Vec3f.POSITIVE_X, HALF_PI, false)
-            )
-        }
+        Quaternionf(),
+        Quaternionf().rotationX(PI),
+        Quaternionf().rotationX(HALF_PI),
+        Quaternionf().rotationY(PI).rotateX(HALF_PI),
+        Quaternionf().rotationY(HALF_PI).rotateX(HALF_PI),
+        Quaternionf().rotationY(-HALF_PI).rotateX(HALF_PI)
     )
 
     private val CARDINAL_QUATERNIONS = arrayOf(
-        Quaternion.IDENTITY,
-        Quaternion(Vec3f.POSITIVE_Y, PI, false),
-        Quaternion(Vec3f.POSITIVE_Y, HALF_PI, false),
-        Quaternion(Vec3f.POSITIVE_Y, -HALF_PI, false)
+        Quaternionf(),
+        Quaternionf().rotationY(PI),
+        Quaternionf().rotationY(HALF_PI),
+        Quaternionf().rotationY(-HALF_PI)
     )
 
     fun getBlockSprite(id: Identifier): Sprite {
@@ -171,15 +163,15 @@ object RenderUtils {
         stack.pop()
     }
 
-    fun rotationQuaternion(side: Direction): Quaternion {
+    fun rotationQuaternion(side: Direction): Quaternionf {
         return ROTATION_QUATERNIONS[side.id]
     }
 
-    fun cardinalQuaternion(rotation: Direction): Quaternion {
+    fun cardinalQuaternion(rotation: Direction): Quaternionf {
         return CARDINAL_QUATERNIONS[rotation.id - 2]
     }
 
-    fun calculateFaceNormal(saveTo: Vec3f, q: QuadView) {
+    fun calculateFaceNormal(saveTo: Vector3f, q: QuadView) {
         // Get vertices
         val x0 = q.x(0)
         val y0 = q.y(0)
@@ -216,6 +208,6 @@ object RenderUtils {
             normZ /= l
         }
 
-        saveTo[normX, normY] = normZ
+        saveTo.set(normX, normY, normZ)
     }
 }

@@ -10,20 +10,20 @@ import net.minecraft.util.Hand
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.MathHelper
-import net.minecraft.util.math.Vec3f
-import net.minecraft.util.math.Vector4f
+import org.joml.Vector3f
+import org.joml.Vector3fc
 
 object WROutlineRenderer {
     private val PLACEMENT_OUTLINE = arrayOf(
-        Line(Vec3f(0f, 1f, 0f), Vec3f(1f, 1f, 0f)),
-        Line(Vec3f(0f, 1f, 0f), Vec3f(0f, 1f, 1f)),
-        Line(Vec3f(1f, 1f, 0f), Vec3f(1f, 1f, 1f)),
-        Line(Vec3f(0f, 1f, 1f), Vec3f(1f, 1f, 1f)),
-        Line(Vec3f(0f, 1f, 0f), Vec3f(1f, 1f, 1f)),
-        Line(Vec3f(1f, 1f, 0f), Vec3f(0f, 1f, 1f))
+        Line(Vector3f(0f, 1f, 0f), Vector3f(1f, 1f, 0f)),
+        Line(Vector3f(0f, 1f, 0f), Vector3f(0f, 1f, 1f)),
+        Line(Vector3f(1f, 1f, 0f), Vector3f(1f, 1f, 1f)),
+        Line(Vector3f(0f, 1f, 1f), Vector3f(1f, 1f, 1f)),
+        Line(Vector3f(0f, 1f, 0f), Vector3f(1f, 1f, 1f)),
+        Line(Vector3f(1f, 1f, 0f), Vector3f(0f, 1f, 1f))
     )
 
-    private data class Line(val start: Vec3f, val end: Vec3f)
+    private data class Line(val start: Vector3fc, val end: Vector3fc)
 
     fun init() {
         WorldRenderEvents.BLOCK_OUTLINE.register(::handleOutline)
@@ -69,19 +69,18 @@ object WROutlineRenderer {
         val normal = stack.peek().normalMatrix
 
         for (line in PLACEMENT_OUTLINE) {
-            val start = Vector4f(line.start)
-            val end = Vector4f(line.end)
-
-            var dx = end.x - start.x
-            var dy = end.y - start.y
-            var dz = end.z - start.z
+            var dx = line.end.x() - line.start.x()
+            var dy = line.end.y() - line.start.y()
+            var dz = line.end.z() - line.start.z()
             val invLen = MathHelper.fastInverseSqrt(dx * dx + dy * dy + dz * dz)
             dx *= invLen
             dy *= invLen
             dz *= invLen
 
-            lines.vertex(model, start.x, start.y, start.z).color(0f, 0f, 0f, 0.4f).normal(normal, dx, dy, dz).next()
-            lines.vertex(model, end.x, end.y, end.z).color(0f, 0f, 0f, 0.4f).normal(normal, dx, dy, dz).next()
+            lines.vertex(model, line.start.x(), line.start.y(), line.start.z()).color(0f, 0f, 0f, 0.4f)
+                .normal(normal, dx, dy, dz).next()
+            lines.vertex(model, line.end.x(), line.end.y(), line.end.z()).color(0f, 0f, 0f, 0.4f)
+                .normal(normal, dx, dy, dz).next()
         }
 
         stack.pop()

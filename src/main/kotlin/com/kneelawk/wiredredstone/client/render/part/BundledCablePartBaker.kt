@@ -3,7 +3,6 @@ package com.kneelawk.wiredredstone.client.render.part
 import com.kneelawk.wiredredstone.WRConstants.id
 import com.kneelawk.wiredredstone.client.render.*
 import com.kneelawk.wiredredstone.part.key.BundledCablePartKey
-import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh
 import net.minecraft.client.texture.Sprite
 import net.minecraft.util.DyeColor.*
@@ -48,31 +47,10 @@ object BundledCablePartBaker : AbstractPartBaker<BundledCablePartKey>() {
         return builder.build()
     }
 
-    override fun registerSprites(registry: ClientSpriteRegistryCallback.Registry) {
-        registry.register(OUTER_CORNER_LOWER_SIDE)
-        registry.register(OUTER_CORNER_UPPER_SIDE)
-        registry.register(OUTER_CORNER_TOP)
-
-        for (wire in BUNDLED_CABLE_IDS.values) {
-            wire.register(registry)
-        }
-    }
-
     data class WireIds(
         val topCross: Identifier, val topX: Identifier, val topZ: Identifier, val bottomCross: Identifier,
         val bottomX: Identifier, val bottomZ: Identifier, val lowerSide: Identifier, val upperSide: Identifier
     ) {
-        fun register(registry: ClientSpriteRegistryCallback.Registry) {
-            registry.register(topCross)
-            registry.register(topX)
-            registry.register(topZ)
-            registry.register(bottomCross)
-            registry.register(bottomX)
-            registry.register(bottomZ)
-            registry.register(lowerSide)
-            registry.register(upperSide)
-        }
-
         fun lookup(): WireSprites {
             return WireSprites(
                 RenderUtils.getBlockSprite(topCross),

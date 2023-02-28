@@ -500,7 +500,7 @@ class RedstoneAssemblerBlockEntity(pos: BlockPos, state: BlockState) :
     override fun setStack(slot: Int, stack: ItemStack) {
         val itemStack = inventory[slot]
         val sameStack =
-            !stack.isEmpty && stack.isItemEqualIgnoreDamage(itemStack) && ItemStack.areNbtEqual(stack, itemStack)
+            !stack.isEmpty && stack.isItemEqual(itemStack) && ItemStack.areNbtEqual(stack, itemStack)
         inventory[slot] = stack
 
         if (stack.count > this.maxCountPerStack) {

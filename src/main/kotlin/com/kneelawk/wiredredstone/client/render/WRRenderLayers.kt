@@ -18,7 +18,7 @@ class WRRenderLayers private constructor(name: String, beginAction: Runnable, en
             false,
             true,
             RenderLayer.MultiPhaseParameters.builder()
-                .shader(ENTITY_TRANSLUCENT_SHADER)
+                .program(ENTITY_TRANSLUCENT_PROGRAM)
                 .texture(MIPMAP_BLOCK_ATLAS_TEXTURE)
                 .transparency(TRANSLUCENT_TRANSPARENCY)
                 .lightmap(ENABLE_LIGHTMAP)

@@ -15,10 +15,10 @@ import it.unimi.dsi.fastutil.longs.LongSet
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
 import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
+import net.minecraft.registry.RegistryKey
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
-import net.minecraft.util.registry.RegistryKey
 import net.minecraft.world.World
 import kotlin.math.max
 

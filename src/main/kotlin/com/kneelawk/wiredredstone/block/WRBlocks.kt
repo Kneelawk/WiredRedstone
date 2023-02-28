@@ -6,7 +6,9 @@ import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.MapColor
 import net.minecraft.block.Material
 import net.minecraft.item.BlockItem
-import net.minecraft.util.registry.Registry
+import net.minecraft.item.ItemStack
+import net.minecraft.registry.Registries
+import net.minecraft.registry.Registry
 
 object WRBlocks {
     val REDSTONE_ASSEMBLER by lazy {
@@ -17,9 +19,11 @@ object WRBlocks {
     }
 
     fun init() {
-        Registry.register(Registry.BLOCK, id("redstone_assembler"), REDSTONE_ASSEMBLER)
+        Registry.register(Registries.BLOCK, id("redstone_assembler"), REDSTONE_ASSEMBLER)
         Registry.register(
-            Registry.ITEM, id("redstone_assembler"), BlockItem(REDSTONE_ASSEMBLER, WRItems.WIRED_REDSTONE_ITEM_SETTINGS)
+            Registries.ITEM, id("redstone_assembler"),
+            BlockItem(REDSTONE_ASSEMBLER, WRItems.WIRED_REDSTONE_ITEM_SETTINGS)
         )
+        WRItems.WIRED_REDSTONE_ITEMS.add(ItemStack(REDSTONE_ASSEMBLER))
     }
 }

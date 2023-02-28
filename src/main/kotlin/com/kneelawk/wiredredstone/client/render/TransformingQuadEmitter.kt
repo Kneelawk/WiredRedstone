@@ -9,7 +9,7 @@ import net.minecraft.client.render.VertexFormats
 import net.minecraft.client.render.model.BakedQuad
 import net.minecraft.client.texture.Sprite
 import net.minecraft.util.math.Direction
-import net.minecraft.util.math.Vec3f
+import org.joml.Vector3f
 import org.lwjgl.system.MemoryStack
 import java.util.*
 
@@ -39,8 +39,8 @@ sealed class TransformingQuadEmitter(private val emitter: QuadEmitter) : QuadEmi
         }
     }
 
-    private var positions = Array(4) { Vec3f() }
-    private var normals = Array(4) { Vec3f() }
+    private var positions = Array(4) { Vector3f() }
+    private var normals = Array(4) { Vector3f() }
     private var hasNormal = BooleanArray(4)
     private var material: RenderMaterial = DEFAULT_MATERIAL
     private var colorIndex: Int = -1
@@ -143,7 +143,7 @@ sealed class TransformingQuadEmitter(private val emitter: QuadEmitter) : QuadEmi
         return nominalFace
     }
 
-    override fun faceNormal(): Vec3f {
+    override fun faceNormal(): Vector3f {
         throw NotImplementedError("TransformingQuadEmitter.faceNormal")
     }
 
@@ -156,8 +156,8 @@ sealed class TransformingQuadEmitter(private val emitter: QuadEmitter) : QuadEmi
         return tag
     }
 
-    override fun copyPos(vertexIndex: Int, target: Vec3f?): Vec3f {
-        val to = target ?: Vec3f()
+    override fun copyPos(vertexIndex: Int, target: Vector3f?): Vector3f {
+        val to = target ?: Vector3f()
         to.set(positions[vertexIndex])
         return to
     }
@@ -188,11 +188,11 @@ sealed class TransformingQuadEmitter(private val emitter: QuadEmitter) : QuadEmi
         return hasNormal[vertexIndex]
     }
 
-    override fun copyNormal(vertexIndex: Int, target: Vec3f?): Vec3f? {
+    override fun copyNormal(vertexIndex: Int, target: Vector3f?): Vector3f? {
         if (!hasNormal[vertexIndex]) {
             return null
         }
-        val to = target ?: Vec3f()
+        val to = target ?: Vector3f()
         to.set(normals[vertexIndex])
         return to
     }
@@ -255,7 +255,7 @@ sealed class TransformingQuadEmitter(private val emitter: QuadEmitter) : QuadEmi
     override fun fromVanilla(quad: BakedQuad, material: RenderMaterial?, cullFace: Direction?): MutableQuadView {
         val vertexData = quad.vertexData
         val normalI = quad.face.vector
-        val normal = Vec3f(normalI.x.toFloat(), normalI.y.toFloat(), normalI.z.toFloat())
+        val normal = Vector3f(normalI.x.toFloat(), normalI.y.toFloat(), normalI.z.toFloat())
 
         MemoryStack.stackPush().use { memoryStack ->
             val byteBuffer = memoryStack.malloc(VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL.vertexSizeByte)

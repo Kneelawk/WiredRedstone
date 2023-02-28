@@ -3,7 +3,6 @@ package com.kneelawk.wiredredstone.client.render.part
 import com.kneelawk.wiredredstone.WRConstants.id
 import com.kneelawk.wiredredstone.client.render.*
 import com.kneelawk.wiredredstone.part.key.InsulatedWirePartKey
-import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh
 import net.minecraft.client.texture.Sprite
 import net.minecraft.util.DyeColor.*
@@ -40,25 +39,10 @@ object InsulatedWirePartBaker : AbstractPartBaker<InsulatedWirePartKey>() {
         return builder.build()
     }
 
-    override fun registerSprites(registry: ClientSpriteRegistryCallback.Registry) {
-        registry.register(INSULATED_WIRE_END_POWERED_ID)
-        for (wire in INSULATED_WIRE_IDS.values) {
-            wire.register(registry)
-        }
-    }
-
     data class WireIds(
         val topCross: Identifier, val topX: Identifier, val topZ: Identifier, val side: Identifier,
         val openEnd: Identifier
     ) {
-        fun register(registry: ClientSpriteRegistryCallback.Registry) {
-            registry.register(topCross)
-            registry.register(topX)
-            registry.register(topZ)
-            registry.register(side)
-            registry.register(openEnd)
-        }
-
         fun lookup(): WireSprites {
             return WireSprites(
                 RenderUtils.getBlockSprite(topCross),

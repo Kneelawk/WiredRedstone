@@ -13,7 +13,7 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh
 import net.minecraft.client.render.VertexConsumerProvider
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.util.Identifier
-import net.minecraft.util.math.Vec3f
+import org.joml.Vector3f
 import java.util.function.Consumer
 
 object GateRepeaterPartBaker : AbstractPartBaker<GateRepeaterPartKey>() {
@@ -62,7 +62,7 @@ object GateRepeaterPartBaker : AbstractPartBaker<GateRepeaterPartKey>() {
         )
         val emitter2 = TransformingQuadEmitter.Multi(
             emitter, arrayOf(
-                TranslateQuadTransform(Vec3f(key.delay.toFloat() / 32f, 0f, 0f)), RotateQuadTransform(key.direction),
+                TranslateQuadTransform(Vector3f(key.delay.toFloat() / 32f, 0f, 0f)), RotateQuadTransform(key.direction),
                 SideQuadTransform(key.side)
             )
         )

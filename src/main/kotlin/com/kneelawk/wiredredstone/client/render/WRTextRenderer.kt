@@ -17,8 +17,8 @@ import net.minecraft.client.render.*
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 import net.minecraft.util.hit.BlockHitResult
-import net.minecraft.util.math.Matrix4f
 import net.minecraft.util.math.Vec3d
+import org.joml.Matrix4f
 import java.util.concurrent.TimeUnit
 
 /**
@@ -95,10 +95,9 @@ object WRTextRenderer {
         val height = MC.textRenderer.fontHeight + yOffset
 
         val textMat = Matrix4f()
-        textMat.loadIdentity()
-        textMat.multiplyByTranslation(-1f, 1f, 0f)
-        textMat.multiply(Matrix4f.scale(2f / width.toFloat(), -2f / height.toFloat(), 1f))
-        textMat.multiplyByTranslation(0f, 0f, 0.05f)
+        textMat.translation(-1f, 1f, 0f)
+        textMat.scale(2f / width.toFloat(), -2f / height.toFloat(), 1f)
+        textMat.translate(0f, 0f, 0.05f)
 
         val fb = SimpleFramebuffer(width, height, true, MinecraftClient.IS_SYSTEM_MAC)
 
@@ -116,7 +115,7 @@ object WRTextRenderer {
         modelViewStack.loadIdentity()
         RenderSystem.applyModelViewMatrix()
         val backupProjMat = RenderSystem.getProjectionMatrix()
-        RenderSystem.setProjectionMatrix(Matrix4f().apply { loadIdentity() })
+        RenderSystem.setProjectionMatrix(Matrix4f())
 
         if (key.shadow) {
             val shadowColor = multiplyBrightness(key.color, 0.25f)
@@ -127,7 +126,7 @@ object WRTextRenderer {
 
             MC.textRenderer.draw(text, 1f, 1f + yOffsetF, shadowColor, false, textMat, immediate, false, 0, 15728880)
             immediate.draw()
-            textMat.multiplyByTranslation(0f, 0f, -0.025f)
+            textMat.translate(0f, 0f, -0.025f)
         }
 
         if (key.overline) {
@@ -166,7 +165,7 @@ object WRTextRenderer {
     }
 
     private fun drawRect(x: Float, y: Float, width: Float, height: Float, color: Int, matrix4f: Matrix4f) {
-        RenderSystem.setShader(GameRenderer::getPositionColorShader)
+        RenderSystem.setShader(GameRenderer::getPositionColorProgram)
         val tessellator = Tessellator.getInstance()
         val buffer = tessellator.buffer
 
