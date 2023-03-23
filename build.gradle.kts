@@ -272,6 +272,11 @@ tasks {
         dependsOn(shadowJar)
         inputFile.set(shadowJar.get().archiveFile)
     }
+
+    withType<AbstractArchiveTask>().configureEach {
+        isPreserveFileTimestamps = false
+        isReproducibleFileOrder = true
+    }
 }
 
 val commaRegex = Regex("\\s*,\\s*")
