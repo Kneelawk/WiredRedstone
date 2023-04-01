@@ -183,7 +183,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: cf-file-id
-          path: curse-file-id.txt
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v1
       # This is the mess that publishes discord notifications
