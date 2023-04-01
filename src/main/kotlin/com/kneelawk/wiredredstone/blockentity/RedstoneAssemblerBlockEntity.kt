@@ -86,11 +86,9 @@ class RedstoneAssemblerBlockEntity(pos: BlockPos, state: BlockState) :
                 // generate more energy while we're burning
                 if (isBurning() && energyStorage.amount + AssemblerConfig.instance.burnEnergy <= AssemblerConfig.instance.energyCapacity) {
                     burnTime--
-                    energyStorage.amount =
-                        MathHelper.clamp(
-                            energyStorage.amount + AssemblerConfig.instance.burnEnergy, 0L,
-                            AssemblerConfig.instance.energyCapacity
-                        )
+                    energyStorage.amount = (energyStorage.amount + AssemblerConfig.instance.burnEnergy).coerceIn(
+                        0L, AssemblerConfig.instance.energyCapacity
+                    )
                     showBurning = true
 
                     markDirty = true
@@ -331,7 +329,7 @@ class RedstoneAssemblerBlockEntity(pos: BlockPos, state: BlockState) :
 
     fun <I : Inventory> tryCraft(inventory: I?, recipe: Recipe<I>, energyPerTick: Int) {
         if (inventory != null) {
-            val output = recipe.craft(inventory)
+            val output = recipe.craft(inventory, world!!.registryManager)
 
             if (canAcceptOutput(output)) {
                 energyStorage.amount -= energyPerTick

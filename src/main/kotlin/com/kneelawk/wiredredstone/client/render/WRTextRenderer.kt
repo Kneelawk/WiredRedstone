@@ -12,6 +12,7 @@ import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.minecraft.client.MinecraftClient
+import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gl.SimpleFramebuffer
 import net.minecraft.client.render.*
 import net.minecraft.text.Text
@@ -124,7 +125,10 @@ object WRTextRenderer {
                 drawRect(1f, 1f, width.toFloat() - 1f, 1f, shadowColor, textMat)
             }
 
-            MC.textRenderer.draw(text, 1f, 1f + yOffsetF, shadowColor, false, textMat, immediate, false, 0, 15728880)
+            MC.textRenderer.draw(
+                text, 1f, 1f + yOffsetF, shadowColor, false, textMat, immediate, TextRenderer.TextLayerType.NORMAL, 0,
+                15728880
+            )
             immediate.draw()
             textMat.translate(0f, 0f, -0.025f)
         }
@@ -133,7 +137,9 @@ object WRTextRenderer {
             drawRect(0f, 0f, width.toFloat() - 1f, 1f, key.color, textMat)
         }
 
-        MC.textRenderer.draw(text, 0f, yOffsetF, key.color, false, textMat, immediate, false, 0, 15728880)
+        MC.textRenderer.draw(
+            text, 0f, yOffsetF, key.color, false, textMat, immediate, TextRenderer.TextLayerType.NORMAL, 0, 15728880
+        )
         immediate.draw()
 
         RenderSystem.setProjectionMatrix(backupProjMat)

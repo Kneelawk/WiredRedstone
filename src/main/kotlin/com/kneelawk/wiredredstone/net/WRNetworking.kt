@@ -6,6 +6,7 @@ import com.kneelawk.wiredredstone.WRConstants.id
 import com.kneelawk.wiredredstone.WRLog
 import com.kneelawk.wiredredstone.config.CommonConfig
 import com.kneelawk.wiredredstone.config.SyncPhase
+import com.kneelawk.wiredredstone.mixin.api.NetworkHelper
 import com.kneelawk.wiredredstone.part.AbstractConnectablePart
 import com.kneelawk.wiredredstone.screenhandler.RedstoneAssemblerScreenHandler
 import io.netty.handler.codec.DecoderException
@@ -45,7 +46,7 @@ object WRNetworking {
                     ) { _, handler, understood, buf, _, sender ->
                         handler.connectionInfo
                         checkVersionAndSync(
-                            understood, handler.connection.address, handler::disconnect, buf, sender,
+                            understood, NetworkHelper.getAddress(handler), handler::disconnect, buf, sender,
                             MISSING_MOD_LOGIN_TEXT
                         )
                     }
@@ -61,13 +62,14 @@ object WRNetworking {
                     WRLog.log.info("[Wired Redstone] Synchronization will happen during PLAY phase.")
                     ServerPlayConnectionEvents.JOIN.register { handler, sender, server ->
                         startVersionCheck(sender)
-                        startResponseRequirementCountdown(handler.connection.address, server) {
+                        startResponseRequirementCountdown(NetworkHelper.getAddress(handler), server) {
                             handler.disconnect(MISSING_MOD_PLAY_TEXT)
                         }
                     }
                     ServerPlayNetworking.registerGlobalReceiver(HELLO_CHANNEL) { _, _, handler, buf, sender ->
                         checkVersionAndSync(
-                            true, handler.connection.address, handler::disconnect, buf, sender, MISSING_MOD_PLAY_TEXT
+                            true, NetworkHelper.getAddress(handler), handler::disconnect, buf, sender,
+                            MISSING_MOD_PLAY_TEXT
                         )
                     }
                 }
@@ -75,10 +77,10 @@ object WRNetworking {
         }
 
         ServerPlayConnectionEvents.DISCONNECT.register { handler, _ ->
-            missingResponses.remove(handler.connection.address)
+            missingResponses.remove(NetworkHelper.getAddress(handler))
         }
         ServerLoginConnectionEvents.DISCONNECT.register { handler, _ ->
-            missingResponses.remove(handler.connection.address)
+            missingResponses.remove(NetworkHelper.getAddress(handler))
         }
     }
 

@@ -12,6 +12,8 @@ interface RedstoneAssemblerRecipe : Recipe<RedstoneAssemblerInventory> {
 
     override fun getType(): RecipeType<*> = RedstoneAssemblerRecipeType
 
+    fun getViewerOutput(): ItemStack
+
     override fun getRemainder(inventory: RedstoneAssemblerInventory): DefaultedList<ItemStack> {
         val width = inventory.width
         val height = inventory.height

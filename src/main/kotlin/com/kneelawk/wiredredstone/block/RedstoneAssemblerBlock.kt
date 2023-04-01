@@ -62,7 +62,7 @@ class RedstoneAssemblerBlock(settings: Settings) : BlockWithEntity(settings) {
     }
 
     override fun getPlacementState(ctx: ItemPlacementContext): BlockState =
-        defaultState.with(AbstractFurnaceBlock.FACING, ctx.playerFacing.opposite)
+        defaultState.with(AbstractFurnaceBlock.FACING, ctx.playerLookDirection.opposite)
 
     override fun onPlaced(
         world: World, pos: BlockPos, state: BlockState, placer: LivingEntity?, itemStack: ItemStack

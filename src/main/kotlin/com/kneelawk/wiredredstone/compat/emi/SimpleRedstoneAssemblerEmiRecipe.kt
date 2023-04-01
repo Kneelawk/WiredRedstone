@@ -36,11 +36,12 @@ class SimpleRedstoneAssemblerEmiRecipe(
             return when (recipe) {
                 is RedstoneAssemblerShapedRecipe -> SimpleRedstoneAssemblerEmiRecipe(
                     recipe.id, recipe.width, recipe.height, recipe.ingredients.map(EmiIngredient::of),
-                    listOf(EmiStack.of(recipe.output)), recipe.energyPerTick, recipe.cookTime, false
+                    listOf(EmiStack.of(recipe.getViewerOutput())), recipe.energyPerTick, recipe.cookTime, false
                 )
                 is RedstoneAssemblerShapelessRecipe -> SimpleRedstoneAssemblerEmiRecipe(
                     recipe.id, CRAFTING_PATTERN_WIDTH, CRAFTING_PATTERN_HEIGHT,
-                    recipe.ingredients.map(EmiIngredient::of), listOf(EmiStack.of(recipe.output)), recipe.energyPerTick,
+                    recipe.ingredients.map(EmiIngredient::of), listOf(EmiStack.of(recipe.getViewerOutput())),
+                    recipe.energyPerTick,
                     recipe.cookTime, true
                 )
                 else -> null

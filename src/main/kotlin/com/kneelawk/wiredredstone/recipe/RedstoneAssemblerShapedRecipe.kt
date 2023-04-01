@@ -12,6 +12,7 @@ import net.minecraft.item.Items
 import net.minecraft.network.PacketByteBuf
 import net.minecraft.recipe.Ingredient
 import net.minecraft.recipe.RecipeSerializer
+import net.minecraft.registry.DynamicRegistryManager
 import net.minecraft.registry.Registries
 import net.minecraft.util.Identifier
 import net.minecraft.util.JsonHelper
@@ -237,11 +238,14 @@ class RedstoneAssemblerShapedRecipe(
         return true
     }
 
-    override fun craft(inventory: RedstoneAssemblerInventory): ItemStack = output.copy()
+    override fun craft(inventory: RedstoneAssemblerInventory, manager: DynamicRegistryManager): ItemStack =
+        output.copy()
 
     override fun fits(width: Int, height: Int): Boolean = width <= this.width && height <= this.height
 
-    override fun getOutput(): ItemStack = output
+    override fun getOutput(manager: DynamicRegistryManager): ItemStack = output
+    
+    override fun getViewerOutput(): ItemStack = output
 
     override fun getIngredients(): DefaultedList<Ingredient> = input
 

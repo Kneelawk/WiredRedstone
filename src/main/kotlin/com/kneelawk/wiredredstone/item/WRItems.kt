@@ -15,7 +15,7 @@ object WRItems {
     val WIRED_REDSTONE_ITEM_GROUP: ItemGroup by lazy {
         FabricItemGroup.builder(WRConstants.id("wiredredstone"))
             .icon { ItemStack(RED_ALLOY_WIRE) }
-            .entries { _, entries, _ -> entries.addAll(WIRED_REDSTONE_ITEMS) }.build()
+            .entries { _, entries -> entries.addAll(WIRED_REDSTONE_ITEMS) }.build()
     }
     val WIRED_REDSTONE_ITEM_SETTINGS: Item.Settings by lazy { Item.Settings() }
     val WIRED_REDSTONE_TOOL_SETTINGS: Item.Settings by lazy { Item.Settings().maxCount(1) }

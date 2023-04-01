@@ -45,7 +45,11 @@ sourceSets {
         kotlin {
             val createEnabled: String by project
             if (!createEnabled.toBoolean()) {
-                exclude("com/kneelawk/wiredredstone/compat/create/**")
+                exclude("com/kneelawk/wiredredstone/compat/create/impl/**")
+            }
+            val ccRestitchedEnabled: String by project
+            if (!ccRestitchedEnabled.toBoolean()) {
+                exclude("com/kneelawk/wiredredstone/compat/cc/impl/**")
             }
         }
     }
@@ -153,8 +157,11 @@ dependencies {
     modCompileOnly("mcp.mobius.waila:wthit-api:fabric-$wthitVersion")
 
     // CC: Restitched
+    val ccRestitchedEnabled: String by project
     val ccRestitchedVersion: String by project
-    modCompileOnly("maven.modrinth:cc-restitched:$ccRestitchedVersion")
+    if (ccRestitchedEnabled.toBoolean()) {
+        modCompileOnly("maven.modrinth:cc-restitched:$ccRestitchedVersion")
+    }
 
     // REI
     val reiVersion: String by project
@@ -193,15 +200,17 @@ dependencies {
     }
 
     // CC: Restitched
-    modLocalRuntime("maven.modrinth:cc-restitched:$ccRestitchedVersion")
-    val cobaltVersion: String by project
-    modLocalRuntime("org.squiddev:Cobalt:$cobaltVersion") {
-        exclude("net.fabricmc.fabric-api")
+    if (ccRestitchedEnabled.toBoolean()) {
+        modLocalRuntime("maven.modrinth:cc-restitched:$ccRestitchedVersion")
+        val cobaltVersion: String by project
+        modLocalRuntime("org.squiddev:Cobalt:$cobaltVersion") {
+            exclude("net.fabricmc.fabric-api")
+        }
+        val nettyVersion: String by project
+        runtimeOnly("io.netty:netty-codec-http:$nettyVersion")
+        val nightConfigVersion: String by project
+        runtimeOnly("com.electronwill.night-config:toml:$nightConfigVersion")
     }
-    val nettyVersion: String by project
-    runtimeOnly("io.netty:netty-codec-http:$nettyVersion")
-    val nightConfigVersion: String by project
-    runtimeOnly("com.electronwill.night-config:toml:$nightConfigVersion")
 
     // REI
 //    modLocalRuntime("me.shedaniel:RoughlyEnoughItems-fabric:$reiVersion") {

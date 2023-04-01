@@ -1,6 +1,7 @@
 package com.kneelawk.wiredredstone.compat.cc
 
 import com.kneelawk.graphlib.util.SidedPos
+import com.kneelawk.wiredredstone.WRLog
 import com.kneelawk.wiredredstone.util.ReflectionUtils
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.server.world.ServerWorld
@@ -12,8 +13,17 @@ object CCIntegrationHandler {
 
     fun init() {
         if (FabricLoader.getInstance().isModLoaded("computercraft")) {
-            integration =
-                ReflectionUtils.loadObject<CCIntegration>("com.kneelawk.wiredredstone.compat.cc.CCIntegrationImpl")
+            try {
+                integration =
+                    ReflectionUtils.loadObject<CCIntegration>(
+                        "com.kneelawk.wiredredstone.compat.cc.impl.CCIntegrationImpl"
+                    )
+            } catch (ex: ClassNotFoundException) {
+                WRLog.warn(
+                    "Attempted to load ComputerCraft integration, but found that this version of Wired Redstone is " +
+                            "not compiled with ComputerCraft integration. ComputerCraft integration will not work."
+                )
+            }
             integration?.init()
         }
     }

@@ -1,7 +1,8 @@
-package com.kneelawk.wiredredstone.compat.create
+package com.kneelawk.wiredredstone.compat.create.impl
 
 import alexiil.mc.lib.multipart.api.MultipartUtil
 import com.kneelawk.wiredredstone.WRLog
+import com.kneelawk.wiredredstone.compat.create.CreateCompat
 import com.kneelawk.wiredredstone.part.event.WRPartPreMoveEvent
 import com.simibubi.create.content.contraptions.components.structureMovement.BlockMovementChecks
 

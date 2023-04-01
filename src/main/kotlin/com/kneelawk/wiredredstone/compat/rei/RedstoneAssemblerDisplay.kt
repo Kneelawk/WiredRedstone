@@ -21,11 +21,11 @@ class RedstoneAssemblerDisplay(
             return when (recipe) {
                 is RedstoneAssemblerShapedRecipe -> RedstoneAssemblerDisplay(
                     recipe.width, recipe.height, EntryIngredients.ofIngredients(recipe.ingredients),
-                    listOf(EntryIngredients.of(recipe.output)), recipe.energyPerTick, recipe.cookTime, false
+                    listOf(EntryIngredients.of(recipe.getViewerOutput())), recipe.energyPerTick, recipe.cookTime, false
                 )
                 is RedstoneAssemblerShapelessRecipe -> RedstoneAssemblerDisplay(
                     3, 3, EntryIngredients.ofIngredients(recipe.ingredients),
-                    listOf(EntryIngredients.of(recipe.output)), recipe.energyPerTick, recipe.cookTime, true
+                    listOf(EntryIngredients.of(recipe.getViewerOutput())), recipe.energyPerTick, recipe.cookTime, true
                 )
                 else -> null
             }
@@ -46,13 +46,13 @@ class RedstoneAssemblerDisplay(
 
                 val inputList = NbtList()
                 for (i in input) {
-                    inputList.add(i.save())
+                    inputList.add(i.saveIngredient())
                 }
                 tag.put("input", inputList)
 
                 val outputList = NbtList()
                 for (o in output) {
-                    outputList.add(o.save())
+                    outputList.add(o.saveIngredient())
                 }
                 tag.put("output", outputList)
 

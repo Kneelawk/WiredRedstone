@@ -3,6 +3,7 @@ package com.kneelawk.wiredredstone
 import com.kneelawk.wiredredstone.block.WRBlocks
 import com.kneelawk.wiredredstone.blockentity.WRBlockEntities
 import com.kneelawk.wiredredstone.compat.cc.CCIntegrationHandler
+import com.kneelawk.wiredredstone.compat.create.CreateCompatHandler
 import com.kneelawk.wiredredstone.compat.emi.EMIIntegrationHandler
 import com.kneelawk.wiredredstone.config.CommonConfig
 import com.kneelawk.wiredredstone.item.WRItems
@@ -32,7 +33,7 @@ fun init() {
 
     CCIntegrationHandler.init()
     EMIIntegrationHandler.init()
-//    CreateCompatHandler.init()
+    CreateCompatHandler.init()
 
     RedstoneLogic.init()
     PhantomRedstone.init()

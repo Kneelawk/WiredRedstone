@@ -72,7 +72,7 @@ object WROutlineRenderer {
             var dx = line.end.x() - line.start.x()
             var dy = line.end.y() - line.start.y()
             var dz = line.end.z() - line.start.z()
-            val invLen = MathHelper.fastInverseSqrt(dx * dx + dy * dy + dz * dz)
+            val invLen = MathHelper.inverseSqrt(dx * dx + dy * dy + dz * dz)
             dx *= invLen
             dy *= invLen
             dz *= invLen

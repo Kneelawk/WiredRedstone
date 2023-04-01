@@ -170,8 +170,8 @@ class RedstoneAssemblerScreenHandler(
             }
         }
 
-    override fun close(player: PlayerEntity) {
-        super.close(player)
+    override fun onClosed(player: PlayerEntity) {
+        super.onClosed(player)
         inventory.onClose(player)
     }
 

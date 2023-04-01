@@ -8,6 +8,7 @@ import net.minecraft.network.PacketByteBuf
 import net.minecraft.recipe.Ingredient
 import net.minecraft.recipe.RecipeMatcher
 import net.minecraft.recipe.RecipeSerializer
+import net.minecraft.registry.DynamicRegistryManager
 import net.minecraft.util.Identifier
 import net.minecraft.util.JsonHelper
 import net.minecraft.util.collection.DefaultedList
@@ -21,7 +22,9 @@ class RedstoneAssemblerShapelessRecipe(
 
     override fun getGroup(): String = group
 
-    override fun getOutput(): ItemStack = output
+    override fun getOutput(manager: DynamicRegistryManager): ItemStack = output
+
+    override fun getViewerOutput(): ItemStack = output
 
     override fun getIngredients(): DefaultedList<Ingredient> = input
 
@@ -42,7 +45,8 @@ class RedstoneAssemblerShapelessRecipe(
         return count == input.size && recipeMatcher.match(this, null)
     }
 
-    override fun craft(inventory: RedstoneAssemblerInventory): ItemStack = output.copy()
+    override fun craft(inventory: RedstoneAssemblerInventory, manager: DynamicRegistryManager): ItemStack =
+        output.copy()
 
     override fun fits(width: Int, height: Int): Boolean {
         return width * height >= input.size
