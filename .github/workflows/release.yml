@@ -37,7 +37,6 @@ jobs:
         env:
           RELEASE_TAG: ${{ steps.tag_version.outputs.tag }}
       - name: Capture Build Directory
-        if: ${{ runner.os == 'Linux' && matrix.java == '17' }}
         uses: actions/upload-artifact@v2
         with:
           name: build-dir
@@ -167,7 +166,6 @@ jobs:
           CURSE_API_KEY: ${{ secrets.CURSE_API_KEY }}
           RELEASE_TAG: ${{ steps.tag_version.outputs.tag }}
       - name: Capture Curseforge File ID
-        if: ${{ runner.os == 'Linux' && matrix.java == '17' }}
         uses: actions/upload-artifact@v2
         with:
           name: cf-file-id
