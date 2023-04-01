@@ -1,5 +1,6 @@
 import com.matthewprenger.cursegradle.CurseProject
 import com.matthewprenger.cursegradle.CurseRelation
+import com.matthewprenger.cursegradle.CurseUploadTask
 import com.matthewprenger.cursegradle.Options
 import com.modrinth.minotaur.dependencies.ModDependency
 
@@ -285,6 +286,14 @@ tasks {
     withType<AbstractArchiveTask>().configureEach {
         isPreserveFileTimestamps = false
         isReproducibleFileOrder = true
+    }
+
+    withType<CurseUploadTask>().configureEach {
+        doLast {
+            file("curse-file-id.txt").printWriter().use { file ->
+                file.print(mainArtifact.fileID)
+            }
+        }
     }
 }
 
