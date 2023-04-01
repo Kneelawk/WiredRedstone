@@ -1,0 +1,226 @@
+# Performs all releases using a multipart approach
+name: release
+
+env:
+  PROJECT_NAME: Wired Redstone
+  MODRINTH_URL: 'https://modrinth.com/mod/wiredredstone'
+  CURSEFORGE_URL: 'https://www.curseforge.com/minecraft/mc-mods/wired-redstone'
+  MAVEN_IDENTIFIER: 'com.kneelawk:wired-redstone'
+
+on:
+  push:
+    tags:
+      # matches things like v0.3.3+1.18.2
+      - 'v[0-9]+.[0-9]+.[0-9]+\+[0-9]+.[0-9]+.[0-9]+'
+      # matches things like v0.4.0+1.19
+      - 'v[0-9]+.[0-9]+.[0-9]+\+[0-9]+.[0-9]+'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get Tag Version
+        uses: dawidd6/action-get-tag@v1
+        id: tag_version
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Validate Gradle Wrapper
+        uses: gradle/wrapper-validation-action@v1
+      - name: Setup JDK 17
+        uses: actions/setup-java@v1
+        with:
+          java-version: 17
+      - name: Make Gradle Wrapper Executable
+        run: chmod +x ./gradlew
+      - name: Build
+        run: ./gradlew build --no-daemon
+        env:
+          RELEASE_TAG: ${{ steps.tag_version.outputs.tag }}
+      - name: Capture Build Directory
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-dir
+          path: build/
+  github:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Get Tag Version
+        uses: dawidd6/action-get-tag@v1
+        id: tag_version
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Grab Builds
+        uses: actions/download-artifact@v3
+        with:
+          name: build-dir
+          path: build/
+      - name: Github Release
+        uses: softprops/action-gh-release@v1
+        with:
+          body_path: changelogs/changelog-${{ steps.tag_version.outputs.tag }}.md
+          files: build/libs/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
+  maven:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Get Tag Version
+        uses: dawidd6/action-get-tag@v1
+        id: tag_version
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Grab Builds
+        uses: actions/download-artifact@v3
+        with:
+          name: build-dir
+          path: build/
+      - name: Validate Gradle Wrapper
+        uses: gradle/wrapper-validation-action@v1
+      - name: Setup JDK 17
+        uses: actions/setup-java@v1
+        with:
+          java-version: 17
+      - name: Make Gradle Wrapper Executable
+        run: chmod +x ./gradlew
+      # Next is the rather cursed maven deployment mechanism
+      - name: Checkout Deployment Repository
+        uses: actions/checkout@v3
+        with:
+          repository: Kneelawk/kneelawk.github.io
+          ref: src
+          path: deploy
+          persist-credentials: false
+      - name: Publish To Deployment Repository Maven
+        run: ./gradlew publishAllPublicationsToPublishRepoRepository --no-daemon
+        env:
+          RELEASE_TAG: ${{ steps.tag_version.outputs.tag }}
+          PUBLISH_REPO: deploy/src/maven/
+      - name: Commit Deployment Repository Changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m 'Publish ${{ env.PROJECT_NAME }} ${{ steps.tag_version.outputs.tag }}'
+        working-directory: deploy
+      - name: Push Deployment Repository
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.PUBLISH_TOKEN }}
+          branch: src
+          directory: deploy
+          repository: Kneelawk/kneelawk.github.io
+  modrinth:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Get Tag Version
+        uses: dawidd6/action-get-tag@v1
+        id: tag_version
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Grab Builds
+        uses: actions/download-artifact@v3
+        with:
+          name: build-dir
+          path: build/
+      - name: Validate Gradle Wrapper
+        uses: gradle/wrapper-validation-action@v1
+      - name: Setup JDK 17
+        uses: actions/setup-java@v1
+        with:
+          java-version: 17
+      - name: Make Gradle Wrapper Executable
+        run: chmod +x ./gradlew
+      - name: Modrinth Release
+        run: ./gradlew modrinth modrinthSyncBody --no-daemon
+        env:
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+          RELEASE_TAG: ${{ steps.tag_version.outputs.tag }}
+  curseforge:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Get Tag Version
+        uses: dawidd6/action-get-tag@v1
+        id: tag_version
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Grab Builds
+        uses: actions/download-artifact@v3
+        with:
+          name: build-dir
+          path: build/
+      - name: Validate Gradle Wrapper
+        uses: gradle/wrapper-validation-action@v1
+      - name: Setup JDK 17
+        uses: actions/setup-java@v1
+        with:
+          java-version: 17
+      - name: Make Gradle Wrapper Executable
+        run: chmod +x ./gradlew
+      - name: Curseforge Release
+        run: ./gradlew curseforge --no-daemon
+        env:
+          CURSE_API_KEY: ${{ secrets.CURSE_API_KEY }}
+          RELEASE_TAG: ${{ steps.tag_version.outputs.tag }}
+      - name: Capture Curseforge File ID
+        uses: actions/upload-artifact@v2
+        with:
+          name: cf-file-id
+          path: curse-file-id.txt
+  discord:
+    runs-on: ubuntu-latest
+    needs: [github, maven, modrinth, curseforge]
+    steps:
+      - name: Get Tag Version
+        uses: dawidd6/action-get-tag@v1
+        id: tag_version
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Grab Builds
+        uses: actions/download-artifact@v3
+        with:
+          name: cf-file-id
+      - name: Validate Gradle Wrapper
+        uses: gradle/wrapper-validation-action@v1
+      # This is the mess that publishes discord notifications
+      - name: Read Changelog File
+        uses: juliangruber/read-file-action@v1
+        id: changelog
+        with:
+          path: changelogs/changelog-${{ steps.tag_version.outputs.tag }}.md
+      - name: Read Curseforge File ID File
+        uses: juliangruber/read-file-action@v1
+        id: cf-file-id
+        with:
+          path: curse-file-id.txt
+      - name: Process Changelog for Announcement
+        uses: actions/github-script@v6
+        id: announcement_text
+        env:
+          CHANGELOG: ${{ steps.changelog.outputs.content }}
+          CF_FILE_ID: ${{ steps.cf-file-id.outputs.content }}
+          TAG_VERSION: ${{ steps.tag_version.outputs.tag }}
+        with:
+          script: |
+            let fullVersion = process.env.TAG_VERSION;
+            let cfFileId = process.env.CF_FILE_ID;
+            let versions = fullVersion.split('+');
+            let modVersion = fullVersion.substring(1);
+            let lines = process.env.CHANGELOG.split('\n');
+            let changesStart = lines.findIndex(line => line.startsWith('*'));
+            lines.splice(0, changesStart);
+            lines.unshift(`**${process.env.PROJECT_NAME} ${versions[0]} has been released for Minecraft ${versions[1]}!**`, '', '__Changes:__');
+            lines.push(`Available on Modrinth: ${process.env.MODRINTH_URL}/version/${modVersion}`);
+            lines.push(`Available on CurseForge: ${process.env.CURSEFORGE_URL}/files/${cfFileId}`);
+            lines.push("Available on Kneelawk's maven: https://kneelawk.com/maven/", `With the identifier: \`${process.env.MAVEN_IDENTIFIER}:${modVersion}\``);
+            return lines.join('\n');
+          result-encoding: string
+      - name: Make Release Announcement
+        uses: Ilshidur/action-discord@0.3.2
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        with:
+          args: ${{ steps.announcement_text.outputs.result }}
