@@ -1,11 +1,11 @@
 package com.kneelawk.wiredredstone.util.connectable
 
 import alexiil.mc.lib.multipart.api.MultipartUtil
-import com.kneelawk.graphlib.GraphLib
-import com.kneelawk.graphlib.graph.BlockGraphController
-import com.kneelawk.graphlib.graph.SidedBlockNode
-import com.kneelawk.graphlib.wire.SidedWireBlockNode
-import com.kneelawk.graphlib.wire.WireConnectionType
+import com.kneelawk.graphlib.api.v1.graph.GraphWorld
+import com.kneelawk.graphlib.api.v1.node.SidedBlockNode
+import com.kneelawk.graphlib.api.v1.wire.SidedWireBlockNode
+import com.kneelawk.graphlib.api.v1.wire.WireConnectionType
+import com.kneelawk.wiredredstone.node.WRBlockNodes.WIRE_NET
 import com.kneelawk.wiredredstone.part.BlockablePart
 import com.kneelawk.wiredredstone.part.ConnectablePart
 import com.kneelawk.wiredredstone.part.RedrawablePart
@@ -32,7 +32,7 @@ object ConnectableUtils {
     fun updateBlockageAndConnections(world: ServerWorld, part: BlockablePart, wireWidth: Double, wireHeight: Double) {
         val blockPos = part.getPos()
         val side = part.side
-        val net = GraphLib.getController(world)
+        val net = WIRE_NET.getGraphWorld(world)
 
         val blockage = DirectionUtils.HORIZONTALS.fold(0u.toUByte()) { blockage, cardinal ->
             val inside = BoundingBoxUtils.getWireInsideConnectionShape(side, cardinal, wireWidth, wireHeight)
@@ -53,7 +53,7 @@ object ConnectableUtils {
      * Updates connections of the LMP part and asking it to update the client.
      */
     fun updateConnections(world: ServerWorld, part: ConnectablePart) {
-        val net = GraphLib.getController(world)
+        val net = WIRE_NET.getGraphWorld(world)
 
         updateConnectionsImpl(part, net, BlockageUtils.UNBLOCKED)
     }
@@ -62,7 +62,7 @@ object ConnectableUtils {
      * Updates visual connections, updating the LMP part and asking it to update the client.
      */
     private fun updateConnectionsImpl(
-        part: ConnectablePart, net: BlockGraphController, blockage: UByte
+        part: ConnectablePart, net: GraphWorld, blockage: UByte
     ) {
         val side = part.side
         val pos = part.getSidedPos()

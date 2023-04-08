@@ -1,8 +1,8 @@
 package com.kneelawk.wiredredstone.node
 
-import com.kneelawk.graphlib.graph.BlockNode
-import com.kneelawk.graphlib.graph.BlockNodeDecoder
-import com.kneelawk.graphlib.wire.SidedWireConnectionFilter
+import com.kneelawk.graphlib.api.v1.node.BlockNode
+import com.kneelawk.graphlib.api.v1.node.BlockNodeDecoder
+import com.kneelawk.graphlib.api.v1.wire.SidedWireConnectionFilter
 import com.kneelawk.wiredredstone.logic.RedstoneCarrierFilter
 import com.kneelawk.wiredredstone.logic.RedstoneWireType
 import com.kneelawk.wiredredstone.part.AbstractGatePart

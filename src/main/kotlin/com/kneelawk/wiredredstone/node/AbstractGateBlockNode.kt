@@ -1,13 +1,13 @@
 package com.kneelawk.wiredredstone.node
 
-import com.kneelawk.graphlib.graph.BlockNodeHolder
-import com.kneelawk.graphlib.graph.NodeView
-import com.kneelawk.graphlib.graph.struct.Node
-import com.kneelawk.graphlib.util.SidedPos
-import com.kneelawk.graphlib.wire.SidedWireBlockNode
-import com.kneelawk.graphlib.wire.SidedWireConnectionFilter
-import com.kneelawk.graphlib.wire.WireConnectionDiscoverers
-import com.kneelawk.graphlib.wire.WireConnectionType
+import com.kneelawk.graphlib.api.v1.graph.GraphView
+import com.kneelawk.graphlib.api.v1.graph.NodeHolder
+import com.kneelawk.graphlib.api.v1.util.SidedPos
+import com.kneelawk.graphlib.api.v1.util.graph.Node
+import com.kneelawk.graphlib.api.v1.wire.SidedWireBlockNode
+import com.kneelawk.graphlib.api.v1.wire.SidedWireConnectionFilter
+import com.kneelawk.graphlib.api.v1.wire.WireConnectionDiscoverers
+import com.kneelawk.graphlib.api.v1.wire.WireConnectionType
 import com.kneelawk.wiredredstone.logic.RedstoneLogic
 import com.kneelawk.wiredredstone.part.AbstractGatePart
 import com.kneelawk.wiredredstone.part.SidedPart
@@ -31,13 +31,13 @@ abstract class AbstractGateBlockNode<P : AbstractGatePart>(private val partClass
     }
 
     override fun findConnections(
-        world: ServerWorld, nv: NodeView, pos: BlockPos, self: Node<BlockNodeHolder>
-    ): MutableCollection<Node<BlockNodeHolder>> {
+        world: ServerWorld, nv: GraphView, pos: BlockPos, self: Node<NodeHolder>
+    ): MutableCollection<Node<NodeHolder>> {
         return WireConnectionDiscoverers.wireFindConnections(this, world, nv, pos, self, filter)
     }
 
     override fun canConnect(
-        world: ServerWorld, nodeView: NodeView, pos: BlockPos, self: NetNode, other: NetNode
+        world: ServerWorld, nodeView: GraphView, pos: BlockPos, self: NetNode, other: NetNode
     ): Boolean {
         return WireConnectionDiscoverers.wireCanConnect(this, world, pos, self, other, filter)
     }
@@ -53,7 +53,7 @@ abstract class AbstractGateBlockNode<P : AbstractGatePart>(private val partClass
         return RotationUtils.rotatedDirection(side, cardinal) == inDirection
     }
 
-    override fun onConnectionsChanged(world: ServerWorld, pos: BlockPos, self: NetNode) {
+    override fun onConnectionsChanged(world: ServerWorld, gv: GraphView, pos: BlockPos, self: NetNode) {
         RedstoneLogic.scheduleUpdate(world, pos)
         getPart(world, pos)?.updateConnections()
     }

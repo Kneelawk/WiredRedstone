@@ -1,7 +1,7 @@
 package com.kneelawk.wiredredstone.logic
 
-import com.kneelawk.graphlib.graph.BlockNode
-import com.kneelawk.graphlib.wire.WireConnectionFilter
+import com.kneelawk.graphlib.api.v1.node.BlockNode
+import com.kneelawk.graphlib.api.v1.wire.WireConnectionFilter
 import com.kneelawk.wiredredstone.node.RedstoneCarrierBlockNode
 
 object RedstoneCarrierFilter : WireConnectionFilter {

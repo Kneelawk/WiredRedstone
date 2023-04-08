@@ -1,7 +1,7 @@
 package com.kneelawk.wiredredstone.logic
 
 import alexiil.mc.lib.multipart.api.MultipartUtil
-import com.kneelawk.graphlib.util.SidedPos
+import com.kneelawk.graphlib.api.v1.util.SidedPos
 import com.kneelawk.wiredredstone.compat.cc.CCIntegrationHandler
 import com.kneelawk.wiredredstone.part.BundledPowerablePart
 import com.kneelawk.wiredredstone.util.DirectionUtils

@@ -1,8 +1,7 @@
 package com.kneelawk.wiredredstone.node
 
-import com.kneelawk.graphlib.GraphLib
+import com.kneelawk.graphlib.api.v1.graph.GraphUniverse
 import com.kneelawk.wiredredstone.WRConstants.id
-import net.minecraft.registry.Registry
 
 object WRBlockNodes {
     val RED_ALLOY_WIRE_ID = id("red_alloy_wire")
@@ -18,18 +17,27 @@ object WRBlockNodes {
     val GATE_REPEATER_ID = id("gate_repeater")
     val GATE_RS_LATCH = id("gate_rs_latch")
 
+    val WIRE_NET by lazy {
+        GraphUniverse.builder().discoverer(WRBlockNodeDiscoverer).decoders(
+            mapOf(
+                RED_ALLOY_WIRE_ID to RedAlloyWireBlockNode.Decoder,
+                INSULATED_WIRE_ID to InsulatedWireBlockNode.Decoder,
+                BUNDLED_CABLE_ID to BundledCableBlockNode.Decoder,
+                GATE_AND_ID to GateAndBlockNode.Decoder,
+                GATE_DIODE_ID to GateDiodeBlockNode.Decoder,
+                GATE_NAND_ID to GateNandBlockNode.Decoder,
+                GATE_NOR_ID to GateNorBlockNode.Decoder,
+                GATE_NOT_ID to GateNotBlockNode.Decoder,
+                GATE_OR_ID to GateOrBlockNode.Decoder,
+                GATE_PROJECTOR_SIMPLE_ID to GateProjectorSimpleBlockNode.Decoder,
+                GATE_REPEATER_ID to GateRepeaterBlockNode.Decoder,
+                GATE_RS_LATCH to GateRSLatchBlockNode.Decoder
+            )
+        ).buildAndRegister(id("wire_net"))
+    }
+
     fun init() {
-        Registry.register(GraphLib.BLOCK_NODE_DECODER, RED_ALLOY_WIRE_ID, RedAlloyWireBlockNode.Decoder)
-        Registry.register(GraphLib.BLOCK_NODE_DECODER, INSULATED_WIRE_ID, InsulatedWireBlockNode.Decoder)
-        Registry.register(GraphLib.BLOCK_NODE_DECODER, BUNDLED_CABLE_ID, BundledCableBlockNode.Decoder)
-        Registry.register(GraphLib.BLOCK_NODE_DECODER, GATE_AND_ID, GateAndBlockNode.Decoder)
-        Registry.register(GraphLib.BLOCK_NODE_DECODER, GATE_DIODE_ID, GateDiodeBlockNode.Decoder)
-        Registry.register(GraphLib.BLOCK_NODE_DECODER, GATE_NAND_ID, GateNandBlockNode.Decoder)
-        Registry.register(GraphLib.BLOCK_NODE_DECODER, GATE_NOR_ID, GateNorBlockNode.Decoder)
-        Registry.register(GraphLib.BLOCK_NODE_DECODER, GATE_NOT_ID, GateNotBlockNode.Decoder)
-        Registry.register(GraphLib.BLOCK_NODE_DECODER, GATE_OR_ID, GateOrBlockNode.Decoder)
-        Registry.register(GraphLib.BLOCK_NODE_DECODER, GATE_PROJECTOR_SIMPLE_ID, GateProjectorSimpleBlockNode.Decoder)
-        Registry.register(GraphLib.BLOCK_NODE_DECODER, GATE_REPEATER_ID, GateRepeaterBlockNode.Decoder)
-        Registry.register(GraphLib.BLOCK_NODE_DECODER, GATE_RS_LATCH, GateRSLatchBlockNode.Decoder)
+        // Make sure WIRE_NET has been initialized
+        WIRE_NET
     }
 }

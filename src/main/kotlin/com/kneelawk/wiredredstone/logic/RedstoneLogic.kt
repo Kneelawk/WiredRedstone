@@ -1,9 +1,9 @@
 package com.kneelawk.wiredredstone.logic
 
-import com.kneelawk.graphlib.GraphLib
-import com.kneelawk.graphlib.graph.BlockGraph
-import com.kneelawk.graphlib.util.SidedPos
+import com.kneelawk.graphlib.api.v1.graph.BlockGraph
+import com.kneelawk.graphlib.api.v1.util.SidedPos
 import com.kneelawk.wiredredstone.node.RedstoneCarrierBlockNode
+import com.kneelawk.wiredredstone.node.WRBlockNodes
 import com.kneelawk.wiredredstone.tag.WRBlockTags
 import com.kneelawk.wiredredstone.util.RotationUtils
 import com.kneelawk.wiredredstone.util.bits.BlockageUtils
@@ -33,7 +33,7 @@ object RedstoneLogic {
     fun scheduleUpdate(world: ServerWorld, pos: BlockPos) {
         // Could probably be optimised to only update the networks it needs to, but I can do that later.
         val set = scheduled.computeIfAbsent(world.registryKey) { LongLinkedOpenHashSet() }
-        GraphLib.getController(world).getGraphsAt(pos).forEach(set::add)
+        WRBlockNodes.WIRE_NET.getGraphWorld(world).getGraphsAt(pos).forEach(set::add)
     }
 
     private fun flushUpdates(world: ServerWorld) {
@@ -47,7 +47,7 @@ object RedstoneLogic {
         // graph-of-graphs solution has its own drawbacks as well. Any kind of super-graph loop would always involve a
         // one-tick delay somewhere, but players would have no way of controlling where.
 
-        val controller = GraphLib.getController(world)
+        val controller = WRBlockNodes.WIRE_NET.getGraphWorld(world)
         for (id in scheduled[world.registryKey].orEmpty()) {
             val net = controller.getGraph(id)
             if (net != null) updateState(world, net)

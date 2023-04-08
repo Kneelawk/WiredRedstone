@@ -5,7 +5,7 @@ import alexiil.mc.lib.multipart.api.PartDefinition
 import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
-import com.kneelawk.graphlib.GraphLib
+import com.kneelawk.wiredredstone.node.WRBlockNodes
 import com.kneelawk.wiredredstone.util.BoundingBoxMap
 import com.kneelawk.wiredredstone.util.getBoolean
 import com.kneelawk.wiredredstone.util.getWorld
@@ -130,7 +130,7 @@ abstract class AbstractDisableableThreeInputGatePart : AbstractThreeInputGatePar
                 updateInputPower(calculateInputPower(input), input)
             }
 
-            GraphLib.getController(world).updateNodes(pos)
+            WRBlockNodes.WIRE_NET.getGraphWorld(world).updateNodes(pos)
 
             return ActionResult.CONSUME
         }

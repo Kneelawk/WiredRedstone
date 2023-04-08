@@ -1,6 +1,6 @@
 package com.kneelawk.wiredredstone.node
 
-import com.kneelawk.graphlib.graph.BlockNode
+import com.kneelawk.graphlib.api.v1.node.BlockNode
 import com.kneelawk.wiredredstone.WRLog
 import com.kneelawk.wiredredstone.util.maybeGetByte
 import com.kneelawk.wiredredstone.util.toByte

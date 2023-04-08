@@ -26,7 +26,6 @@ fun init() {
     WRItems.init()
     WRBlockEntities.init()
     WRBlockNodes.init()
-    WRBlockNodeDiscoverer.init()
     WRRecipes.init()
     WRScreenHandlers.init()
     WRNetworking.init()

@@ -5,7 +5,7 @@ import alexiil.mc.lib.multipart.api.event.*
 import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
-import com.kneelawk.graphlib.GraphLib
+import com.kneelawk.wiredredstone.node.WRBlockNodes.WIRE_NET
 import com.kneelawk.wiredredstone.part.event.WRPartPreMoveEvent
 import com.kneelawk.wiredredstone.util.PlacementUtils
 import com.kneelawk.wiredredstone.util.SimpleItemDropTarget
@@ -116,7 +116,7 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
                         ) && initialized
                     ) {
                         // Something could be blocking our connection
-                        GraphLib.getController(world).updateConnections(getSidedPos())
+                        WIRE_NET.getGraphWorld(world).updateConnections(getSidedPos())
                     }
                 }
             }
@@ -128,7 +128,7 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
             val world = getWorld()
             if (it.part !== this && world is ServerWorld) {
                 // Something could be blocking our connection
-                GraphLib.getController(world).updateConnections(getSidedPos())
+                WIRE_NET.getGraphWorld(world).updateConnections(getSidedPos())
             }
         }
 
@@ -136,7 +136,7 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
             val world = getWorld()
             if (it.removed !== this && world is ServerWorld) {
                 // A connection could be unblocked
-                GraphLib.getController(world).updateConnections(getSidedPos())
+                WIRE_NET.getGraphWorld(world).updateConnections(getSidedPos())
             }
         }
 
@@ -173,7 +173,7 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
             // Update the nodes here
             val world = getWorld()
             if (world is ServerWorld) {
-                GraphLib.getController(world).updateNodes(getPos())
+                WIRE_NET.getGraphWorld(world).updateNodes(getPos())
             }
         }
     }
@@ -186,7 +186,7 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
             if (shouldBreak()) {
                 removeAndDrop()
             } else {
-                GraphLib.getController(world).updateNodes(getPos())
+                WIRE_NET.getGraphWorld(world).updateNodes(getPos())
             }
         }
     }
@@ -232,7 +232,7 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
 
         val world = getWorld()
         if (!world.isClient && world is ServerWorld) {
-            GraphLib.getController(world).updateNodes(getPos())
+            WIRE_NET.getGraphWorld(world).updateNodes(getPos())
         }
     }
 

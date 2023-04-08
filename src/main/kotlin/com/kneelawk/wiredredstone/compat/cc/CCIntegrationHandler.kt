@@ -1,6 +1,6 @@
 package com.kneelawk.wiredredstone.compat.cc
 
-import com.kneelawk.graphlib.util.SidedPos
+import com.kneelawk.graphlib.api.v1.util.SidedPos
 import com.kneelawk.wiredredstone.WRLog
 import com.kneelawk.wiredredstone.util.ReflectionUtils
 import net.fabricmc.loader.api.FabricLoader

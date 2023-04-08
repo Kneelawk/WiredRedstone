@@ -1,11 +1,11 @@
 package com.kneelawk.wiredredstone.node
 
-import com.kneelawk.graphlib.graph.BlockNode
-import com.kneelawk.graphlib.graph.BlockNodeDecoder
-import com.kneelawk.graphlib.graph.NodeView
-import com.kneelawk.graphlib.util.SidedPos
-import com.kneelawk.graphlib.wire.SidedWireBlockNode
-import com.kneelawk.graphlib.wire.WireConnectionDiscoverers
+import com.kneelawk.graphlib.api.v1.graph.GraphView
+import com.kneelawk.graphlib.api.v1.node.BlockNode
+import com.kneelawk.graphlib.api.v1.node.BlockNodeDecoder
+import com.kneelawk.graphlib.api.v1.util.SidedPos
+import com.kneelawk.graphlib.api.v1.wire.SidedWireBlockNode
+import com.kneelawk.graphlib.api.v1.wire.WireConnectionDiscoverers
 import com.kneelawk.wiredredstone.logic.BundledCableLogic
 import com.kneelawk.wiredredstone.logic.RedstoneCarrierFilter
 import com.kneelawk.wiredredstone.logic.RedstoneWireType
@@ -38,12 +38,12 @@ data class BundledCableBlockNode(private val side: Direction, val color: DyeColo
         return SidedPart.getPart(world, SidedPos(pos, side)) as? BundledCablePart
     }
 
-    override fun findConnections(world: ServerWorld, nv: NodeView, pos: BlockPos, self: NetNode): Collection<NetNode> {
+    override fun findConnections(world: ServerWorld, nv: GraphView, pos: BlockPos, self: NetNode): Collection<NetNode> {
         return WireConnectionDiscoverers.wireFindConnections(this, world, nv, pos, self, filter)
     }
 
     override fun canConnect(
-        world: ServerWorld, nodeView: NodeView, pos: BlockPos, self: NetNode, other: NetNode
+        world: ServerWorld, nodeView: GraphView, pos: BlockPos, self: NetNode, other: NetNode
     ): Boolean {
         return WireConnectionDiscoverers.wireCanConnect(this, world, pos, self, other, filter)
     }
@@ -63,7 +63,7 @@ data class BundledCableBlockNode(private val side: Direction, val color: DyeColo
         )
     }
 
-    override fun onConnectionsChanged(world: ServerWorld, pos: BlockPos, self: NetNode) {
+    override fun onConnectionsChanged(world: ServerWorld, gv: GraphView, pos: BlockPos, self: NetNode) {
         getPart(world, pos)?.handleUpdates()
     }
 

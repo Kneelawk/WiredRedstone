@@ -1,6 +1,6 @@
 package com.kneelawk.wiredredstone.compat.cc
 
-import com.kneelawk.graphlib.util.SidedPos
+import com.kneelawk.graphlib.api.v1.util.SidedPos
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World

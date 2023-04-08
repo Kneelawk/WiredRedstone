@@ -1,8 +1,8 @@
 package com.kneelawk.wiredredstone.util.connectable
 
-import com.kneelawk.graphlib.wire.SidedWireBlockNode
-import com.kneelawk.graphlib.wire.SidedWireConnectionFilter
-import com.kneelawk.graphlib.wire.WireConnectionType
+import com.kneelawk.graphlib.api.v1.wire.SidedWireBlockNode
+import com.kneelawk.graphlib.api.v1.wire.SidedWireConnectionFilter
+import com.kneelawk.graphlib.api.v1.wire.WireConnectionType
 import com.kneelawk.wiredredstone.util.NetNode
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.BlockPos
