@@ -121,6 +121,9 @@ abstract class AbstractRedstoneWirePart : AbstractBlockablePart, PowerablePart {
     }
 
     private fun maybeScheduleUpdate(world: ServerWorld) {
+        // If this true, we know this update was caused by another wire
+        if (WorldUtils.doingUpdate) return
+
         RedstoneLogic.wiresGivePower = false
         if (getReceivingPower() != power) {
             RedstoneLogic.scheduleUpdate(world, getPos())
