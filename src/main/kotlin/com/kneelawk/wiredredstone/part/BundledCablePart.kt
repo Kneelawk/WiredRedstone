@@ -115,6 +115,9 @@ class BundledCablePart : AbstractBlockablePart, BundledPowerablePart {
     }
 
     fun handleUpdates() {
+        // If this is true, we know this update was caused by another wire
+        if (WorldUtils.doingUpdate) return
+
         val world = getWorld()
         if (world is ServerWorld) {
             ConnectableUtils.updateBlockageAndConnections(world, this, WIRE_WIDTH, WIRE_HEIGHT)
