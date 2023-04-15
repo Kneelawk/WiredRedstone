@@ -8,6 +8,10 @@ import net.minecraft.util.math.Direction
 import net.minecraft.world.World
 
 object WorldUtils {
+    private var updateStack by threadLocal { 0 }
+    val doingUpdate
+        get() = updateStack > 0
+
     fun strongUpdateOutputNeighbors(world: World, pos: BlockPos, edge: Direction) {
         val state = world.getBlockState(pos)
         val offset = pos.offset(edge)
@@ -50,12 +54,19 @@ object WorldUtils {
     fun updateNeighbor(world: World, pos: BlockPos, sourceBlock: Block, neighbosPos: BlockPos) {
         val multipart = MultipartUtil.get(world, pos)
 
-        if (multipart != null) {
-            if (multipart.getFirstPart { it !is BlockNodeContainer } != null) {
+        try {
+            updateStack++
+
+            if (multipart != null) {
+                // TODO: see if this can be optimized out
+                if (multipart.getFirstPart { it !is BlockNodeContainer } != null) {
+                    world.updateNeighbor(pos, sourceBlock, neighbosPos)
+                }
+            } else {
                 world.updateNeighbor(pos, sourceBlock, neighbosPos)
             }
-        } else {
-            world.updateNeighbor(pos, sourceBlock, neighbosPos)
+        } finally {
+            updateStack--
         }
     }
 }

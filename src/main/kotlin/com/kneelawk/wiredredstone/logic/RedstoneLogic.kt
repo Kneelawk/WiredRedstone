@@ -10,6 +10,7 @@ import com.kneelawk.wiredredstone.util.bits.BlockageUtils
 import com.kneelawk.wiredredstone.util.bits.ConnectionUtils
 import com.kneelawk.wiredredstone.util.constrainedMaxOf
 import com.kneelawk.wiredredstone.util.node
+import com.kneelawk.wiredredstone.util.threadLocal
 import it.unimi.dsi.fastutil.longs.LongLinkedOpenHashSet
 import it.unimi.dsi.fastutil.longs.LongSet
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
@@ -23,8 +24,8 @@ import net.minecraft.world.World
 import kotlin.math.max
 
 object RedstoneLogic {
-    val scheduled = mutableMapOf<RegistryKey<World>, LongSet>()
-    var wiresGivePower = true
+    private val scheduled = mutableMapOf<RegistryKey<World>, LongSet>()
+    var wiresGivePower by threadLocal { true }
 
     fun init() {
         ServerTickEvents.END_WORLD_TICK.register(::flushUpdates)
@@ -37,22 +38,19 @@ object RedstoneLogic {
     }
 
     private fun flushUpdates(world: ServerWorld) {
-        // I could theoretically do this in two passes, one for updating inputs, and one for updating outputs, but that
-        // would not remove the 1-tick delay between wires connecting to inputs and outputs of gates, only the delay
-        // between redstone dust connecting to inputs and wires connecting to outputs, causing inconsistent behavior
-        // between wires and redstone dust when working with gates.
-
-        // The only thing that would actually remove a delay between gate inputs and gate outputs would be the
-        // graph-of-graphs solution. However that would likely be overkill for a redstone mod anyways. The
-        // graph-of-graphs solution has its own drawbacks as well. Any kind of super-graph loop would always involve a
-        // one-tick delay somewhere, but players would have no way of controlling where.
-
         val controller = WRBlockNodes.WIRE_NET.getGraphWorld(world)
-        for (id in scheduled[world.registryKey].orEmpty()) {
-            val net = controller.getGraph(id)
-            if (net != null) updateState(world, net)
+
+        // We're removing here because sometimes updating states needs to cause other graph updates to be scheduled,
+        // but we can handle those next tick. I'm not ready to set use 0-tick recursive updates yet.
+        val toUpdate = scheduled.remove(world.registryKey)
+        if (toUpdate != null) {
+            val updateIter = toUpdate.iterator()
+            while (updateIter.hasNext()) {
+                val id = updateIter.nextLong()
+                val net = controller.getGraph(id)
+                if (net != null) updateState(world, net)
+            }
         }
-        scheduled -= world.registryKey
     }
 
     fun updateState(world: ServerWorld, network: BlockGraph) {

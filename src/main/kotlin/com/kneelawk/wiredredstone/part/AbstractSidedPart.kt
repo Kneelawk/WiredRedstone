@@ -7,11 +7,8 @@ import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
 import com.kneelawk.wiredredstone.node.WRBlockNodes.WIRE_NET
 import com.kneelawk.wiredredstone.part.event.WRPartPreMoveEvent
-import com.kneelawk.wiredredstone.util.PlacementUtils
-import com.kneelawk.wiredredstone.util.SimpleItemDropTarget
+import com.kneelawk.wiredredstone.util.*
 import com.kneelawk.wiredredstone.util.connectable.ConnectableUtils
-import com.kneelawk.wiredredstone.util.getWorld
-import com.kneelawk.wiredredstone.util.requireNonNull
 import net.minecraft.item.ItemStack
 import net.minecraft.loot.context.LootContext
 import net.minecraft.loot.context.LootContextParameters
