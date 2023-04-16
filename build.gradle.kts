@@ -48,8 +48,8 @@ sourceSets {
             if (!createEnabled.toBoolean()) {
                 exclude("com/kneelawk/wiredredstone/compat/create/impl/**")
             }
-            val ccRestitchedEnabled: String by project
-            if (!ccRestitchedEnabled.toBoolean()) {
+            val ccEnabled: String by project
+            if (!ccEnabled.toBoolean()) {
                 exclude("com/kneelawk/wiredredstone/compat/cc/impl/**")
             }
         }
@@ -64,7 +64,13 @@ repositories {
     maven("https://maven.shedaniel.me/") { name = "shedaniel" }
     maven("https://kneelawk.com/maven/") { name = "Kneelawk" }
     maven("https://maven.bai.lol") { name = "WTHIT" }
-    maven("https://squiddev.cc/maven") { name = "SquidDev" }
+    maven("https://squiddev.cc/maven") {
+        name = "SquidDev"
+        content {
+            includeGroup("cc.tweaked")
+            includeModule("org.squiddev", "Cobalt")
+        }
+    }
     maven("https://api.modrinth.com/maven") {
         name = "Modrinth"
         content {
@@ -158,10 +164,13 @@ dependencies {
     modCompileOnly("mcp.mobius.waila:wthit-api:fabric-$wthitVersion")
 
     // CC: Restitched
-    val ccRestitchedEnabled: String by project
-    val ccRestitchedVersion: String by project
-    if (ccRestitchedEnabled.toBoolean()) {
-        modCompileOnly("maven.modrinth:cc-restitched:$ccRestitchedVersion")
+    val ccEnabled: String by project
+    val ccVersion: String by project
+    val ccMCVersion: String by project
+    if (ccEnabled.toBoolean()) {
+        modCompileOnly("cc.tweaked:cc-tweaked-$ccMCVersion-fabric-api:$ccVersion") {
+            exclude("net.fabricmc.fabric-api")
+        }
     }
 
     // REI
@@ -201,16 +210,10 @@ dependencies {
     }
 
     // CC: Restitched
-    if (ccRestitchedEnabled.toBoolean()) {
-        modLocalRuntime("maven.modrinth:cc-restitched:$ccRestitchedVersion")
-        val cobaltVersion: String by project
-        modLocalRuntime("org.squiddev:Cobalt:$cobaltVersion") {
+    if (ccEnabled.toBoolean()) {
+        modLocalRuntime("cc.tweaked:cc-tweaked-$ccMCVersion-fabric:$ccVersion") {
             exclude("net.fabricmc.fabric-api")
         }
-        val nettyVersion: String by project
-        runtimeOnly("io.netty:netty-codec-http:$nettyVersion")
-        val nightConfigVersion: String by project
-        runtimeOnly("com.electronwill.night-config:toml:$nightConfigVersion")
     }
 
     // REI
