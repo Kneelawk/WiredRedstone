@@ -94,6 +94,7 @@ Many Wired Redstone gates and wires will show extra information in the WTHIT HUD
 * ~~Under certain circumstances Not Enough Crashes can get Wired Redstone's rendering system into an invalid state while
   generating a crash report, causing an actual crash (**[#12](https://github.com/Kneelawk/WiredRedstone/issues/12)**).~~
   Fixed in `v0.4.13+1.19.2` and `v0.3.10+1.18.2`.
+* Completely incompatible with Immersive Portals (**[#23](https://github.com/Kneelawk/WiredRedstone/issues/23)**).
 * Server crashes can cause wires to stop working correctly and appear disconnected or refuse to connect when placed in
   specific areas. This is caused by the server crash preventing information about changes to wires' connections from
   being saved to the world. This can be fixed by breaking and replacing the wires until they start behaving properly or
