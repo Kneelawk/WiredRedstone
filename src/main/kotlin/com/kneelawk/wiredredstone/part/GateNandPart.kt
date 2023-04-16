@@ -9,10 +9,7 @@ import com.kneelawk.graphlib.graph.BlockNode
 import com.kneelawk.wiredredstone.item.WRItems
 import com.kneelawk.wiredredstone.node.GateNandBlockNode
 import com.kneelawk.wiredredstone.part.key.GateNandPartKey
-import com.kneelawk.wiredredstone.util.BoundingBoxMap
-import com.kneelawk.wiredredstone.util.LootTableUtil
-import com.kneelawk.wiredredstone.util.PixelBox
-import com.kneelawk.wiredredstone.util.getWorld
+import com.kneelawk.wiredredstone.util.*
 import net.minecraft.item.ItemStack
 import net.minecraft.loot.context.LootContext
 import net.minecraft.nbt.NbtCompound
@@ -21,10 +18,11 @@ import net.minecraft.util.math.Direction
 
 class GateNandPart : AbstractDisableableThreeInputGatePart {
     companion object {
-        private val INPUT_SHAPES = BoundingBoxMap.ofBoxes(
-            InputType.RIGHT to PixelBox(12, 0, 7, 15, 2, 10),
-            InputType.BACK to PixelBox(7, 0, 10, 9, 2, 15),
-            InputType.LEFT to PixelBox(1, 0, 7, 4, 2, 10)
+        private val INPUT_SHAPES = BoundingBoxMap.ofVoxelShapes(
+            InputType.RIGHT to PixelBox(12, 0, 7, 15, 2, 10).vs(),
+            InputType.BACK to PixelBox(7, 0, 10, 10, 2, 12).vs()
+                .union(PixelBox(6, 0, 12, 9, 2, 15).vs()),
+            InputType.LEFT to PixelBox(1, 0, 7, 4, 2, 10).vs()
         )
     }
 
