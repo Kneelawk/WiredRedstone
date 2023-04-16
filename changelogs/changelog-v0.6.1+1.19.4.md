@@ -5,3 +5,4 @@ Wired Redstone version 0.6.1 for Minecraft 1.19.4
 Changes:
 
 * Fixed rare crash caused by unintentional recursive updates.
+* Improved gate input hitboxes.
