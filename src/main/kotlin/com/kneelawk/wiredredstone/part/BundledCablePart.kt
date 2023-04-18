@@ -166,25 +166,6 @@ class BundledCablePart : AbstractBlockablePart, BundledPowerablePart {
         LootTableUtil.addPartDrops(getWorld(), target, context, identifier)
     }
 
-    override fun overrideConnections(connections: UByte): UByte {
-        val world = getWorld()
-        val pos = getPos()
-        var newConn = connections
-
-        for (cardinal in DirectionUtils.HORIZONTALS) {
-            // Blockage gets updated before this gets called, so checking blockage here is ok
-            if (ConnectionUtils.isDisconnected(newConn, cardinal) && !BlockageUtils.isBlocked(blockage, cardinal)) {
-                val edge = RotationUtils.rotatedDirection(side, cardinal)
-                val offset = pos.offset(edge)
-                if (BundledCableLogic.hasBundledCableOutput(world, offset)) {
-                    newConn = ConnectionUtils.setExternal(newConn, cardinal)
-                }
-            }
-        }
-
-        return newConn
-    }
-
     override fun updatePower(power: ULong) {
         val changed = this.power != power
         this.power = power
