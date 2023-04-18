@@ -5,10 +5,6 @@ import com.kneelawk.wiredredstone.WRLog
 import com.kneelawk.wiredredstone.compat.cc.CCIntegration
 import com.kneelawk.wiredredstone.logic.BundledCableLogic
 import dan200.computercraft.api.ComputerCraftAPI
-import dan200.computercraft.shared.common.IBundledRedstoneBlock
-import net.minecraft.server.world.ServerWorld
-import net.minecraft.util.math.BlockPos
-import net.minecraft.world.World
 
 @Suppress("unused")
 object CCIntegrationImpl : CCIntegration {
@@ -18,22 +14,17 @@ object CCIntegrationImpl : CCIntegration {
         ComputerCraftAPI.registerBundledRedstoneProvider { world, pos, side ->
             val output = BundledCableLogic.getBundledCableOutput(world, SidedPos(pos, side))
                 ?: return@registerBundledRedstoneProvider -1
-            BundledCableLogic.long2Short(output).toInt()
-        }
-    }
-
-    override fun getBundledCableInput(world: ServerWorld, pos: SidedPos): UShort {
-        val input = ComputerCraftAPI.getBundledRedstoneOutput(world, pos.pos.offset(pos.side), pos.side.opposite)
-
-        if (input == -1) {
-            return 0u
+            BundledCableLogic.analog2Digital(output).toInt()
         }
 
-        return input.toUShort()
-    }
+        BundledCableLogic.registerBundledPowerSource { world, pos ->
+            val input = ComputerCraftAPI.getBundledRedstoneOutput(world, pos.pos.offset(pos.side), pos.side.opposite)
 
-    override fun hasBundledCableOutput(world: World, pos: BlockPos): Boolean {
-        val state = world.getBlockState(pos)
-        return state.block is IBundledRedstoneBlock
+            if (input == -1) {
+                return@registerBundledPowerSource 0u
+            }
+
+            return@registerBundledPowerSource BundledCableLogic.digital2Analog(input.toUShort())
+        }
     }
 }
