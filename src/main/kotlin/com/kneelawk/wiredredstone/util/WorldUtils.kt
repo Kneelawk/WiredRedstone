@@ -51,7 +51,7 @@ object WorldUtils {
         updateNeighbor(world, sourcePos.south(), sourceBlock, sourcePos)
     }
 
-    fun updateNeighbor(world: World, pos: BlockPos, sourceBlock: Block, neighbosPos: BlockPos) {
+    fun updateNeighbor(world: World, pos: BlockPos, sourceBlock: Block, sourcePos: BlockPos) {
         val multipart = MultipartUtil.get(world, pos)
 
         try {
@@ -60,10 +60,10 @@ object WorldUtils {
             if (multipart != null) {
                 // TODO: see if this can be optimized out
                 if (multipart.getFirstPart { it !is BlockNodeContainer } != null) {
-                    world.updateNeighbor(pos, sourceBlock, neighbosPos)
+                    world.updateNeighbor(pos, sourceBlock, sourcePos)
                 }
             } else {
-                world.updateNeighbor(pos, sourceBlock, neighbosPos)
+                world.updateNeighbor(pos, sourceBlock, sourcePos)
             }
         } finally {
             updateStack--

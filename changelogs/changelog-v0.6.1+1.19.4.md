@@ -7,3 +7,4 @@ Changes:
 * Fixed rare crash caused by unintentional recursive updates.
 * Improved gate input hitboxes.
 * Re-enabled ComputerCraft integration.
+* Made bundled cables emit fewer block updates.
