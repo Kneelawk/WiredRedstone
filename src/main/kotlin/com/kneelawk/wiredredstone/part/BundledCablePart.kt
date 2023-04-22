@@ -11,6 +11,7 @@ import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
 import com.kneelawk.graphlib.graph.BlockNode
+import com.kneelawk.graphlib.util.SidedPos
 import com.kneelawk.wiredredstone.logic.BundledCableLogic
 import com.kneelawk.wiredredstone.logic.RedstoneLogic
 import com.kneelawk.wiredredstone.node.BundledCableBlockNode
@@ -164,6 +165,25 @@ class BundledCablePart : AbstractBlockablePart, BundledPowerablePart {
         val base = WRParts.BUNDLED_CABLE.identifier
         val identifier = color?.let { Identifier(base.namespace, "${it.getName()}_${base.path}") } ?: base
         LootTableUtil.addPartDrops(getWorld(), target, context, identifier)
+    }
+
+    override fun overrideConnections(connections: UByte): UByte {
+        val world = getWorld()
+        val pos = getPos()
+        var newConn = connections
+
+        for (cardinal in DirectionUtils.HORIZONTALS) {
+            // Blockage gets updated before this gets called, so checking blockage here is ok
+            if (ConnectionUtils.isDisconnected(newConn, cardinal) && !BlockageUtils.isBlocked(blockage, cardinal)) {
+                val edge = RotationUtils.rotatedDirection(side, cardinal)
+                val offset = pos.offset(edge)
+                if (BundledCableLogic.hasBundledCableOutput(world, SidedPos(offset, edge.opposite))) {
+                    newConn = ConnectionUtils.setExternal(newConn, cardinal)
+                }
+            }
+        }
+
+        return newConn
     }
 
     override fun updatePower(power: ULong) {

@@ -17,14 +17,18 @@ object CCIntegrationImpl : CCIntegration {
             BundledCableLogic.analog2Digital(output).toInt()
         }
 
-        BundledCableLogic.registerBundledPowerSource { world, pos ->
+        BundledCableLogic.registerPowerSource { world, pos ->
             val input = ComputerCraftAPI.getBundledRedstoneOutput(world, pos.pos.offset(pos.side), pos.side.opposite)
 
             if (input == -1) {
-                return@registerBundledPowerSource 0u
+                return@registerPowerSource 0u
             }
 
-            return@registerBundledPowerSource BundledCableLogic.digital2Analog(input.toUShort())
+            return@registerPowerSource BundledCableLogic.digital2Analog(input.toUShort())
+        }
+
+        BundledCableLogic.registerConnectionFinder { world, pos ->
+            ComputerCraftAPI.getBundledRedstoneOutput(world, pos.pos, pos.side) != -1
         }
     }
 }

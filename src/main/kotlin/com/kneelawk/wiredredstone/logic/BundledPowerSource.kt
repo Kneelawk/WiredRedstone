@@ -4,7 +4,7 @@ import com.kneelawk.graphlib.util.SidedPos
 import net.minecraft.server.world.ServerWorld
 
 /**
- * Used to provide bundled power to parallel port, which then translates to bundled cable power.
+ * Used to provide bundled power to bundled cables.
  */
 fun interface BundledPowerSource {
     /**

@@ -2,6 +2,7 @@ package com.kneelawk.wiredredstone.logic
 
 import alexiil.mc.lib.multipart.api.MultipartUtil
 import com.kneelawk.graphlib.util.SidedPos
+import com.kneelawk.wiredredstone.compat.cc.CCIntegrationHandler
 import com.kneelawk.wiredredstone.part.BundledPowerablePart
 import com.kneelawk.wiredredstone.util.DirectionUtils
 import com.kneelawk.wiredredstone.util.RotationUtils
@@ -10,16 +11,23 @@ import com.kneelawk.wiredredstone.util.bits.ConnectionUtils
 import com.kneelawk.wiredredstone.util.constrainedMaxOf
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.DyeColor
+import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.world.World
 import java.util.*
 
 object BundledCableLogic {
     private val powerSources = mutableListOf<BundledPowerSource>()
+    private val connectionFinders = mutableListOf<BundledConnectionFinder>()
 
     @JvmStatic
-    fun registerBundledPowerSource(source: BundledPowerSource) {
+    fun registerPowerSource(source: BundledPowerSource) {
         powerSources.add(source)
+    }
+
+    @JvmStatic
+    fun registerConnectionFinder(finder: BundledConnectionFinder) {
+        connectionFinders.add(finder)
     }
 
     fun getBundledCableInput(world: ServerWorld, pos: SidedPos, connections: UByte, blockage: UByte): ULong {
@@ -62,6 +70,10 @@ object BundledCableLogic {
         }
 
         return parts.asSequence().map { (it as BundledPowerablePart).getPower(pos.side) }.maxPower()
+    }
+
+    fun hasBundledCableOutput(world: World, pos: SidedPos): Boolean {
+        return connectionFinders.any { it.hasBundledConnection(world, pos) }
     }
 
     @JvmStatic
