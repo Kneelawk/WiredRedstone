@@ -59,19 +59,21 @@ class BundledCablePart : AbstractBlockablePart, BundledPowerablePart {
 
     // Used for telling if any of our neighbors should receive block updates when we change state
     private var bundledOutputs: UByte
+    private var bundledOutputDown: Boolean
 
     override var power: ULong
         private set
 
     constructor(
         definition: PartDefinition, holder: MultipartHolder, side: Direction, connections: UByte, blockage: UByte,
-        color: DyeColor?, power: ULong, bundledOutputs: UByte
+        color: DyeColor?, power: ULong, bundledOutputs: UByte, bundledOutputDown: Boolean
     ) : super(
         definition, holder, side, connections, blockage
     ) {
         this.color = color
         this.power = power
         this.bundledOutputs = bundledOutputs
+        this.bundledOutputDown = bundledOutputDown
     }
 
     constructor(definition: PartDefinition, holder: MultipartHolder, tag: NbtCompound) : super(
@@ -81,6 +83,7 @@ class BundledCablePart : AbstractBlockablePart, BundledPowerablePart {
         power = if (tag.contains("power")) tag.getLong("power").toULong() else 0u
         bundledOutputs =
             if (tag.contains("bundledOutputs")) tag.getByte("bundledOutputs").toUByte() else DEFAULT_BUNDLED_OUTPUTS
+        bundledOutputDown = if (tag.contains("bundledOutputDown")) tag.getBoolean("bundledOutputDown") else true
     }
 
     constructor(definition: PartDefinition, holder: MultipartHolder, buffer: NetByteBuf, ctx: IMsgReadCtx) : super(
@@ -90,6 +93,7 @@ class BundledCablePart : AbstractBlockablePart, BundledPowerablePart {
         // no need for power levels on the client for now
         power = 0u
         bundledOutputs = 0u
+        bundledOutputDown = false
     }
 
     override fun createBlockNodes(): Collection<BlockNode> {
@@ -101,6 +105,7 @@ class BundledCablePart : AbstractBlockablePart, BundledPowerablePart {
         color?.let { tag.putByte("color", it.id.toByte()) }
         tag.putLong("power", power.toLong())
         tag.putByte("bundledOutputs", bundledOutputs.toByte())
+        tag.putBoolean("bundledOutputDown", bundledOutputDown)
         return tag
     }
 
@@ -209,6 +214,9 @@ class BundledCablePart : AbstractBlockablePart, BundledPowerablePart {
 
         bundledOutputs = newBundledOutputs
 
+        // Also check downward for bundled outputs
+        bundledOutputDown = BundledCableLogic.hasBundledCableOutput(world, SidedPos(pos.offset(side), side.opposite))
+
         return newConn
     }
 
@@ -228,6 +236,10 @@ class BundledCablePart : AbstractBlockablePart, BundledPowerablePart {
                     val offset = pos.offset(edge)
                     WorldUtils.updateNeighbor(world, offset, block, pos)
                 }
+            }
+
+            if (bundledOutputDown) {
+                WorldUtils.updateNeighbor(world, pos.offset(side), block, pos)
             }
         }
     }
