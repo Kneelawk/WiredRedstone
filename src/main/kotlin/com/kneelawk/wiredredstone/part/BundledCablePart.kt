@@ -11,6 +11,7 @@ import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
 import com.kneelawk.graphlib.graph.BlockNode
+import com.kneelawk.graphlib.util.SidedPos
 import com.kneelawk.wiredredstone.logic.BundledCableLogic
 import com.kneelawk.wiredredstone.logic.RedstoneLogic
 import com.kneelawk.wiredredstone.node.BundledCableBlockNode
@@ -40,21 +41,39 @@ class BundledCablePart : AbstractBlockablePart, BundledPowerablePart {
 
         private val CONFLICT_SHAPES = BoundingBoxUtils.getWireConflictShapes(WIRE_WIDTH, WIRE_HEIGHT)
         private val OUTLINE_SHAPES = BoundingBoxUtils.getWireOutlineShapes(12.0, WIRE_HEIGHT)
+
+        // Defaults to ending block update in all directions, like previous version of WR. Though, technically, this
+        // doesn't really matter, because wires recalculate their connections on chunk-load anyways.
+        private val DEFAULT_BUNDLED_OUTPUTS: UByte
+
+        init {
+            var defaultBundledOutputs: UByte = 0u
+            for (cardinal in DirectionUtils.HORIZONTALS) {
+                defaultBundledOutputs = ConnectionUtils.setExternal(defaultBundledOutputs, cardinal)
+            }
+            DEFAULT_BUNDLED_OUTPUTS = defaultBundledOutputs
+        }
     }
 
     val color: DyeColor?
+
+    // Used for telling if any of our neighbors should receive block updates when we change state
+    private var bundledOutputs: UByte
+    private var bundledOutputDown: Boolean
 
     override var power: ULong
         private set
 
     constructor(
         definition: PartDefinition, holder: MultipartHolder, side: Direction, connections: UByte, blockage: UByte,
-        color: DyeColor?, power: ULong
+        color: DyeColor?, power: ULong, bundledOutputs: UByte, bundledOutputDown: Boolean
     ) : super(
         definition, holder, side, connections, blockage
     ) {
         this.color = color
         this.power = power
+        this.bundledOutputs = bundledOutputs
+        this.bundledOutputDown = bundledOutputDown
     }
 
     constructor(definition: PartDefinition, holder: MultipartHolder, tag: NbtCompound) : super(
@@ -62,6 +81,9 @@ class BundledCablePart : AbstractBlockablePart, BundledPowerablePart {
     ) {
         color = if (tag.contains("color")) DyeColor.byId(tag.getByte("color").toInt()) else null
         power = if (tag.contains("power")) tag.getLong("power").toULong() else 0u
+        bundledOutputs =
+            if (tag.contains("bundledOutputs")) tag.getByte("bundledOutputs").toUByte() else DEFAULT_BUNDLED_OUTPUTS
+        bundledOutputDown = if (tag.contains("bundledOutputDown")) tag.getBoolean("bundledOutputDown") else true
     }
 
     constructor(definition: PartDefinition, holder: MultipartHolder, buffer: NetByteBuf, ctx: IMsgReadCtx) : super(
@@ -70,6 +92,8 @@ class BundledCablePart : AbstractBlockablePart, BundledPowerablePart {
         color = if (buffer.readBoolean()) DyeColor.byId(buffer.readByte().toInt()) else null
         // no need for power levels on the client for now
         power = 0u
+        bundledOutputs = 0u
+        bundledOutputDown = false
     }
 
     override fun createBlockNodes(): Collection<BlockNode> {
@@ -80,6 +104,8 @@ class BundledCablePart : AbstractBlockablePart, BundledPowerablePart {
         val tag = super.toTag()
         color?.let { tag.putByte("color", it.id.toByte()) }
         tag.putLong("power", power.toLong())
+        tag.putByte("bundledOutputs", bundledOutputs.toByte())
+        tag.putBoolean("bundledOutputDown", bundledOutputDown)
         return tag
     }
 
@@ -170,17 +196,26 @@ class BundledCablePart : AbstractBlockablePart, BundledPowerablePart {
         val world = getWorld()
         val pos = getPos()
         var newConn = connections
+        var newBundledOutputs: UByte = 0u
 
         for (cardinal in DirectionUtils.HORIZONTALS) {
             // Blockage gets updated before this gets called, so checking blockage here is ok
-            if (ConnectionUtils.isDisconnected(newConn, cardinal) && !BlockageUtils.isBlocked(blockage, cardinal)) {
+            if (!BlockageUtils.isBlocked(blockage, cardinal)) {
                 val edge = RotationUtils.rotatedDirection(side, cardinal)
                 val offset = pos.offset(edge)
-                if (BundledCableLogic.hasBundledCableOutput(world, offset)) {
-                    newConn = ConnectionUtils.setExternal(newConn, cardinal)
+                if (BundledCableLogic.hasBundledCableOutput(world, SidedPos(offset, edge.opposite))) {
+                    newBundledOutputs = ConnectionUtils.setExternal(newBundledOutputs, cardinal)
+                    if (ConnectionUtils.isDisconnected(newConn, cardinal)) {
+                        newConn = ConnectionUtils.setExternal(newConn, cardinal)
+                    }
                 }
             }
         }
+
+        bundledOutputs = newBundledOutputs
+
+        // Also check downward for bundled outputs
+        bundledOutputDown = BundledCableLogic.hasBundledCableOutput(world, SidedPos(pos.offset(side), side.opposite))
 
         return newConn
     }
@@ -192,7 +227,20 @@ class BundledCablePart : AbstractBlockablePart, BundledPowerablePart {
         getBlockEntity().markDirty()
 
         if (changed) {
-            WorldUtils.strongUpdateAllNeighbors(getWorld(), getPos(), side)
+            val world = getWorld()
+            val pos = getPos()
+            val block = world.getBlockState(pos).block
+            for (cardinal in DirectionUtils.HORIZONTALS) {
+                if (ConnectionUtils.isExternal(bundledOutputs, cardinal)) {
+                    val edge = RotationUtils.rotatedDirection(side, cardinal)
+                    val offset = pos.offset(edge)
+                    WorldUtils.updateNeighbor(world, offset, block, pos)
+                }
+            }
+
+            if (bundledOutputDown) {
+                WorldUtils.updateNeighbor(world, pos.offset(side), block, pos)
+            }
         }
     }
 

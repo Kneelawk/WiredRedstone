@@ -14,8 +14,22 @@ import net.minecraft.util.DyeColor
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.world.World
+import java.util.*
 
 object BundledCableLogic {
+    private val powerSources = mutableListOf<BundledPowerSource>()
+    private val connectionFinders = mutableListOf<BundledConnectionFinder>()
+
+    @JvmStatic
+    fun registerPowerSource(source: BundledPowerSource) {
+        powerSources.add(source)
+    }
+
+    @JvmStatic
+    fun registerConnectionFinder(finder: BundledConnectionFinder) {
+        connectionFinders.add(finder)
+    }
+
     fun getBundledCableInput(world: ServerWorld, pos: SidedPos, connections: UByte, blockage: UByte): ULong {
         return receivingSides(pos, connections, blockage).map {
             getSingleBundledCableInput(world, SidedPos(pos.pos, it))
@@ -40,11 +54,11 @@ object BundledCableLogic {
     }
 
     private fun getSingleBundledCableInput(world: ServerWorld, pos: SidedPos): ULong {
-        return short2Long(CCIntegrationHandler.getBundledCableInput(world, pos))
+        return powerSources.asSequence().map { it.getBundledPower(world, pos) }.maxPower()
     }
 
     private fun getSingleBundledCableInput(world: ServerWorld, pos: SidedPos, inner: DyeColor): Int {
-        return get(getSingleBundledCableInput(world, pos), inner)
+        return powerSources.asSequence().constrainedMaxOf(0, 15) { get(it.getBundledPower(world, pos), inner) }
     }
 
     fun getBundledCableOutput(world: World, pos: SidedPos): ULong? {
@@ -58,19 +72,36 @@ object BundledCableLogic {
         return parts.asSequence().map { (it as BundledPowerablePart).getPower(pos.side) }.maxPower()
     }
 
-    fun hasBundledCableOutput(world: World, pos: BlockPos): Boolean {
-        return CCIntegrationHandler.hasBundledCableOutput(world, pos)
+    fun hasBundledCableOutput(world: World, pos: SidedPos): Boolean {
+        return connectionFinders.any { it.hasBundledConnection(world, pos) }
     }
 
+    @JvmStatic
+    fun getBundledCableOutputOptional(world: World, pos: SidedPos): OptionalLong {
+        val multipart = MultipartUtil.get(world, pos.pos) ?: return OptionalLong.empty()
+        val parts = multipart.getAllParts { it is BundledPowerablePart }
+
+        if (parts.isEmpty()) {
+            return OptionalLong.empty()
+        }
+
+        return OptionalLong.of(
+            parts.asSequence().map { (it as BundledPowerablePart).getPower(pos.side) }.maxPower().toLong()
+        )
+    }
+
+    @JvmStatic
     fun get(power: ULong, inner: DyeColor): Int {
         return ((power shr (inner.id shl 2)) and 0xFuL).toInt()
     }
 
+    @JvmStatic
     fun set(power: ULong, inner: DyeColor, innerPower: Int): ULong {
         return (power and mask(inner.id).inv()) or ((innerPower and 0xF).toULong() shl (inner.id shl 2))
     }
 
-    fun long2Short(power: ULong): UShort {
+    @JvmStatic
+    fun analog2Digital(power: ULong): UShort {
         var res: UShort = 0u
 
         for (i in 0 until 16) {
@@ -83,7 +114,8 @@ object BundledCableLogic {
         return res
     }
 
-    fun short2Long(signals: UShort): ULong {
+    @JvmStatic
+    fun digital2Analog(signals: UShort): ULong {
         var res: ULong = 0uL
 
         for (i in 0 until 16) {
