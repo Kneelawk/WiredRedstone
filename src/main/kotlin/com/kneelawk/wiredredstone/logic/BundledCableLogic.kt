@@ -16,10 +16,16 @@ import java.util.*
 
 object BundledCableLogic {
     private val powerSources = mutableListOf<BundledPowerSource>()
+    private val connectionFinders = mutableListOf<BundledConnectionFinder>()
 
     @JvmStatic
-    fun registerBundledPowerSource(source: BundledPowerSource) {
+    fun registerPowerSource(source: BundledPowerSource) {
         powerSources.add(source)
+    }
+
+    @JvmStatic
+    fun registerConnectionFinder(finder: BundledConnectionFinder) {
+        connectionFinders.add(finder)
     }
 
     fun getBundledCableInput(world: ServerWorld, pos: SidedPos, connections: UByte, blockage: UByte): ULong {
@@ -62,6 +68,10 @@ object BundledCableLogic {
         }
 
         return parts.asSequence().map { (it as BundledPowerablePart).getPower(pos.side) }.maxPower()
+    }
+
+    fun hasBundledCableOutput(world: World, pos: SidedPos): Boolean {
+        return connectionFinders.any { it.hasBundledConnection(world, pos) }
     }
 
     @JvmStatic
