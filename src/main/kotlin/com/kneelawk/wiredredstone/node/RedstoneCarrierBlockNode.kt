@@ -8,9 +8,7 @@ import net.minecraft.server.world.ServerWorld
 interface RedstoneCarrierBlockNode : BlockNode {
     val redstoneType: RedstoneWireType
 
-    fun getState(world: ServerWorld, self: NetNode): Int
+    fun putPower(world: ServerWorld, self: NetNode, power: Int)
 
-    fun setState(world: ServerWorld, self: NetNode, state: Int)
-
-    fun getInput(world: ServerWorld, self: NetNode): Int
+    fun sourcePower(world: ServerWorld, self: NetNode): Int
 }

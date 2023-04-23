@@ -39,13 +39,11 @@ sealed class GateDiodeBlockNode : AbstractGateBlockNode<GateDiodePart>(GateDiode
 
         override fun getConnectDirection(part: GateDiodePart): Direction = part.getInputSide()
 
-        override fun getState(world: ServerWorld, self: NetNode): Int = 0
-
-        override fun setState(world: ServerWorld, self: NetNode, state: Int) {
-            getPart(world, self.pos)?.updateInputPower(state)
+        override fun putPower(world: ServerWorld, self: NetNode, power: Int) {
+            getPart(world, self.pos)?.updateInputPower(power)
         }
 
-        override fun getInput(world: ServerWorld, self: NetNode): Int {
+        override fun sourcePower(world: ServerWorld, self: NetNode): Int {
             val part = getPart(world, self.pos) ?: return 0
             val input = part.calculateInputPower()
 
@@ -63,15 +61,11 @@ sealed class GateDiodeBlockNode : AbstractGateBlockNode<GateDiodePart>(GateDiode
 
         override fun getConnectDirection(part: GateDiodePart): Direction = part.getOutputSide()
 
-        override fun getState(world: ServerWorld, self: NetNode): Int {
-            return getPart(world, self.pos)?.getTotalOutputPower() ?: 0
+        override fun putPower(world: ServerWorld, self: NetNode, power: Int) {
+            getPart(world, self.pos)?.updateOutputReversePower(power)
         }
 
-        override fun setState(world: ServerWorld, self: NetNode, state: Int) {
-            getPart(world, self.pos)?.updateOutputReversePower(state)
-        }
-
-        override fun getInput(world: ServerWorld, self: NetNode): Int {
+        override fun sourcePower(world: ServerWorld, self: NetNode): Int {
             val part = getPart(world, self.pos) ?: return 0
 
             // This is asking about input to the network, so we return either our output value or the value calculated
