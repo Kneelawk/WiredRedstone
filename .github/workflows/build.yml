@@ -27,9 +27,10 @@ jobs:
             .gradle/loom-cache
           key: ${{ runner.os }}-jdk${{ matrix.java }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle.properties', '**/gradle-wrapper.properties', '.github/workflows/build.yml') }}
       - name: Setup JDK ${{ matrix.java }}
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
           java-version: ${{ matrix.java }}
+          distribution: 'zulu'
       - name: Make Gradle Wrapper Executable
         if: ${{ runner.os != 'Windows' }}
         run: chmod +x ./gradlew
