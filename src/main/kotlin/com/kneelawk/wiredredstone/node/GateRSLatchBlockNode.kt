@@ -43,13 +43,11 @@ sealed class GateRSLatchBlockNode : AbstractGateBlockNode<GateRSLatchPart>(GateR
 
         override fun getConnectDirection(part: GateRSLatchPart): Direction = part.getInputSide(latchState)
 
-        override fun getState(world: ServerWorld, self: NetNode): Int = 0
-
-        override fun setState(world: ServerWorld, self: NetNode, state: Int) {
-            getPart(world, self.pos)?.updateInputPower(state, latchState)
+        override fun putPower(world: ServerWorld, self: NetNode, power: Int) {
+            getPart(world, self.pos)?.updateInputPower(power, latchState)
         }
 
-        override fun getInput(world: ServerWorld, self: NetNode): Int {
+        override fun sourcePower(world: ServerWorld, self: NetNode): Int {
             val part = getPart(world, self.pos) ?: return 0
             return part.calculateInputPower(latchState)
         }
@@ -67,15 +65,11 @@ sealed class GateRSLatchBlockNode : AbstractGateBlockNode<GateRSLatchPart>(GateR
 
         override fun getConnectDirection(part: GateRSLatchPart): Direction = part.getOutputSide(latchState)
 
-        override fun getState(world: ServerWorld, self: NetNode): Int {
-            return getPart(world, self.pos)?.getTotalOutputPower(latchState) ?: return 0
+        override fun putPower(world: ServerWorld, self: NetNode, power: Int) {
+            getPart(world, self.pos)?.updateReverseOuputPower(power, latchState)
         }
 
-        override fun setState(world: ServerWorld, self: NetNode, state: Int) {
-            getPart(world, self.pos)?.updateReverseOuputPower(state, latchState)
-        }
-
-        override fun getInput(world: ServerWorld, self: NetNode): Int {
+        override fun sourcePower(world: ServerWorld, self: NetNode): Int {
             val part = getPart(world, self.pos) ?: return 0
             return max(part.getOutputPower(latchState), part.calculateOutputReversePower(latchState))
         }

@@ -46,19 +46,14 @@ data class RedAlloyWireBlockNode(private val side: Direction) : SidedWireBlockNo
         return WireConnectionDiscoverers.wireCanConnect(this, world, pos, self, other, filter)
     }
 
-    override fun getState(world: ServerWorld, self: NetNode): Int {
-        val part = getPart(world, self.pos) ?: return 0
-        return part.power
-    }
-
-    override fun setState(world: ServerWorld, self: NetNode, state: Int) {
+    override fun putPower(world: ServerWorld, self: NetNode, power: Int) {
         val part = getPart(world, self.pos) ?: return
         // Updating neighbors is handled by updatePowered()
-        part.updatePower(state)
+        part.updatePower(power)
         part.redraw()
     }
 
-    override fun getInput(world: ServerWorld, self: NetNode): Int {
+    override fun sourcePower(world: ServerWorld, self: NetNode): Int {
         val part = getPart(world, self.pos) ?: return 0
         val pos = SidedPos(self.pos, side)
         return RedstoneLogic.getReceivingPower(world, pos, part.connections, true, part.blockage)

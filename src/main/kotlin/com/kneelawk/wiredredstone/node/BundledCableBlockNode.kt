@@ -48,15 +48,11 @@ data class BundledCableBlockNode(private val side: Direction, val color: DyeColo
         return WireConnectionDiscoverers.wireCanConnect(this, world, pos, self, other, filter)
     }
 
-    override fun getState(world: ServerWorld, self: NetNode): Int {
-        return getPart(world, self.pos)?.getPower(inner) ?: 0
+    override fun putPower(world: ServerWorld, self: NetNode, power: Int) {
+        getPart(world, self.pos)?.updatePower(inner, power)
     }
 
-    override fun setState(world: ServerWorld, self: NetNode, state: Int) {
-        getPart(world, self.pos)?.updatePower(inner, state)
-    }
-
-    override fun getInput(world: ServerWorld, self: NetNode): Int {
+    override fun sourcePower(world: ServerWorld, self: NetNode): Int {
         val part = getPart(world, self.pos) ?: return 0
         return BundledCableLogic.getBundledCableInput(
             world, SidedPos(self.pos, side), inner, part.connections, part.blockage
