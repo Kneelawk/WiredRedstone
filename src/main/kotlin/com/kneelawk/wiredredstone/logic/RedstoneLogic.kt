@@ -57,13 +57,13 @@ object RedstoneLogic {
         val power = try {
             wiresGivePower = false
             network.nodes
-                .constrainedMaxOf(0, 15) { (it.node as RedstoneCarrierBlockNode).getInput(world, it) }
+                .constrainedMaxOf(0, 15) { (it.node as RedstoneCarrierBlockNode).sourcePower(world, it) }
         } finally {
             wiresGivePower = true
         }
         for (node in network.nodes) {
             val ext = node.node as RedstoneCarrierBlockNode
-            ext.setState(world, node, power)
+            ext.putPower(world, node, power)
         }
     }
 
