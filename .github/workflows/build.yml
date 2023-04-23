@@ -9,8 +9,7 @@ jobs:
         java: [
           17,    # Current Java LTS & minimum supported by Minecraft
           18,
-          19,
-          20
+          19
         ]
         os: [ ubuntu-20.04, windows-2022 ]
     runs-on: ${{ matrix.os }}
