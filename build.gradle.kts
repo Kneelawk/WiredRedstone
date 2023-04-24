@@ -244,7 +244,6 @@ tasks {
     }
 
     java {
-        toolchain { languageVersion.set(JavaLanguageVersion.of(javaVersion.toString())) }
         sourceCompatibility = javaVersion
         targetCompatibility = javaVersion
         withSourcesJar()
