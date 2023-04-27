@@ -1,6 +1,6 @@
 package com.kneelawk.wiredredstone.logic
 
-import com.kneelawk.graphlib.util.SidedPos
+import com.kneelawk.graphlib.api.v1.util.SidedPos
 import net.minecraft.world.World
 
 /**

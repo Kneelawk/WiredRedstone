@@ -1,6 +1,6 @@
 package com.kneelawk.wiredredstone.compat.cc.impl
 
-import com.kneelawk.graphlib.util.SidedPos
+import com.kneelawk.graphlib.api.v1.util.SidedPos
 import com.kneelawk.wiredredstone.WRLog
 import com.kneelawk.wiredredstone.compat.cc.CCIntegration
 import com.kneelawk.wiredredstone.logic.BundledCableLogic
