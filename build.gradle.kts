@@ -118,6 +118,7 @@ dependencies {
     // LibMultiPart dependency
     val lmpVersion: String by project
     modImplementation("alexiil.mc.lib:libmultipart-all:$lmpVersion") {
+        exclude("net.fabricmc")
         exclude("net.fabricmc.fabric-api")
     }
     // JIJs LMP, LNS, & LBA Core
@@ -174,6 +175,7 @@ dependencies {
     val createMinecraftVersion: String by project
     if (createEnabled.toBoolean()) {
         modCompileOnly("com.simibubi.create:create-fabric-$createMinecraftVersion:$createVersion") {
+            exclude("net.fabricmc")
             exclude("net.fabricmc.fabric-api")
         }
     }
@@ -185,11 +187,13 @@ dependencies {
     // Mod Menu
     val modMenuVersion: String by project
     modLocalRuntime("com.terraformersmc:modmenu:$modMenuVersion") {
+        exclude("net.fabricmc")
         exclude("net.fabricmc.fabric-api")
     }
 
     // WTHIT
     modLocalRuntime("mcp.mobius.waila:wthit:fabric-$wthitVersion") {
+        exclude("net.fabricmc")
         exclude("net.fabricmc.fabric-api")
     }
 
@@ -197,6 +201,7 @@ dependencies {
     modLocalRuntime("maven.modrinth:cc-restitched:$ccRestitchedVersion")
     val cobaltVersion: String by project
     modLocalRuntime("org.squiddev:Cobalt:$cobaltVersion") {
+        exclude("net.fabricmc")
         exclude("net.fabricmc.fabric-api")
     }
     val nettyVersion: String by project
@@ -217,6 +222,7 @@ dependencies {
     // Create
     if (createEnabled.toBoolean()) {
         modLocalRuntime("com.simibubi.create:create-fabric-$createMinecraftVersion:$createVersion") {
+            exclude("net.fabricmc")
             exclude("net.fabricmc.fabric-api")
         }
     }
