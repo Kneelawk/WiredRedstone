@@ -1,6 +1,7 @@
 package com.kneelawk.wiredredstone.node
 
 import com.kneelawk.graphlib.api.graph.GraphUniverse
+import com.kneelawk.graphlib.api.world.SaveMode
 import com.kneelawk.wiredredstone.WRConstants.id
 
 object WRBlockNodes {
@@ -18,7 +19,7 @@ object WRBlockNodes {
     val GATE_RS_LATCH = id("gate_rs_latch")
 
     val WIRE_NET by lazy {
-        GraphUniverse.builder().build(id("wire_net"))
+        GraphUniverse.builder().saveMode(SaveMode.INCREMENTAL).build(id("wire_net"))
     }
 
     fun init() {
