@@ -82,14 +82,14 @@ object ConnectableUtils {
                             ConnectionUtils::isInternal
                         )
                     } else {
-                        val cornerEdge = other.pos.subtract(node.pos.offset(side)).let(Direction::fromVector)
+                        val cornerEdge = other.pos.subtract(node.pos.offset(side)).let(DirectionUtils::fromVector)
                         if (cornerEdge != null) {
                             newConn = setSingularConnection(
                                 newConn, blockage, side, cornerEdge, ConnectionUtils::setCorner,
                                 ConnectionUtils::isCorner
                             )
                         } else {
-                            other.pos.subtract(node.pos).let(Direction::fromVector)?.let {
+                            other.pos.subtract(node.pos).let(DirectionUtils::fromVector)?.let {
                                 newConn = setSingularConnection(
                                     newConn, blockage, side, it, ConnectionUtils::setExternal,
                                     ConnectionUtils::isExternal

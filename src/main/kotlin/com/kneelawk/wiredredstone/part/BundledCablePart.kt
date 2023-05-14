@@ -24,7 +24,7 @@ import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemStack
-import net.minecraft.loot.context.LootContext
+import net.minecraft.loot.context.LootContextParameterSet
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.DyeColor
@@ -186,10 +186,10 @@ class BundledCablePart : AbstractBlockablePart, BundledPowerablePart {
         return ItemStack(DyeColorUtil.bundledCable(color))
     }
 
-    override fun addDrops(target: ItemDropTarget, context: LootContext) {
+    override fun addDrops(target: ItemDropTarget, params: LootContextParameterSet) {
         val base = WRParts.BUNDLED_CABLE.identifier
         val identifier = color?.let { Identifier(base.namespace, "${it.getName()}_${base.path}") } ?: base
-        LootTableUtil.addPartDrops(getWorld(), target, context, identifier)
+        LootTableUtil.addPartDrops(getWorld(), target, params, identifier)
     }
 
     override fun overrideConnections(connections: UByte): UByte {

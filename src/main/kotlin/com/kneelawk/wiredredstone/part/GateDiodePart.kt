@@ -12,7 +12,7 @@ import com.kneelawk.wiredredstone.part.key.GateDiodePartKey
 import com.kneelawk.wiredredstone.util.LootTableUtil
 import com.kneelawk.wiredredstone.util.getWorld
 import net.minecraft.item.ItemStack
-import net.minecraft.loot.context.LootContext
+import net.minecraft.loot.context.LootContextParameterSet
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.Direction
@@ -53,7 +53,7 @@ class GateDiodePart : AbstractInputOutputGatePart {
         return ItemStack(WRItems.GATE_DIODE)
     }
 
-    override fun addDrops(target: ItemDropTarget, context: LootContext) {
-        LootTableUtil.addPartDrops(getWorld(), target, context, WRParts.GATE_DIODE.identifier)
+    override fun addDrops(target: ItemDropTarget, params: LootContextParameterSet) {
+        LootTableUtil.addPartDrops(getWorld(), target, params, WRParts.GATE_DIODE.identifier)
     }
 }

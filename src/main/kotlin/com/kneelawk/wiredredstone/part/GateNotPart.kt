@@ -12,7 +12,7 @@ import com.kneelawk.wiredredstone.part.key.GateNotPartKey
 import com.kneelawk.wiredredstone.util.LootTableUtil
 import com.kneelawk.wiredredstone.util.getWorld
 import net.minecraft.item.ItemStack
-import net.minecraft.loot.context.LootContext
+import net.minecraft.loot.context.LootContextParameterSet
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.Direction
@@ -50,7 +50,7 @@ class GateNotPart : AbstractInputOutputGatePart {
         return ItemStack(WRItems.GATE_NOT)
     }
 
-    override fun addDrops(target: ItemDropTarget, context: LootContext) {
-        LootTableUtil.addPartDrops(getWorld(), target, context, WRParts.GATE_NOT.identifier)
+    override fun addDrops(target: ItemDropTarget, params: LootContextParameterSet) {
+        LootTableUtil.addPartDrops(getWorld(), target, params, WRParts.GATE_NOT.identifier)
     }
 }

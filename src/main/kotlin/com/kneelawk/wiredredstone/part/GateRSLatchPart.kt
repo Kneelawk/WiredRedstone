@@ -16,7 +16,7 @@ import com.kneelawk.wiredredstone.node.GateRSLatchBlockNode
 import com.kneelawk.wiredredstone.part.key.GateRSLatchPartKey
 import com.kneelawk.wiredredstone.util.*
 import net.minecraft.item.ItemStack
-import net.minecraft.loot.context.LootContext
+import net.minecraft.loot.context.LootContextParameterSet
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.hit.BlockHitResult
@@ -194,8 +194,8 @@ class GateRSLatchPart : AbstractGatePart {
         return ItemStack(WRItems.GATE_RS_LATCH)
     }
 
-    override fun addDrops(target: ItemDropTarget, context: LootContext) {
-        LootTableUtil.addPartDrops(getWorld(), target, context, WRParts.GATE_RS_LATCH.identifier)
+    override fun addDrops(target: ItemDropTarget, params: LootContextParameterSet) {
+        LootTableUtil.addPartDrops(getWorld(), target, params, WRParts.GATE_RS_LATCH.identifier)
     }
 
     private fun getRedstoneOutputPower(edge: Direction): Int {

@@ -16,7 +16,7 @@ import com.kneelawk.wiredredstone.util.*
 import com.kneelawk.wiredredstone.util.bits.BlockageUtils
 import net.minecraft.block.Blocks
 import net.minecraft.item.ItemStack
-import net.minecraft.loot.context.LootContext
+import net.minecraft.loot.context.LootContextParameterSet
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.Direction
@@ -94,7 +94,7 @@ class RedAlloyWirePart : AbstractRedstoneWirePart {
         return ItemStack(WRItems.RED_ALLOY_WIRE)
     }
 
-    override fun addDrops(target: ItemDropTarget, context: LootContext) {
-        LootTableUtil.addPartDrops(getWorld(), target, context, WRParts.RED_ALLOY_WIRE.identifier)
+    override fun addDrops(target: ItemDropTarget, params: LootContextParameterSet) {
+        LootTableUtil.addPartDrops(getWorld(), target, params, WRParts.RED_ALLOY_WIRE.identifier)
     }
 }

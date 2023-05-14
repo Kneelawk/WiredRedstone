@@ -1,4 +1,4 @@
-package com.kneelawk.wiredredstone.compat.rei
+package com.kneelawk.wiredredstone.compat.rei.impl
 
 import com.kneelawk.wiredredstone.block.WRBlocks
 import com.kneelawk.wiredredstone.client.screen.RedstoneAssemblerScreen

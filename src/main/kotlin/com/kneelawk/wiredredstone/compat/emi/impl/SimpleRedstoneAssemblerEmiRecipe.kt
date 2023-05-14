@@ -1,4 +1,4 @@
-package com.kneelawk.wiredredstone.compat.emi
+package com.kneelawk.wiredredstone.compat.emi.impl
 
 import com.kneelawk.wiredredstone.WRConstants.gui
 import com.kneelawk.wiredredstone.WRConstants.tooltip
@@ -7,7 +7,7 @@ import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Compa
 import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.CRAFTING_SLOT_COUNT
 import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.OUTPUT_HEIGHT
 import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.OUTPUT_WIDTH
-import com.kneelawk.wiredredstone.compat.emi.WiredRedstonePlugin.Companion.SPRITE_SHEET
+import com.kneelawk.wiredredstone.compat.emi.impl.WiredRedstonePlugin.Companion.SPRITE_SHEET
 import com.kneelawk.wiredredstone.recipe.RedstoneAssemblerRecipe
 import com.kneelawk.wiredredstone.recipe.RedstoneAssemblerShapedRecipe
 import com.kneelawk.wiredredstone.recipe.RedstoneAssemblerShapelessRecipe

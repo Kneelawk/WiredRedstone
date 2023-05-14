@@ -1,14 +1,8 @@
-package com.kneelawk.wiredredstone.compat.rei
+package com.kneelawk.wiredredstone.compat.rei.impl
 
-import com.kneelawk.wiredredstone.WRConstants.gui
-import com.kneelawk.wiredredstone.WRConstants.id
-import com.kneelawk.wiredredstone.WRConstants.tooltip
-import com.kneelawk.wiredredstone.WRConstants.tt
+import com.kneelawk.wiredredstone.WRConstants
 import com.kneelawk.wiredredstone.block.WRBlocks
-import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.CRAFTING_PATTERN_HEIGHT
-import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.CRAFTING_PATTERN_WIDTH
-import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.OUTPUT_HEIGHT
-import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.OUTPUT_WIDTH
+import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity
 import com.kneelawk.wiredredstone.util.RecipeUtil
 import me.shedaniel.math.Point
 import me.shedaniel.math.Rectangle
@@ -25,10 +19,10 @@ import net.minecraft.text.Text
 
 @Environment(EnvType.CLIENT)
 object RedstoneAssemblerCategory : DisplayCategory<RedstoneAssemblerDisplay> {
-    private val TITLE = tt("container", "redstone_assembler")
-    private val SPRITE_SHEET = id("textures/gui/rei/recipe_sprite_sheet.png")
-    private val SHAPELESS_TOOLTIP = tooltip("redstone_assembler.shapeless")
-    private val SHAPED_TOOLTIP = tooltip("redstone_assembler.shaped")
+    private val TITLE = WRConstants.tt("container", "redstone_assembler")
+    private val SPRITE_SHEET = WRConstants.id("textures/gui/rei/recipe_sprite_sheet.png")
+    private val SHAPELESS_TOOLTIP = WRConstants.tooltip("redstone_assembler.shapeless")
+    private val SHAPED_TOOLTIP = WRConstants.tooltip("redstone_assembler.shaped")
 
     override fun getIcon(): Renderer {
         return EntryStacks.of(WRBlocks.REDSTONE_ASSEMBLER)
@@ -67,8 +61,8 @@ object RedstoneAssemblerCategory : DisplayCategory<RedstoneAssemblerDisplay> {
             )
         }
 
-        for (y in 0 until CRAFTING_PATTERN_HEIGHT) {
-            for (x in 0 until CRAFTING_PATTERN_WIDTH) {
+        for (y in 0 until RedstoneAssemblerBlockEntity.CRAFTING_PATTERN_HEIGHT) {
+            for (x in 0 until RedstoneAssemblerBlockEntity.CRAFTING_PATTERN_WIDTH) {
                 val widget = Widgets.createSlot(Point(originX + 1 + x * 18, originY + 1 + y * 18)).disableBackground()
 
                 widgets.add(widget)
@@ -77,13 +71,15 @@ object RedstoneAssemblerCategory : DisplayCategory<RedstoneAssemblerDisplay> {
         }
 
         for (i in input.indices) {
-            val slot = RecipeUtil.recipeToSlotIndex(i, display.width, display.height, CRAFTING_PATTERN_WIDTH)
+            val slot = RecipeUtil.recipeToSlotIndex(
+                i, display.width, display.height, RedstoneAssemblerBlockEntity.CRAFTING_PATTERN_WIDTH
+            )
             inputSlots[slot].markInput().entries(input[i])
         }
 
-        for (y in 0 until OUTPUT_HEIGHT) {
-            for (x in 0 until OUTPUT_WIDTH) {
-                val index = x + y * OUTPUT_WIDTH
+        for (y in 0 until RedstoneAssemblerBlockEntity.OUTPUT_HEIGHT) {
+            for (x in 0 until RedstoneAssemblerBlockEntity.OUTPUT_WIDTH) {
+                val index = x + y * RedstoneAssemblerBlockEntity.OUTPUT_WIDTH
                 val widget = Widgets.createSlot(Point(originX + 1 + 90 + x * 18, originY + 1 + 9 + y * 18))
                     .disableBackground()
                     .markOutput()
@@ -98,13 +94,13 @@ object RedstoneAssemblerCategory : DisplayCategory<RedstoneAssemblerDisplay> {
 
         widgets.add(
             Widgets.createLabel(
-                Point(originX + 72, originY + 36), gui("redstone_assembler.cook_time", display.cookTime)
+                Point(originX + 72, originY + 36), WRConstants.gui("redstone_assembler.cook_time", display.cookTime)
             ).noShadow()
         )
         widgets.add(
             Widgets.createLabel(
                 Point(originX + 72, originY + 36 + 10),
-                gui("redstone_assembler.energy_per_tick", display.energyPerTick)
+                WRConstants.gui("redstone_assembler.energy_per_tick", display.energyPerTick)
             ).noShadow()
         )
 

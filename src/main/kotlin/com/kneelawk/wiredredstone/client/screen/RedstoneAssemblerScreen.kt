@@ -7,12 +7,10 @@ import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity
 import com.kneelawk.wiredredstone.compat.emi.EMIIntegrationHandler
 import com.kneelawk.wiredredstone.config.AssemblerConfig
 import com.kneelawk.wiredredstone.screenhandler.RedstoneAssemblerScreenHandler
-import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.MinecraftClient
+import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.ingame.HandledScreen
-import net.minecraft.client.render.GameRenderer
 import net.minecraft.client.sound.PositionedSoundInstance
-import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.sound.SoundEvents
 import net.minecraft.text.Text
@@ -33,10 +31,8 @@ class RedstoneAssemblerScreen(handler: RedstoneAssemblerScreenHandler, playerInv
         playerInventoryTitleY = backgroundHeight - 94
     }
 
-    override fun drawBackground(matrices: MatrixStack, delta: Float, mouseX: Int, mouseY: Int) {
-        RenderSystem.setShader(GameRenderer::getPositionProgram)
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f)
-        RenderSystem.setShaderTexture(0, TEXTURE)
+    override fun drawBackground(context: DrawContext, delta: Float, mouseX: Int, mouseY: Int) {
+        val matrices = context.matrices
 
         val x = (width - backgroundWidth) / 2
         val y = (height - backgroundHeight) / 2
@@ -45,60 +41,60 @@ class RedstoneAssemblerScreen(handler: RedstoneAssemblerScreenHandler, playerInv
         matrices.translate(x.toDouble(), y.toDouble(), 0.0)
 
         // draw background
-        drawTexture(matrices, 0, 0, 0, 0, backgroundWidth, backgroundHeight)
+        context.drawTexture(TEXTURE, 0, 0, 0, 0, backgroundWidth, backgroundHeight)
 
         // draw energy bar
         val energyBar = handler.energyBar
-        drawTexture(matrices, 11, 50 - energyBar, 230, 32 - energyBar, 10, energyBar)
+        context.drawTexture(TEXTURE, 11, 50 - energyBar, 230, 32 - energyBar, 10, energyBar)
 
         // draw regular crafting grid and crafting table switch
         if (handler.mode == RedstoneAssemblerBlockEntity.Mode.CRAFTING_TABLE) {
-            drawTexture(matrices, 34, 16, 176, 0, 54, 54)
-            drawTexture(matrices, 133, 59, 176, 85, 18, 10)
+            context.drawTexture(TEXTURE, 34, 16, 176, 0, 54, 54)
+            context.drawTexture(TEXTURE, 133, 59, 176, 85, 18, 10)
         }
 
         // draw use crafting items switch
         if (!handler.useCraftingItems) {
-            drawTexture(matrices, 133, 75, 176, 95, 18, 10)
+            context.drawTexture(TEXTURE, 133, 75, 176, 95, 18, 10)
         }
 
         // draw cooking flames
         if (handler.isBurning) {
             val fuelProgress = handler.getFuelProgress()
-            drawTexture(matrices, 8, 54 + 12 - fuelProgress, 176, 54 + 12 - fuelProgress, 14, fuelProgress + 1)
+            context.drawTexture(TEXTURE, 8, 54 + 12 - fuelProgress, 176, 54 + 12 - fuelProgress, 14, fuelProgress + 1)
         }
 
         // draw completion arrow
         val cookProgress = handler.getCookProgress()
-        drawTexture(matrices, 94, 34, 176, 68, cookProgress + 1, 16)
+        context.drawTexture(TEXTURE, 94, 34, 176, 68, cookProgress + 1, 16)
 
         matrices.pop()
     }
 
-    override fun render(matrices: MatrixStack, mouseX: Int, mouseY: Int, delta: Float) {
-        renderBackground(matrices)
-        super.render(matrices, mouseX, mouseY, delta)
-        drawMouseoverTooltip(matrices, mouseX, mouseY)
+    override fun render(context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
+        renderBackground(context)
+        super.render(context, mouseX, mouseY, delta)
+        drawMouseoverTooltip(context, mouseX, mouseY)
     }
 
-    override fun drawForeground(matrices: MatrixStack, mouseX: Int, mouseY: Int) {
-        textRenderer.draw(matrices, title, titleX.toFloat(), titleY.toFloat(), 0xEEEEEE)
-        textRenderer.draw(matrices, gui("redstone_assembler.input"), 29f, 82f, 0xEEEEEE)
-        textRenderer.draw(
-            matrices, playerInventoryTitle, playerInventoryTitleX.toFloat(), playerInventoryTitleY.toFloat(), 0xEEEEEE
+    override fun drawForeground(context: DrawContext, mouseX: Int, mouseY: Int) {
+        context.drawText(textRenderer, title, titleX, titleY, 0xEEEEEE, false)
+        context.drawText(textRenderer, gui("redstone_assembler.input"), 29, 82, 0xEEEEEE, false)
+        context.drawText(
+            textRenderer, playerInventoryTitle, playerInventoryTitleX, playerInventoryTitleY, 0xEEEEEE, false
         )
     }
 
-    override fun drawMouseoverTooltip(matrices: MatrixStack, x: Int, y: Int) {
-        super.drawMouseoverTooltip(matrices, x, y)
+    override fun drawMouseoverTooltip(context: DrawContext, x: Int, y: Int) {
+        super.drawMouseoverTooltip(context, x, y)
 
         val mx = x - this.x
         val my = y - this.y
 
         // energy tooltip
         if (mx in 10..21 && my in 17..50) {
-            renderTooltip(
-                matrices,
+            context.drawTooltip(
+                textRenderer,
                 tooltip("redstone_assembler.energy", handler.energyValue, AssemblerConfig.instance.energyCapacity),
                 x, y
             )
@@ -115,7 +111,7 @@ class RedstoneAssemblerScreen(handler: RedstoneAssemblerScreenHandler, playerInv
                 ).styled { it.withColor(Formatting.GOLD).withBold(true) }
             }
 
-            renderTooltip(matrices, tooltip("redstone_assembler.mode", modeText), x, y)
+            context.drawTooltip(textRenderer, tooltip("redstone_assembler.mode", modeText), x, y)
         }
 
         // use crafting items tooltip
@@ -126,12 +122,12 @@ class RedstoneAssemblerScreen(handler: RedstoneAssemblerScreenHandler, playerInv
                 tooltip("redstone_assembler.use_crafting_items.false")
             }
 
-            renderTooltip(matrices, tooltip, x, y)
+            context.drawTooltip(textRenderer, tooltip, x, y)
         }
 
         if (mx in 95..116 && my in 35..49) {
             if (EMIIntegrationHandler.loaded) {
-                renderTooltip(matrices, tooltip("redstone_assembler.recipes"), x, y)
+                context.drawTooltip(textRenderer, tooltip("redstone_assembler.recipes"), x, y)
             }
         }
     }

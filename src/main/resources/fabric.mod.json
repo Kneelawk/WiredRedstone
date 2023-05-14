@@ -32,19 +32,19 @@
         "value": "com.kneelawk.wiredredstone.WiredRedstonePreLaunchKt::preLaunch"
       }
     ],
-    "rei_client": [
+    "${rei_client_key}": [
       {
-        "value": "com.kneelawk.wiredredstone.compat.rei.WiredRedstoneClientPlugin"
+        "value": "com.kneelawk.wiredredstone.compat.rei.impl.WiredRedstoneClientPlugin"
       }
     ],
-    "rei_common": [
+    "${rei_common_key}": [
       {
-        "value": "com.kneelawk.wiredredstone.compat.rei.WiredRedstoneCommonPlugin"
+        "value": "com.kneelawk.wiredredstone.compat.rei.impl.WiredRedstoneCommonPlugin"
       }
     ],
-    "emi": [
+    "${emi_key}": [
       {
-        "value": "com.kneelawk.wiredredstone.compat.emi.WiredRedstonePlugin"
+        "value": "com.kneelawk.wiredredstone.compat.emi.impl.WiredRedstonePlugin"
       }
     ]
   },
@@ -59,7 +59,7 @@
     "graphlib": "*",
     "libmultipart": ">=0.7.3-pre.3",
     "libnetworkstack": ">=0.6.0",
-    "minecraft": ">=1.19.4",
+    "minecraft": ">=1.20- <1.21-",
     "java": ">=17"
   }
 }

@@ -30,7 +30,7 @@ object InventoryUtils {
             // do the search
             for (i in 0 until (inputEnd - inputStart)) {
                 val stack = inputSlots[i]
-                if (!stack.isEmpty && target.isOf(stack.item) && ItemStack.areNbtEqual(target, stack)) {
+                if (!stack.isEmpty && ItemStack.canCombine(target, stack)) {
                     // exact match found
                     stack.decrement(1)
                     res[t] = i + inputStart

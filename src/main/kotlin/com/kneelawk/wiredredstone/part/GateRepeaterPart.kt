@@ -15,7 +15,7 @@ import com.kneelawk.wiredredstone.util.getWorld
 import com.kneelawk.wiredredstone.util.isClientSide
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemStack
-import net.minecraft.loot.context.LootContext
+import net.minecraft.loot.context.LootContextParameterSet
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.util.ActionResult
 import net.minecraft.util.Hand
@@ -134,8 +134,8 @@ class GateRepeaterPart : AbstractInputOutputGatePart {
         return ItemStack(WRItems.GATE_REPEATER)
     }
 
-    override fun addDrops(target: ItemDropTarget, context: LootContext) {
-        LootTableUtil.addPartDrops(getWorld(), target, context, WRParts.GATE_REPEATER.identifier)
+    override fun addDrops(target: ItemDropTarget, params: LootContextParameterSet) {
+        LootTableUtil.addPartDrops(getWorld(), target, params, WRParts.GATE_REPEATER.identifier)
     }
 
     override fun onUse(player: PlayerEntity?, hand: Hand?, hit: BlockHitResult?): ActionResult {

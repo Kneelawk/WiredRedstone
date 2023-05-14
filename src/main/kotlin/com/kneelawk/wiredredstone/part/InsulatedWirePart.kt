@@ -17,7 +17,7 @@ import com.kneelawk.wiredredstone.util.bits.ConnectionUtils
 import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
 import net.minecraft.item.ItemStack
-import net.minecraft.loot.context.LootContext
+import net.minecraft.loot.context.LootContextParameterSet
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.util.DyeColor
 import net.minecraft.util.Identifier
@@ -121,9 +121,9 @@ class InsulatedWirePart : AbstractRedstoneWirePart {
         return ItemStack(DyeColorUtil.insulatedWire(color))
     }
 
-    override fun addDrops(target: ItemDropTarget, context: LootContext) {
+    override fun addDrops(target: ItemDropTarget, params: LootContextParameterSet) {
         val base = WRParts.INSULATED_WIRE.identifier
         val identifier = Identifier(base.namespace, "${color.getName()}_${base.path}")
-        LootTableUtil.addPartDrops(getWorld(), target, context, identifier)
+        LootTableUtil.addPartDrops(getWorld(), target, params, identifier)
     }
 }

@@ -11,7 +11,7 @@ import com.kneelawk.wiredredstone.node.GateNorBlockNode
 import com.kneelawk.wiredredstone.part.key.GateNorPartKey
 import com.kneelawk.wiredredstone.util.*
 import net.minecraft.item.ItemStack
-import net.minecraft.loot.context.LootContext
+import net.minecraft.loot.context.LootContextParameterSet
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.Direction
@@ -77,7 +77,7 @@ class GateNorPart : AbstractDisableableThreeInputGatePart {
         return ItemStack(WRItems.GATE_NOR)
     }
 
-    override fun addDrops(target: ItemDropTarget, context: LootContext) {
-        LootTableUtil.addPartDrops(getWorld(), target, context, WRParts.GATE_NOR.identifier)
+    override fun addDrops(target: ItemDropTarget, params: LootContextParameterSet) {
+        LootTableUtil.addPartDrops(getWorld(), target, params, WRParts.GATE_NOR.identifier)
     }
 }

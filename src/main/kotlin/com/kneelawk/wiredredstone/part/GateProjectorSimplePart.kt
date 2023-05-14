@@ -16,7 +16,7 @@ import com.kneelawk.wiredredstone.part.key.GateProjectorSimplePartKey
 import com.kneelawk.wiredredstone.util.*
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemStack
-import net.minecraft.loot.context.LootContext
+import net.minecraft.loot.context.LootContextParameterSet
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.ActionResult
@@ -114,8 +114,8 @@ class GateProjectorSimplePart : AbstractGatePart, PhantomRedstoneProviderPart {
         return ItemStack(WRItems.GATE_PROJECTOR_SIMPLE)
     }
 
-    override fun addDrops(target: ItemDropTarget, context: LootContext) {
-        LootTableUtil.addPartDrops(getWorld(), target, context, WRParts.GATE_PROJECTOR_SIMPLE.identifier)
+    override fun addDrops(target: ItemDropTarget, params: LootContextParameterSet) {
+        LootTableUtil.addPartDrops(getWorld(), target, params, WRParts.GATE_PROJECTOR_SIMPLE.identifier)
     }
 
     override fun onFirstTick() {

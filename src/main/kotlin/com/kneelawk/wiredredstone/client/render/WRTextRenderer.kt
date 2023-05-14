@@ -8,6 +8,7 @@ import com.kneelawk.wiredredstone.WRConstants
 import com.kneelawk.wiredredstone.client.render.part.WRPartRenderers
 import com.kneelawk.wiredredstone.util.getSelectedPart
 import com.mojang.blaze3d.systems.RenderSystem
+import com.mojang.blaze3d.systems.VertexSorter
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
@@ -116,7 +117,8 @@ object WRTextRenderer {
         modelViewStack.loadIdentity()
         RenderSystem.applyModelViewMatrix()
         val backupProjMat = RenderSystem.getProjectionMatrix()
-        RenderSystem.setProjectionMatrix(Matrix4f())
+        val backupSorting = RenderSystem.getVertexSorting()
+        RenderSystem.setProjectionMatrix(Matrix4f(), VertexSorter.BY_Z)
 
         if (key.shadow) {
             val shadowColor = multiplyBrightness(key.color, 0.25f)
@@ -142,7 +144,7 @@ object WRTextRenderer {
         )
         immediate.draw()
 
-        RenderSystem.setProjectionMatrix(backupProjMat)
+        RenderSystem.setProjectionMatrix(backupProjMat, backupSorting)
         RenderSystem.getModelViewStack().pop()
         RenderSystem.applyModelViewMatrix()
 

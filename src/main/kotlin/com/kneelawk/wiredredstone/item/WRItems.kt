@@ -12,8 +12,9 @@ import net.minecraft.util.DyeColor
 
 object WRItems {
     internal val WIRED_REDSTONE_ITEMS = mutableListOf<ItemStack>()
-    val WIRED_REDSTONE_ITEM_GROUP: ItemGroup by lazy {
-        FabricItemGroup.builder(WRConstants.id("wiredredstone"))
+    private val WIRED_REDSTONE_ITEM_GROUP: ItemGroup by lazy {
+        FabricItemGroup.builder()
+            .displayName(WRConstants.tt("itemGroup", "wiredredstone"))
             .icon { ItemStack(RED_ALLOY_WIRE) }
             .entries { _, entries -> entries.addAll(WIRED_REDSTONE_ITEMS) }.build()
     }
@@ -185,7 +186,7 @@ object WRItems {
         register(REDSTONE_PROJECTOR_TORCH, "redstone_projector_torch")
         register(REDSTONE_PROJECTOR_CATHODE, "redstone_projector_cathode")
 
-        WIRED_REDSTONE_ITEM_GROUP
+        Registry.register(Registries.ITEM_GROUP, WRConstants.id("wiredredstone"), WIRED_REDSTONE_ITEM_GROUP)
     }
 
     private fun register(item: Item, name: String) {

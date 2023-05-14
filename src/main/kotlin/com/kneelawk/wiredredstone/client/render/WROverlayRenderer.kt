@@ -68,7 +68,7 @@ object WROverlayRenderer : VertexConsumerProvider by immediate {
         RenderSystem.enableBlend()
         framebuffer.draw(window.framebufferWidth, window.framebufferHeight, false)
         RenderSystem.disableBlend()
-        RenderSystem.setProjectionMatrix(projBackup)
+        RenderSystem.setProjectionMatrix(projBackup, RenderSystem.getVertexSorting())
     }
 
     fun interface RenderToOverlay {

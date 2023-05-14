@@ -1,6 +1,7 @@
 package com.kneelawk.wiredredstone.util
 
 import net.minecraft.util.math.Direction
+import net.minecraft.util.math.Vec3i
 
 object DirectionUtils {
     val HORIZONTALS: Array<Direction> = Array(4) { Direction.fromHorizontal(it) }
@@ -26,4 +27,6 @@ object DirectionUtils {
     fun makeHorizontal(dir: Direction): Direction {
         return if (isHorizontal(dir)) dir else Direction.NORTH
     }
+
+    fun fromVector(vec: Vec3i) = Direction.fromVector(vec.x, vec.y, vec.z)
 }

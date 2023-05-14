@@ -1,8 +1,6 @@
-package com.kneelawk.wiredredstone.compat.rei
+package com.kneelawk.wiredredstone.compat.rei.impl
 
 import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity
-import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.CRAFTING_START_SLOT
-import com.kneelawk.wiredredstone.blockentity.RedstoneAssemblerBlockEntity.Companion.CRAFTING_STOP_SLOT
 import com.kneelawk.wiredredstone.screenhandler.RedstoneAssemblerScreenHandler
 import me.shedaniel.rei.api.common.display.SimpleGridMenuDisplay
 import me.shedaniel.rei.api.common.transfer.info.MenuInfoContext
@@ -15,7 +13,7 @@ class RedstoneAssemblerCraftingMenuInfo<D : SimpleGridMenuDisplay>(private val d
     override fun getInputSlots(
         context: MenuInfoContext<RedstoneAssemblerScreenHandler, *, D>
     ): Iterable<SlotAccessor> {
-        return (CRAFTING_START_SLOT until CRAFTING_STOP_SLOT).map { i ->
+        return (RedstoneAssemblerBlockEntity.CRAFTING_START_SLOT until RedstoneAssemblerBlockEntity.CRAFTING_STOP_SLOT).map { i ->
             SlotAccessor.fromSlot(context.menu.getSlot(i))
         }
     }
@@ -29,7 +27,7 @@ class RedstoneAssemblerCraftingMenuInfo<D : SimpleGridMenuDisplay>(private val d
             // set the handler to redstone-assembler mode in preparation for the recipe being added
             handler.mode = RedstoneAssemblerBlockEntity.Mode.CRAFTING_TABLE
 
-            for (i in CRAFTING_START_SLOT until CRAFTING_STOP_SLOT) {
+            for (i in RedstoneAssemblerBlockEntity.CRAFTING_START_SLOT until RedstoneAssemblerBlockEntity.CRAFTING_STOP_SLOT) {
                 val accessor = SlotAccessor.fromSlot(handler.getSlot(i))
                 if (!accessor.itemStack.isEmpty) {
                     InputCleanHandler.returnSlotsToPlayerInventory(context, dumpHandler, accessor)

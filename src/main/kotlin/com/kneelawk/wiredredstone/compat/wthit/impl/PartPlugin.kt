@@ -1,9 +1,9 @@
-package com.kneelawk.wiredredstone.compat.wthit
+package com.kneelawk.wiredredstone.compat.wthit.impl
 
 import alexiil.mc.lib.multipart.api.AbstractPart
 import alexiil.mc.lib.multipart.api.MultipartUtil
 import alexiil.mc.lib.multipart.impl.MultipartBlock
-import com.kneelawk.wiredredstone.WRConstants.tooltip
+import com.kneelawk.wiredredstone.WRConstants
 import com.kneelawk.wiredredstone.part.AbstractRedstoneWirePart
 import com.kneelawk.wiredredstone.part.GateRepeaterPart
 import com.kneelawk.wiredredstone.part.WRPart
@@ -20,10 +20,10 @@ class PartPlugin : IWailaPlugin, IBlockComponentProvider {
     override fun appendBody(tooltip: ITooltip, accessor: IBlockAccessor, config: IPluginConfig) {
         getSelectedPart(accessor)?.let { part ->
             if (part is AbstractRedstoneWirePart) {
-                tooltip.addLine(tooltip("redstone_wire.power", part.power))
+                tooltip.addLine(WRConstants.tooltip("redstone_wire.power", part.power))
             }
             if (part is GateRepeaterPart) {
-                tooltip.addLine(tooltip("gate_repeater.delay", (part.delay + 1).toFloat() / 2f))
+                tooltip.addLine(WRConstants.tooltip("gate_repeater.delay", (part.delay + 1).toFloat() / 2f))
             }
         }
     }

@@ -43,14 +43,35 @@ loom {
 
 sourceSets {
     named("main") {
+        val emiEnabled: String by project
+        val reiEnabled: String by project
+        val createEnabled: String by project
+        val ccEnabled: String by project
+        val wthitEnabled: String by project
         kotlin {
-            val createEnabled: String by project
+            if (!emiEnabled.toBoolean()) {
+                exclude("com/kneelawk/wiredredstone/compat/emi/impl/**")
+            }
+
+            if (!reiEnabled.toBoolean()) {
+                exclude("com/kneelawk/wiredredstone/compat/rei/impl/**")
+            }
+
             if (!createEnabled.toBoolean()) {
                 exclude("com/kneelawk/wiredredstone/compat/create/impl/**")
             }
-            val ccEnabled: String by project
+
             if (!ccEnabled.toBoolean()) {
                 exclude("com/kneelawk/wiredredstone/compat/cc/impl/**")
+            }
+
+            if (!wthitEnabled.toBoolean()) {
+                exclude("com/kneelawk/wiredredstone/compat/wthit/impl/**")
+            }
+        }
+        resources {
+            if (!wthitEnabled.toBoolean()) {
+                exclude("waila_plugins.json")
             }
         }
     }
@@ -160,9 +181,16 @@ dependencies {
     implementation("org.quiltmc:quilt-json5:$quiltJson5Version")
     shadowInclude("org.quiltmc:quilt-json5:$quiltJson5Version")
 
+    //
+    // Optional Compile-Time Dependencies
+    //
+
     // WTHIT API
+    val wthitEnabled: String by project
     val wthitVersion: String by project
-    modCompileOnly("mcp.mobius.waila:wthit-api:fabric-$wthitVersion")
+    if (wthitEnabled.toBoolean()) {
+        modCompileOnly("mcp.mobius.waila:wthit-api:fabric-$wthitVersion")
+    }
 
     // CC: Restitched
     val ccEnabled: String by project
@@ -176,14 +204,20 @@ dependencies {
     }
 
     // REI
+    val reiEnabled: String by project
     val reiVersion: String by project
-    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:$reiVersion")
-    modCompileOnly("me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:$reiVersion")
+    if (reiEnabled.toBoolean()) {
+        modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:$reiVersion")
+        modCompileOnly("me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:$reiVersion")
+    }
 
     // EMI
+    val emiEnabled: String by project
     val emiVersion: String by project
-    modCompileOnly("dev.emi:emi:$emiVersion") {
-        isTransitive = false
+    if (emiEnabled.toBoolean()) {
+        modCompileOnly("dev.emi:emi:$emiVersion") {
+            isTransitive = false
+        }
     }
 
     // Create
@@ -198,20 +232,25 @@ dependencies {
     }
 
     //
-    // Optional Mod Dependencies
+    // Runtime Dependencies
     //
 
     // Mod Menu
+    val modMenuEnabled: String by project
     val modMenuVersion: String by project
-    modLocalRuntime("com.terraformersmc:modmenu:$modMenuVersion") {
-        exclude("net.fabricmc")
-        exclude("net.fabricmc.fabric-api")
+    if (modMenuEnabled.toBoolean()) {
+        modLocalRuntime("com.terraformersmc:modmenu:$modMenuVersion") {
+            exclude("net.fabricmc")
+            exclude("net.fabricmc.fabric-api")
+        }
     }
 
     // WTHIT
-    modLocalRuntime("mcp.mobius.waila:wthit:fabric-$wthitVersion") {
-        exclude("net.fabricmc")
-        exclude("net.fabricmc.fabric-api")
+    if (wthitEnabled.toBoolean()) {
+        modLocalRuntime("mcp.mobius.waila:wthit:fabric-$wthitVersion") {
+            exclude("net.fabricmc")
+            exclude("net.fabricmc.fabric-api")
+        }
     }
 
     // CC: Restitched
@@ -223,14 +262,20 @@ dependencies {
     }
 
     // REI
-//    modLocalRuntime("me.shedaniel:RoughlyEnoughItems-fabric:$reiVersion") {
-//        exclude("net.fabricmc.fabric-api")
-//    }
-
-    // EMI
-    modLocalRuntime("dev.emi:emi:$emiVersion") {
-        isTransitive = false
+    val runtimeViewer: String by project
+    when {
+        runtimeViewer == "emi" && emiEnabled.toBoolean() -> {
+            modLocalRuntime("dev.emi:emi:$emiVersion") {
+                isTransitive = false
+            }
+        }
+        runtimeViewer == "rei" && reiEnabled.toBoolean() -> {
+            modLocalRuntime("me.shedaniel:RoughlyEnoughItems-fabric:$reiVersion") {
+                exclude("net.fabricmc.fabric-api")
+            }
+        }
     }
+
 
     // Create
     if (createEnabled.toBoolean()) {
@@ -263,11 +308,26 @@ tasks {
     jar { from("LICENSE") { rename { "${it}_${base.archivesName.get()}" } } }
 
     processResources {
+        val emiEnabled: String by project
+        val emiKey = if (emiEnabled.toBoolean()) "emi" else "emi_disabled"
+        val reiEnabled: String by project
+        val reiClientKey = if (reiEnabled.toBoolean()) "rei_client" else "rei_client_disabled"
+        val reiCommonKey = if (reiEnabled.toBoolean()) "rei_common" else "rei_common_disabled"
+
         inputs.property("version", project.version)
+        inputs.property("emiEnabled", emiEnabled)
+        inputs.property("reiEnabled", reiEnabled)
 
         exclude("**/*.xcf")
 
-        filesMatching("fabric.mod.json") { expand(mutableMapOf("version" to project.version)) }
+        filesMatching("fabric.mod.json") {
+            expand(
+                mutableMapOf(
+                    "version" to project.version, "emi_key" to emiKey, "rei_client_key" to reiClientKey,
+                    "rei_common_key" to reiCommonKey
+                )
+            )
+        }
     }
 
     java {

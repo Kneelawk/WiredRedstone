@@ -11,6 +11,7 @@ import com.kneelawk.wiredredstone.util.*
 import com.kneelawk.wiredredstone.util.connectable.ConnectableUtils
 import net.minecraft.item.ItemStack
 import net.minecraft.loot.context.LootContext
+import net.minecraft.loot.context.LootContextParameterSet
 import net.minecraft.loot.context.LootContextParameters
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.server.world.ServerWorld
@@ -204,17 +205,17 @@ abstract class AbstractSidedPart(definition: PartDefinition, holder: MultipartHo
         playBreakSound()
         sendNetworkUpdate(this, NET_SPAWN_BREAK_PARTICLES)
 
-        val context = LootContext.Builder(world).random(world.random)
-            .parameter(LootContextParameters.BLOCK_STATE, state)
-            .parameter(LootContextParameters.ORIGIN, origin)
-            .parameter(LootContextParameters.TOOL, ItemStack.EMPTY)
-            .parameter(PartLootParams.BROKEN_PART, PartLootParams.BrokenSinglePart(this))
+        val params = LootContextParameterSet.Builder(world)
+            .add(LootContextParameters.BLOCK_STATE, state)
+            .add(LootContextParameters.ORIGIN, origin)
+            .add(LootContextParameters.TOOL, ItemStack.EMPTY)
+            .add(PartLootParams.BROKEN_PART, PartLootParams.BrokenSinglePart(this))
             // No good way to tell if other parts are affected by this too
-            .parameter(PartLootParams.ADDITIONAL_PARTS, emptyArray())
-            .optionalParameter(LootContextParameters.BLOCK_ENTITY, holder.container.multipartBlockEntity)
+            .add(PartLootParams.ADDITIONAL_PARTS, emptyArray())
+            .addOptional(LootContextParameters.BLOCK_ENTITY, holder.container.multipartBlockEntity)
             .build(PartLootParams.PART_TYPE)
 
-        addDrops(SimpleItemDropTarget(world, origin), context)
+        addDrops(SimpleItemDropTarget(world, origin), params)
 
         holder.remove()
     }

@@ -1,4 +1,4 @@
-package com.kneelawk.wiredredstone.compat.rei
+package com.kneelawk.wiredredstone.compat.rei.impl
 
 import com.kneelawk.wiredredstone.screenhandler.RedstoneAssemblerScreenHandler
 import me.shedaniel.rei.api.common.display.DisplaySerializerRegistry

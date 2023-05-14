@@ -11,7 +11,7 @@ import com.kneelawk.wiredredstone.node.GateNandBlockNode
 import com.kneelawk.wiredredstone.part.key.GateNandPartKey
 import com.kneelawk.wiredredstone.util.*
 import net.minecraft.item.ItemStack
-import net.minecraft.loot.context.LootContext
+import net.minecraft.loot.context.LootContextParameterSet
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.Direction
@@ -75,7 +75,7 @@ class GateNandPart : AbstractDisableableThreeInputGatePart {
         return ItemStack(WRItems.GATE_NAND)
     }
 
-    override fun addDrops(target: ItemDropTarget, context: LootContext) {
-        LootTableUtil.addPartDrops(getWorld(), target, context, WRParts.GATE_NAND.identifier)
+    override fun addDrops(target: ItemDropTarget, params: LootContextParameterSet) {
+        LootTableUtil.addPartDrops(getWorld(), target, params, WRParts.GATE_NAND.identifier)
     }
 }

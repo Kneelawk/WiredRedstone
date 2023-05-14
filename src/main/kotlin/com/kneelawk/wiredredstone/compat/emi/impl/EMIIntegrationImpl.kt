@@ -1,5 +1,6 @@
-package com.kneelawk.wiredredstone.compat.emi
+package com.kneelawk.wiredredstone.compat.emi.impl
 
+import com.kneelawk.wiredredstone.compat.emi.EMIIntegration
 import dev.emi.emi.api.EmiApi
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
