@@ -1,6 +1,6 @@
 package com.kneelawk.wiredredstone.node
 
-import com.kneelawk.graphlib.api.v1.graph.GraphUniverse
+import com.kneelawk.graphlib.api.graph.GraphUniverse
 import com.kneelawk.wiredredstone.WRConstants.id
 
 object WRBlockNodes {
@@ -18,7 +18,13 @@ object WRBlockNodes {
     val GATE_RS_LATCH = id("gate_rs_latch")
 
     val WIRE_NET by lazy {
-        GraphUniverse.builder().discoverer(WRBlockNodeDiscoverer).decoders(
+        GraphUniverse.builder().build(id("wire_net"))
+    }
+
+    fun init() {
+        WIRE_NET.addDiscoverer(WRBlockNodeDiscoverer)
+
+        WIRE_NET.addDecoders(
             mapOf(
                 RED_ALLOY_WIRE_ID to RedAlloyWireBlockNode.Decoder,
                 INSULATED_WIRE_ID to InsulatedWireBlockNode.Decoder,
@@ -33,11 +39,8 @@ object WRBlockNodes {
                 GATE_REPEATER_ID to GateRepeaterBlockNode.Decoder,
                 GATE_RS_LATCH to GateRSLatchBlockNode.Decoder
             )
-        ).buildAndRegister(id("wire_net"))
-    }
+        )
 
-    fun init() {
-        // Make sure WIRE_NET has been initialized
-        WIRE_NET
+        WIRE_NET.register()
     }
 }

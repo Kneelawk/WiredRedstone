@@ -1,10 +1,11 @@
 package com.kneelawk.wiredredstone.util.connectable
 
 import alexiil.mc.lib.multipart.api.MultipartUtil
-import com.kneelawk.graphlib.api.v1.graph.GraphWorld
-import com.kneelawk.graphlib.api.v1.node.SidedBlockNode
-import com.kneelawk.graphlib.api.v1.wire.SidedWireBlockNode
-import com.kneelawk.graphlib.api.v1.wire.WireConnectionType
+import com.kneelawk.graphlib.api.graph.GraphWorld
+import com.kneelawk.graphlib.api.node.BlockNode
+import com.kneelawk.graphlib.api.node.SidedBlockNode
+import com.kneelawk.graphlib.api.wire.SidedWireBlockNode
+import com.kneelawk.graphlib.api.wire.WireConnectionType
 import com.kneelawk.wiredredstone.node.WRBlockNodes.WIRE_NET
 import com.kneelawk.wiredredstone.part.BlockablePart
 import com.kneelawk.wiredredstone.part.ConnectablePart
@@ -73,8 +74,8 @@ object ConnectableUtils {
             // if this edge has already tried to connect in a different connection.
             .fold(Pair(0u.toUByte(), 0u.toUByte())) { connections, node ->
                 var newConn = connections
-                node.connections().forEach { link ->
-                    val other = link.other(node)
+                node.connections.forEach { link ->
+                    val other = link.other(node.cast(BlockNode::class.java))
                     if (node.pos == other.pos && other.node is SidedBlockNode) {
                         newConn = setSingularConnection(
                             newConn, blockage, side, (other.node as SidedBlockNode).side, ConnectionUtils::setInternal,

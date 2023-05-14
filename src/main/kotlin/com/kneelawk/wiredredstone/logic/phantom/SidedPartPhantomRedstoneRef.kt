@@ -1,7 +1,7 @@
 package com.kneelawk.wiredredstone.logic.phantom
 
 import alexiil.mc.lib.multipart.api.AbstractPart
-import com.kneelawk.graphlib.api.v1.util.SidedPos
+import com.kneelawk.graphlib.api.util.SidedPos
 import com.kneelawk.wiredredstone.client.render.part.ProjectorPartBaker
 import com.kneelawk.wiredredstone.client.render.part.WRPartRenderers
 import com.kneelawk.wiredredstone.part.PhantomRedstoneProviderPart

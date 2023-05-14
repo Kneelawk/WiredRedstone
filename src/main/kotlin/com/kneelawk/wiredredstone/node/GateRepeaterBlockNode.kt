@@ -1,15 +1,14 @@
 package com.kneelawk.wiredredstone.node
 
-import com.kneelawk.graphlib.api.v1.node.BlockNode
-import com.kneelawk.graphlib.api.v1.node.BlockNodeDecoder
-import com.kneelawk.graphlib.api.v1.wire.SidedWireConnectionFilter
+import com.kneelawk.graphlib.api.node.BlockNode
+import com.kneelawk.graphlib.api.node.BlockNodeDecoder
+import com.kneelawk.graphlib.api.wire.SidedWireConnectionFilter
 import com.kneelawk.wiredredstone.logic.RedstoneCarrierFilter
 import com.kneelawk.wiredredstone.logic.RedstoneWireType
 import com.kneelawk.wiredredstone.part.AbstractGatePart
 import com.kneelawk.wiredredstone.part.GateRepeaterPart
 import com.kneelawk.wiredredstone.util.NetNode
 import com.kneelawk.wiredredstone.util.connectable.WireCornerBlockageFilter
-import com.kneelawk.wiredredstone.util.pos
 import net.minecraft.nbt.NbtElement
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.Identifier

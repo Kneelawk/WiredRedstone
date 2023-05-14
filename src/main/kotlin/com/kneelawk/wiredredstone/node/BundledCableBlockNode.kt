@@ -1,11 +1,12 @@
 package com.kneelawk.wiredredstone.node
 
-import com.kneelawk.graphlib.api.v1.graph.GraphView
-import com.kneelawk.graphlib.api.v1.node.BlockNode
-import com.kneelawk.graphlib.api.v1.node.BlockNodeDecoder
-import com.kneelawk.graphlib.api.v1.util.SidedPos
-import com.kneelawk.graphlib.api.v1.wire.SidedWireBlockNode
-import com.kneelawk.graphlib.api.v1.wire.WireConnectionDiscoverers
+import com.kneelawk.graphlib.api.graph.GraphView
+import com.kneelawk.graphlib.api.graph.NodeHolder
+import com.kneelawk.graphlib.api.node.BlockNode
+import com.kneelawk.graphlib.api.node.BlockNodeDecoder
+import com.kneelawk.graphlib.api.util.SidedPos
+import com.kneelawk.graphlib.api.wire.SidedWireBlockNode
+import com.kneelawk.graphlib.api.wire.WireConnectionDiscoverers
 import com.kneelawk.wiredredstone.logic.BundledCableLogic
 import com.kneelawk.wiredredstone.logic.RedstoneCarrierFilter
 import com.kneelawk.wiredredstone.logic.RedstoneWireType
@@ -13,7 +14,6 @@ import com.kneelawk.wiredredstone.part.BundledCablePart
 import com.kneelawk.wiredredstone.part.SidedPart
 import com.kneelawk.wiredredstone.util.NetNode
 import com.kneelawk.wiredredstone.util.connectable.WireBlockageFilter
-import com.kneelawk.wiredredstone.util.pos
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.nbt.NbtElement
 import net.minecraft.server.world.ServerWorld
@@ -38,14 +38,16 @@ data class BundledCableBlockNode(private val side: Direction, val color: DyeColo
         return SidedPart.getPart(world, SidedPos(pos, side)) as? BundledCablePart
     }
 
-    override fun findConnections(world: ServerWorld, nv: GraphView, pos: BlockPos, self: NetNode): Collection<NetNode> {
-        return WireConnectionDiscoverers.wireFindConnections(this, world, nv, pos, self, filter)
+    override fun findConnections(
+        self: NodeHolder<BlockNode>, world: ServerWorld, nv: GraphView
+    ): MutableCollection<NodeHolder<BlockNode>> {
+        return WireConnectionDiscoverers.wireFindConnections(this, self, world, nv, filter)
     }
 
     override fun canConnect(
-        world: ServerWorld, nodeView: GraphView, pos: BlockPos, self: NetNode, other: NetNode
+        self: NodeHolder<BlockNode>, world: ServerWorld, nodeView: GraphView, other: NodeHolder<BlockNode>
     ): Boolean {
-        return WireConnectionDiscoverers.wireCanConnect(this, world, pos, self, other, filter)
+        return WireConnectionDiscoverers.wireCanConnect(this, self, world, other, filter)
     }
 
     override fun putPower(world: ServerWorld, self: NetNode, power: Int) {
@@ -59,8 +61,8 @@ data class BundledCableBlockNode(private val side: Direction, val color: DyeColo
         )
     }
 
-    override fun onConnectionsChanged(world: ServerWorld, gv: GraphView, pos: BlockPos, self: NetNode) {
-        getPart(world, pos)?.handleUpdates()
+    override fun onConnectionsChanged(self: NodeHolder<BlockNode>, world: ServerWorld, gv: GraphView) {
+        getPart(world, self.pos)?.handleUpdates()
     }
 
     override fun toTag(): NbtElement {

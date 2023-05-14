@@ -1,8 +1,8 @@
 package com.kneelawk.wiredredstone.node
 
 import alexiil.mc.lib.multipart.api.MultipartUtil
-import com.kneelawk.graphlib.api.v1.node.BlockNode
-import com.kneelawk.graphlib.api.v1.node.BlockNodeDiscoverer
+import com.kneelawk.graphlib.api.node.BlockNode
+import com.kneelawk.graphlib.api.node.BlockNodeDiscoverer
 import com.kneelawk.wiredredstone.part.BlockNodeContainer
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.BlockPos

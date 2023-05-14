@@ -1,7 +1,7 @@
 package com.kneelawk.wiredredstone.logic
 
-import com.kneelawk.graphlib.api.v1.graph.BlockGraph
-import com.kneelawk.graphlib.api.v1.util.SidedPos
+import com.kneelawk.graphlib.api.graph.BlockGraph
+import com.kneelawk.graphlib.api.util.SidedPos
 import com.kneelawk.wiredredstone.node.RedstoneCarrierBlockNode
 import com.kneelawk.wiredredstone.node.WRBlockNodes
 import com.kneelawk.wiredredstone.tag.WRBlockTags
@@ -9,7 +9,6 @@ import com.kneelawk.wiredredstone.util.RotationUtils
 import com.kneelawk.wiredredstone.util.bits.BlockageUtils
 import com.kneelawk.wiredredstone.util.bits.ConnectionUtils
 import com.kneelawk.wiredredstone.util.constrainedMaxOf
-import com.kneelawk.wiredredstone.util.node
 import com.kneelawk.wiredredstone.util.threadLocal
 import it.unimi.dsi.fastutil.longs.LongLinkedOpenHashSet
 import it.unimi.dsi.fastutil.longs.LongSet

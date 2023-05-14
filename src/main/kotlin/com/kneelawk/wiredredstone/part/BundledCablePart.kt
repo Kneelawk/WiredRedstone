@@ -10,8 +10,8 @@ import alexiil.mc.lib.multipart.api.render.PartModelKey
 import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
-import com.kneelawk.graphlib.api.v1.node.BlockNode
-import com.kneelawk.graphlib.api.v1.util.SidedPos
+import com.kneelawk.graphlib.api.node.BlockNode
+import com.kneelawk.graphlib.api.util.SidedPos
 import com.kneelawk.wiredredstone.logic.BundledCableLogic
 import com.kneelawk.wiredredstone.logic.RedstoneLogic
 import com.kneelawk.wiredredstone.node.BundledCableBlockNode

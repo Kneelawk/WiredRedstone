@@ -1,7 +1,7 @@
 package com.kneelawk.wiredredstone.part
 
 import alexiil.mc.lib.multipart.api.MultipartUtil
-import com.kneelawk.graphlib.api.v1.util.SidedPos
+import com.kneelawk.graphlib.api.util.SidedPos
 import net.minecraft.util.math.Direction
 import net.minecraft.world.BlockView
 
