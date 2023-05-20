@@ -8,7 +8,7 @@ import alexiil.mc.lib.multipart.api.render.PartModelKey
 import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
-import com.kneelawk.graphlib.api.node.BlockNode
+import com.kneelawk.graphlib.api.node.UniqueBlockNode
 import com.kneelawk.wiredredstone.logic.RedstoneLogic
 import com.kneelawk.wiredredstone.node.InsulatedWireBlockNode
 import com.kneelawk.wiredredstone.part.key.InsulatedWirePartKey
@@ -58,7 +58,7 @@ class InsulatedWirePart : AbstractRedstoneWirePart {
         color = DyeColor.byId(buffer.readByte().toInt())
     }
 
-    override fun createBlockNodes(): Collection<BlockNode> {
+    override fun createBlockNodes(): Collection<UniqueBlockNode> {
         return listOf(InsulatedWireBlockNode(side, color))
     }
 

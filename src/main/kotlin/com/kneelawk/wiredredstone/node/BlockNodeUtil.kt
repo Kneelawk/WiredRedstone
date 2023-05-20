@@ -1,6 +1,5 @@
 package com.kneelawk.wiredredstone.node
 
-import com.kneelawk.graphlib.api.node.BlockNode
 import com.kneelawk.wiredredstone.WRLog
 import com.kneelawk.wiredredstone.util.maybeGetByte
 import com.kneelawk.wiredredstone.util.toByte
@@ -10,9 +9,9 @@ import net.minecraft.nbt.NbtElement
 import net.minecraft.util.math.Direction
 
 object BlockNodeUtil {
-    inline fun <reified T : Enum<T>> readSidedTyped(
-        tag: NbtElement?, constructor: (side: Direction, type: T, tag: NbtCompound) -> BlockNode
-    ): BlockNode? {
+    inline fun <reified T : Enum<T>, R> readSidedTyped(
+        tag: NbtElement?, constructor: (side: Direction, type: T, tag: NbtCompound) -> R
+    ): R? {
         if (tag !is NbtCompound) {
             WRLog.warn("tag is not a compound tag")
             return null

@@ -4,6 +4,8 @@ import com.kneelawk.graphlib.api.graph.GraphView
 import com.kneelawk.graphlib.api.graph.NodeHolder
 import com.kneelawk.graphlib.api.node.BlockNode
 import com.kneelawk.graphlib.api.node.BlockNodeDecoder
+import com.kneelawk.graphlib.api.node.UniqueBlockNode
+import com.kneelawk.graphlib.api.node.UniqueData
 import com.kneelawk.graphlib.api.util.SidedPos
 import com.kneelawk.graphlib.api.wire.SidedWireBlockNode
 import com.kneelawk.graphlib.api.wire.WireConnectionDiscoverers
@@ -22,7 +24,8 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.world.BlockView
 
-data class RedAlloyWireBlockNode(private val side: Direction) : SidedWireBlockNode, RedstoneCarrierBlockNode {
+data class RedAlloyWireBlockNode(private val side: Direction) : SidedWireBlockNode, RedstoneCarrierBlockNode,
+    UniqueBlockNode {
 
     private val filter =
         RedstoneCarrierFilter.and(WireBlockageFilter(side, RedAlloyWirePart.WIRE_WIDTH, RedAlloyWirePart.WIRE_HEIGHT))
@@ -70,10 +73,14 @@ data class RedAlloyWireBlockNode(private val side: Direction) : SidedWireBlockNo
         return NbtByte.of(side.id.toByte())
     }
 
+    override fun getUniqueData(): UniqueData = this
+
     object Decoder : BlockNodeDecoder {
-        override fun createBlockNodeFromTag(tag: NbtElement?): BlockNode? {
+        override fun createBlockNodeFromTag(tag: NbtElement?): RedAlloyWireBlockNode? {
             val byte = tag as? NbtByte ?: return null
             return RedAlloyWireBlockNode(Direction.byId(byte.intValue()))
         }
+
+        override fun createUniqueDataFromTag(tag: NbtElement?): UniqueData? = createBlockNodeFromTag(tag)
     }
 }

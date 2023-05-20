@@ -1,7 +1,7 @@
 package com.kneelawk.wiredredstone.node
 
-import com.kneelawk.graphlib.api.node.BlockNode
 import com.kneelawk.graphlib.api.node.BlockNodeDecoder
+import com.kneelawk.graphlib.api.node.UniqueData
 import com.kneelawk.graphlib.api.wire.SidedWireConnectionFilter
 import com.kneelawk.wiredredstone.logic.RedstoneCarrierFilter
 import com.kneelawk.wiredredstone.logic.RedstoneWireType
@@ -35,6 +35,8 @@ sealed class GateNorBlockNode : AbstractGateBlockNode<GateNorPart>(GateNorPart::
     override fun getTypeId(): Identifier = WRBlockNodes.GATE_NOR_ID
 
     override fun toTag(): NbtElement? = BlockNodeUtil.writeSidedType(side, type, ::writeExtra)
+
+    override fun getUniqueData(): UniqueData = this
 
     data class Input(private val side: Direction, private val inputType: AbstractThreeInputGatePart.InputType) :
         GateNorBlockNode() {
@@ -76,14 +78,16 @@ sealed class GateNorBlockNode : AbstractGateBlockNode<GateNorPart>(GateNorPart::
     }
 
     object Decoder : BlockNodeDecoder {
-        override fun createBlockNodeFromTag(tag: NbtElement?): BlockNode? {
-            return BlockNodeUtil.readSidedTyped<Type>(tag) { side, type, nbt ->
+        override fun createBlockNodeFromTag(tag: NbtElement?): GateNorBlockNode? {
+            return BlockNodeUtil.readSidedTyped<Type, _>(tag) { side, type, nbt ->
                 when (type) {
                     Type.INPUT -> Input(side, nbt.getByte("inputType").toEnum())
                     Type.OUTPUT -> Output(side)
                 }
             }
         }
+
+        override fun createUniqueDataFromTag(tag: NbtElement?): UniqueData? = createBlockNodeFromTag(tag)
     }
 
     protected enum class Type {

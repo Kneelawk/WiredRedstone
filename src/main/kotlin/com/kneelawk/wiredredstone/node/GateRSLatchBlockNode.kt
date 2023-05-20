@@ -1,7 +1,7 @@
 package com.kneelawk.wiredredstone.node
 
-import com.kneelawk.graphlib.api.node.BlockNode
 import com.kneelawk.graphlib.api.node.BlockNodeDecoder
+import com.kneelawk.graphlib.api.node.UniqueData
 import com.kneelawk.graphlib.api.wire.SidedWireConnectionFilter
 import com.kneelawk.wiredredstone.logic.RedstoneCarrierFilter
 import com.kneelawk.wiredredstone.logic.RedstoneWireType
@@ -34,6 +34,8 @@ sealed class GateRSLatchBlockNode : AbstractGateBlockNode<GateRSLatchPart>(GateR
     override fun getTypeId(): Identifier = WRBlockNodes.GATE_RS_LATCH
 
     override fun toTag(): NbtElement? = BlockNodeUtil.writeSidedType(side, type, ::writeExtra)
+
+    override fun getUniqueData(): UniqueData = this
 
     data class Input(private val side: Direction, val latchState: GateRSLatchPart.LatchState) : GateRSLatchBlockNode() {
         override val type = Type.INPUT
@@ -79,14 +81,16 @@ sealed class GateRSLatchBlockNode : AbstractGateBlockNode<GateRSLatchPart>(GateR
     }
 
     object Decoder : BlockNodeDecoder {
-        override fun createBlockNodeFromTag(tag: NbtElement?): BlockNode? {
-            return BlockNodeUtil.readSidedTyped<Type>(tag) { side, type, tag ->
+        override fun createBlockNodeFromTag(tag: NbtElement?): GateRSLatchBlockNode? {
+            return BlockNodeUtil.readSidedTyped<Type, _>(tag) { side, type, tag ->
                 when (type) {
                     Type.INPUT -> Input(side, tag.getByte("latchState").toEnum())
                     Type.OUTPUT -> Output(side, tag.getByte("latchState").toEnum())
                 }
             }
         }
+
+        override fun createUniqueDataFromTag(tag: NbtElement?): UniqueData? = createBlockNodeFromTag(tag)
     }
 
     enum class Type {

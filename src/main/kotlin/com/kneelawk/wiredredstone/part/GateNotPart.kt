@@ -5,7 +5,7 @@ import alexiil.mc.lib.multipart.api.PartDefinition
 import alexiil.mc.lib.multipart.api.render.PartModelKey
 import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.NetByteBuf
-import com.kneelawk.graphlib.api.node.BlockNode
+import com.kneelawk.graphlib.api.node.UniqueBlockNode
 import com.kneelawk.wiredredstone.item.WRItems
 import com.kneelawk.wiredredstone.node.GateNotBlockNode
 import com.kneelawk.wiredredstone.part.key.GateNotPartKey
@@ -28,7 +28,7 @@ class GateNotPart : AbstractInputOutputGatePart {
         definition, holder, buffer, ctx
     )
 
-    override fun createBlockNodes(): Collection<BlockNode> {
+    override fun createBlockNodes(): Collection<UniqueBlockNode> {
         return listOf(GateNotBlockNode.Input(side), GateNotBlockNode.Output(side))
     }
 

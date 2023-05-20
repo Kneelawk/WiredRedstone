@@ -10,7 +10,7 @@ import alexiil.mc.lib.multipart.api.render.PartModelKey
 import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
-import com.kneelawk.graphlib.api.node.BlockNode
+import com.kneelawk.graphlib.api.node.UniqueBlockNode
 import com.kneelawk.graphlib.api.util.SidedPos
 import com.kneelawk.wiredredstone.logic.BundledCableLogic
 import com.kneelawk.wiredredstone.logic.RedstoneLogic
@@ -96,7 +96,7 @@ class BundledCablePart : AbstractBlockablePart, BundledPowerablePart {
         bundledOutputDown = false
     }
 
-    override fun createBlockNodes(): Collection<BlockNode> {
+    override fun createBlockNodes(): Collection<UniqueBlockNode> {
         return DyeColor.values().asSequence().map { BundledCableBlockNode(side, color, it) }.toList()
     }
 
