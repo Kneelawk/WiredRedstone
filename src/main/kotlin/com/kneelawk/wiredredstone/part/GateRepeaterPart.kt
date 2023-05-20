@@ -6,7 +6,7 @@ import alexiil.mc.lib.multipart.api.render.PartModelKey
 import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
-import com.kneelawk.graphlib.api.node.UniqueBlockNode
+import com.kneelawk.graphlib.api.node.KeyBlockNode
 import com.kneelawk.wiredredstone.item.WRItems
 import com.kneelawk.wiredredstone.node.GateRepeaterBlockNode
 import com.kneelawk.wiredredstone.part.key.GateRepeaterPartKey
@@ -92,7 +92,7 @@ class GateRepeaterPart : AbstractInputOutputGatePart {
         delay = buffer.readFixedBits(5).coerceIn(0, MAX_DELAY)
     }
 
-    override fun createBlockNodes(): Collection<UniqueBlockNode> {
+    override fun createBlockNodes(): Collection<KeyBlockNode> {
         return listOf(GateRepeaterBlockNode.Input(side), GateRepeaterBlockNode.Output(side))
     }
 

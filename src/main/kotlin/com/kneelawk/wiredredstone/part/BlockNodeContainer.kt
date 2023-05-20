@@ -1,12 +1,12 @@
 package com.kneelawk.wiredredstone.part
 
 import com.kneelawk.graphlib.api.node.BlockNodeDiscovery
-import com.kneelawk.graphlib.api.node.UniqueBlockNode
+import com.kneelawk.graphlib.api.node.KeyBlockNode
 
 interface BlockNodeContainer {
-    fun createBlockNodes(): Collection<UniqueBlockNode>
+    fun createBlockNodes(): Collection<KeyBlockNode>
 
     fun discoverBlockNodes(): Collection<BlockNodeDiscovery> {
-        return createBlockNodes().map { BlockNodeDiscovery.ofUniqueBlockNode(it) }
+        return createBlockNodes().map { BlockNodeDiscovery.ofKeyBlockNode(it) }
     }
 }

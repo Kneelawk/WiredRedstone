@@ -3,7 +3,7 @@ package com.kneelawk.wiredredstone.node
 import com.kneelawk.graphlib.api.graph.GraphView
 import com.kneelawk.graphlib.api.graph.NodeHolder
 import com.kneelawk.graphlib.api.node.BlockNode
-import com.kneelawk.graphlib.api.node.UniqueBlockNode
+import com.kneelawk.graphlib.api.node.KeyBlockNode
 import com.kneelawk.graphlib.api.util.SidedPos
 import com.kneelawk.graphlib.api.wire.SidedWireBlockNode
 import com.kneelawk.graphlib.api.wire.SidedWireConnectionFilter
@@ -21,7 +21,7 @@ import kotlin.reflect.KClass
 import kotlin.reflect.safeCast
 
 abstract class AbstractGateBlockNode<P : AbstractGatePart>(private val partClass: KClass<P>) : SidedWireBlockNode,
-    RedstoneCarrierBlockNode, UniqueBlockNode {
+    RedstoneCarrierBlockNode, KeyBlockNode {
     protected abstract val filter: SidedWireConnectionFilter
 
     protected abstract fun getConnectDirection(part: P): Direction

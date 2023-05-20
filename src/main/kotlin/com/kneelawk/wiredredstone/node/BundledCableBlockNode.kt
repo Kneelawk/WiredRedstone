@@ -4,8 +4,8 @@ import com.kneelawk.graphlib.api.graph.GraphView
 import com.kneelawk.graphlib.api.graph.NodeHolder
 import com.kneelawk.graphlib.api.node.BlockNode
 import com.kneelawk.graphlib.api.node.BlockNodeDecoder
-import com.kneelawk.graphlib.api.node.UniqueBlockNode
-import com.kneelawk.graphlib.api.node.UniqueData
+import com.kneelawk.graphlib.api.node.KeyBlockNode
+import com.kneelawk.graphlib.api.node.NodeKeyExtra
 import com.kneelawk.graphlib.api.util.SidedPos
 import com.kneelawk.graphlib.api.wire.SidedWireBlockNode
 import com.kneelawk.graphlib.api.wire.WireConnectionDiscoverers
@@ -26,7 +26,7 @@ import net.minecraft.util.math.Direction
 import net.minecraft.world.BlockView
 
 data class BundledCableBlockNode(private val side: Direction, val color: DyeColor?, val inner: DyeColor) :
-    SidedWireBlockNode, RedstoneCarrierBlockNode, UniqueBlockNode {
+    SidedWireBlockNode, RedstoneCarrierBlockNode, KeyBlockNode {
 
     private val filter =
         RedstoneCarrierFilter.and(WireBlockageFilter(side, BundledCablePart.WIRE_WIDTH, BundledCablePart.WIRE_HEIGHT))
@@ -75,7 +75,7 @@ data class BundledCableBlockNode(private val side: Direction, val color: DyeColo
         return tag
     }
 
-    override fun getUniqueData(): UniqueData = this
+    override fun getKeyExtra(): NodeKeyExtra = this
 
     object Decoder : BlockNodeDecoder {
         override fun createBlockNodeFromTag(tag: NbtElement?): BundledCableBlockNode? {
@@ -86,7 +86,7 @@ data class BundledCableBlockNode(private val side: Direction, val color: DyeColo
             return BundledCableBlockNode(side, color, inner)
         }
 
-        override fun createUniqueDataFromTag(tag: NbtElement?): UniqueData? {
+        override fun createKeyExtraFromTag(tag: NbtElement?): NodeKeyExtra? {
             return createBlockNodeFromTag(tag)
         }
     }

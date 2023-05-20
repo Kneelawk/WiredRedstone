@@ -4,8 +4,8 @@ import com.kneelawk.graphlib.api.graph.GraphView
 import com.kneelawk.graphlib.api.graph.NodeHolder
 import com.kneelawk.graphlib.api.node.BlockNode
 import com.kneelawk.graphlib.api.node.BlockNodeDecoder
-import com.kneelawk.graphlib.api.node.UniqueBlockNode
-import com.kneelawk.graphlib.api.node.UniqueData
+import com.kneelawk.graphlib.api.node.KeyBlockNode
+import com.kneelawk.graphlib.api.node.NodeKeyExtra
 import com.kneelawk.graphlib.api.util.SidedPos
 import com.kneelawk.graphlib.api.wire.SidedWireBlockNode
 import com.kneelawk.graphlib.api.wire.WireConnectionDiscoverers
@@ -26,7 +26,7 @@ import net.minecraft.util.math.Direction
 import net.minecraft.world.BlockView
 
 data class InsulatedWireBlockNode(private val side: Direction, val color: DyeColor) : SidedWireBlockNode,
-    RedstoneCarrierBlockNode, UniqueBlockNode {
+    RedstoneCarrierBlockNode, KeyBlockNode {
 
     private val filter =
         RedstoneCarrierFilter.and(WireBlockageFilter(side, InsulatedWirePart.WIRE_WIDTH, InsulatedWirePart.WIRE_HEIGHT))
@@ -76,7 +76,7 @@ data class InsulatedWireBlockNode(private val side: Direction, val color: DyeCol
         return tag
     }
 
-    override fun getUniqueData(): UniqueData = this
+    override fun getKeyExtra(): NodeKeyExtra = this
 
     object Decoder : BlockNodeDecoder {
         override fun createBlockNodeFromTag(tag: NbtElement?): InsulatedWireBlockNode? {
@@ -87,6 +87,6 @@ data class InsulatedWireBlockNode(private val side: Direction, val color: DyeCol
             return InsulatedWireBlockNode(side, color)
         }
 
-        override fun createUniqueDataFromTag(tag: NbtElement?): UniqueData? = createBlockNodeFromTag(tag)
+        override fun createKeyExtraFromTag(tag: NbtElement?): NodeKeyExtra? = createBlockNodeFromTag(tag)
     }
 }

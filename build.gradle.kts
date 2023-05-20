@@ -364,6 +364,12 @@ tasks {
             }
         }
     }
+
+    afterEvaluate {
+        named("genSources") {
+            setDependsOn(listOf("genSourcesWithQuiltflower"))
+        }
+    }
 }
 
 val commaRegex = Regex("\\s*,\\s*")
