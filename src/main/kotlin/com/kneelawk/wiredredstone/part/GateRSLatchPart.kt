@@ -9,7 +9,7 @@ import alexiil.mc.lib.multipart.api.render.PartModelKey
 import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
-import com.kneelawk.graphlib.api.node.KeyBlockNode
+import com.kneelawk.graphlib.api.node.BlockNode
 import com.kneelawk.wiredredstone.item.WRItems
 import com.kneelawk.wiredredstone.logic.RedstoneLogic
 import com.kneelawk.wiredredstone.node.GateRSLatchBlockNode
@@ -167,7 +167,7 @@ class GateRSLatchPart : AbstractGatePart {
         }
     }
 
-    override fun createBlockNodes(): Collection<KeyBlockNode> {
+    override fun createBlockNodes(): Collection<BlockNode> {
         return listOf(
             GateRSLatchBlockNode.Input(side, LatchState.SET),
             GateRSLatchBlockNode.Input(side, LatchState.RESET),

@@ -74,8 +74,8 @@ object ConnectableUtils {
             // if this edge has already tried to connect in a different connection.
             .fold(Pair(0u.toUByte(), 0u.toUByte())) { connections, node ->
                 var newConn = connections
-                node.connections.values.forEach { link ->
-                    val other = link.other(node.toNodeKey())
+                node.connections.forEach { link ->
+                    val other = link.other(node.cast(BlockNode::class.java))
                     if (node.pos == other.pos && other.node is SidedBlockNode) {
                         newConn = setSingularConnection(
                             newConn, blockage, side, (other.node as SidedBlockNode).side, ConnectionUtils::setInternal,

@@ -1,7 +1,6 @@
 package com.kneelawk.wiredredstone.node
 
 import com.kneelawk.graphlib.api.node.BlockNodeDecoder
-import com.kneelawk.graphlib.api.node.NodeKeyExtra
 import com.kneelawk.graphlib.api.wire.SidedWireConnectionFilter
 import com.kneelawk.wiredredstone.logic.RedstoneCarrierFilter
 import com.kneelawk.wiredredstone.logic.RedstoneWireType
@@ -30,8 +29,6 @@ sealed class GateDiodeBlockNode : AbstractGateBlockNode<GateDiodePart>(GateDiode
     override fun getTypeId(): Identifier = WRBlockNodes.GATE_DIODE_ID
 
     override fun toTag(): NbtElement? = BlockNodeUtil.writeSidedType(side, type)
-
-    override fun getKeyExtra(): NodeKeyExtra = this
 
     data class Input(private val side: Direction) : GateDiodeBlockNode() {
         override val type = Type.INPUT
@@ -77,7 +74,7 @@ sealed class GateDiodeBlockNode : AbstractGateBlockNode<GateDiodePart>(GateDiode
     }
 
     object Decoder : BlockNodeDecoder {
-        override fun createBlockNodeFromTag(tag: NbtElement?): GateDiodeBlockNode? {
+        override fun decode(tag: NbtElement?): GateDiodeBlockNode? {
             return BlockNodeUtil.readSidedTyped<Type, _>(tag) { side, type, _ ->
                 when (type) {
                     Type.INPUT -> Input(side)
@@ -85,8 +82,6 @@ sealed class GateDiodeBlockNode : AbstractGateBlockNode<GateDiodePart>(GateDiode
                 }
             }
         }
-
-        override fun createKeyExtraFromTag(tag: NbtElement?): NodeKeyExtra? = createBlockNodeFromTag(tag)
     }
 
     protected enum class Type {

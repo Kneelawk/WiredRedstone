@@ -6,7 +6,6 @@ import alexiil.mc.lib.multipart.api.render.PartModelKey
 import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.NetByteBuf
 import com.kneelawk.graphlib.api.node.BlockNode
-import com.kneelawk.graphlib.api.node.KeyBlockNode
 import com.kneelawk.wiredredstone.item.WRItems
 import com.kneelawk.wiredredstone.node.GateOrBlockNode
 import com.kneelawk.wiredredstone.part.key.GateOrPartKey
@@ -45,7 +44,7 @@ class GateOrPart : AbstractDisableableThreeInputGatePart {
 
     override val inputShapes = INPUT_SHAPES
 
-    override fun createBlockNodes(): Collection<KeyBlockNode> {
+    override fun createBlockNodes(): Collection<BlockNode> {
         val nodes = mutableListOf<GateOrBlockNode>()
         for (input in enabledInputs) {
             nodes.add(GateOrBlockNode.Input(side, input))

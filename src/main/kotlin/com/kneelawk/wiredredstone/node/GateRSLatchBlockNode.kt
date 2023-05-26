@@ -1,7 +1,6 @@
 package com.kneelawk.wiredredstone.node
 
 import com.kneelawk.graphlib.api.node.BlockNodeDecoder
-import com.kneelawk.graphlib.api.node.NodeKeyExtra
 import com.kneelawk.graphlib.api.wire.SidedWireConnectionFilter
 import com.kneelawk.wiredredstone.logic.RedstoneCarrierFilter
 import com.kneelawk.wiredredstone.logic.RedstoneWireType
@@ -34,8 +33,6 @@ sealed class GateRSLatchBlockNode : AbstractGateBlockNode<GateRSLatchPart>(GateR
     override fun getTypeId(): Identifier = WRBlockNodes.GATE_RS_LATCH
 
     override fun toTag(): NbtElement? = BlockNodeUtil.writeSidedType(side, type, ::writeExtra)
-
-    override fun getKeyExtra(): NodeKeyExtra = this
 
     data class Input(private val side: Direction, val latchState: GateRSLatchPart.LatchState) : GateRSLatchBlockNode() {
         override val type = Type.INPUT
@@ -81,7 +78,7 @@ sealed class GateRSLatchBlockNode : AbstractGateBlockNode<GateRSLatchPart>(GateR
     }
 
     object Decoder : BlockNodeDecoder {
-        override fun createBlockNodeFromTag(tag: NbtElement?): GateRSLatchBlockNode? {
+        override fun decode(tag: NbtElement?): GateRSLatchBlockNode? {
             return BlockNodeUtil.readSidedTyped<Type, _>(tag) { side, type, tag ->
                 when (type) {
                     Type.INPUT -> Input(side, tag.getByte("latchState").toEnum())
@@ -89,8 +86,6 @@ sealed class GateRSLatchBlockNode : AbstractGateBlockNode<GateRSLatchPart>(GateR
                 }
             }
         }
-
-        override fun createKeyExtraFromTag(tag: NbtElement?): NodeKeyExtra? = createBlockNodeFromTag(tag)
     }
 
     enum class Type {

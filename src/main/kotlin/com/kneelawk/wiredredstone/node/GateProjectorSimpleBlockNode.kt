@@ -1,7 +1,6 @@
 package com.kneelawk.wiredredstone.node
 
 import com.kneelawk.graphlib.api.node.BlockNodeDecoder
-import com.kneelawk.graphlib.api.node.NodeKeyExtra
 import com.kneelawk.graphlib.api.wire.SidedWireConnectionFilter
 import com.kneelawk.wiredredstone.logic.RedstoneCarrierFilter
 import com.kneelawk.wiredredstone.logic.RedstoneWireType
@@ -42,14 +41,10 @@ data class GateProjectorSimpleBlockNode(private val side: Direction) :
         return part.calculateInputPower()
     }
 
-    override fun getKeyExtra(): NodeKeyExtra = this
-
     object Decoder : BlockNodeDecoder {
-        override fun createBlockNodeFromTag(tag: NbtElement?): GateProjectorSimpleBlockNode? {
+        override fun decode(tag: NbtElement?): GateProjectorSimpleBlockNode? {
             val side = Direction.byId((tag as? NbtByte ?: return null).intValue())
             return GateProjectorSimpleBlockNode(side)
         }
-
-        override fun createKeyExtraFromTag(tag: NbtElement?): NodeKeyExtra? = createBlockNodeFromTag(tag)
     }
 }

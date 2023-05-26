@@ -25,7 +25,7 @@ object WRBlockNodes {
     fun init() {
         WIRE_NET.addDiscoverer(WRBlockNodeDiscoverer)
 
-        WIRE_NET.addDecoders(
+        WIRE_NET.addNodeDecoders(
             mapOf(
                 RED_ALLOY_WIRE_ID to RedAlloyWireBlockNode.Decoder,
                 INSULATED_WIRE_ID to InsulatedWireBlockNode.Decoder,
