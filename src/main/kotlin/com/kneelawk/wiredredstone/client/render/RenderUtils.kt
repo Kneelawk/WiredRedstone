@@ -91,11 +91,16 @@ object RenderUtils {
         val matrix4f = stack.peek().positionMatrix
         val matrix3f = stack.peek().normalMatrix
         mesh.forEach { quad ->
+            val mat = quad.material()
             for (i in 0 until 4) {
-                val vLight = quad.lightmap(i)
-                val vBlockLight = LightmapTextureManager.getBlockLightCoordinates(vLight)
-                val vSkyLight = LightmapTextureManager.getSkyLightCoordinates(vLight)
-                val fLight = LightmapTextureManager.pack(max(mBlockLight, vBlockLight), max(mSkyLight, vSkyLight))
+                val fLight = if (mat.emissive()) {
+                    LightmapTextureManager.MAX_LIGHT_COORDINATE
+                } else {
+                    val vLight = quad.lightmap(i)
+                    val vBlockLight = LightmapTextureManager.getBlockLightCoordinates(vLight)
+                    val vSkyLight = LightmapTextureManager.getSkyLightCoordinates(vLight)
+                    LightmapTextureManager.pack(max(mBlockLight, vBlockLight), max(mSkyLight, vSkyLight))
+                }
 
                 consumer.vertex(matrix4f, quad.x(i), quad.y(i), quad.z(i))
                     .color(quad.spriteColor(i, 0))

@@ -4,11 +4,13 @@ import net.fabricmc.fabric.api.renderer.v1.RendererAccess
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext
 import net.minecraft.client.render.VertexFormats
 import net.minecraft.client.render.model.BakedQuad
 import net.minecraft.client.texture.Sprite
 import net.minecraft.util.math.Direction
+import org.joml.Vector2f
 import org.joml.Vector3f
 import org.lwjgl.system.MemoryStack
 import java.util.*
@@ -79,6 +81,10 @@ sealed class TransformingQuadEmitter(private val emitter: QuadEmitter) : QuadEmi
         throw NotImplementedError("TransformingQuadEmitter.toVanilla")
     }
 
+    override fun toVanilla(target: IntArray?, targetIndex: Int) {
+        throw NotImplementedError("TransformingQuadEmitter.fromVanilla")
+    }
+
     override fun copyTo(target: MutableQuadView) {
         for (vertexIndex in 0 until 4) {
             target.pos(vertexIndex, positions[vertexIndex])
@@ -88,10 +94,11 @@ sealed class TransformingQuadEmitter(private val emitter: QuadEmitter) : QuadEmi
             if (hasLightmap[vertexIndex]) {
                 target.lightmap(vertexIndex, lightmaps[vertexIndex])
             }
-            target.spriteColor(vertexIndex, 0, spriteColors[vertexIndex])
-            target.sprite(vertexIndex, 0, texCoordUs[vertexIndex], texCoordVs[vertexIndex])
+            target.color(vertexIndex, spriteColors[vertexIndex])
+            target.uv(vertexIndex, texCoordUs[vertexIndex], texCoordVs[vertexIndex])
         }
 
+        target.material(material)
         target.colorIndex(colorIndex)
         target.cullFace(cullFace)
         if (nominalFace != null) {
@@ -99,8 +106,31 @@ sealed class TransformingQuadEmitter(private val emitter: QuadEmitter) : QuadEmi
         }
         target.tag(tag)
         if (sprite != null) {
-            target.spriteBake(0, sprite, spriteBakeFlags)
+            target.spriteBake(sprite, spriteBakeFlags)
         }
+    }
+
+    override fun copyFrom(quad: QuadView): QuadEmitter {
+        for (vertexIndex in 0 until 4) {
+            quad.copyPos(vertexIndex, positions[vertexIndex])
+            hasNormal[vertexIndex] = quad.hasNormal(vertexIndex);
+            if (hasNormal[vertexIndex]) {
+                quad.copyNormal(vertexIndex, normals[vertexIndex])
+            }
+            hasLightmap[vertexIndex] = true
+            lightmaps[vertexIndex] = quad.lightmap(vertexIndex)
+            spriteColors[vertexIndex] = quad.color(vertexIndex)
+            texCoordUs[vertexIndex] = quad.u(vertexIndex)
+            texCoordVs[vertexIndex] = quad.v(vertexIndex)
+        }
+
+        material = quad.material()
+        colorIndex = quad.colorIndex()
+        cullFace = quad.cullFace()
+        nominalFace = quad.nominalFace()
+        tag = quad.tag()
+
+        return this
     }
 
     override fun material(material: RenderMaterial?): QuadEmitter {
@@ -252,7 +282,11 @@ sealed class TransformingQuadEmitter(private val emitter: QuadEmitter) : QuadEmi
         throw NotImplementedError("TransformingQuadEmitter.fromVanilla")
     }
 
-    override fun fromVanilla(quad: BakedQuad, material: RenderMaterial?, cullFace: Direction?): MutableQuadView {
+    override fun fromVanilla(quadData: IntArray?, startIndex: Int): QuadEmitter {
+        throw NotImplementedError("TransformingQuadEmitter.fromVanilla")
+    }
+
+    override fun fromVanilla(quad: BakedQuad, material: RenderMaterial?, cullFace: Direction?): QuadEmitter {
         val vertexData = quad.vertexData
         val normalI = quad.face.vector
         val normal = Vector3f(normalI.x.toFloat(), normalI.y.toFloat(), normalI.z.toFloat())
@@ -273,8 +307,8 @@ sealed class TransformingQuadEmitter(private val emitter: QuadEmitter) : QuadEmi
 
                 pos(vertexIndex, x, y, z)
                 normal(vertexIndex, normal.x, normal.y, normal.z)
-                sprite(vertexIndex, 0, u, v)
-                spriteColor(vertexIndex, 0, spriteColor)
+                uv(vertexIndex, u, v)
+                color(vertexIndex, spriteColor)
             }
         }
 
@@ -291,7 +325,7 @@ sealed class TransformingQuadEmitter(private val emitter: QuadEmitter) : QuadEmi
         return this
     }
 
-    override fun normal(vertexIndex: Int, x: Float, y: Float, z: Float): MutableQuadView {
+    override fun normal(vertexIndex: Int, x: Float, y: Float, z: Float): QuadEmitter {
         hasNormal[vertexIndex] = true
         normals[vertexIndex].set(x, y, z)
         return this
@@ -306,6 +340,41 @@ sealed class TransformingQuadEmitter(private val emitter: QuadEmitter) : QuadEmi
     override fun spriteBake(spriteIndex: Int, sprite: Sprite?, bakeFlags: Int): QuadEmitter {
         this.sprite = sprite
         spriteBakeFlags = bakeFlags
+        return this
+    }
+
+    override fun spriteBake(sprite: Sprite?, bakeFlags: Int): QuadEmitter {
+        this.sprite = sprite
+        spriteBakeFlags = bakeFlags
+        return this
+    }
+
+    override fun color(vertexIndex: Int, color: Int): QuadEmitter {
+        spriteColors[vertexIndex] = color
+        return this
+    }
+
+    override fun color(vertexIndex: Int): Int {
+        return spriteColors[vertexIndex]
+    }
+
+    override fun u(vertexIndex: Int): Float {
+        return texCoordUs[vertexIndex]
+    }
+
+    override fun v(vertexIndex: Int): Float {
+        return texCoordVs[vertexIndex]
+    }
+
+    override fun copyUv(vertexIndex: Int, target: Vector2f?): Vector2f {
+        val vec = target ?: Vector2f()
+        vec.set(texCoordUs[vertexIndex], texCoordVs[vertexIndex])
+        return vec
+    }
+
+    override fun uv(vertexIndex: Int, u: Float, v: Float): QuadEmitter {
+        texCoordUs[vertexIndex] = u
+        texCoordVs[vertexIndex] = v
         return this
     }
 
