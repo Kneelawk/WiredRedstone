@@ -2,7 +2,7 @@ package com.kneelawk.wiredredstone.util.connectable
 
 import com.kneelawk.graphlib.api.graph.NodeContext
 import com.kneelawk.graphlib.api.graph.NodeHolder
-import com.kneelawk.graphlib.api.node.BlockNode
+import com.kneelawk.graphlib.api.graph.user.BlockNode
 import com.kneelawk.graphlib.api.wire.SidedWireBlockNode
 import com.kneelawk.graphlib.api.wire.SidedWireConnectionFilter
 import com.kneelawk.graphlib.api.wire.WireConnectionType

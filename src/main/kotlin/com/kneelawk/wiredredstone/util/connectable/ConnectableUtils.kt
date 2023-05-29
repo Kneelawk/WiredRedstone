@@ -2,8 +2,8 @@ package com.kneelawk.wiredredstone.util.connectable
 
 import alexiil.mc.lib.multipart.api.MultipartUtil
 import com.kneelawk.graphlib.api.graph.GraphWorld
-import com.kneelawk.graphlib.api.node.BlockNode
-import com.kneelawk.graphlib.api.node.SidedBlockNode
+import com.kneelawk.graphlib.api.graph.user.BlockNode
+import com.kneelawk.graphlib.api.graph.user.SidedBlockNode
 import com.kneelawk.graphlib.api.wire.SidedWireBlockNode
 import com.kneelawk.graphlib.api.wire.WireConnectionType
 import com.kneelawk.wiredredstone.node.WRBlockNodes.WIRE_NET

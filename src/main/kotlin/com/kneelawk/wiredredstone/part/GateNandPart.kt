@@ -5,7 +5,7 @@ import alexiil.mc.lib.multipart.api.PartDefinition
 import alexiil.mc.lib.multipart.api.render.PartModelKey
 import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.NetByteBuf
-import com.kneelawk.graphlib.api.node.BlockNode
+import com.kneelawk.graphlib.api.graph.user.BlockNode
 import com.kneelawk.wiredredstone.item.WRItems
 import com.kneelawk.wiredredstone.node.GateNandBlockNode
 import com.kneelawk.wiredredstone.part.key.GateNandPartKey

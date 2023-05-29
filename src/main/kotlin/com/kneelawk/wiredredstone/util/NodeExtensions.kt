@@ -1,7 +1,7 @@
 package com.kneelawk.wiredredstone.util
 
 import com.kneelawk.graphlib.api.graph.NodeContext
-import com.kneelawk.graphlib.api.node.SidedBlockNode
+import com.kneelawk.graphlib.api.graph.user.SidedBlockNode
 import com.kneelawk.graphlib.api.util.SidedPos
 import com.kneelawk.wiredredstone.part.SidedPart
 
