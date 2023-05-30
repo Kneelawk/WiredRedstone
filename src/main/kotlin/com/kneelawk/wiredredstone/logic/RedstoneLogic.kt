@@ -33,7 +33,7 @@ object RedstoneLogic {
     fun scheduleUpdate(world: ServerWorld, pos: BlockPos) {
         // Could probably be optimised to only update the networks it needs to, but I can do that later.
         val set = scheduled.computeIfAbsent(world.registryKey) { LongLinkedOpenHashSet() }
-        WRBlockNodes.WIRE_NET.getGraphWorld(world).getGraphsAt(pos).forEach(set::add)
+        WRBlockNodes.WIRE_NET.getGraphWorld(world).getAllGraphIdsAt(pos).forEach(set::add)
     }
 
     private fun flushUpdates(world: ServerWorld) {

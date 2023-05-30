@@ -1,8 +1,7 @@
 package com.kneelawk.wiredredstone.util.connectable
 
 import com.kneelawk.graphlib.api.graph.NodeContext
-import com.kneelawk.graphlib.api.graph.NodeHolder
-import com.kneelawk.graphlib.api.graph.user.BlockNode
+import com.kneelawk.graphlib.api.util.HalfLink
 import com.kneelawk.graphlib.api.wire.SidedWireBlockNode
 import com.kneelawk.graphlib.api.wire.SidedWireConnectionFilter
 import com.kneelawk.graphlib.api.wire.WireConnectionType
@@ -13,7 +12,7 @@ class WireBlockageFilter(
 ) : SidedWireConnectionFilter {
     override fun canConnect(
         self: SidedWireBlockNode, ctx: NodeContext, inDirection: Direction, connectionType: WireConnectionType,
-        otherNode: NodeHolder<BlockNode>
+        link: HalfLink
     ): Boolean {
         return ConnectableUtils.canWireConnect(
             ctx.blockWorld, ctx.pos, inDirection, connectionType, wireSide, wireWidth, wireHeight
