@@ -27,7 +27,7 @@ abstract class AbstractGateBlockNode<P : AbstractGatePart>(private val partClass
     protected abstract fun getConnectDirection(part: P): Direction
 
     protected fun getPart(world: BlockView, pos: BlockPos): P? {
-        return partClass.safeCast(SidedPart.getPart(world, SidedPos(pos, side)))
+        return SidedPart.getPart(world, SidedPos(pos, side), partClass.java)
     }
 
     override fun findConnections(
