@@ -33,7 +33,7 @@ data class RedAlloyWireBlockNode(private val side: Direction) : SidedWireBlockNo
     override fun getTypeId(): Identifier = WRBlockNodes.RED_ALLOY_WIRE_ID
 
     private fun getPart(world: BlockView, pos: BlockPos): RedAlloyWirePart? {
-        return SidedPart.getPart(world, SidedPos(pos, side)) as? RedAlloyWirePart
+        return SidedPart.getPart(world, SidedPos(pos, side))
     }
 
     override fun findConnections(world: ServerWorld, nv: NodeView, pos: BlockPos, self: NetNode): Collection<NetNode> {
