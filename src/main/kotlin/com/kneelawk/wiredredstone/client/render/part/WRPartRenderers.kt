@@ -30,6 +30,8 @@ object WRPartRenderers {
         register(GateRepeaterPartBaker, GateRepeaterPartKey::class)
         register(GateRSLatchPartBaker, GateRSLatchPartKey::class)
 
+        register(PowerlineConnectorPartBaker, PowerlineConnectorPartKey::class)
+
         PartStaticModelRegisterEvent.EVENT.register { event: PartStaticModelRegisterEvent.StaticModelRenderer ->
             for ((baker, clazz) in BAKERS) {
                 event.register(clazz.java as Class<PartModelKey>, baker as WRPartBaker<PartModelKey>)

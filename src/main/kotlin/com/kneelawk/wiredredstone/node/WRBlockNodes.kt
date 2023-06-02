@@ -1,6 +1,7 @@
 package com.kneelawk.wiredredstone.node
 
 import com.kneelawk.graphlib.api.graph.GraphUniverse
+import com.kneelawk.graphlib.api.graph.user.LinkKeyDecoder
 import com.kneelawk.graphlib.api.world.SaveMode
 import com.kneelawk.wiredredstone.WRConstants.id
 
@@ -8,6 +9,10 @@ object WRBlockNodes {
     val RED_ALLOY_WIRE_ID = id("red_alloy_wire")
     val INSULATED_WIRE_ID = id("insulated_wire")
     val BUNDLED_CABLE_ID = id("bundled_cable")
+
+    val POWERLINE_CONNECTOR = id("powerline_connector")
+    val POWERLINE_LINK = id("powerline")
+
     val GATE_AND_ID = id("gate_and")
     val GATE_DIODE_ID = id("gate_diode")
     val GATE_NAND_ID = id("gate_nand")
@@ -30,6 +35,9 @@ object WRBlockNodes {
                 RED_ALLOY_WIRE_ID to RedAlloyWireBlockNode.Decoder,
                 INSULATED_WIRE_ID to InsulatedWireBlockNode.Decoder,
                 BUNDLED_CABLE_ID to BundledCableBlockNode.Decoder,
+
+                POWERLINE_CONNECTOR to PowerlineConnectorBlockNode.Decoder,
+
                 GATE_AND_ID to GateAndBlockNode.Decoder,
                 GATE_DIODE_ID to GateDiodeBlockNode.Decoder,
                 GATE_NAND_ID to GateNandBlockNode.Decoder,
@@ -41,6 +49,8 @@ object WRBlockNodes {
                 GATE_RS_LATCH to GateRSLatchBlockNode.Decoder
             )
         )
+
+        WIRE_NET.addLinkKeyDecoders(mapOf(POWERLINE_LINK to LinkKeyDecoder { PowerlineLinkKey }))
 
         WIRE_NET.register()
     }

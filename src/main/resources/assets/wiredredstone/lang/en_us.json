@@ -13,6 +13,8 @@
   "item.wiredredstone.gate_projector_simple": "Redstone Projector",
   "item.wiredredstone.gate_repeater": "Repeater",
   "item.wiredredstone.gate_rs_latch": "RS NOR Latch",
+  "item.wiredredstone.powerline_connector": "Powerline Connector [WIP]",
+  "item.wiredredstone.powerline_wire": "Powerline Wire [WIP]",
   "item.wiredredstone.red_alloy_wire": "Red Alloy Wire",
   "item.wiredredstone.white_insulated_wire": "White Insulated Wire",
   "item.wiredredstone.orange_insulated_wire": "Orange Insulated Wire",
