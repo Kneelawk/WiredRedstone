@@ -7,15 +7,17 @@ import net.minecraft.world.BlockView
 
 interface SidedPart : WRPart {
     companion object {
-        fun getPart(world: BlockView, pos: SidedPos): SidedPart? {
+        inline fun <reified T : SidedPart> getPart(world: BlockView, pos: SidedPos): T? {
+            return getPart(world, pos, T::class.java)
+        }
+
+        fun <T : SidedPart> getPart(world: BlockView, pos: SidedPos, partClass: Class<T>): T? {
             val container = MultipartUtil.get(world, pos.pos) ?: return null
-            return container.getFirstPart(SidedPart::class.java)?.getSidedContext()?.getPart(pos.side)
+            return container.getFirstPart(partClass) { it.side == pos.side }
         }
     }
 
     val side: Direction
-
-    fun getSidedContext(): SidedPartContext
 
     fun getSidedPos(): SidedPos {
         return SidedPos(getPos().toImmutable(), side)

@@ -94,7 +94,7 @@ abstract class AbstractRedstoneWirePart : AbstractBlockablePart, PowerablePart {
                         { RedstoneLogic.shouldWireConnect(world.getBlockState(it.pos)) },
                         { prev, cur -> prev != cur })
                 ) {
-                    updateConnections(world)
+                    updateInternalConnections(world)
                 }
 
                 maybeScheduleUpdate(world)
@@ -105,7 +105,7 @@ abstract class AbstractRedstoneWirePart : AbstractBlockablePart, PowerablePart {
             // NetNodeContainers update our connections directly when changed
             val world = getWorld()
             if (world is ServerWorld && e.part !is BlockNodeContainer) {
-                updateConnections(world)
+                updateInternalConnections(world)
                 maybeScheduleUpdate(world)
             }
         }
@@ -114,7 +114,7 @@ abstract class AbstractRedstoneWirePart : AbstractBlockablePart, PowerablePart {
             // NetNodeContainers update our connections directly when changed
             val world = getWorld()
             if (world is ServerWorld && e.removed !is BlockNodeContainer) {
-                updateConnections(world)
+                updateInternalConnections(world)
                 maybeScheduleUpdate(world)
             }
         }
@@ -131,7 +131,7 @@ abstract class AbstractRedstoneWirePart : AbstractBlockablePart, PowerablePart {
         RedstoneLogic.wiresGivePower = true
     }
 
-    fun updateConnections(world: ServerWorld) {
+    fun updateInternalConnections(world: ServerWorld) {
         ConnectableUtils.updateBlockageAndConnections(world, this, wireWidth, wireHeight)
     }
 

@@ -37,7 +37,7 @@ data class BundledCableBlockNode(private val side: Direction, val color: DyeColo
     override fun getTypeId(): Identifier = WRBlockNodes.BUNDLED_CABLE_ID
 
     private fun getPart(world: BlockView, pos: BlockPos): BundledCablePart? {
-        return SidedPart.getPart(world, SidedPos(pos, side)) as? BundledCablePart
+        return SidedPart.getPart(world, SidedPos(pos, side))
     }
 
     override fun findConnections(ctx: NodeContext): MutableCollection<HalfLink> {

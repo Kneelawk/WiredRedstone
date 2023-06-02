@@ -5,7 +5,7 @@ import com.kneelawk.graphlib.api.graph.user.SidedBlockNode
 import com.kneelawk.graphlib.api.util.SidedPos
 import com.kneelawk.wiredredstone.part.SidedPart
 
-inline fun <reified T> NodeContext.getSidedPart(): T? {
+inline fun <reified T : SidedPart> NodeContext.getSidedPart(): T? {
     val node = self.node as? SidedBlockNode ?: return null
-    return SidedPart.getPart(blockWorld, SidedPos(pos, node.side)) as? T
+    return SidedPart.getPart<T>(blockWorld, SidedPos(pos, node.side))
 }

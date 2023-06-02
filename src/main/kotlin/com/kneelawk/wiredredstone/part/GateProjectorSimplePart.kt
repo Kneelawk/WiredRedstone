@@ -25,7 +25,7 @@ import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 
-class GateProjectorSimplePart : AbstractGatePart, PhantomRedstoneProviderPart {
+class GateProjectorSimplePart : AbstractGatePart, SidedPhantomRedstoneProviderPart {
     companion object {
         private const val MAX_DISTANCE = 16
     }

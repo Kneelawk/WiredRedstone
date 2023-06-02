@@ -35,7 +35,7 @@ data class InsulatedWireBlockNode(private val side: Direction, val color: DyeCol
     override fun getTypeId(): Identifier = WRBlockNodes.INSULATED_WIRE_ID
 
     private fun getPart(world: BlockView, pos: BlockPos): InsulatedWirePart? {
-        return SidedPart.getPart(world, SidedPos(pos, side)) as? InsulatedWirePart
+        return SidedPart.getPart(world, SidedPos(pos, side))
     }
 
     override fun findConnections(ctx: NodeContext): MutableCollection<HalfLink> {
@@ -60,7 +60,7 @@ data class InsulatedWireBlockNode(private val side: Direction, val color: DyeCol
 
     override fun onConnectionsChanged(ctx: NodeContext) {
         RedstoneLogic.scheduleUpdate(ctx.blockWorld, ctx.pos)
-        ctx.getSidedPart<InsulatedWirePart>()?.updateConnections(ctx.blockWorld)
+        ctx.getSidedPart<InsulatedWirePart>()?.updateInternalConnections(ctx.blockWorld)
     }
 
     override fun toTag(): NbtElement {
