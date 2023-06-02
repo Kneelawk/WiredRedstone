@@ -35,7 +35,7 @@ data class InsulatedWireBlockNode(private val side: Direction, val color: DyeCol
     override fun getTypeId(): Identifier = WRBlockNodes.INSULATED_WIRE_ID
 
     private fun getPart(world: BlockView, pos: BlockPos): InsulatedWirePart? {
-        return SidedPart.getPart(world, SidedPos(pos, side)) as? InsulatedWirePart
+        return SidedPart.getPart(world, SidedPos(pos, side))
     }
 
     override fun findConnections(world: ServerWorld, nv: NodeView, pos: BlockPos, self: NetNode): Collection<NetNode> {
