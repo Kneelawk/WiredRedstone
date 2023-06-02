@@ -61,7 +61,7 @@ data class RedAlloyWireBlockNode(private val side: Direction) : SidedWireBlockNo
 
     override fun onConnectionsChanged(world: ServerWorld, pos: BlockPos, self: NetNode) {
         RedstoneLogic.scheduleUpdate(world, pos)
-        getPart(world, pos)?.updateConnections(world)
+        getPart(world, pos)?.updateInternalConnections(world)
     }
 
     override fun toTag(): NbtElement? {

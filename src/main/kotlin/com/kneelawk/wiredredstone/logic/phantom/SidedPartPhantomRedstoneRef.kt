@@ -4,8 +4,8 @@ import alexiil.mc.lib.multipart.api.AbstractPart
 import com.kneelawk.graphlib.util.SidedPos
 import com.kneelawk.wiredredstone.client.render.part.ProjectorPartBaker
 import com.kneelawk.wiredredstone.client.render.part.WRPartRenderers
-import com.kneelawk.wiredredstone.part.PhantomRedstoneProviderPart
 import com.kneelawk.wiredredstone.part.SidedPart
+import com.kneelawk.wiredredstone.part.SidedPhantomRedstoneProviderPart
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
@@ -31,7 +31,7 @@ data class SidedPartPhantomRedstoneRef(val pos: SidedPos) : PhantomRedstoneRef {
         original: Int, world: ServerWorld, pos: BlockPos, oppositeFace: Direction
     ): PhantomRedstoneRef.Lookup {
         val part =
-            SidedPart.getPart(world, this.pos) as? PhantomRedstoneProviderPart ?: return PhantomRedstoneRef.NotFound
+            SidedPart.getPart<SidedPhantomRedstoneProviderPart>(world, this.pos) ?: return PhantomRedstoneRef.NotFound
         return PhantomRedstoneRef.Found(part.getStrongRedstonePower(original, world, pos, oppositeFace))
     }
 
@@ -39,7 +39,7 @@ data class SidedPartPhantomRedstoneRef(val pos: SidedPos) : PhantomRedstoneRef {
         original: Int, world: ServerWorld, pos: BlockPos, oppositeFace: Direction
     ): PhantomRedstoneRef.Lookup {
         val part =
-            SidedPart.getPart(world, this.pos) as? PhantomRedstoneProviderPart ?: return PhantomRedstoneRef.NotFound
+            SidedPart.getPart<SidedPhantomRedstoneProviderPart>(world, this.pos) ?: return PhantomRedstoneRef.NotFound
         return PhantomRedstoneRef.Found(part.getWeakRedstonePower(original, world, pos, oppositeFace))
     }
 
@@ -47,7 +47,8 @@ data class SidedPartPhantomRedstoneRef(val pos: SidedPos) : PhantomRedstoneRef {
     override fun renderProjection(context: WorldRenderContext) {
         val stack = context.matrixStack()
 
-        val key = (SidedPart.getPart(context.world(), pos) as? AbstractPart)?.modelKey ?: return
+        val key = (SidedPart.getPart<SidedPhantomRedstoneProviderPart>(context.world(), pos) as? AbstractPart)?.modelKey
+            ?: return
 
         val baker = WRPartRenderers.bakerFor(key::class) as? ProjectorPartBaker ?: return
 
