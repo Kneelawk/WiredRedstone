@@ -8,6 +8,7 @@ import com.kneelawk.graphlib.api.util.HalfLink
 import com.kneelawk.graphlib.api.wire.CenterWireBlockNode
 import com.kneelawk.graphlib.api.wire.WireConnectionDiscoverers
 import com.kneelawk.wiredredstone.logic.RedstoneCarrierFilter
+import com.kneelawk.wiredredstone.logic.RedstoneLogic
 import com.kneelawk.wiredredstone.logic.RedstoneWireType
 import com.kneelawk.wiredredstone.util.NetNode
 import net.minecraft.nbt.NbtByte
@@ -33,7 +34,9 @@ data class PowerlineConnectorBlockNode(val side: Direction) : CenterWireBlockNod
         return onSide == side && link.other.node is SidedBlockNode
     }
 
-    override fun onConnectionsChanged(ctx: NodeContext) = Unit
+    override fun onConnectionsChanged(ctx: NodeContext) {
+        RedstoneLogic.scheduleUpdate(ctx.blockWorld, ctx.pos)
+    }
 
     override val redstoneType = RedstoneWireType.RedAlloy
 
