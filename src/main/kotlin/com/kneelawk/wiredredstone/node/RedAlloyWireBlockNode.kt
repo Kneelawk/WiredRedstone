@@ -1,6 +1,7 @@
 package com.kneelawk.wiredredstone.node
 
-import com.kneelawk.graphlib.api.graph.NodeContext
+import com.kneelawk.graphlib.api.graph.NodeHolder
+import com.kneelawk.graphlib.api.graph.user.BlockNode
 import com.kneelawk.graphlib.api.graph.user.BlockNodeDecoder
 import com.kneelawk.graphlib.api.util.HalfLink
 import com.kneelawk.graphlib.api.util.SidedPos
@@ -36,11 +37,11 @@ data class RedAlloyWireBlockNode(private val side: Direction) : SidedWireBlockNo
         return SidedPart.getPart(world, SidedPos(pos, side))
     }
 
-    override fun findConnections(ctx: NodeContext): MutableCollection<HalfLink> {
+    override fun findConnections(ctx: NodeHolder<BlockNode>): MutableCollection<HalfLink> {
         return WireConnectionDiscoverers.wireFindConnections(this, ctx, filter)
     }
 
-    override fun canConnect(ctx: NodeContext, link: HalfLink): Boolean {
+    override fun canConnect(ctx: NodeHolder<BlockNode>, link: HalfLink): Boolean {
         return WireConnectionDiscoverers.wireCanConnect(this, ctx, link, filter)
     }
 
@@ -57,7 +58,7 @@ data class RedAlloyWireBlockNode(private val side: Direction) : SidedWireBlockNo
         return RedstoneLogic.getReceivingPower(world, pos, part.connections, true, part.blockage)
     }
 
-    override fun onConnectionsChanged(ctx: NodeContext) {
+    override fun onConnectionsChanged(ctx: NodeHolder<BlockNode>) {
         RedstoneLogic.scheduleUpdate(ctx.blockWorld, ctx.pos)
         ctx.getSidedPart<RedAlloyWirePart>()?.updateInternalConnections(ctx.blockWorld)
     }

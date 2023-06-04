@@ -1,6 +1,5 @@
 package com.kneelawk.wiredredstone.node
 
-import com.kneelawk.graphlib.api.graph.NodeContext
 import com.kneelawk.graphlib.api.graph.NodeHolder
 import com.kneelawk.graphlib.api.graph.user.BlockNode
 import com.kneelawk.graphlib.api.graph.user.BlockNodeDecoder
@@ -40,11 +39,11 @@ data class BundledCableBlockNode(private val side: Direction, val color: DyeColo
         return SidedPart.getPart(world, SidedPos(pos, side))
     }
 
-    override fun findConnections(ctx: NodeContext): MutableCollection<HalfLink> {
+    override fun findConnections(ctx: NodeHolder<BlockNode>): MutableCollection<HalfLink> {
         return WireConnectionDiscoverers.wireFindConnections(this, ctx, filter)
     }
 
-    override fun canConnect(ctx: NodeContext, other: HalfLink): Boolean {
+    override fun canConnect(ctx: NodeHolder<BlockNode>, other: HalfLink): Boolean {
         return WireConnectionDiscoverers.wireCanConnect(this, ctx, other, filter)
     }
 
@@ -59,7 +58,7 @@ data class BundledCableBlockNode(private val side: Direction, val color: DyeColo
         )
     }
 
-    override fun onConnectionsChanged(ctx: NodeContext) {
+    override fun onConnectionsChanged(ctx: NodeHolder<BlockNode>) {
         ctx.getSidedPart<BundledCablePart>()?.handleUpdates()
     }
 

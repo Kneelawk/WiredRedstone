@@ -1,6 +1,6 @@
 package com.kneelawk.wiredredstone.node
 
-import com.kneelawk.graphlib.api.graph.NodeContext
+import com.kneelawk.graphlib.api.graph.NodeHolder
 import com.kneelawk.graphlib.api.graph.user.BlockNode
 import com.kneelawk.graphlib.api.graph.user.BlockNodeDecoder
 import com.kneelawk.graphlib.api.graph.user.SidedBlockNode
@@ -22,19 +22,19 @@ data class PowerlineConnectorBlockNode(val side: Direction) : CenterWireBlockNod
 
     override fun toTag(): NbtElement = NbtByte.of(side.id.toByte())
 
-    override fun findConnections(ctx: NodeContext): Collection<HalfLink> {
+    override fun findConnections(ctx: NodeHolder<BlockNode>): Collection<HalfLink> {
         return WireConnectionDiscoverers.centerWireFindConnections(this, ctx, RedstoneCarrierFilter)
     }
 
-    override fun canConnect(ctx: NodeContext, other: HalfLink): Boolean {
+    override fun canConnect(ctx: NodeHolder<BlockNode>, other: HalfLink): Boolean {
         return WireConnectionDiscoverers.centerWireCanConnect(this, ctx, other, RedstoneCarrierFilter)
     }
 
-    override fun canConnect(ctx: NodeContext, onSide: Direction, link: HalfLink): Boolean {
+    override fun canConnect(ctx: NodeHolder<BlockNode>, onSide: Direction, link: HalfLink): Boolean {
         return onSide == side && link.other.node is SidedBlockNode
     }
 
-    override fun onConnectionsChanged(ctx: NodeContext) {
+    override fun onConnectionsChanged(ctx: NodeHolder<BlockNode>) {
         RedstoneLogic.scheduleUpdate(ctx.blockWorld, ctx.pos)
     }
 

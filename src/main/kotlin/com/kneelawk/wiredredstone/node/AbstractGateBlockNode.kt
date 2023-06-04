@@ -1,6 +1,7 @@
 package com.kneelawk.wiredredstone.node
 
-import com.kneelawk.graphlib.api.graph.NodeContext
+import com.kneelawk.graphlib.api.graph.NodeHolder
+import com.kneelawk.graphlib.api.graph.user.BlockNode
 import com.kneelawk.graphlib.api.util.HalfLink
 import com.kneelawk.graphlib.api.util.SidedPos
 import com.kneelawk.graphlib.api.wire.SidedWireBlockNode
@@ -28,16 +29,16 @@ abstract class AbstractGateBlockNode<P : AbstractGatePart>(private val partClass
         return SidedPart.getPart(world, SidedPos(pos, side), partClass.java)
     }
 
-    override fun findConnections(ctx: NodeContext): MutableCollection<HalfLink> {
+    override fun findConnections(ctx: NodeHolder<BlockNode>): MutableCollection<HalfLink> {
         return WireConnectionDiscoverers.wireFindConnections(this, ctx, filter)
     }
 
-    override fun canConnect(ctx: NodeContext, link: HalfLink): Boolean {
+    override fun canConnect(ctx: NodeHolder<BlockNode>, link: HalfLink): Boolean {
         return WireConnectionDiscoverers.wireCanConnect(this, ctx, link, filter)
     }
 
     override fun canConnect(
-        ctx: NodeContext, inDirection: Direction, connectionType: WireConnectionType, link: HalfLink
+        ctx: NodeHolder<BlockNode>, inDirection: Direction, connectionType: WireConnectionType, link: HalfLink
     ): Boolean {
         val part = partClass.safeCast(ctx.getSidedPart<AbstractGatePart>()) ?: return false
 
@@ -46,7 +47,7 @@ abstract class AbstractGateBlockNode<P : AbstractGatePart>(private val partClass
         return RotationUtils.rotatedDirection(side, cardinal) == inDirection
     }
 
-    override fun onConnectionsChanged(ctx: NodeContext) {
+    override fun onConnectionsChanged(ctx: NodeHolder<BlockNode>) {
         RedstoneLogic.scheduleUpdate(ctx.blockWorld, ctx.pos)
         ctx.getSidedPart<AbstractGatePart>()?.updateConnections()
     }
