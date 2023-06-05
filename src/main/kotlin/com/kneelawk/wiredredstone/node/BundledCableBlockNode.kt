@@ -12,7 +12,6 @@ import com.kneelawk.wiredredstone.logic.RedstoneCarrierFilter
 import com.kneelawk.wiredredstone.logic.RedstoneWireType
 import com.kneelawk.wiredredstone.part.BundledCablePart
 import com.kneelawk.wiredredstone.part.SidedPart
-import com.kneelawk.wiredredstone.util.NetNode
 import com.kneelawk.wiredredstone.util.connectable.WireBlockageFilter
 import com.kneelawk.wiredredstone.util.getSidedPart
 import net.minecraft.nbt.NbtCompound
@@ -47,11 +46,11 @@ data class BundledCableBlockNode(private val side: Direction, val color: DyeColo
         return WireConnectionDiscoverers.wireCanConnect(this, ctx, other, filter)
     }
 
-    override fun putPower(world: ServerWorld, self: NetNode, power: Int) {
+    override fun putPower(world: ServerWorld, self: NodeHolder<RedstoneCarrierBlockNode>, power: Int) {
         getPart(world, self.pos)?.updatePower(inner, power)
     }
 
-    override fun sourcePower(world: ServerWorld, self: NetNode): Int {
+    override fun sourcePower(world: ServerWorld, self: NodeHolder<RedstoneCarrierBlockNode>): Int {
         val part = getPart(world, self.pos) ?: return 0
         return BundledCableLogic.getBundledCableInput(
             world, SidedPos(self.pos, side), inner, part.connections, part.blockage

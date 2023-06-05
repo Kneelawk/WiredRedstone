@@ -1,12 +1,12 @@
 package com.kneelawk.wiredredstone.node
 
+import com.kneelawk.graphlib.api.graph.NodeHolder
 import com.kneelawk.graphlib.api.graph.user.BlockNodeDecoder
 import com.kneelawk.graphlib.api.wire.SidedWireConnectionFilter
 import com.kneelawk.wiredredstone.logic.RedstoneCarrierFilter
 import com.kneelawk.wiredredstone.logic.RedstoneWireType
 import com.kneelawk.wiredredstone.part.AbstractGatePart
 import com.kneelawk.wiredredstone.part.GateProjectorSimplePart
-import com.kneelawk.wiredredstone.util.NetNode
 import com.kneelawk.wiredredstone.util.connectable.WireCornerBlockageFilter
 import net.minecraft.nbt.NbtByte
 import net.minecraft.nbt.NbtElement
@@ -32,11 +32,11 @@ data class GateProjectorSimpleBlockNode(private val side: Direction) :
         return NbtByte.of(side.id.toByte())
     }
 
-    override fun putPower(world: ServerWorld, self: NetNode, power: Int) {
+    override fun putPower(world: ServerWorld, self: NodeHolder<RedstoneCarrierBlockNode>, power: Int) {
         getPart(world, self.pos)?.updateInputPower(power)
     }
 
-    override fun sourcePower(world: ServerWorld, self: NetNode): Int {
+    override fun sourcePower(world: ServerWorld, self: NodeHolder<RedstoneCarrierBlockNode>): Int {
         val part = getPart(world, self.pos) ?: return 0
         return part.calculateInputPower()
     }

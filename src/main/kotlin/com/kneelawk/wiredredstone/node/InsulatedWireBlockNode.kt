@@ -12,7 +12,6 @@ import com.kneelawk.wiredredstone.logic.RedstoneLogic
 import com.kneelawk.wiredredstone.logic.RedstoneWireType
 import com.kneelawk.wiredredstone.part.InsulatedWirePart
 import com.kneelawk.wiredredstone.part.SidedPart
-import com.kneelawk.wiredredstone.util.NetNode
 import com.kneelawk.wiredredstone.util.connectable.WireBlockageFilter
 import com.kneelawk.wiredredstone.util.getSidedPart
 import net.minecraft.nbt.NbtCompound
@@ -47,13 +46,13 @@ data class InsulatedWireBlockNode(private val side: Direction, val color: DyeCol
         return WireConnectionDiscoverers.wireCanConnect(this, ctx, link, filter)
     }
 
-    override fun putPower(world: ServerWorld, self: NetNode, power: Int) {
+    override fun putPower(world: ServerWorld, self: NodeHolder<RedstoneCarrierBlockNode>, power: Int) {
         val part = getPart(world, self.pos) ?: return
         part.updatePower(power)
         part.redraw()
     }
 
-    override fun sourcePower(world: ServerWorld, self: NetNode): Int {
+    override fun sourcePower(world: ServerWorld, self: NodeHolder<RedstoneCarrierBlockNode>): Int {
         val part = getPart(world, self.pos) ?: return 0
         val pos = SidedPos(self.pos, side)
         return RedstoneLogic.getReceivingPower(world, pos, part.connections, false, part.blockage)

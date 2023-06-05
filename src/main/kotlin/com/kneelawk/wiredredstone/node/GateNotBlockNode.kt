@@ -1,12 +1,12 @@
 package com.kneelawk.wiredredstone.node
 
+import com.kneelawk.graphlib.api.graph.NodeHolder
 import com.kneelawk.graphlib.api.graph.user.BlockNodeDecoder
 import com.kneelawk.graphlib.api.wire.SidedWireConnectionFilter
 import com.kneelawk.wiredredstone.logic.RedstoneCarrierFilter
 import com.kneelawk.wiredredstone.logic.RedstoneWireType
 import com.kneelawk.wiredredstone.part.AbstractGatePart
 import com.kneelawk.wiredredstone.part.GateNotPart
-import com.kneelawk.wiredredstone.util.NetNode
 import com.kneelawk.wiredredstone.util.connectable.WireCornerBlockageFilter
 import net.minecraft.nbt.NbtElement
 import net.minecraft.server.world.ServerWorld
@@ -36,11 +36,11 @@ sealed class GateNotBlockNode : AbstractGateBlockNode<GateNotPart>(GateNotPart::
 
         override fun getConnectDirection(part: GateNotPart): Direction = part.getInputSide()
 
-        override fun putPower(world: ServerWorld, self: NetNode, power: Int) {
+        override fun putPower(world: ServerWorld, self: NodeHolder<RedstoneCarrierBlockNode>, power: Int) {
             getPart(world, self.pos)?.updateInputPower(power)
         }
 
-        override fun sourcePower(world: ServerWorld, self: NetNode): Int {
+        override fun sourcePower(world: ServerWorld, self: NodeHolder<RedstoneCarrierBlockNode>): Int {
             val part = getPart(world, self.pos) ?: return 0
             return part.calculateInputPower()
         }
@@ -53,11 +53,11 @@ sealed class GateNotBlockNode : AbstractGateBlockNode<GateNotPart>(GateNotPart::
 
         override fun getConnectDirection(part: GateNotPart): Direction = part.getOutputSide()
 
-        override fun putPower(world: ServerWorld, self: NetNode, power: Int) {
+        override fun putPower(world: ServerWorld, self: NodeHolder<RedstoneCarrierBlockNode>, power: Int) {
             getPart(world, self.pos)?.updateOutputReversePower(power)
         }
 
-        override fun sourcePower(world: ServerWorld, self: NetNode): Int {
+        override fun sourcePower(world: ServerWorld, self: NodeHolder<RedstoneCarrierBlockNode>): Int {
             val part = getPart(world, self.pos) ?: return 0
             return max(part.outputPower, part.calculateOutputReversePower())
         }

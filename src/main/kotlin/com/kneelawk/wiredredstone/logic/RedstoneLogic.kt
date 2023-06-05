@@ -2,7 +2,6 @@ package com.kneelawk.wiredredstone.logic
 
 import com.kneelawk.graphlib.api.graph.BlockGraph
 import com.kneelawk.graphlib.api.util.SidedPos
-import com.kneelawk.wiredredstone.node.RedstoneCarrierBlockNode
 import com.kneelawk.wiredredstone.node.WRBlockNodes
 import com.kneelawk.wiredredstone.tag.WRBlockTags
 import com.kneelawk.wiredredstone.util.RotationUtils
@@ -55,13 +54,13 @@ object RedstoneLogic {
     fun updateState(world: ServerWorld, network: BlockGraph) {
         val power = try {
             wiresGivePower = false
-            network.nodes
-                .constrainedMaxOf(0, 15) { (it.node as RedstoneCarrierBlockNode).sourcePower(world, it) }
+            network.getCachedNodes(WRBlockNodes.REDSTONE_CARRIERS)
+                .constrainedMaxOf(0, 15) { it.node.sourcePower(world, it) }
         } finally {
             wiresGivePower = true
         }
-        for (node in network.nodes) {
-            val ext = node.node as RedstoneCarrierBlockNode
+        for (node in network.getCachedNodes(WRBlockNodes.REDSTONE_CARRIERS)) {
+            val ext = node.node
             ext.putPower(world, node, power)
         }
     }

@@ -2,6 +2,7 @@ package com.kneelawk.wiredredstone.node
 
 import com.kneelawk.graphlib.api.graph.GraphUniverse
 import com.kneelawk.graphlib.api.graph.user.LinkKeyDecoder
+import com.kneelawk.graphlib.api.util.CacheCategory
 import com.kneelawk.graphlib.api.world.SaveMode
 import com.kneelawk.wiredredstone.WRConstants.id
 
@@ -22,6 +23,8 @@ object WRBlockNodes {
     val GATE_PROJECTOR_SIMPLE_ID = id("gate_projector_simple")
     val GATE_REPEATER_ID = id("gate_repeater")
     val GATE_RS_LATCH = id("gate_rs_latch")
+
+    val REDSTONE_CARRIERS = CacheCategory.of(RedstoneCarrierBlockNode::class.java)
 
     val WIRE_NET by lazy {
         GraphUniverse.builder().saveMode(SaveMode.INCREMENTAL).build(id("wire_net"))
@@ -51,6 +54,7 @@ object WRBlockNodes {
         )
 
         WIRE_NET.addLinkKeyDecoders(mapOf(POWERLINE_LINK to LinkKeyDecoder { PowerlineLinkKey }))
+        WIRE_NET.addCacheCategories(REDSTONE_CARRIERS)
 
         WIRE_NET.register()
     }

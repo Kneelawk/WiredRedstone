@@ -10,7 +10,6 @@ import com.kneelawk.graphlib.api.wire.WireConnectionDiscoverers
 import com.kneelawk.wiredredstone.logic.RedstoneCarrierFilter
 import com.kneelawk.wiredredstone.logic.RedstoneLogic
 import com.kneelawk.wiredredstone.logic.RedstoneWireType
-import com.kneelawk.wiredredstone.util.NetNode
 import net.minecraft.nbt.NbtByte
 import net.minecraft.nbt.NbtElement
 import net.minecraft.server.world.ServerWorld
@@ -40,9 +39,9 @@ data class PowerlineConnectorBlockNode(val side: Direction) : CenterWireBlockNod
 
     override val redstoneType = RedstoneWireType.RedAlloy
 
-    override fun putPower(world: ServerWorld, self: NetNode, power: Int) = Unit
+    override fun putPower(world: ServerWorld, self: NodeHolder<RedstoneCarrierBlockNode>, power: Int) = Unit
 
-    override fun sourcePower(world: ServerWorld, self: NetNode): Int = 0
+    override fun sourcePower(world: ServerWorld, self: NodeHolder<RedstoneCarrierBlockNode>): Int = 0
 
     object Decoder : BlockNodeDecoder {
         override fun decode(tag: NbtElement?): BlockNode? {
