@@ -58,7 +58,7 @@ data class RedAlloyWireBlockNode(private val side: Direction) : SidedWireBlockNo
     }
 
     override fun onConnectionsChanged(ctx: NodeHolder<BlockNode>) {
-        RedstoneLogic.scheduleUpdate(ctx.blockWorld, ctx.pos)
+        RedstoneLogic.scheduleUpdate(ctx.blockWorld, ctx.graphId)
         ctx.getSidedPart<RedAlloyWirePart>()?.updateInternalConnections(ctx.blockWorld)
     }
 

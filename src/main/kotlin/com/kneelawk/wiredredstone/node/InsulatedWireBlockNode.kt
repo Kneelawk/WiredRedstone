@@ -59,7 +59,7 @@ data class InsulatedWireBlockNode(private val side: Direction, val color: DyeCol
     }
 
     override fun onConnectionsChanged(ctx: NodeHolder<BlockNode>) {
-        RedstoneLogic.scheduleUpdate(ctx.blockWorld, ctx.pos)
+        RedstoneLogic.scheduleUpdate(ctx.blockWorld, ctx.graphId)
         ctx.getSidedPart<InsulatedWirePart>()?.updateInternalConnections(ctx.blockWorld)
     }
 

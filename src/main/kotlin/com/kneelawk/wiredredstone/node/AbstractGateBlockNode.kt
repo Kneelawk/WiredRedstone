@@ -48,7 +48,7 @@ abstract class AbstractGateBlockNode<P : AbstractGatePart>(private val partClass
     }
 
     override fun onConnectionsChanged(ctx: NodeHolder<BlockNode>) {
-        RedstoneLogic.scheduleUpdate(ctx.blockWorld, ctx.pos)
+        RedstoneLogic.scheduleUpdate(ctx.blockWorld, ctx.graphId)
         ctx.getSidedPart<AbstractGatePart>()?.updateConnections()
     }
 }

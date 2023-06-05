@@ -34,7 +34,7 @@ data class PowerlineConnectorBlockNode(val side: Direction) : CenterWireBlockNod
     }
 
     override fun onConnectionsChanged(ctx: NodeHolder<BlockNode>) {
-        RedstoneLogic.scheduleUpdate(ctx.blockWorld, ctx.pos)
+        RedstoneLogic.scheduleUpdate(ctx.blockWorld, ctx.graphId)
     }
 
     override val redstoneType = RedstoneWireType.RedAlloy

@@ -35,6 +35,11 @@ object RedstoneLogic {
         WRBlockNodes.WIRE_NET.getGraphWorld(world).getAllGraphIdsAt(pos).forEach(set::add)
     }
 
+    fun scheduleUpdate(world: ServerWorld, graphId: Long) {
+        val set = scheduled.computeIfAbsent(world.registryKey) { LongLinkedOpenHashSet() }
+        set.add(graphId)
+    }
+
     private fun flushUpdates(world: ServerWorld) {
         val controller = WRBlockNodes.WIRE_NET.getGraphWorld(world)
 
