@@ -39,11 +39,11 @@ data class BundledCableBlockNode(private val side: Direction, val color: DyeColo
     }
 
     override fun findConnections(ctx: NodeHolder<BlockNode>): MutableCollection<HalfLink> {
-        return WireConnectionDiscoverers.wireFindConnections(this, ctx, filter)
+        return WireConnectionDiscoverers.sidedWireFindConnections(this, ctx, filter)
     }
 
     override fun canConnect(ctx: NodeHolder<BlockNode>, other: HalfLink): Boolean {
-        return WireConnectionDiscoverers.wireCanConnect(this, ctx, other, filter)
+        return WireConnectionDiscoverers.sidedWireCanConnect(this, ctx, other, filter)
     }
 
     override fun putPower(world: ServerWorld, self: NodeHolder<RedstoneCarrierBlockNode>, power: Int) {

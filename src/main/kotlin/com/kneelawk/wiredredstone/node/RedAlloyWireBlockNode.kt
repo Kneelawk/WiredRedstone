@@ -37,11 +37,11 @@ data class RedAlloyWireBlockNode(private val side: Direction) : SidedWireBlockNo
     }
 
     override fun findConnections(ctx: NodeHolder<BlockNode>): MutableCollection<HalfLink> {
-        return WireConnectionDiscoverers.wireFindConnections(this, ctx, filter)
+        return WireConnectionDiscoverers.sidedWireFindConnections(this, ctx, filter)
     }
 
     override fun canConnect(ctx: NodeHolder<BlockNode>, link: HalfLink): Boolean {
-        return WireConnectionDiscoverers.wireCanConnect(this, ctx, link, filter)
+        return WireConnectionDiscoverers.sidedWireCanConnect(this, ctx, link, filter)
     }
 
     override fun putPower(world: ServerWorld, self: NodeHolder<RedstoneCarrierBlockNode>, power: Int) {

@@ -30,11 +30,11 @@ abstract class AbstractGateBlockNode<P : AbstractGatePart>(private val partClass
     }
 
     override fun findConnections(ctx: NodeHolder<BlockNode>): MutableCollection<HalfLink> {
-        return WireConnectionDiscoverers.wireFindConnections(this, ctx, filter)
+        return WireConnectionDiscoverers.sidedWireFindConnections(this, ctx, filter)
     }
 
     override fun canConnect(ctx: NodeHolder<BlockNode>, link: HalfLink): Boolean {
-        return WireConnectionDiscoverers.wireCanConnect(this, ctx, link, filter)
+        return WireConnectionDiscoverers.sidedWireCanConnect(this, ctx, link, filter)
     }
 
     override fun canConnect(
