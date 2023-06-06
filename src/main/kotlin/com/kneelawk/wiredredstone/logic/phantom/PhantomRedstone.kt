@@ -15,7 +15,7 @@ object PhantomRedstone {
     private val REF_DECODER_ID = id("phantom_redstone_ref_decoder")
     private val REF_DECODER_KEY = RegistryKey.ofRegistry<PhantomRedstoneRefDecoder>(REF_DECODER_ID)
 
-    val REF_DECODER_REGISTRY = SimpleRegistry(REF_DECODER_KEY, Lifecycle.experimental())
+    val REF_DECODER_REGISTRY = SimpleRegistry(REF_DECODER_KEY, Lifecycle.stable())
 
     val SIDED_PART_ID = id("sided_part")
 
