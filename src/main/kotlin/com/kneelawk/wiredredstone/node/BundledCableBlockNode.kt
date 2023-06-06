@@ -61,6 +61,10 @@ data class BundledCableBlockNode(private val side: Direction, val color: DyeColo
         ctx.getSidedPart<BundledCablePart>()?.handleUpdates()
     }
 
+    override fun isValid(self: NodeHolder<BlockNode>): Boolean {
+        return self.getSidedPart<BundledCablePart>() != null
+    }
+
     override fun toTag(): NbtElement {
         val tag = NbtCompound()
         tag.putByte("side", side.id.toByte())

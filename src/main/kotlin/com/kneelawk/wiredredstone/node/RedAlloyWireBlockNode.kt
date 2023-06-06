@@ -62,6 +62,10 @@ data class RedAlloyWireBlockNode(private val side: Direction) : SidedWireBlockNo
         ctx.getSidedPart<RedAlloyWirePart>()?.updateInternalConnections(ctx.blockWorld)
     }
 
+    override fun isValid(self: NodeHolder<BlockNode>): Boolean {
+        return self.getSidedPart<RedAlloyWirePart>() != null
+    }
+
     override fun toTag(): NbtElement? {
         return NbtByte.of(side.id.toByte())
     }

@@ -10,16 +10,20 @@ import com.kneelawk.graphlib.api.wire.WireConnectionDiscoverers
 import com.kneelawk.wiredredstone.logic.RedstoneCarrierFilter
 import com.kneelawk.wiredredstone.logic.RedstoneLogic
 import com.kneelawk.wiredredstone.logic.RedstoneWireType
+import com.kneelawk.wiredredstone.part.PowerlineConnectorPart
+import com.kneelawk.wiredredstone.util.getSidedPart
 import net.minecraft.nbt.NbtByte
 import net.minecraft.nbt.NbtElement
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.Direction
 
-data class PowerlineConnectorBlockNode(val side: Direction) : CenterWireBlockNode, RedstoneCarrierBlockNode {
+data class PowerlineConnectorBlockNode(private val side: Direction) : SidedBlockNode, CenterWireBlockNode, RedstoneCarrierBlockNode {
     override fun getTypeId(): Identifier = WRBlockNodes.POWERLINE_CONNECTOR
 
     override fun toTag(): NbtElement = NbtByte.of(side.id.toByte())
+
+    override fun getSide(): Direction = side
 
     override fun findConnections(ctx: NodeHolder<BlockNode>): Collection<HalfLink> {
         return WireConnectionDiscoverers.centerWireFindConnections(this, ctx, RedstoneCarrierFilter)
@@ -35,6 +39,10 @@ data class PowerlineConnectorBlockNode(val side: Direction) : CenterWireBlockNod
 
     override fun onConnectionsChanged(ctx: NodeHolder<BlockNode>) {
         RedstoneLogic.scheduleUpdate(ctx.blockWorld, ctx.graphId)
+    }
+
+    override fun isValid(self: NodeHolder<BlockNode>): Boolean {
+        return self.getSidedPart<PowerlineConnectorPart>() != null
     }
 
     override val redstoneType = RedstoneWireType.RedAlloy

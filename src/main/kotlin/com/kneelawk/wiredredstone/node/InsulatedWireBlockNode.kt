@@ -63,6 +63,10 @@ data class InsulatedWireBlockNode(private val side: Direction, val color: DyeCol
         ctx.getSidedPart<InsulatedWirePart>()?.updateInternalConnections(ctx.blockWorld)
     }
 
+    override fun isValid(self: NodeHolder<BlockNode>): Boolean {
+        return self.getSidedPart<InsulatedWirePart>() != null
+    }
+
     override fun toTag(): NbtElement {
         val tag = NbtCompound()
         tag.putByte("side", side.id.toByte())

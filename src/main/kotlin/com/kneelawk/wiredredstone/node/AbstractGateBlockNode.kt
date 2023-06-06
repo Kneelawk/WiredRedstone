@@ -51,4 +51,8 @@ abstract class AbstractGateBlockNode<P : AbstractGatePart>(private val partClass
         RedstoneLogic.scheduleUpdate(ctx.blockWorld, ctx.graphId)
         ctx.getSidedPart<AbstractGatePart>()?.updateConnections()
     }
+
+    override fun isValid(self: NodeHolder<BlockNode>): Boolean {
+        return self.getSidedPart<AbstractGatePart>() != null
+    }
 }
