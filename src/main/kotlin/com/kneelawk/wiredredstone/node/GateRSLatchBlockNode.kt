@@ -78,8 +78,8 @@ sealed class GateRSLatchBlockNode : AbstractGateBlockNode<GateRSLatchPart>(GateR
     }
 
     object Decoder : BlockNodeDecoder {
-        override fun decode(tag: NbtElement?): GateRSLatchBlockNode? {
-            return BlockNodeUtil.readSidedTyped<Type, _>(tag) { side, type, tag ->
+        override fun decode(nbt: NbtElement?): GateRSLatchBlockNode? {
+            return BlockNodeUtil.readSidedTyped<Type, _>(nbt) { side, type, tag ->
                 when (type) {
                     Type.INPUT -> Input(side, tag.getByte("latchState").toEnum())
                     Type.OUTPUT -> Output(side, tag.getByte("latchState").toEnum())
