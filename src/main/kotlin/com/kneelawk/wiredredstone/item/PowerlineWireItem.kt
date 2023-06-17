@@ -17,7 +17,7 @@ import net.minecraft.util.math.Vec3d
 
 class PowerlineWireItem(settings: Settings) : Item(settings) {
     companion object {
-        private const val MAX_DISTANCE = 1024.0
+        private const val MAX_DISTANCE = 64.0
         private const val MAX_DISTANCE_SQR = MAX_DISTANCE * MAX_DISTANCE
         private val KEY = str("powerline_connector_pos")
 
