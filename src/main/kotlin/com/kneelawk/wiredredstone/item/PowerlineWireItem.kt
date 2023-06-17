@@ -17,7 +17,7 @@ import net.minecraft.util.math.Vec3d
 
 class PowerlineWireItem(settings: Settings) : Item(settings) {
     companion object {
-        private const val MAX_DISTANCE = 64.0
+        private const val MAX_DISTANCE = 1024.0
         private const val MAX_DISTANCE_SQR = MAX_DISTANCE * MAX_DISTANCE
         private val KEY = str("powerline_connector_pos")
 
@@ -50,10 +50,25 @@ class PowerlineWireItem(settings: Settings) : Item(settings) {
 
         val part = MultipartUtil.get(world, pos)?.getSelectedPart(hitPos) as? PowerlineConnectorPart
             ?: return ActionResult.FAIL
+        val nodePos = NodePos(pos, part.getBlockNode())
+
+        val player = context.player
+        if (player?.isSneaking == true) {
+            val side = if (world.isClient) "CLIENT" else "SERVER"
+            val view = WRBlockNodes.WIRE_NET.getGraphView(world)
+            val holder = view.getNodeAt(nodePos)
+
+            val connections =
+                holder?.connections?.map { it.other(holder).pos }?.joinToString(", ", "Connections: [", "]")
+                    ?: "NO HOLDER"
+
+            println("$side: $connections")
+
+            return if (world.isClient) ActionResult.SUCCESS else ActionResult.CONSUME
+        }
 
         if (world.isClient || world !is ServerWorld) return ActionResult.CONSUME
 
-        val nodePos = NodePos(pos, part.getBlockNode())
         val existingPos = getPosition(stack)
 
         if (existingPos != null) {

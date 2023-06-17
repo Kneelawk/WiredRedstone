@@ -1,10 +1,10 @@
 package com.kneelawk.wiredredstone.node
 
+import alexiil.mc.lib.net.IMsgReadCtx
+import alexiil.mc.lib.net.IMsgWriteCtx
+import alexiil.mc.lib.net.NetByteBuf
 import com.kneelawk.graphlib.api.graph.NodeHolder
-import com.kneelawk.graphlib.api.graph.user.BlockNode
-import com.kneelawk.graphlib.api.graph.user.BlockNodeDecoder
-import com.kneelawk.graphlib.api.graph.user.BlockNodeType
-import com.kneelawk.graphlib.api.graph.user.SidedBlockNode
+import com.kneelawk.graphlib.api.graph.user.*
 import com.kneelawk.graphlib.api.util.HalfLink
 import com.kneelawk.graphlib.api.wire.CenterWireBlockNode
 import com.kneelawk.graphlib.api.wire.WireConnectionDiscoverers
@@ -23,6 +23,10 @@ data class PowerlineConnectorBlockNode(private val side: Direction) : SidedBlock
     override fun getType(): BlockNodeType = WRBlockNodes.POWERLINE_CONNECTOR
 
     override fun toTag(): NbtElement = NbtByte.of(side.id.toByte())
+
+    override fun toPacket(buf: NetByteBuf, ctx: IMsgWriteCtx) {
+        buf.writeFixedBits(side.id, 3)
+    }
 
     override fun getSide(): Direction = side
 
@@ -55,10 +59,14 @@ data class PowerlineConnectorBlockNode(private val side: Direction) : SidedBlock
 
     override fun sourcePower(world: ServerWorld, self: NodeHolder<RedstoneCarrierBlockNode>): Int = 0
 
-    object Decoder : BlockNodeDecoder {
+    object Decoder : BlockNodeDecoder, BlockNodePacketDecoder {
         override fun decode(tag: NbtElement?): BlockNode? {
             val byte = tag as? NbtByte ?: return null
             return PowerlineConnectorBlockNode(Direction.byId(byte.intValue()))
+        }
+
+        override fun decode(buf: NetByteBuf, ctx: IMsgReadCtx): BlockNode {
+            return PowerlineConnectorBlockNode(Direction.byId(buf.readFixedBits(3)))
         }
     }
 }
