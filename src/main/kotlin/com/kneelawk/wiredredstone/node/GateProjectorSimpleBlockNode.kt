@@ -2,6 +2,7 @@ package com.kneelawk.wiredredstone.node
 
 import com.kneelawk.graphlib.api.graph.NodeHolder
 import com.kneelawk.graphlib.api.graph.user.BlockNodeDecoder
+import com.kneelawk.graphlib.api.graph.user.BlockNodeType
 import com.kneelawk.graphlib.api.wire.SidedWireConnectionFilter
 import com.kneelawk.wiredredstone.logic.RedstoneCarrierFilter
 import com.kneelawk.wiredredstone.logic.RedstoneWireType
@@ -24,7 +25,7 @@ data class GateProjectorSimpleBlockNode(private val side: Direction) :
 
     override fun getSide(): Direction = side
 
-    override fun getTypeId(): Identifier = WRBlockNodes.GATE_PROJECTOR_SIMPLE_ID
+    override fun getType(): BlockNodeType = WRBlockNodes.GATE_PROJECTOR_SIMPLE
 
     override fun getConnectDirection(part: GateProjectorSimplePart): Direction = part.getInputSide()
 
@@ -33,11 +34,11 @@ data class GateProjectorSimpleBlockNode(private val side: Direction) :
     }
 
     override fun putPower(world: ServerWorld, self: NodeHolder<RedstoneCarrierBlockNode>, power: Int) {
-        getPart(world, self.pos)?.updateInputPower(power)
+        getPart(world, self.blockPos)?.updateInputPower(power)
     }
 
     override fun sourcePower(world: ServerWorld, self: NodeHolder<RedstoneCarrierBlockNode>): Int {
-        val part = getPart(world, self.pos) ?: return 0
+        val part = getPart(world, self.blockPos) ?: return 0
         return part.calculateInputPower()
     }
 

@@ -1,28 +1,29 @@
 package com.kneelawk.wiredredstone.node
 
 import com.kneelawk.graphlib.api.graph.GraphUniverse
-import com.kneelawk.graphlib.api.graph.user.LinkKeyDecoder
+import com.kneelawk.graphlib.api.graph.user.BlockNodeType
+import com.kneelawk.graphlib.api.graph.user.LinkKeyType
 import com.kneelawk.graphlib.api.util.CacheCategory
 import com.kneelawk.graphlib.api.world.SaveMode
 import com.kneelawk.wiredredstone.WRConstants.id
 
 object WRBlockNodes {
-    val RED_ALLOY_WIRE_ID = id("red_alloy_wire")
-    val INSULATED_WIRE_ID = id("insulated_wire")
-    val BUNDLED_CABLE_ID = id("bundled_cable")
+    val RED_ALLOY_WIRE = BlockNodeType.of(id("red_alloy_wire"), RedAlloyWireBlockNode.Decoder)
+    val INSULATED_WIRE = BlockNodeType.of(id("insulated_wire"), InsulatedWireBlockNode.Decoder)
+    val BUNDLED_CABLE = BlockNodeType.of(id("bundled_cable"), BundledCableBlockNode.Decoder)
 
-    val POWERLINE_CONNECTOR = id("powerline_connector")
-    val POWERLINE_LINK = id("powerline")
+    val POWERLINE_CONNECTOR = BlockNodeType.of(id("powerline_connector"), PowerlineConnectorBlockNode.Decoder)
+    val POWERLINE_LINK = LinkKeyType.of(id("powerline")) { PowerlineLinkKey }
 
-    val GATE_AND_ID = id("gate_and")
-    val GATE_DIODE_ID = id("gate_diode")
-    val GATE_NAND_ID = id("gate_nand")
-    val GATE_NOR_ID = id("gate_nor")
-    val GATE_NOT_ID = id("gate_not")
-    val GATE_OR_ID = id("gate_or")
-    val GATE_PROJECTOR_SIMPLE_ID = id("gate_projector_simple")
-    val GATE_REPEATER_ID = id("gate_repeater")
-    val GATE_RS_LATCH = id("gate_rs_latch")
+    val GATE_AND = BlockNodeType.of(id("gate_and"), GateAndBlockNode.Decoder)
+    val GATE_DIODE = BlockNodeType.of(id("gate_diode"), GateDiodeBlockNode.Decoder)
+    val GATE_NAND = BlockNodeType.of(id("gate_nand"), GateNandBlockNode.Decoder)
+    val GATE_NOR = BlockNodeType.of(id("gate_nor"), GateNorBlockNode.Decoder)
+    val GATE_NOT = BlockNodeType.of(id("gate_not"), GateNotBlockNode.Decoder)
+    val GATE_OR = BlockNodeType.of(id("gate_or"), GateOrBlockNode.Decoder)
+    val GATE_PROJECTOR_SIMPLE = BlockNodeType.of(id("gate_projector_simple"), GateProjectorSimpleBlockNode.Decoder)
+    val GATE_REPEATER = BlockNodeType.of(id("gate_repeater"), GateRepeaterBlockNode.Decoder)
+    val GATE_RS_LATCH = BlockNodeType.of(id("gate_rs_latch"), GateRSLatchBlockNode.Decoder)
 
     val REDSTONE_CARRIERS = CacheCategory.of(RedstoneCarrierBlockNode::class.java)
 
@@ -33,28 +34,26 @@ object WRBlockNodes {
     fun init() {
         WIRE_NET.addDiscoverer(WRBlockNodeDiscoverer)
 
-        WIRE_NET.addNodeDecoders(
-            mapOf(
-                RED_ALLOY_WIRE_ID to RedAlloyWireBlockNode.Decoder,
-                INSULATED_WIRE_ID to InsulatedWireBlockNode.Decoder,
-                BUNDLED_CABLE_ID to BundledCableBlockNode.Decoder,
+        WIRE_NET.addNodeTypes(
+            RED_ALLOY_WIRE,
+            INSULATED_WIRE,
+            BUNDLED_CABLE,
 
-                POWERLINE_CONNECTOR to PowerlineConnectorBlockNode.Decoder,
+            POWERLINE_CONNECTOR,
 
-                GATE_AND_ID to GateAndBlockNode.Decoder,
-                GATE_DIODE_ID to GateDiodeBlockNode.Decoder,
-                GATE_NAND_ID to GateNandBlockNode.Decoder,
-                GATE_NOR_ID to GateNorBlockNode.Decoder,
-                GATE_NOT_ID to GateNotBlockNode.Decoder,
-                GATE_OR_ID to GateOrBlockNode.Decoder,
-                GATE_PROJECTOR_SIMPLE_ID to GateProjectorSimpleBlockNode.Decoder,
-                GATE_REPEATER_ID to GateRepeaterBlockNode.Decoder,
-                GATE_RS_LATCH to GateRSLatchBlockNode.Decoder
-            )
+            GATE_AND,
+            GATE_DIODE,
+            GATE_NAND,
+            GATE_NOR,
+            GATE_NOT,
+            GATE_OR,
+            GATE_PROJECTOR_SIMPLE,
+            GATE_REPEATER,
+            GATE_RS_LATCH
         )
 
-        WIRE_NET.addLinkKeyDecoders(mapOf(POWERLINE_LINK to LinkKeyDecoder { PowerlineLinkKey }))
-        WIRE_NET.addCacheCategories(REDSTONE_CARRIERS)
+        WIRE_NET.addLinkKeyType(POWERLINE_LINK)
+        WIRE_NET.addCacheCategory(REDSTONE_CARRIERS)
 
         WIRE_NET.register()
     }

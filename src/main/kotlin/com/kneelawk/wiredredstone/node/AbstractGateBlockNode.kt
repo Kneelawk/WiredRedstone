@@ -13,6 +13,7 @@ import com.kneelawk.wiredredstone.part.AbstractGatePart
 import com.kneelawk.wiredredstone.part.SidedPart
 import com.kneelawk.wiredredstone.util.RotationUtils
 import com.kneelawk.wiredredstone.util.getSidedPart
+import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.world.BlockView
@@ -48,8 +49,11 @@ abstract class AbstractGateBlockNode<P : AbstractGatePart>(private val partClass
     }
 
     override fun onConnectionsChanged(ctx: NodeHolder<BlockNode>) {
-        RedstoneLogic.scheduleUpdate(ctx.blockWorld, ctx.graphId)
-        ctx.getSidedPart<AbstractGatePart>()?.updateConnections()
+        val world = ctx.blockWorld
+        if (world is ServerWorld) {
+            RedstoneLogic.scheduleUpdate(world, ctx.graphId)
+            ctx.getSidedPart<AbstractGatePart>()?.updateConnections()
+        }
     }
 
     override fun isValid(self: NodeHolder<BlockNode>): Boolean {

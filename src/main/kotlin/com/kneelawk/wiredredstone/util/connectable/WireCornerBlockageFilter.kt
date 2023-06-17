@@ -16,7 +16,7 @@ class WireCornerBlockageFilter(
         connectionType: WireConnectionType, link: HalfLink
     ): Boolean {
         return ConnectableUtils.canWireCornerConnect(
-            ctx.blockWorld, ctx.pos, inDirection, connectionType, wireSide, wireWidth, wireHeight
+            ctx.blockWorld, ctx.blockPos, inDirection, connectionType, wireSide, wireWidth, wireHeight
         )
     }
 }

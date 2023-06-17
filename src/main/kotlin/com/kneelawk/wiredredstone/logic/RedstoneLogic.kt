@@ -32,7 +32,7 @@ object RedstoneLogic {
     fun scheduleUpdate(world: ServerWorld, pos: BlockPos) {
         // Could probably be optimised to only update the networks it needs to, but I can do that later.
         val set = scheduled.computeIfAbsent(world.registryKey) { LongLinkedOpenHashSet() }
-        WRBlockNodes.WIRE_NET.getGraphWorld(world).getAllGraphIdsAt(pos).forEach(set::add)
+        WRBlockNodes.WIRE_NET.getGraphView(world).getAllGraphIdsAt(pos).forEach(set::add)
     }
 
     fun scheduleUpdate(world: ServerWorld, graphId: Long) {
@@ -41,7 +41,7 @@ object RedstoneLogic {
     }
 
     private fun flushUpdates(world: ServerWorld) {
-        val controller = WRBlockNodes.WIRE_NET.getGraphWorld(world)
+        val controller = WRBlockNodes.WIRE_NET.getGraphView(world)
 
         // We're removing here because sometimes updating states needs to cause other graph updates to be scheduled,
         // but we can handle those next tick. I'm not ready to set use 0-tick recursive updates yet.

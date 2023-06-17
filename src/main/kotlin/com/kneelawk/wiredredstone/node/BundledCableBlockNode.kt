@@ -3,6 +3,7 @@ package com.kneelawk.wiredredstone.node
 import com.kneelawk.graphlib.api.graph.NodeHolder
 import com.kneelawk.graphlib.api.graph.user.BlockNode
 import com.kneelawk.graphlib.api.graph.user.BlockNodeDecoder
+import com.kneelawk.graphlib.api.graph.user.BlockNodeType
 import com.kneelawk.graphlib.api.util.HalfLink
 import com.kneelawk.graphlib.api.util.SidedPos
 import com.kneelawk.graphlib.api.wire.SidedWireBlockNode
@@ -18,7 +19,6 @@ import net.minecraft.nbt.NbtCompound
 import net.minecraft.nbt.NbtElement
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.DyeColor
-import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.world.BlockView
@@ -32,7 +32,7 @@ data class BundledCableBlockNode(private val side: Direction, val color: DyeColo
     override val redstoneType = RedstoneWireType.Bundled(color, inner)
 
     override fun getSide(): Direction = side
-    override fun getTypeId(): Identifier = WRBlockNodes.BUNDLED_CABLE_ID
+    override fun getType(): BlockNodeType = WRBlockNodes.BUNDLED_CABLE
 
     private fun getPart(world: BlockView, pos: BlockPos): BundledCablePart? {
         return SidedPart.getPart(world, SidedPos(pos, side))
@@ -47,13 +47,13 @@ data class BundledCableBlockNode(private val side: Direction, val color: DyeColo
     }
 
     override fun putPower(world: ServerWorld, self: NodeHolder<RedstoneCarrierBlockNode>, power: Int) {
-        getPart(world, self.pos)?.updatePower(inner, power)
+        getPart(world, self.blockPos)?.updatePower(inner, power)
     }
 
     override fun sourcePower(world: ServerWorld, self: NodeHolder<RedstoneCarrierBlockNode>): Int {
-        val part = getPart(world, self.pos) ?: return 0
+        val part = getPart(world, self.blockPos) ?: return 0
         return BundledCableLogic.getBundledCableInput(
-            world, SidedPos(self.pos, side), inner, part.connections, part.blockage
+            world, SidedPos(self.blockPos, side), inner, part.connections, part.blockage
         )
     }
 

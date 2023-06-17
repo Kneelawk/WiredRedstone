@@ -82,7 +82,7 @@ abstract class AbstractSidedPart :
             // Update the nodes here
             val world = getWorld()
             if (world is ServerWorld) {
-                WIRE_NET.getGraphWorld(world).updateNodes(getPos())
+                WIRE_NET.getServerGraphWorld(world).updateNodes(getPos())
             }
         }
     }
@@ -95,6 +95,6 @@ abstract class AbstractSidedPart :
     }
 
     override fun updateConnections(world: ServerWorld) {
-        WIRE_NET.getGraphWorld(world).updateConnections(getSidedPos())
+        WIRE_NET.getServerGraphWorld(world).updateConnections(getSidedPos())
     }
 }

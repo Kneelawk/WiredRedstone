@@ -8,5 +8,5 @@ import com.kneelawk.wiredredstone.part.SidedPart
 
 inline fun <reified T : SidedPart> NodeHolder<BlockNode>.getSidedPart(): T? {
     val node = this.node as? SidedBlockNode ?: return null
-    return SidedPart.getPart<T>(blockWorld, SidedPos(pos, node.side))
+    return SidedPart.getPart<T>(blockWorld, SidedPos(blockPos, node.side))
 }

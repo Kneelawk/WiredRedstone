@@ -59,7 +59,7 @@ class PowerlineWireItem(settings: Settings) : Item(settings) {
         if (existingPos != null) {
             // connect the two nodes
             if (existingPos.pos.getSquaredDistance(pos) <= MAX_DISTANCE_SQR) {
-                val graphWorld = WRBlockNodes.WIRE_NET.getGraphWorld(world)
+                val graphWorld = WRBlockNodes.WIRE_NET.getServerGraphWorld(world)
 
                 if (graphWorld.linkExistsAt(LinkPos(existingPos, nodePos, PowerlineLinkKey))) {
                     graphWorld.disconnectNodes(existingPos, nodePos, PowerlineLinkKey)

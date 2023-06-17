@@ -130,7 +130,7 @@ abstract class AbstractDisableableThreeInputGatePart : AbstractThreeInputGatePar
                 updateInputPower(calculateInputPower(input), input)
             }
 
-            WRBlockNodes.WIRE_NET.getGraphWorld(world).updateNodes(pos)
+            WRBlockNodes.WIRE_NET.getServerGraphWorld(world).updateNodes(pos)
 
             return ActionResult.CONSUME
         }

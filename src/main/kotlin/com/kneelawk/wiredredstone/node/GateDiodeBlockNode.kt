@@ -2,6 +2,7 @@ package com.kneelawk.wiredredstone.node
 
 import com.kneelawk.graphlib.api.graph.NodeHolder
 import com.kneelawk.graphlib.api.graph.user.BlockNodeDecoder
+import com.kneelawk.graphlib.api.graph.user.BlockNodeType
 import com.kneelawk.graphlib.api.wire.SidedWireConnectionFilter
 import com.kneelawk.wiredredstone.logic.RedstoneCarrierFilter
 import com.kneelawk.wiredredstone.logic.RedstoneWireType
@@ -26,7 +27,7 @@ sealed class GateDiodeBlockNode : AbstractGateBlockNode<GateDiodePart>(GateDiode
 
     protected abstract val type: Type
 
-    override fun getTypeId(): Identifier = WRBlockNodes.GATE_DIODE_ID
+    override fun getType(): BlockNodeType = WRBlockNodes.GATE_DIODE
 
     override fun toTag(): NbtElement? = BlockNodeUtil.writeSidedType(side, type)
 
@@ -38,11 +39,11 @@ sealed class GateDiodeBlockNode : AbstractGateBlockNode<GateDiodePart>(GateDiode
         override fun getConnectDirection(part: GateDiodePart): Direction = part.getInputSide()
 
         override fun putPower(world: ServerWorld, self: NodeHolder<RedstoneCarrierBlockNode>, power: Int) {
-            getPart(world, self.pos)?.updateInputPower(power)
+            getPart(world, self.blockPos)?.updateInputPower(power)
         }
 
         override fun sourcePower(world: ServerWorld, self: NodeHolder<RedstoneCarrierBlockNode>): Int {
-            val part = getPart(world, self.pos) ?: return 0
+            val part = getPart(world, self.blockPos) ?: return 0
             val input = part.calculateInputPower()
 
             // Even though this gate's input does not output any signal to anything else in the network,
@@ -60,11 +61,11 @@ sealed class GateDiodeBlockNode : AbstractGateBlockNode<GateDiodePart>(GateDiode
         override fun getConnectDirection(part: GateDiodePart): Direction = part.getOutputSide()
 
         override fun putPower(world: ServerWorld, self: NodeHolder<RedstoneCarrierBlockNode>, power: Int) {
-            getPart(world, self.pos)?.updateOutputReversePower(power)
+            getPart(world, self.blockPos)?.updateOutputReversePower(power)
         }
 
         override fun sourcePower(world: ServerWorld, self: NodeHolder<RedstoneCarrierBlockNode>): Int {
-            val part = getPart(world, self.pos) ?: return 0
+            val part = getPart(world, self.blockPos) ?: return 0
 
             // This is asking about input to the network, so we return either our output value or the value calculated
             // by redstone in the world.

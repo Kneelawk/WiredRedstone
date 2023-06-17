@@ -1,6 +1,7 @@
 package com.kneelawk.wiredredstone.util.connectable
 
 import alexiil.mc.lib.multipart.api.MultipartUtil
+import com.kneelawk.graphlib.api.graph.GraphView
 import com.kneelawk.graphlib.api.graph.GraphWorld
 import com.kneelawk.graphlib.api.graph.user.BlockNode
 import com.kneelawk.graphlib.api.graph.user.SidedBlockNode
@@ -33,7 +34,7 @@ object ConnectableUtils {
     fun updateBlockageAndConnections(world: ServerWorld, part: BlockablePart, wireWidth: Double, wireHeight: Double) {
         val blockPos = part.getPos()
         val side = part.side
-        val net = WIRE_NET.getGraphWorld(world)
+        val net = WIRE_NET.getGraphView(world)
 
         val blockage = DirectionUtils.HORIZONTALS.fold(0u.toUByte()) { blockage, cardinal ->
             val inside = BoundingBoxUtils.getWireInsideConnectionShape(side, cardinal, wireWidth, wireHeight)
@@ -54,7 +55,7 @@ object ConnectableUtils {
      * Updates connections of the LMP part and asking it to update the client.
      */
     fun updateConnections(world: ServerWorld, part: ConnectablePart) {
-        val net = WIRE_NET.getGraphWorld(world)
+        val net = WIRE_NET.getGraphView(world)
 
         updateConnectionsImpl(part, net, BlockageUtils.UNBLOCKED)
     }
@@ -63,7 +64,7 @@ object ConnectableUtils {
      * Updates visual connections, updating the LMP part and asking it to update the client.
      */
     private fun updateConnectionsImpl(
-        part: ConnectablePart, net: GraphWorld, blockage: UByte
+        part: ConnectablePart, net: GraphView, blockage: UByte
     ) {
         val side = part.side
         val pos = part.getSidedPos()
@@ -82,14 +83,14 @@ object ConnectableUtils {
                             ConnectionUtils::isInternal
                         )
                     } else {
-                        val cornerEdge = other.pos.subtract(node.pos.offset(side)).let(DirectionUtils::fromVector)
+                        val cornerEdge = other.blockPos.subtract(node.blockPos.offset(side)).let(DirectionUtils::fromVector)
                         if (cornerEdge != null) {
                             newConn = setSingularConnection(
                                 newConn, blockage, side, cornerEdge, ConnectionUtils::setCorner,
                                 ConnectionUtils::isCorner
                             )
                         } else {
-                            other.pos.subtract(node.pos).let(DirectionUtils::fromVector)?.let {
+                            other.blockPos.subtract(node.blockPos).let(DirectionUtils::fromVector)?.let {
                                 newConn = setSingularConnection(
                                     newConn, blockage, side, it, ConnectionUtils::setExternal,
                                     ConnectionUtils::isExternal

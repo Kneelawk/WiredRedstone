@@ -3,6 +3,7 @@ package com.kneelawk.wiredredstone.node
 import com.kneelawk.graphlib.api.graph.NodeHolder
 import com.kneelawk.graphlib.api.graph.user.BlockNode
 import com.kneelawk.graphlib.api.graph.user.BlockNodeDecoder
+import com.kneelawk.graphlib.api.graph.user.BlockNodeType
 import com.kneelawk.graphlib.api.graph.user.SidedBlockNode
 import com.kneelawk.graphlib.api.util.HalfLink
 import com.kneelawk.graphlib.api.wire.CenterWireBlockNode
@@ -15,11 +16,11 @@ import com.kneelawk.wiredredstone.util.getSidedPart
 import net.minecraft.nbt.NbtByte
 import net.minecraft.nbt.NbtElement
 import net.minecraft.server.world.ServerWorld
-import net.minecraft.util.Identifier
 import net.minecraft.util.math.Direction
 
-data class PowerlineConnectorBlockNode(private val side: Direction) : SidedBlockNode, CenterWireBlockNode, RedstoneCarrierBlockNode {
-    override fun getTypeId(): Identifier = WRBlockNodes.POWERLINE_CONNECTOR
+data class PowerlineConnectorBlockNode(private val side: Direction) : SidedBlockNode, CenterWireBlockNode,
+    RedstoneCarrierBlockNode {
+    override fun getType(): BlockNodeType = WRBlockNodes.POWERLINE_CONNECTOR
 
     override fun toTag(): NbtElement = NbtByte.of(side.id.toByte())
 
@@ -38,7 +39,10 @@ data class PowerlineConnectorBlockNode(private val side: Direction) : SidedBlock
     }
 
     override fun onConnectionsChanged(ctx: NodeHolder<BlockNode>) {
-        RedstoneLogic.scheduleUpdate(ctx.blockWorld, ctx.graphId)
+        val world = ctx.blockWorld
+        if (world is ServerWorld) {
+            RedstoneLogic.scheduleUpdate(world, ctx.graphId)
+        }
     }
 
     override fun isValid(self: NodeHolder<BlockNode>): Boolean {

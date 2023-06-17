@@ -2,6 +2,7 @@ package com.kneelawk.wiredredstone.node
 
 import com.kneelawk.graphlib.api.graph.NodeHolder
 import com.kneelawk.graphlib.api.graph.user.BlockNodeDecoder
+import com.kneelawk.graphlib.api.graph.user.BlockNodeType
 import com.kneelawk.graphlib.api.wire.SidedWireConnectionFilter
 import com.kneelawk.wiredredstone.logic.RedstoneCarrierFilter
 import com.kneelawk.wiredredstone.logic.RedstoneWireType
@@ -30,7 +31,7 @@ sealed class GateRSLatchBlockNode : AbstractGateBlockNode<GateRSLatchPart>(GateR
 
     protected abstract fun writeExtra(tag: NbtCompound)
 
-    override fun getTypeId(): Identifier = WRBlockNodes.GATE_RS_LATCH
+    override fun getType(): BlockNodeType = WRBlockNodes.GATE_RS_LATCH
 
     override fun toTag(): NbtElement? = BlockNodeUtil.writeSidedType(side, type, ::writeExtra)
 
@@ -42,11 +43,11 @@ sealed class GateRSLatchBlockNode : AbstractGateBlockNode<GateRSLatchPart>(GateR
         override fun getConnectDirection(part: GateRSLatchPart): Direction = part.getInputSide(latchState)
 
         override fun putPower(world: ServerWorld, self: NodeHolder<RedstoneCarrierBlockNode>, power: Int) {
-            getPart(world, self.pos)?.updateInputPower(power, latchState)
+            getPart(world, self.blockPos)?.updateInputPower(power, latchState)
         }
 
         override fun sourcePower(world: ServerWorld, self: NodeHolder<RedstoneCarrierBlockNode>): Int {
-            val part = getPart(world, self.pos) ?: return 0
+            val part = getPart(world, self.blockPos) ?: return 0
             return part.calculateInputPower(latchState)
         }
 
@@ -64,11 +65,11 @@ sealed class GateRSLatchBlockNode : AbstractGateBlockNode<GateRSLatchPart>(GateR
         override fun getConnectDirection(part: GateRSLatchPart): Direction = part.getOutputSide(latchState)
 
         override fun putPower(world: ServerWorld, self: NodeHolder<RedstoneCarrierBlockNode>, power: Int) {
-            getPart(world, self.pos)?.updateReverseOuputPower(power, latchState)
+            getPart(world, self.blockPos)?.updateReverseOuputPower(power, latchState)
         }
 
         override fun sourcePower(world: ServerWorld, self: NodeHolder<RedstoneCarrierBlockNode>): Int {
-            val part = getPart(world, self.pos) ?: return 0
+            val part = getPart(world, self.blockPos) ?: return 0
             return max(part.getOutputPower(latchState), part.calculateOutputReversePower(latchState))
         }
 

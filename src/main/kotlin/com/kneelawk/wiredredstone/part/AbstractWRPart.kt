@@ -115,7 +115,7 @@ abstract class AbstractWRPart(definition: PartDefinition, holder: MultipartHolde
             if (shouldBreak()) {
                 removeAndDrop()
             } else {
-                WIRE_NET.getGraphWorld(world).updateNodes(getPos())
+                WIRE_NET.getServerGraphWorld(world).updateNodes(getPos())
             }
         }
     }
@@ -149,7 +149,7 @@ abstract class AbstractWRPart(definition: PartDefinition, holder: MultipartHolde
     }
 
     protected open fun updateConnections(world: ServerWorld) {
-        WIRE_NET.getGraphWorld(world).updateConnections(getPos())
+        WIRE_NET.getServerGraphWorld(world).updateConnections(getPos())
     }
 
     override fun onRemoved() {
@@ -158,7 +158,7 @@ abstract class AbstractWRPart(definition: PartDefinition, holder: MultipartHolde
 
         val world = getWorld()
         if (!world.isClient && world is ServerWorld) {
-            WIRE_NET.getGraphWorld(world).updateNodes(getPos())
+            WIRE_NET.getServerGraphWorld(world).updateNodes(getPos())
         }
     }
 
