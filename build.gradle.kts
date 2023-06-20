@@ -81,6 +81,7 @@ repositories {
         name = "JitPack"
         content {
             includeGroup("com.github.LlamaLad7")
+            includeGroup("com.github.llamalad7.mixinextras")
 
             // Create stuff
             includeGroup("com.github.AlphaMode")
@@ -121,9 +122,9 @@ dependencies {
 
     // Mixin Extras
     val mixinExtrasVersion: String by project
-    implementation("com.github.LlamaLad7:MixinExtras:$mixinExtrasVersion")
-    annotationProcessor("com.github.LlamaLad7:MixinExtras:$mixinExtrasVersion")
-    include("com.github.LlamaLad7:MixinExtras:$mixinExtrasVersion")
+    implementation("com.github.llamalad7.mixinextras:mixinextras-fabric:$mixinExtrasVersion")
+    annotationProcessor("com.github.llamalad7.mixinextras:mixinextras-fabric:$mixinExtrasVersion")
+    include("com.github.llamalad7.mixinextras:mixinextras-fabric:$mixinExtrasVersion")
 
     // LibMultiPart dependency
     val lmpVersion: String by project
