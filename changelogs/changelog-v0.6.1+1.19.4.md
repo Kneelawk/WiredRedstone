@@ -8,3 +8,4 @@ Changes:
 * Improved gate input hitboxes.
 * Re-enabled ComputerCraft integration.
 * Made bundled cables emit fewer block updates.
+* Fixed Redstone Assembler trying to place with invalid orientations.
