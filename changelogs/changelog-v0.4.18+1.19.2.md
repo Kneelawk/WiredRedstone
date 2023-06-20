@@ -6,3 +6,4 @@ Changes:
 
 * Fixed rare crash caused by unintentional recursive updates.
 * Improved gate input hitboxes.
+* Updated Create compat to support 0.5.1.
