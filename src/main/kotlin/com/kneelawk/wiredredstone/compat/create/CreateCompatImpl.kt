@@ -3,7 +3,7 @@ package com.kneelawk.wiredredstone.compat.create
 import alexiil.mc.lib.multipart.api.MultipartUtil
 import com.kneelawk.wiredredstone.WRLog
 import com.kneelawk.wiredredstone.part.event.WRPartPreMoveEvent
-import com.simibubi.create.content.contraptions.components.structureMovement.BlockMovementChecks
+import com.simibubi.create.content.contraptions.BlockMovementChecks
 
 @Suppress("unused")
 object CreateCompatImpl : CreateCompat {
