@@ -72,6 +72,13 @@ class PowerlineWireItem(settings: Settings) : Item(settings) {
         val existingPos = getPosition(stack)
 
         if (existingPos != null) {
+            // don't allow nodes to connect to themselves, instead cancel the connection
+            if (existingPos == nodePos) {
+                removePosition(stack)
+
+                return ActionResult.SUCCESS
+            }
+
             // connect the two nodes
             if (existingPos.pos.getSquaredDistance(pos) <= MAX_DISTANCE_SQR) {
                 val graphWorld = WRBlockNodes.WIRE_NET.getServerGraphWorld(world)
