@@ -2,6 +2,7 @@ package com.kneelawk.wiredredstone.node
 
 import com.kneelawk.graphlib.api.graph.GraphUniverse
 import com.kneelawk.graphlib.api.graph.user.BlockNodeType
+import com.kneelawk.graphlib.api.graph.user.LinkEntityType
 import com.kneelawk.graphlib.api.graph.user.LinkKeyType
 import com.kneelawk.graphlib.api.graph.user.SyncProfile
 import com.kneelawk.graphlib.api.util.CacheCategory
@@ -17,6 +18,8 @@ object WRBlockNodes {
         id("powerline_connector"), PowerlineConnectorBlockNode.Decoder, PowerlineConnectorBlockNode.Decoder
     )
     val POWERLINE_LINK = LinkKeyType.of(id("powerline"), { PowerlineLinkKey }) { _, _ -> PowerlineLinkKey }
+    val POWERLINE_LINK_ENTITY =
+        LinkEntityType.of(id("powerline"), PowerlineLinkEntity.Decoder, PowerlineLinkEntity.Decoder)
 
     val GATE_AND = BlockNodeType.of(id("gate_and"), GateAndBlockNode.Decoder)
     val GATE_DIODE = BlockNodeType.of(id("gate_diode"), GateDiodeBlockNode.Decoder)
@@ -58,6 +61,7 @@ object WRBlockNodes {
         )
 
         WIRE_NET.addLinkKeyType(POWERLINE_LINK)
+        WIRE_NET.addLinkEntityType(POWERLINE_LINK_ENTITY)
         WIRE_NET.addCacheCategory(REDSTONE_CARRIERS)
 
         WIRE_NET.register()

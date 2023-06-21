@@ -17,6 +17,7 @@ fun init() {
     WRPartRenderers.init()
     WROutlineRenderer.init()
     WRGhostRenderer.init()
+    WRPowerlineRenderer.init()
     WRScreens.init()
     WRTextRenderer.init()
     WRProjectionViewerRenderer.init()
