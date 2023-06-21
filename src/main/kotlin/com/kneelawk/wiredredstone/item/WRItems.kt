@@ -165,8 +165,8 @@ object WRItems {
         register(RED_BUNDLED_CABLE, "red_bundled_cable")
         register(BLACK_BUNDLED_CABLE, "black_bundled_cable")
 
-        register(POWERLINE_CONNECTOR, "powerline_connector")
-        register(POWERLINE_WIRE, "powerline_wire")
+        register(POWERLINE_CONNECTOR, "powerline_connector", false)
+        register(POWERLINE_WIRE, "powerline_wire", false)
 
         register(GATE_DIODE, "gate_diode")
         register(GATE_AND, "gate_and")
@@ -195,8 +195,8 @@ object WRItems {
         Registry.register(Registries.ITEM_GROUP, WRConstants.id("wiredredstone"), WIRED_REDSTONE_ITEM_GROUP)
     }
 
-    private fun register(item: Item, name: String) {
+    private fun register(item: Item, name: String, creativeTab: Boolean = true) {
         Registry.register(Registries.ITEM, WRConstants.id(name), item)
-        WIRED_REDSTONE_ITEMS.add(ItemStack(item))
+        if (creativeTab) WIRED_REDSTONE_ITEMS.add(ItemStack(item))
     }
 }
