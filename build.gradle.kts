@@ -115,7 +115,7 @@ repositories {
     maven("https://mvn.devos.one/snapshots/") { name = "Create" }
     maven("https://ladysnake.jfrog.io/artifactory/mods") { name = "Ladysnake" }
     maven("https://maven.tterrag.com/") { name = "Flywheel" }
-    maven("https://maven.cafeteria.dev/releases/") { name = "Cafeteria" } // for Fake Player API
+//    maven("https://maven.cafeteria.dev/releases/") { name = "Cafeteria" } // for Fake Player API
     maven("https://maven.jamieswhiteshirt.com/libs-release") // for Reach Entity Attributes
     maven("https://cursemaven.com") { // for Forge Config API Port
         name = "Cursemaven"
@@ -193,7 +193,7 @@ dependencies {
         modCompileOnly("mcp.mobius.waila:wthit-api:fabric-$wthitVersion")
     }
 
-    // CC: Restitched
+    // CC: Tweaked
     val ccEnabled: String by project
     val ccVersion: String by project
     val ccMCVersion: String by project
@@ -216,7 +216,7 @@ dependencies {
     val emiEnabled: String by project
     val emiVersion: String by project
     if (emiEnabled.toBoolean()) {
-        modCompileOnly("dev.emi:emi:$emiVersion") {
+        modCompileOnly("dev.emi:emi-fabric:$emiVersion") {
             isTransitive = false
         }
     }
@@ -254,7 +254,7 @@ dependencies {
         }
     }
 
-    // CC: Restitched
+    // CC: Tweaked
     if (ccEnabled.toBoolean()) {
         modLocalRuntime("cc.tweaked:cc-tweaked-$ccMCVersion-fabric:$ccVersion") {
             exclude("net.fabricmc")
@@ -262,11 +262,11 @@ dependencies {
         }
     }
 
-    // REI
+    // Recipe viewers
     val runtimeViewer: String by project
     when {
         runtimeViewer == "emi" && emiEnabled.toBoolean() -> {
-            modLocalRuntime("dev.emi:emi:$emiVersion") {
+            modLocalRuntime("dev.emi:emi-fabric:$emiVersion") {
                 isTransitive = false
             }
         }
