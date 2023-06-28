@@ -32,6 +32,12 @@ data class CommonConfig(
     @Comment("This is only used if version-checking is happening during the PLAY phase.")
     val versionCheckTimeout: Long = 20000,
 
+    @Comment("If set to true, wires' connections are saved whenever they are changed,")
+    @Comment("instead of only when the world is saved.")
+    @Comment("This means that it is less likely for a server crash to cause corruption,")
+    @Comment("but it can also cause more lag, because more frequent saves means more time spent saving.")
+    val incrementalGraphSaves: Boolean = false,
+
     @Comment("Configures values relating to the Redstone Assembler.")
     @Comment("Some of these values will be synced to the client.")
     val assembler: AssemblerConfig = AssemblerConfig()

@@ -8,6 +8,7 @@ import com.kneelawk.graphlib.api.graph.user.SyncProfile
 import com.kneelawk.graphlib.api.util.CacheCategory
 import com.kneelawk.graphlib.api.world.SaveMode
 import com.kneelawk.wiredredstone.WRConstants.id
+import com.kneelawk.wiredredstone.config.CommonConfig
 
 object WRBlockNodes {
     val RED_ALLOY_WIRE = BlockNodeType.of(id("red_alloy_wire"), RedAlloyWireBlockNode.Decoder)
@@ -36,7 +37,9 @@ object WRBlockNodes {
     private val SYNC_PROFILE = SyncProfile.of(CacheCategory.of { it.node is PowerlineConnectorBlockNode })
 
     val WIRE_NET by lazy {
-        GraphUniverse.builder().saveMode(SaveMode.INCREMENTAL).synchronizeToClient(SYNC_PROFILE).build(id("wire_net"))
+        GraphUniverse.builder()
+            .saveMode(if (CommonConfig.local.incrementalGraphSaves) SaveMode.INCREMENTAL else SaveMode.UNLOAD)
+            .synchronizeToClient(SYNC_PROFILE).build(id("wire_net"))
     }
 
     fun init() {
