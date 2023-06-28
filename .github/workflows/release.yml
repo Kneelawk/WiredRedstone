@@ -187,7 +187,7 @@ jobs:
       - name: Make Gradle Wrapper Executable
         run: chmod +x ./gradlew
       - name: Modrinth Release
-        run: ./gradlew modrinth modrinthSyncBody --no-daemon
+        run: ./gradlew modrinth --no-daemon
         env:
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
           RELEASE_TAG: ${{ steps.tag_version.outputs.tag }}
