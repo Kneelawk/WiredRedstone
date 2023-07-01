@@ -20,7 +20,15 @@ object CCIntegrationHandler {
                             "not compiled with ComputerCraft integration. ComputerCraft integration will not work."
                 )
             }
-            integration?.init()
+            try {
+                integration?.init()
+            } catch (t: Throwable) {
+                WRLog.log.error(
+                    "Attempted to load ComputerCraft integration, but there were errors initialising it. ComputerCraft integration will not work",
+                    t
+                )
+                integration = null
+            }
         }
     }
 }

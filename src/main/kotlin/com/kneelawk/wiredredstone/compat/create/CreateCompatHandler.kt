@@ -17,7 +17,15 @@ object CreateCompatHandler {
                             "not compiled with Create integration. Create integration will not work."
                 )
             }
-            compat?.init()
+            try {
+                compat?.init()
+            } catch (t: Throwable) {
+                WRLog.log.error(
+                    "Attempted to load Create integration, but there were errors initializing it. Create integration will not work.",
+                    t
+                )
+                compat = null
+            }
         }
     }
 }

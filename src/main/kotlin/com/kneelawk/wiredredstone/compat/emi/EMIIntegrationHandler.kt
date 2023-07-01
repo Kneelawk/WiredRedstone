@@ -1,5 +1,6 @@
 package com.kneelawk.wiredredstone.compat.emi
 
+import com.kneelawk.wiredredstone.WRLog
 import com.kneelawk.wiredredstone.util.ReflectionUtils
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
@@ -12,12 +13,23 @@ object EMIIntegrationHandler {
 
     fun init() {
         if (FabricLoader.getInstance().isModLoaded("emi")) {
-            integration = ReflectionUtils.loadObject("com.kneelawk.wiredredstone.compat.emi.EMIIntegrationImpl")
+            try {
+                integration = ReflectionUtils.loadObject("com.kneelawk.wiredredstone.compat.emi.EMIIntegrationImpl")
+            } catch (ex: ClassNotFoundException) {
+                WRLog.warn(
+                    "Attempted to load EMI integration, but found that this version of Wired Redstone is " +
+                            "not compiled with EMI integration. EMI integration will not work."
+                )
+            }
         }
     }
 
     @Environment(EnvType.CLIENT)
     fun openRedstoneAssemblerRecipes() {
-        integration?.openRedstoneAssemblerRecipes()
+        try {
+            integration?.openRedstoneAssemblerRecipes()
+        } catch (t: Throwable) {
+            WRLog.log.error("Attempted to use EMI integration, but encountered an error.", t)
+        }
     }
 }
