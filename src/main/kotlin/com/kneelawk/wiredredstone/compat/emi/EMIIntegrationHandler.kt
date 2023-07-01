@@ -12,7 +12,12 @@ object EMIIntegrationHandler {
 
     fun init() {
         if (FabricLoader.getInstance().isModLoaded("emi")) {
-            integration = ReflectionUtils.loadObject("com.kneelawk.wiredredstone.compat.emi.EMIIntegrationImpl")
+            integration = try {
+                ReflectionUtils.loadObject("com.kneelawk.wiredredstone.compat.emi.EMIIntegrationImpl")
+            } catch (t: Throwable) {
+                t.printStackTrace()
+                null
+            }
         }
     }
 
