@@ -1,5 +1,6 @@
 package com.kneelawk.wiredredstone.compat.emi
 
+import com.kneelawk.wiredredstone.WRLog
 import com.kneelawk.wiredredstone.util.ReflectionUtils
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
@@ -20,6 +21,10 @@ object EMIIntegrationHandler {
 
     @Environment(EnvType.CLIENT)
     fun openRedstoneAssemblerRecipes() {
-        integration?.openRedstoneAssemblerRecipes()
+        try {
+            integration?.openRedstoneAssemblerRecipes()
+        } catch (t: Throwable) {
+            WRLog.log.error("Encountered an error with EMI integration.", t)
+        }
     }
 }
