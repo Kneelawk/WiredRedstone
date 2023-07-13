@@ -84,7 +84,7 @@ repositories {
     maven("https://maven.vram.io/") { name = "VRAM" }
     maven("https://maven.shedaniel.me/") { name = "shedaniel" }
     maven("https://kneelawk.com/maven/") { name = "Kneelawk" }
-    maven("https://maven.bai.lol") { name = "WTHIT" }
+    maven("https://maven2.bai.lol") { name = "WTHIT" }
     maven("https://squiddev.cc/maven") {
         name = "SquidDev"
         content {
@@ -113,7 +113,7 @@ repositories {
 
     // Create Stuff
     maven("https://mvn.devos.one/snapshots/") { name = "Create" }
-    maven("https://ladysnake.jfrog.io/artifactory/mods") { name = "Ladysnake" }
+    maven("https://maven.ladysnake.org/releases") { name = "Ladysnake" }
     maven("https://maven.tterrag.com/") { name = "Flywheel" }
 //    maven("https://maven.cafeteria.dev/releases/") { name = "Cafeteria" } // for Fake Player API
     maven("https://maven.jamieswhiteshirt.com/libs-release") // for Reach Entity Attributes
