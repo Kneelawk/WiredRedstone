@@ -320,6 +320,8 @@ tasks {
         inputs.property("reiEnabled", reiEnabled)
 
         exclude("**/*.xcf")
+        exclude("**/textures/**/*.txt")
+        exclude("**/textures/**/*.gpl")
 
         filesMatching("fabric.mod.json") {
             expand(
