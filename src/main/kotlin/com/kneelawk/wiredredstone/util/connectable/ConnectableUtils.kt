@@ -77,7 +77,7 @@ object ConnectableUtils {
                 var newConn = connections
                 node.connections.forEach { link ->
                     val other = link.other(node.cast(BlockNode::class.java))
-                    if (node.pos == other.pos && other.node is SidedBlockNode) {
+                    if (node.blockPos == other.blockPos && other.node is SidedBlockNode) {
                         newConn = setSingularConnection(
                             newConn, blockage, side, (other.node as SidedBlockNode).side, ConnectionUtils::setInternal,
                             ConnectionUtils::isInternal
