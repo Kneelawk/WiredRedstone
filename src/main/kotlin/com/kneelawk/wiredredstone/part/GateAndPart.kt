@@ -76,6 +76,6 @@ class GateAndPart : AbstractDisableableThreeInputGatePart {
     }
 
     override fun addDrops(target: ItemDropTarget, context: LootContextParameterSet) {
-        LootTableUtil.addPartDrops(getWorld(), target, context, WRParts.GATE_AND.identifier)
+        LootTableUtil.addPartDrops(this, target, context, WRParts.GATE_AND.identifier)
     }
 }

@@ -135,7 +135,7 @@ class GateRepeaterPart : AbstractInputOutputGatePart {
     }
 
     override fun addDrops(target: ItemDropTarget, params: LootContextParameterSet) {
-        LootTableUtil.addPartDrops(getWorld(), target, params, WRParts.GATE_REPEATER.identifier)
+        LootTableUtil.addPartDrops(this, target, params, WRParts.GATE_REPEATER.identifier)
     }
 
     override fun onUse(player: PlayerEntity?, hand: Hand?, hit: BlockHitResult?): ActionResult {

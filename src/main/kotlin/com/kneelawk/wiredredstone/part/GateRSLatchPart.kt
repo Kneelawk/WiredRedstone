@@ -195,7 +195,7 @@ class GateRSLatchPart : AbstractGatePart {
     }
 
     override fun addDrops(target: ItemDropTarget, params: LootContextParameterSet) {
-        LootTableUtil.addPartDrops(getWorld(), target, params, WRParts.GATE_RS_LATCH.identifier)
+        LootTableUtil.addPartDrops(this, target, params, WRParts.GATE_RS_LATCH.identifier)
     }
 
     private fun getRedstoneOutputPower(edge: Direction): Int {

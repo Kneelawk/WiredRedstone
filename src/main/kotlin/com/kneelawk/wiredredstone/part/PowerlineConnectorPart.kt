@@ -46,6 +46,6 @@ class PowerlineConnectorPart : AbstractSidedPart {
     override fun getPickStack(hitResult: BlockHitResult?): ItemStack = ItemStack(WRItems.POWERLINE_CONNECTOR)
 
     override fun addDrops(target: ItemDropTarget, params: LootContextParameterSet) {
-        LootTableUtil.addPartDrops(getWorld(), target, params, WRParts.POWERLINE_CONNECTOR.identifier)
+        LootTableUtil.addPartDrops(this, target, params, WRParts.POWERLINE_CONNECTOR.identifier)
     }
 }

@@ -54,6 +54,6 @@ class GateDiodePart : AbstractInputOutputGatePart {
     }
 
     override fun addDrops(target: ItemDropTarget, params: LootContextParameterSet) {
-        LootTableUtil.addPartDrops(getWorld(), target, params, WRParts.GATE_DIODE.identifier)
+        LootTableUtil.addPartDrops(this, target, params, WRParts.GATE_DIODE.identifier)
     }
 }

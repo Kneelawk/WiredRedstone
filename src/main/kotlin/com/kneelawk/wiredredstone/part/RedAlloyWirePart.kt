@@ -95,6 +95,6 @@ class RedAlloyWirePart : AbstractRedstoneWirePart {
     }
 
     override fun addDrops(target: ItemDropTarget, params: LootContextParameterSet) {
-        LootTableUtil.addPartDrops(getWorld(), target, params, WRParts.RED_ALLOY_WIRE.identifier)
+        LootTableUtil.addPartDrops(this, target, params, WRParts.RED_ALLOY_WIRE.identifier)
     }
 }
