@@ -38,6 +38,11 @@ data class CommonConfig(
     @Comment("but it can also cause more lag, because more frequent saves means more time spent saving.")
     val incrementalGraphSaves: Boolean = false,
 
+    @Comment("If set to true, wires will always connect around exterior corners, even if there is a block in the way.")
+    @Comment("This can be used to improve performance as well as correct some mod interactions.")
+    @Comment("If wires don't want to connect around corners in your modpack, this option is likely what you want.")
+    val ignoreCornerBlockage: Boolean = false,
+
     @Comment("Configures values relating to the Redstone Assembler.")
     @Comment("Some of these values will be synced to the client.")
     val assembler: AssemblerConfig = AssemblerConfig()

@@ -7,6 +7,7 @@ import com.kneelawk.graphlib.api.graph.user.BlockNode
 import com.kneelawk.graphlib.api.graph.user.SidedBlockNode
 import com.kneelawk.graphlib.api.wire.SidedWireBlockNode
 import com.kneelawk.graphlib.api.wire.WireConnectionType
+import com.kneelawk.wiredredstone.config.CommonConfig
 import com.kneelawk.wiredredstone.node.WRBlockNodes.WIRE_NET
 import com.kneelawk.wiredredstone.part.BlockablePart
 import com.kneelawk.wiredredstone.part.ConnectablePart
@@ -173,7 +174,7 @@ object ConnectableUtils {
     ): Boolean {
         val cardinal = RotationUtils.unrotatedDirection(wireSide, inDirection)
 
-        return if (type == WireConnectionType.CORNER) {
+        return if (type == WireConnectionType.CORNER && !CommonConfig.current.ignoreCornerBlockage) {
             val outside =
                 BoundingBoxUtils.getWireOutsideConnectionShape(wireSide, cardinal, wireWidth, wireHeight, true)
                     ?: return true
@@ -195,7 +196,7 @@ object ConnectableUtils {
             return false
         }
 
-        return if (type == WireConnectionType.CORNER) {
+        return if (type == WireConnectionType.CORNER && !CommonConfig.current.ignoreCornerBlockage) {
             val outside =
                 BoundingBoxUtils.getWireOutsideConnectionShape(wireSide, cardinal, wireWidth, wireHeight, true)
                     ?: return true
