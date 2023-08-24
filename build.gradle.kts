@@ -20,6 +20,8 @@ base {
     archivesName.set(archivesBaseName)
 }
 
+val modId: String by project
+
 // System to get the release version if this project is being built as part of a release
 val modVersion: String = if (System.getenv("RELEASE_TAG") != null) {
     val releaseTag = System.getenv("RELEASE_TAG")
@@ -35,10 +37,28 @@ version = modVersion
 val mavenGroup: String by project
 group = mavenGroup
 
+val genResDir = file("src/main/resources-generated")
+
 loom {
     accessWidenerPath.set(file("src/main/resources/wiredredstone.accesswidener"))
 
 //    enableTransitiveAccessWideners.set(false)
+
+    runs {
+        getByName("client") {
+            programArgs("--width", "1920", "--height", "1080")
+        }
+
+        create("datagen") {
+            inherit(getByName("client"))
+            name("Data Generation")
+            vmArg("-Dfabric-api.datagen")
+            vmArg("-Dfabric-api.datagen.output-dir=${genResDir}")
+            vmArg("-Dfabric-api.datagen.modid=${modId}")
+
+            runDir("build/datagen")
+        }
+    }
 }
 
 sourceSets {
@@ -70,6 +90,7 @@ sourceSets {
             }
         }
         resources {
+            srcDir(genResDir)
             if (!wthitEnabled.toBoolean()) {
                 exclude("waila_plugins.json")
             }
