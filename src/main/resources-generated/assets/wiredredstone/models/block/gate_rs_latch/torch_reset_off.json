@@ -1,0 +1,68 @@
+{
+  "parent": "wiredredstone:block/flat",
+  "elements": [
+    {
+      "faces": {
+        "east": {
+          "texture": "#torch_off",
+          "uv": [
+            7.0,
+            6.0,
+            9.0,
+            9.0
+          ]
+        },
+        "north": {
+          "texture": "#torch_off",
+          "uv": [
+            7.0,
+            6.0,
+            9.0,
+            9.0
+          ]
+        },
+        "south": {
+          "texture": "#torch_off",
+          "uv": [
+            7.0,
+            6.0,
+            9.0,
+            9.0
+          ]
+        },
+        "up": {
+          "texture": "#torch_off",
+          "uv": [
+            7.0,
+            6.0,
+            9.0,
+            8.0
+          ]
+        },
+        "west": {
+          "texture": "#torch_off",
+          "uv": [
+            7.0,
+            6.0,
+            9.0,
+            9.0
+          ]
+        }
+      },
+      "from": [
+        7.0,
+        3.0,
+        12.0
+      ],
+      "to": [
+        9.0,
+        6.0,
+        14.0
+      ]
+    }
+  ],
+  "textures": {
+    "particle": "wiredredstone:block/gate_rs_latch/particle",
+    "torch_off": "wiredredstone:block/redstone_torch_off"
+  }
+}

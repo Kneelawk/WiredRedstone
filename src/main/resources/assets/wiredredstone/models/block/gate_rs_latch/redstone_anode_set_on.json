@@ -1,7 +1,0 @@
-{
-  "credit": "Made with Blockbench",
-  "parent": "wiredredstone:block/gate_rs_latch/redstone",
-  "textures": {
-    "redstone": "wiredredstone:block/gate_rs_latch/redstone_anode_set_on"
-  }
-}

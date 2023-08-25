@@ -5,4 +5,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator
 
 fun init(gen: FabricDataGenerator) {
     WRLog.log.info("[WiredRedstone] Starting data generation...")
+
+    val pack = gen.createPack()
+    pack.addProvider(::WRModelGen)
 }
