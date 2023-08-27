@@ -15,11 +15,6 @@ object BundledCablePartBaker : AbstractPartBaker<BundledCablePartKey>() {
 
         val sprites = BUNDLED_CABLE_IDS[key.color]!!.lookup()
 
-        val outerCornerLowerSide = RenderUtils.getBlockSprite(OUTER_CORNER_LOWER_SIDE)
-        val outerCornerUpperSide = RenderUtils.getBlockSprite(OUTER_CORNER_UPPER_SIDE)
-        val outerCornerTop = RenderUtils.getBlockSprite(OUTER_CORNER_TOP)
-        val end = RenderUtils.getBlockSprite(END)
-
         WireRendering.emitWire(
             conn = key.connections,
             side = key.side,
@@ -33,12 +28,12 @@ object BundledCablePartBaker : AbstractPartBaker<BundledCablePartKey>() {
             bottomZSprite = sprites.bottomZ,
             sideSprite = sprites.lowerSide,
             upperSideSprite = sprites.upperSide,
-            cornerTopXSprite = outerCornerTop,
-            cornerTopZSprite = outerCornerTop,
-            cornerSideSprite = outerCornerLowerSide,
-            cornerUpperSideSprite = outerCornerUpperSide,
-            openEndSprite = end,
-            closedEndSprite = outerCornerTop,
+            cornerTopXSprite = sprites.outerCornerTop,
+            cornerTopZSprite = sprites.outerCornerTop,
+            cornerSideSprite = sprites.outerCornerLowerSide,
+            cornerUpperSideSprite = sprites.outerCornerUpperSide,
+            openEndSprite = sprites.end,
+            closedEndSprite = sprites.outerCornerTop,
             sideV = 5f / 16f,
             material = WRMaterials.UNPOWERED_MATERIAL,
             emitter = emitter
@@ -49,7 +44,9 @@ object BundledCablePartBaker : AbstractPartBaker<BundledCablePartKey>() {
 
     data class WireIds(
         val topCross: Identifier, val topX: Identifier, val topZ: Identifier, val bottomCross: Identifier,
-        val bottomX: Identifier, val bottomZ: Identifier, val lowerSide: Identifier, val upperSide: Identifier
+        val bottomX: Identifier, val bottomZ: Identifier, val lowerSide: Identifier, val upperSide: Identifier,
+        val outerCornerLowerSide: Identifier, val outerCornerUpperSide: Identifier, val outerCornerTop: Identifier,
+        val end: Identifier
     ) {
         fun lookup(): WireSprites {
             return WireSprites(
@@ -61,19 +58,19 @@ object BundledCablePartBaker : AbstractPartBaker<BundledCablePartKey>() {
                 RenderUtils.getBlockSprite(bottomZ),
                 RenderUtils.getBlockSprite(lowerSide),
                 RenderUtils.getBlockSprite(upperSide),
+                RenderUtils.getBlockSprite(outerCornerLowerSide),
+                RenderUtils.getBlockSprite(outerCornerUpperSide),
+                RenderUtils.getBlockSprite(outerCornerTop),
+                RenderUtils.getBlockSprite(end)
             )
         }
     }
 
     data class WireSprites(
         val topCross: Sprite, val topX: Sprite, val topZ: Sprite, val bottomCross: Sprite, val bottomX: Sprite,
-        val bottomZ: Sprite, val lowerSide: Sprite, val upperSide: Sprite
+        val bottomZ: Sprite, val lowerSide: Sprite, val upperSide: Sprite, val outerCornerLowerSide: Sprite,
+        val outerCornerUpperSide: Sprite, val outerCornerTop: Sprite, val end: Sprite
     )
-
-    private val OUTER_CORNER_LOWER_SIDE = id("block/bundled_cable/outer_corner_lower_side")
-    private val OUTER_CORNER_UPPER_SIDE = id("block/bundled_cable/outer_corner_upper_side")
-    private val OUTER_CORNER_TOP = id("block/bundled_cable/outer_corner_top")
-    private val END = id("block/bundled_cable/end")
 
     private val BUNDLED_CABLE_IDS = mapOf(
         null to WireIds(
@@ -85,6 +82,10 @@ object BundledCablePartBaker : AbstractPartBaker<BundledCablePartKey>() {
             id("block/bundled_cable/bottom_z"),
             id("block/bundled_cable/lower_side"),
             id("block/bundled_cable/upper_side"),
+            id("block/bundled_cable/outer_corner_lower_side"),
+            id("block/bundled_cable/outer_corner_upper_side"),
+            id("block/bundled_cable/outer_corner_top"),
+            id("block/bundled_cable/end"),
         ),
         WHITE to WireIds(
             id("block/bundled_cable/white/top_cross"),
@@ -95,6 +96,10 @@ object BundledCablePartBaker : AbstractPartBaker<BundledCablePartKey>() {
             id("block/bundled_cable/white/bottom_z"),
             id("block/bundled_cable/white/lower_side"),
             id("block/bundled_cable/white/upper_side"),
+            id("block/bundled_cable/white/outer_corner_lower_side"),
+            id("block/bundled_cable/white/outer_corner_upper_side"),
+            id("block/bundled_cable/white/outer_corner_top"),
+            id("block/bundled_cable/white/end"),
         ),
         ORANGE to WireIds(
             id("block/bundled_cable/orange/top_cross"),
@@ -105,6 +110,10 @@ object BundledCablePartBaker : AbstractPartBaker<BundledCablePartKey>() {
             id("block/bundled_cable/orange/bottom_z"),
             id("block/bundled_cable/orange/lower_side"),
             id("block/bundled_cable/orange/upper_side"),
+            id("block/bundled_cable/orange/outer_corner_lower_side"),
+            id("block/bundled_cable/orange/outer_corner_upper_side"),
+            id("block/bundled_cable/orange/outer_corner_top"),
+            id("block/bundled_cable/orange/end"),
         ),
         MAGENTA to WireIds(
             id("block/bundled_cable/magenta/top_cross"),
@@ -115,6 +124,10 @@ object BundledCablePartBaker : AbstractPartBaker<BundledCablePartKey>() {
             id("block/bundled_cable/magenta/bottom_z"),
             id("block/bundled_cable/magenta/lower_side"),
             id("block/bundled_cable/magenta/upper_side"),
+            id("block/bundled_cable/magenta/outer_corner_lower_side"),
+            id("block/bundled_cable/magenta/outer_corner_upper_side"),
+            id("block/bundled_cable/magenta/outer_corner_top"),
+            id("block/bundled_cable/magenta/end"),
         ),
         LIGHT_BLUE to WireIds(
             id("block/bundled_cable/light_blue/top_cross"),
@@ -125,6 +138,10 @@ object BundledCablePartBaker : AbstractPartBaker<BundledCablePartKey>() {
             id("block/bundled_cable/light_blue/bottom_z"),
             id("block/bundled_cable/light_blue/lower_side"),
             id("block/bundled_cable/light_blue/upper_side"),
+            id("block/bundled_cable/light_blue/outer_corner_lower_side"),
+            id("block/bundled_cable/light_blue/outer_corner_upper_side"),
+            id("block/bundled_cable/light_blue/outer_corner_top"),
+            id("block/bundled_cable/light_blue/end"),
         ),
         YELLOW to WireIds(
             id("block/bundled_cable/yellow/top_cross"),
@@ -135,6 +152,10 @@ object BundledCablePartBaker : AbstractPartBaker<BundledCablePartKey>() {
             id("block/bundled_cable/yellow/bottom_z"),
             id("block/bundled_cable/yellow/lower_side"),
             id("block/bundled_cable/yellow/upper_side"),
+            id("block/bundled_cable/yellow/outer_corner_lower_side"),
+            id("block/bundled_cable/yellow/outer_corner_upper_side"),
+            id("block/bundled_cable/yellow/outer_corner_top"),
+            id("block/bundled_cable/yellow/end"),
         ),
         LIME to WireIds(
             id("block/bundled_cable/lime/top_cross"),
@@ -145,6 +166,10 @@ object BundledCablePartBaker : AbstractPartBaker<BundledCablePartKey>() {
             id("block/bundled_cable/lime/bottom_z"),
             id("block/bundled_cable/lime/lower_side"),
             id("block/bundled_cable/lime/upper_side"),
+            id("block/bundled_cable/lime/outer_corner_lower_side"),
+            id("block/bundled_cable/lime/outer_corner_upper_side"),
+            id("block/bundled_cable/lime/outer_corner_top"),
+            id("block/bundled_cable/lime/end"),
         ),
         PINK to WireIds(
             id("block/bundled_cable/pink/top_cross"),
@@ -155,6 +180,10 @@ object BundledCablePartBaker : AbstractPartBaker<BundledCablePartKey>() {
             id("block/bundled_cable/pink/bottom_z"),
             id("block/bundled_cable/pink/lower_side"),
             id("block/bundled_cable/pink/upper_side"),
+            id("block/bundled_cable/pink/outer_corner_lower_side"),
+            id("block/bundled_cable/pink/outer_corner_upper_side"),
+            id("block/bundled_cable/pink/outer_corner_top"),
+            id("block/bundled_cable/pink/end"),
         ),
         GRAY to WireIds(
             id("block/bundled_cable/gray/top_cross"),
@@ -165,6 +194,10 @@ object BundledCablePartBaker : AbstractPartBaker<BundledCablePartKey>() {
             id("block/bundled_cable/gray/bottom_z"),
             id("block/bundled_cable/gray/lower_side"),
             id("block/bundled_cable/gray/upper_side"),
+            id("block/bundled_cable/gray/outer_corner_lower_side"),
+            id("block/bundled_cable/gray/outer_corner_upper_side"),
+            id("block/bundled_cable/gray/outer_corner_top"),
+            id("block/bundled_cable/gray/end"),
         ),
         LIGHT_GRAY to WireIds(
             id("block/bundled_cable/light_gray/top_cross"),
@@ -175,6 +208,10 @@ object BundledCablePartBaker : AbstractPartBaker<BundledCablePartKey>() {
             id("block/bundled_cable/light_gray/bottom_z"),
             id("block/bundled_cable/light_gray/lower_side"),
             id("block/bundled_cable/light_gray/upper_side"),
+            id("block/bundled_cable/light_gray/outer_corner_lower_side"),
+            id("block/bundled_cable/light_gray/outer_corner_upper_side"),
+            id("block/bundled_cable/light_gray/outer_corner_top"),
+            id("block/bundled_cable/light_gray/end"),
         ),
         CYAN to WireIds(
             id("block/bundled_cable/cyan/top_cross"),
@@ -185,6 +222,10 @@ object BundledCablePartBaker : AbstractPartBaker<BundledCablePartKey>() {
             id("block/bundled_cable/cyan/bottom_z"),
             id("block/bundled_cable/cyan/lower_side"),
             id("block/bundled_cable/cyan/upper_side"),
+            id("block/bundled_cable/cyan/outer_corner_lower_side"),
+            id("block/bundled_cable/cyan/outer_corner_upper_side"),
+            id("block/bundled_cable/cyan/outer_corner_top"),
+            id("block/bundled_cable/cyan/end"),
         ),
         PURPLE to WireIds(
             id("block/bundled_cable/purple/top_cross"),
@@ -195,6 +236,10 @@ object BundledCablePartBaker : AbstractPartBaker<BundledCablePartKey>() {
             id("block/bundled_cable/purple/bottom_z"),
             id("block/bundled_cable/purple/lower_side"),
             id("block/bundled_cable/purple/upper_side"),
+            id("block/bundled_cable/purple/outer_corner_lower_side"),
+            id("block/bundled_cable/purple/outer_corner_upper_side"),
+            id("block/bundled_cable/purple/outer_corner_top"),
+            id("block/bundled_cable/purple/end"),
         ),
         BLUE to WireIds(
             id("block/bundled_cable/blue/top_cross"),
@@ -205,6 +250,10 @@ object BundledCablePartBaker : AbstractPartBaker<BundledCablePartKey>() {
             id("block/bundled_cable/blue/bottom_z"),
             id("block/bundled_cable/blue/lower_side"),
             id("block/bundled_cable/blue/upper_side"),
+            id("block/bundled_cable/blue/outer_corner_lower_side"),
+            id("block/bundled_cable/blue/outer_corner_upper_side"),
+            id("block/bundled_cable/blue/outer_corner_top"),
+            id("block/bundled_cable/blue/end"),
         ),
         BROWN to WireIds(
             id("block/bundled_cable/brown/top_cross"),
@@ -215,6 +264,10 @@ object BundledCablePartBaker : AbstractPartBaker<BundledCablePartKey>() {
             id("block/bundled_cable/brown/bottom_z"),
             id("block/bundled_cable/brown/lower_side"),
             id("block/bundled_cable/brown/upper_side"),
+            id("block/bundled_cable/brown/outer_corner_lower_side"),
+            id("block/bundled_cable/brown/outer_corner_upper_side"),
+            id("block/bundled_cable/brown/outer_corner_top"),
+            id("block/bundled_cable/brown/end"),
         ),
         GREEN to WireIds(
             id("block/bundled_cable/green/top_cross"),
@@ -225,6 +278,10 @@ object BundledCablePartBaker : AbstractPartBaker<BundledCablePartKey>() {
             id("block/bundled_cable/green/bottom_z"),
             id("block/bundled_cable/green/lower_side"),
             id("block/bundled_cable/green/upper_side"),
+            id("block/bundled_cable/green/outer_corner_lower_side"),
+            id("block/bundled_cable/green/outer_corner_upper_side"),
+            id("block/bundled_cable/green/outer_corner_top"),
+            id("block/bundled_cable/green/end"),
         ),
         RED to WireIds(
             id("block/bundled_cable/red/top_cross"),
@@ -235,6 +292,10 @@ object BundledCablePartBaker : AbstractPartBaker<BundledCablePartKey>() {
             id("block/bundled_cable/red/bottom_z"),
             id("block/bundled_cable/red/lower_side"),
             id("block/bundled_cable/red/upper_side"),
+            id("block/bundled_cable/red/outer_corner_lower_side"),
+            id("block/bundled_cable/red/outer_corner_upper_side"),
+            id("block/bundled_cable/red/outer_corner_top"),
+            id("block/bundled_cable/red/end"),
         ),
         BLACK to WireIds(
             id("block/bundled_cable/black/top_cross"),
@@ -245,6 +306,10 @@ object BundledCablePartBaker : AbstractPartBaker<BundledCablePartKey>() {
             id("block/bundled_cable/black/bottom_z"),
             id("block/bundled_cable/black/lower_side"),
             id("block/bundled_cable/black/upper_side"),
+            id("block/bundled_cable/black/outer_corner_lower_side"),
+            id("block/bundled_cable/black/outer_corner_upper_side"),
+            id("block/bundled_cable/black/outer_corner_top"),
+            id("block/bundled_cable/black/end"),
         )
     )
 }
