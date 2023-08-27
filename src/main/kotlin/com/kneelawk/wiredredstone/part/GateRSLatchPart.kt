@@ -131,11 +131,11 @@ class GateRSLatchPart : AbstractGatePart {
                     outputEnabled = true
 
                     // both will never happen at the same time, but there could be a situation where neither happen
-                    if (inputSetPower != 0) {
+                    if (inputSetPower != 0 && latchState == LatchState.RESET) {
                         changed = true
                         latchState = LatchState.SET
                     }
-                    if (inputResetPower != 0) {
+                    if (inputResetPower != 0 && latchState == LatchState.SET) {
                         changed = true
                         latchState = LatchState.RESET
                     }
