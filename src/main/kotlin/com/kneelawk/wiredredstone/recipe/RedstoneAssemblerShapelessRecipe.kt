@@ -22,7 +22,7 @@ class RedstoneAssemblerShapelessRecipe(
 
     override fun getGroup(): String = group
 
-    override fun getOutput(manager: DynamicRegistryManager): ItemStack = output
+    override fun getResult(manager: DynamicRegistryManager): ItemStack = output
 
     override fun getViewerOutput(): ItemStack = output
 

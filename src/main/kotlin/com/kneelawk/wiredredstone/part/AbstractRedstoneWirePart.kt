@@ -174,7 +174,7 @@ abstract class AbstractRedstoneWirePart : AbstractBlockablePart, PowerablePart {
                 val otherPart = MultipartUtil.get(world, offset)
                 if (otherPart != null) {
                     // TODO: implement better multipart redstone connection
-                    if (state.emitsRedstonePower() && otherPart.allParts.none { it is ConnectablePart }) {
+                    if (state.isRedstonePowerSource && otherPart.allParts.none { it is ConnectablePart }) {
                         newConn = ConnectionUtils.setExternal(newConn, cardinal)
                     }
                 } else {

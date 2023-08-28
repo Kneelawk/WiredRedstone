@@ -3,7 +3,7 @@ package com.kneelawk.wiredredstone.datagen.gate
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.kneelawk.wiredredstone.WRConstants.id
-import net.minecraft.data.client.BlockStateModelGenerator
+import net.minecraft.data.client.model.BlockStateModelGenerator
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.Vec3d
 
@@ -21,7 +21,7 @@ class GateBuilder(private val path: Identifier, private val gen: BlockStateModel
         builder.particle(particle)
         builder.configure()
 
-        val backgroundPath = path.withSuffixedPath("/$name")
+        val backgroundPath = path.extendPath("/$name")
         gen.modelCollector.accept(backgroundPath, builder::toJson)
     }
 
@@ -69,8 +69,8 @@ class GateBuilder(private val path: Identifier, private val gen: BlockStateModel
 
     fun redstone(name: String, texture: Identifier, disableable: Boolean = false, height: Double = 2.0) {
         redstone(
-            name, texture.withSuffixedPath("_off"), texture.withSuffixedPath("_on"),
-            if (disableable) texture.withSuffixedPath("_disabled") else null, height
+            name, texture.extendPath("_off"), texture.extendPath("_on"),
+            if (disableable) texture.extendPath("_disabled") else null, height
         )
     }
 }

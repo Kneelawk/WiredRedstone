@@ -1,13 +1,15 @@
 package com.kneelawk.wiredredstone.mixin.impl;
 
-import com.kneelawk.wiredredstone.recipe.RedstoneAssemblerRecipeType;
-import net.minecraft.client.recipebook.ClientRecipeBook;
-import net.minecraft.client.recipebook.RecipeBookGroup;
-import net.minecraft.recipe.Recipe;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import net.minecraft.client.recipe_book.ClientRecipeBook;
+import net.minecraft.client.recipe_book.RecipeBookGroup;
+import net.minecraft.recipe.Recipe;
+
+import com.kneelawk.wiredredstone.recipe.RedstoneAssemblerRecipeType;
 
 /**
  * Mixin to remove the warnings when the Minecraft client loads the Redstone Assembler recipes.

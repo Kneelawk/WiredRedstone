@@ -1,19 +1,19 @@
 package com.kneelawk.wiredredstone.client.render
 
+import com.mojang.blaze3d.vertex.VertexFormats
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext
-import net.minecraft.client.render.VertexFormats
 import net.minecraft.client.render.model.BakedQuad
 import net.minecraft.client.texture.Sprite
 import net.minecraft.util.math.Direction
 import org.joml.Vector2f
 import org.joml.Vector3f
 import org.lwjgl.system.MemoryStack
-import java.util.*
+import java.util.Arrays
 
 sealed class TransformingQuadEmitter(private val emitter: QuadEmitter) : QuadEmitter {
     companion object {
@@ -292,7 +292,7 @@ sealed class TransformingQuadEmitter(private val emitter: QuadEmitter) : QuadEmi
         val normal = Vector3f(normalI.x.toFloat(), normalI.y.toFloat(), normalI.z.toFloat())
 
         MemoryStack.stackPush().use { memoryStack ->
-            val byteBuffer = memoryStack.malloc(VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL.vertexSizeByte)
+            val byteBuffer = memoryStack.malloc(VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL.vertexSize)
             val intBuffer = byteBuffer.asIntBuffer()
 
             for (vertexIndex in 0 until 4) {

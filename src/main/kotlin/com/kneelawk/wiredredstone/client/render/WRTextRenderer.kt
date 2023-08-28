@@ -7,15 +7,17 @@ import com.google.common.cache.LoadingCache
 import com.kneelawk.wiredredstone.WRConstants
 import com.kneelawk.wiredredstone.client.render.part.WRPartRenderers
 import com.kneelawk.wiredredstone.util.getSelectedPart
+import com.mojang.blaze3d.framebuffer.SimpleFramebuffer
 import com.mojang.blaze3d.systems.RenderSystem
-import com.mojang.blaze3d.systems.VertexSorter
+import com.mojang.blaze3d.vertex.*
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
-import net.minecraft.client.gl.SimpleFramebuffer
-import net.minecraft.client.render.*
+import net.minecraft.client.render.GameRenderer
+import net.minecraft.client.render.RenderLayer
+import net.minecraft.client.render.VertexConsumerProvider
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 import net.minecraft.util.hit.BlockHitResult
@@ -56,10 +58,10 @@ object WRTextRenderer {
         val consumer = provider.getBuffer(renderLayer)
 
         // the texture ends up up-side-down for some reason, so we flip it here
-        consumer.vertex(model, 0f, height, 0f).color(-1).texture(0f, 0f).light(light).next()
-        consumer.vertex(model, width, height, 0f).color(-1).texture(1f, 0f).light(light).next()
-        consumer.vertex(model, width, 0f, 0f).color(-1).texture(1f, 1f).light(light).next()
-        consumer.vertex(model, 0f, 0f, 0f).color(-1).texture(0f, 1f).light(light).next()
+        consumer.vertex(model, 0f, height, 0f).color(-1).uv(0f, 0f).light(light).next()
+        consumer.vertex(model, width, height, 0f).color(-1).uv(1f, 0f).light(light).next()
+        consumer.vertex(model, width, 0f, 0f).color(-1).uv(1f, 1f).light(light).next()
+        consumer.vertex(model, 0f, 0f, 0f).color(-1).uv(0f, 1f).light(light).next()
     }
 
     private fun render(context: WorldRenderContext) {
@@ -118,7 +120,7 @@ object WRTextRenderer {
         RenderSystem.applyModelViewMatrix()
         val backupProjMat = RenderSystem.getProjectionMatrix()
         val backupSorting = RenderSystem.getVertexSorting()
-        RenderSystem.setProjectionMatrix(Matrix4f(), VertexSorter.BY_Z)
+        RenderSystem.setProjectionMatrix(Matrix4f(), VertexSorting.ORTHOGRAPHIC_Z)
 
         if (key.shadow) {
             val shadowColor = multiplyBrightness(key.color, 0.25f)
@@ -173,9 +175,9 @@ object WRTextRenderer {
     }
 
     private fun drawRect(x: Float, y: Float, width: Float, height: Float, color: Int, matrix4f: Matrix4f) {
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram)
+        RenderSystem.setShader(GameRenderer::getPositionColorShader)
         val tessellator = Tessellator.getInstance()
-        val buffer = tessellator.buffer
+        val buffer = tessellator.bufferBuilder
 
         val x2 = x + width
         val y2 = y + height

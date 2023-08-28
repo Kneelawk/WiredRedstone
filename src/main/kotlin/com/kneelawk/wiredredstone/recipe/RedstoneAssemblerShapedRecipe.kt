@@ -243,7 +243,7 @@ class RedstoneAssemblerShapedRecipe(
 
     override fun fits(width: Int, height: Int): Boolean = width <= this.width && height <= this.height
 
-    override fun getOutput(manager: DynamicRegistryManager): ItemStack = output
+    override fun getResult(manager: DynamicRegistryManager): ItemStack = output
     
     override fun getViewerOutput(): ItemStack = output
 

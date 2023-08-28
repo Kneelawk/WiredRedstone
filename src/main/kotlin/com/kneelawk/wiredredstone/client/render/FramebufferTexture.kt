@@ -1,6 +1,6 @@
 package com.kneelawk.wiredredstone.client.render
 
-import net.minecraft.client.gl.Framebuffer
+import com.mojang.blaze3d.framebuffer.Framebuffer
 import net.minecraft.client.texture.AbstractTexture
 import net.minecraft.client.texture.MissingSprite
 import net.minecraft.resource.ResourceManager

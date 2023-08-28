@@ -1,9 +1,11 @@
 package com.kneelawk.wiredredstone.mixin.impl;
 
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexFormat;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
+
+import com.mojang.blaze3d.vertex.VertexFormat;
+
+import net.minecraft.client.render.RenderLayer;
 
 @Mixin(RenderLayer.class)
 public interface RenderLayerAccessor {

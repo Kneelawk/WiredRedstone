@@ -2,6 +2,7 @@ package com.kneelawk.wiredredstone.client.render
 
 import com.kneelawk.wiredredstone.util.requireNonNull
 import com.kneelawk.wiredredstone.util.threadLocal
+import com.mojang.blaze3d.vertex.VertexConsumer
 import net.fabricmc.fabric.api.client.model.BakedModelManagerHelper
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial
@@ -12,7 +13,6 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.LightmapTextureManager
 import net.minecraft.client.render.OverlayTexture
-import net.minecraft.client.render.VertexConsumer
 import net.minecraft.client.render.VertexConsumerProvider
 import net.minecraft.client.render.model.BakedModel
 import net.minecraft.client.texture.Sprite
@@ -23,7 +23,7 @@ import net.minecraft.util.Identifier
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.MathHelper.HALF_PI
 import net.minecraft.util.math.MathHelper.PI
-import net.minecraft.util.math.random.Random
+import net.minecraft.util.random.RandomGenerator
 import org.joml.Quaternionf
 import org.joml.Vector3f
 import kotlin.math.max
@@ -64,7 +64,7 @@ object RenderUtils {
     }
 
     fun fromVanilla(from: BakedModel, to: QuadEmitter, material: RenderMaterial) {
-        val random = Random.create(42)
+        val random = RandomGenerator.createLegacy(42)
 
         for (dir in Direction.values()) {
             val quads = from.getQuads(null, dir, random)
@@ -88,8 +88,8 @@ object RenderUtils {
         val mBlockLight = LightmapTextureManager.getBlockLightCoordinates(light)
         val mSkyLight = LightmapTextureManager.getSkyLightCoordinates(light)
 
-        val matrix4f = stack.peek().positionMatrix
-        val matrix3f = stack.peek().normalMatrix
+        val matrix4f = stack.peek().model
+        val matrix3f = stack.peek().normal
         mesh.forEach { quad ->
             val mat = quad.material()
             for (i in 0 until 4) {
@@ -104,7 +104,7 @@ object RenderUtils {
 
                 consumer.vertex(matrix4f, quad.x(i), quad.y(i), quad.z(i))
                     .color(quad.spriteColor(i, 0))
-                    .texture(quad.spriteU(i, 0), quad.spriteV(i, 0))
+                    .uv(quad.spriteU(i, 0), quad.spriteV(i, 0))
                     .overlay(OverlayTexture.DEFAULT_UV)
                     .light(fLight)
                     .normal(matrix3f, quad.normalX(i), quad.normalY(i), quad.normalZ(i))
@@ -134,7 +134,7 @@ object RenderUtils {
         stack.translate(16.0 - width / 2.0, -(MC.textRenderer.fontHeight.toDouble() + yOffset), 0.0)
 
         WRTextRenderer.drawText(
-            text, color.toInt(), true, overline, stack.peek().positionMatrix, provider, 0,
+            text, color.toInt(), true, overline, stack.peek().model, provider, 0,
             LightmapTextureManager.MAX_LIGHT_COORDINATE
         )
 
@@ -161,7 +161,7 @@ object RenderUtils {
         stack.translate(alignment.offset(MC.textRenderer.getWidth(text)), 0.0, 0.0)
 
         WRTextRenderer.drawText(
-            text, color.toInt(), true, overline, stack.peek().positionMatrix, provider, 0,
+            text, color.toInt(), true, overline, stack.peek().model, provider, 0,
             LightmapTextureManager.MAX_LIGHT_COORDINATE
         )
 

@@ -65,8 +65,8 @@ object WROutlineRenderer {
         stack.multiply(target.side.rotationQuaternion)
         stack.translate(-0.5, -0.5, -0.5)
 
-        val model = stack.peek().positionMatrix
-        val normal = stack.peek().normalMatrix
+        val model = stack.peek().model
+        val normal = stack.peek().normal
 
         for (line in PLACEMENT_OUTLINE) {
             var dx = line.end.x() - line.start.x()

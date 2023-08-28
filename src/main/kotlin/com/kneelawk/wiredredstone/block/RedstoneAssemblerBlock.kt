@@ -21,7 +21,7 @@ import net.minecraft.util.*
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
-import net.minecraft.util.math.random.Random
+import net.minecraft.util.random.RandomGenerator
 import net.minecraft.world.World
 
 class RedstoneAssemblerBlock(settings: Settings) : BlockWithEntity(settings) {
@@ -62,7 +62,7 @@ class RedstoneAssemblerBlock(settings: Settings) : BlockWithEntity(settings) {
     }
 
     override fun getPlacementState(ctx: ItemPlacementContext): BlockState =
-        defaultState.with(AbstractFurnaceBlock.FACING, ctx.horizontalPlayerFacing.opposite)
+        defaultState.with(AbstractFurnaceBlock.FACING, ctx.playerFacing.opposite)
 
     override fun onPlaced(
         world: World, pos: BlockPos, state: BlockState, placer: LivingEntity?, itemStack: ItemStack
@@ -102,7 +102,7 @@ class RedstoneAssemblerBlock(settings: Settings) : BlockWithEntity(settings) {
         return state.rotate(mirror.getRotation(state.get(AbstractFurnaceBlock.FACING)))
     }
 
-    override fun randomDisplayTick(state: BlockState, world: World, pos: BlockPos, random: Random) {
+    override fun randomDisplayTick(state: BlockState, world: World, pos: BlockPos, random: RandomGenerator) {
         if (state.get(AbstractFurnaceBlock.LIT)) {
             val x = pos.x.toDouble() + 0.5
             val y = pos.y.toDouble()

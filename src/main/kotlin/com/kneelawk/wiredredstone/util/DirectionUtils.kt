@@ -28,5 +28,5 @@ object DirectionUtils {
         return if (isHorizontal(dir)) dir else Direction.NORTH
     }
 
-    fun fromVector(vec: Vec3i) = Direction.fromVector(vec.x, vec.y, vec.z)
+    fun fromVector(vec: Vec3i) = Direction.fromXYZ(vec.x, vec.y, vec.z)
 }

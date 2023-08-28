@@ -112,7 +112,7 @@ object GateProjectorSimplePartBaker : AbstractPartBaker<GateProjectorSimplePartK
             (outputEdge.offsetZ * receivingDistance).toDouble()
         )
 
-        val model = stack.peek().positionMatrix
+        val model = stack.peek().model
 
         for (side in Direction.values()) {
             val face = FaceUtils.getFaceForSide(side)
@@ -125,15 +125,15 @@ object GateProjectorSimplePartBaker : AbstractPartBaker<GateProjectorSimplePartK
             val v0 = sprite.getFrameV(0.0)
             val v1 = sprite.getFrameV(16.0)
 
-            buf.vertex(model, face[0][0], face[0][1], face[0][2]).color(-1).texture(u0, v0).light(15728880).next()
-            buf.vertex(model, face[1][0], face[1][1], face[1][2]).color(-1).texture(u0, v1).light(15728880).next()
-            buf.vertex(model, face[2][0], face[2][1], face[2][2]).color(-1).texture(u1, v1).light(15728880).next()
-            buf.vertex(model, face[3][0], face[3][1], face[3][2]).color(-1).texture(u1, v0).light(15728880).next()
+            buf.vertex(model, face[0][0], face[0][1], face[0][2]).color(-1).uv(u0, v0).light(15728880).next()
+            buf.vertex(model, face[1][0], face[1][1], face[1][2]).color(-1).uv(u0, v1).light(15728880).next()
+            buf.vertex(model, face[2][0], face[2][1], face[2][2]).color(-1).uv(u1, v1).light(15728880).next()
+            buf.vertex(model, face[3][0], face[3][1], face[3][2]).color(-1).uv(u1, v0).light(15728880).next()
 
-            buf.vertex(model, face[3][0], face[3][1], face[3][2]).color(-1).texture(u1, v0).light(15728880).next()
-            buf.vertex(model, face[2][0], face[2][1], face[2][2]).color(-1).texture(u1, v1).light(15728880).next()
-            buf.vertex(model, face[1][0], face[1][1], face[1][2]).color(-1).texture(u0, v1).light(15728880).next()
-            buf.vertex(model, face[0][0], face[0][1], face[0][2]).color(-1).texture(u0, v0).light(15728880).next()
+            buf.vertex(model, face[3][0], face[3][1], face[3][2]).color(-1).uv(u1, v0).light(15728880).next()
+            buf.vertex(model, face[2][0], face[2][1], face[2][2]).color(-1).uv(u1, v1).light(15728880).next()
+            buf.vertex(model, face[1][0], face[1][1], face[1][2]).color(-1).uv(u0, v1).light(15728880).next()
+            buf.vertex(model, face[0][0], face[0][1], face[0][2]).color(-1).uv(u0, v0).light(15728880).next()
         }
 
         stack.pop()

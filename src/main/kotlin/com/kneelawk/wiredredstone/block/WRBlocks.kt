@@ -4,7 +4,7 @@ import com.kneelawk.wiredredstone.WRConstants.id
 import com.kneelawk.wiredredstone.item.WRItems
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.MapColor
-import net.minecraft.block.enums.Instrument
+import net.minecraft.block.enums.NoteBlockInstrument
 import net.minecraft.item.BlockItem
 import net.minecraft.item.ItemStack
 import net.minecraft.registry.Registries
@@ -15,7 +15,7 @@ object WRBlocks {
         RedstoneAssemblerBlock(
             FabricBlockSettings.create()
                 .mapColor(MapColor.RED)
-                .instrument(Instrument.BASEDRUM)
+                .instrument(NoteBlockInstrument.BASEDRUM)
                 .requiresTool().strength(3.5f)
                 .luminance { if (it[RedstoneAssemblerBlock.LIT] == true) 13 else 0 })
     }

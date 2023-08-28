@@ -3,11 +3,11 @@ package com.kneelawk.wiredredstone.client.render
 import alexiil.mc.lib.multipart.api.MultipartContainer
 import com.kneelawk.wiredredstone.client.render.part.WRPartRenderers
 import com.kneelawk.wiredredstone.item.GateItem
+import com.mojang.blaze3d.vertex.BufferBuilder
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh
 import net.minecraft.client.MinecraftClient
-import net.minecraft.client.render.BufferBuilder
 import net.minecraft.client.render.LightmapTextureManager
 import net.minecraft.client.render.VertexConsumerProvider
 import net.minecraft.item.ItemUsageContext

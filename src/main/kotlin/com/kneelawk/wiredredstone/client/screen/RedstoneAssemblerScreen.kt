@@ -8,7 +8,7 @@ import com.kneelawk.wiredredstone.compat.emi.EMIIntegrationHandler
 import com.kneelawk.wiredredstone.config.AssemblerConfig
 import com.kneelawk.wiredredstone.screenhandler.RedstoneAssemblerScreenHandler
 import net.minecraft.client.MinecraftClient
-import net.minecraft.client.gui.DrawContext
+import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.screen.ingame.HandledScreen
 import net.minecraft.client.sound.PositionedSoundInstance
 import net.minecraft.entity.player.PlayerInventory
@@ -31,7 +31,7 @@ class RedstoneAssemblerScreen(handler: RedstoneAssemblerScreenHandler, playerInv
         playerInventoryTitleY = backgroundHeight - 94
     }
 
-    override fun drawBackground(context: DrawContext, delta: Float, mouseX: Int, mouseY: Int) {
+    override fun drawBackground(context: GuiGraphics, delta: Float, mouseX: Int, mouseY: Int) {
         val matrices = context.matrices
 
         val x = (width - backgroundWidth) / 2
@@ -71,13 +71,13 @@ class RedstoneAssemblerScreen(handler: RedstoneAssemblerScreenHandler, playerInv
         matrices.pop()
     }
 
-    override fun render(context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
+    override fun render(context: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
         renderBackground(context)
         super.render(context, mouseX, mouseY, delta)
         drawMouseoverTooltip(context, mouseX, mouseY)
     }
 
-    override fun drawForeground(context: DrawContext, mouseX: Int, mouseY: Int) {
+    override fun drawForeground(context: GuiGraphics, mouseX: Int, mouseY: Int) {
         context.drawText(textRenderer, title, titleX, titleY, 0xEEEEEE, false)
         context.drawText(textRenderer, gui("redstone_assembler.input"), 29, 82, 0xEEEEEE, false)
         context.drawText(
@@ -85,7 +85,7 @@ class RedstoneAssemblerScreen(handler: RedstoneAssemblerScreenHandler, playerInv
         )
     }
 
-    override fun drawMouseoverTooltip(context: DrawContext, x: Int, y: Int) {
+    override fun drawMouseoverTooltip(context: GuiGraphics, x: Int, y: Int) {
         super.drawMouseoverTooltip(context, x, y)
 
         val mx = x - this.x
@@ -166,7 +166,7 @@ class RedstoneAssemblerScreen(handler: RedstoneAssemblerScreenHandler, playerInv
 
     fun playButtonPressSound() {
         MinecraftClient.getInstance().soundManager.play(
-            PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0f)
+            PositionedSoundInstance.create(SoundEvents.UI_BUTTON_CLICK, 1.0f)
         )
     }
 }

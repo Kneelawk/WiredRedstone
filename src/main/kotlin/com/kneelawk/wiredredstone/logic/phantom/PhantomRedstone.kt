@@ -21,7 +21,7 @@ object PhantomRedstone {
 
     @Suppress("unchecked")
     fun init() {
-        Registry.register(Registries.REGISTRIES as Registry<Registry<*>>, REF_DECODER_ID, REF_DECODER_REGISTRY)
+        Registry.register(Registries.REGISTRY as Registry<Registry<*>>, REF_DECODER_ID, REF_DECODER_REGISTRY)
 
         Registry.register(REF_DECODER_REGISTRY, SIDED_PART_ID, SidedPartPhantomRedstoneRef.Decoder)
     }

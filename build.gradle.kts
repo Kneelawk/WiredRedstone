@@ -99,6 +99,7 @@ sourceSets {
 }
 
 repositories {
+    maven("https://maven.quiltmc.org/repository/release/") { name = "QuiltMC" }
     maven("https://mod-buildcraft.com/maven") { name = "BuildCraft" }
     maven("https://maven.terraformersmc.com/releases/") { name = "TerraformersMC" }
     maven("https://maven.quiltmc.org/repository/release") { name = "QuiltMC" }
@@ -153,8 +154,8 @@ val shadowInclude = configurations.create("shadowInclude")
 dependencies {
     val minecraftVersion: String by project
     minecraft("com.mojang:minecraft:$minecraftVersion")
-    val yarnMappings: String by project
-    mappings("net.fabricmc:yarn:$yarnMappings:v2")
+    val quiltMappings: String by project
+    mappings("org.quiltmc:quilt-mappings:${minecraftVersion}+build.${quiltMappings}:intermediary-v2")
     val loaderVersion: String by project
     modImplementation("net.fabricmc:fabric-loader:$loaderVersion")
     val fabricVersion: String by project

@@ -1,15 +1,15 @@
 package com.kneelawk.wiredredstone.client.render
 
 import com.kneelawk.wiredredstone.client.render.WROverlayRenderer.RenderToOverlay
+import com.mojang.blaze3d.framebuffer.SimpleFramebuffer
 import com.mojang.blaze3d.systems.RenderSystem
+import com.mojang.blaze3d.vertex.BufferBuilder
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 import net.fabricmc.fabric.api.event.Event
 import net.fabricmc.fabric.api.event.EventFactory
 import net.minecraft.client.MinecraftClient
-import net.minecraft.client.gl.SimpleFramebuffer
-import net.minecraft.client.render.BufferBuilder
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.render.VertexConsumerProvider
 

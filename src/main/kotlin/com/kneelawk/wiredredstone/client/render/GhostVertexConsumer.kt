@@ -1,8 +1,8 @@
 package com.kneelawk.wiredredstone.client.render
 
+import com.mojang.blaze3d.vertex.VertexConsumer
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 import net.minecraft.client.MinecraftClient
-import net.minecraft.client.render.VertexConsumer
 import kotlin.math.sin
 
 class GhostVertexConsumer(private val delegate: VertexConsumer) : VertexConsumer {
@@ -29,8 +29,8 @@ class GhostVertexConsumer(private val delegate: VertexConsumer) : VertexConsumer
         return this
     }
 
-    override fun texture(u: Float, v: Float): VertexConsumer {
-        delegate.texture(u, v)
+    override fun uv(u: Float, v: Float): VertexConsumer {
+        delegate.uv(u, v)
         return this
     }
 
@@ -53,8 +53,8 @@ class GhostVertexConsumer(private val delegate: VertexConsumer) : VertexConsumer
         delegate.next()
     }
 
-    override fun fixedColor(red: Int, green: Int, blue: Int, alpha: Int) {
-        delegate.fixedColor(red, green, blue, GhostVertexConsumer.alpha)
+    override fun fixColor(red: Int, green: Int, blue: Int, alpha: Int) {
+        delegate.fixColor(red, green, blue, GhostVertexConsumer.alpha)
     }
 
     override fun unfixColor() {

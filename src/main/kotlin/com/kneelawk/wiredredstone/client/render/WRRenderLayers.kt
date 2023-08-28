@@ -2,10 +2,10 @@ package com.kneelawk.wiredredstone.client.render
 
 import com.kneelawk.wiredredstone.WRConstants
 import com.kneelawk.wiredredstone.mixin.api.RenderLayerHelper
+import com.mojang.blaze3d.vertex.VertexFormat
+import com.mojang.blaze3d.vertex.VertexFormats
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.render.RenderPhase
-import net.minecraft.client.render.VertexFormat
-import net.minecraft.client.render.VertexFormats
 
 class WRRenderLayers private constructor(name: String, beginAction: Runnable, endAction: Runnable) :
     RenderPhase(name, beginAction, endAction) {
@@ -18,7 +18,7 @@ class WRRenderLayers private constructor(name: String, beginAction: Runnable, en
             false,
             true,
             RenderLayer.MultiPhaseParameters.builder()
-                .program(ENTITY_TRANSLUCENT_PROGRAM)
+                .shader(ENTITY_TRANSLUCENT_SHADER)
                 .texture(MIPMAP_BLOCK_ATLAS_TEXTURE)
                 .transparency(TRANSLUCENT_TRANSPARENCY)
                 .lightmap(ENABLE_LIGHTMAP)

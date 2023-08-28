@@ -170,8 +170,8 @@ class RedstoneAssemblerScreenHandler(
             }
         }
 
-    override fun onClosed(player: PlayerEntity) {
-        super.onClosed(player)
+    override fun close(player: PlayerEntity) {
+        super.close(player)
         inventory.onClose(player)
     }
 
@@ -213,7 +213,7 @@ class RedstoneAssemblerScreenHandler(
         return RecipeBookCategory.CRAFTING
     }
 
-    override fun quickMove(player: PlayerEntity, index: Int): ItemStack {
+    override fun quickTransfer(player: PlayerEntity, index: Int): ItemStack {
         var result = ItemStack.EMPTY
 
         val slot = slots[index]
