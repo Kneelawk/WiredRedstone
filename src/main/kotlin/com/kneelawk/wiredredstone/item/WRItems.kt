@@ -59,6 +59,8 @@ object WRItems {
     val RED_BUNDLED_CABLE by lazy { BundledCableItem(DyeColor.RED, WIRED_REDSTONE_ITEM_SETTINGS) }
     val BLACK_BUNDLED_CABLE by lazy { BundledCableItem(DyeColor.BLACK, WIRED_REDSTONE_ITEM_SETTINGS) }
 
+    val STANDING_RED_ALLOY_WIRE by lazy { StandingRedAlloyWireItem(WIRED_REDSTONE_ITEM_SETTINGS) }
+
     val POWERLINE_CONNECTOR by lazy { PowerlineConnectorItem(WIRED_REDSTONE_ITEM_SETTINGS) }
     val POWERLINE_WIRE by lazy { PowerlineWireItem(WIRED_REDSTONE_ITEM_SETTINGS) }
 
@@ -164,6 +166,8 @@ object WRItems {
         register(GREEN_BUNDLED_CABLE, "green_bundled_cable")
         register(RED_BUNDLED_CABLE, "red_bundled_cable")
         register(BLACK_BUNDLED_CABLE, "black_bundled_cable")
+
+        register(STANDING_RED_ALLOY_WIRE, "standing_red_alloy_wire")
 
         register(POWERLINE_CONNECTOR, "powerline_connector", false)
         register(POWERLINE_WIRE, "powerline_wire", false)

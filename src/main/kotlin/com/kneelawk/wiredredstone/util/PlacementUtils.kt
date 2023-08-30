@@ -47,7 +47,7 @@ object PlacementUtils {
         }
     }
 
-    fun tryPlaceWire(
+    fun tryPlaceSidedWire(
         context: ItemUsageContext, creatorFactory: (Direction) -> ((MultipartHolder) -> AbstractPart)
     ): MultipartContainer.PartOffer? {
         val world = context.world
@@ -73,6 +73,22 @@ object PlacementUtils {
                     MultipartUtil.offerNewPart(world, pos, creatorFactory(sideSide))
                 } else null) ?: tryOffsetSide(offsetPos, sideSide, world, creatorFactory)
             }
+        }
+    }
+
+    fun tryPlaceCenterWire(
+        context: ItemUsageContext, creator: (MultipartHolder) -> AbstractPart
+    ): MultipartContainer.PartOffer? {
+        val world = context.world
+        val pos = context.blockPos
+        val side = context.side
+        val hitPos = context.hitPos.subtract(Vec3d.ofCenter(pos))
+        val offsetPos = pos.offset(side)
+
+        return if (isOnExternalSide(hitPos, side)) {
+            MultipartUtil.offerNewPart(world, offsetPos, creator)
+        } else {
+            MultipartUtil.offerNewPart(world, pos, creator) ?: MultipartUtil.offerNewPart(world, offsetPos, creator)
         }
     }
 

@@ -9,16 +9,20 @@ import com.kneelawk.graphlib.api.util.CacheCategory
 import com.kneelawk.graphlib.api.world.SaveMode
 import com.kneelawk.wiredredstone.WRConstants.id
 import com.kneelawk.wiredredstone.config.CommonConfig
+import java.util.function.Supplier
 
 object WRBlockNodes {
     val RED_ALLOY_WIRE = BlockNodeType.of(id("red_alloy_wire"), RedAlloyWireBlockNode.Decoder)
     val INSULATED_WIRE = BlockNodeType.of(id("insulated_wire"), InsulatedWireBlockNode.Decoder)
     val BUNDLED_CABLE = BlockNodeType.of(id("bundled_cable"), BundledCableBlockNode.Decoder)
 
+    val STANDING_RED_ALLOY_WIRE =
+        BlockNodeType.of(id("standing_red_alloy_wire"), Supplier { StandingRedAlloyBlockNode })
+
     val POWERLINE_CONNECTOR = BlockNodeType.of(
         id("powerline_connector"), PowerlineConnectorBlockNode.Decoder, PowerlineConnectorBlockNode.Decoder
     )
-    val POWERLINE_LINK = LinkKeyType.of(id("powerline"), { PowerlineLinkKey }) { _, _ -> PowerlineLinkKey }
+    val POWERLINE_LINK = LinkKeyType.of(id("powerline"), Supplier { PowerlineLinkKey })
     val POWERLINE_LINK_ENTITY =
         LinkEntityType.of(id("powerline"), PowerlineLinkEntity.Decoder, PowerlineLinkEntity.Decoder)
 

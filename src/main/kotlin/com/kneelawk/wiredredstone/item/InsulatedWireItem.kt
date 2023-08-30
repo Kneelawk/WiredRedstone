@@ -19,7 +19,7 @@ class InsulatedWireItem(private val color: DyeColor, settings: Settings) : Item(
             return ActionResult.PASS
         }
 
-        val offer = PlacementUtils.tryPlaceWire(context, ::creator) ?: return ActionResult.FAIL
+        val offer = PlacementUtils.tryPlaceSidedWire(context, ::creator) ?: return ActionResult.FAIL
 
         PlacementUtils.finishPlacement(context, offer, DyeColorUtil.wool(color).defaultState)
 

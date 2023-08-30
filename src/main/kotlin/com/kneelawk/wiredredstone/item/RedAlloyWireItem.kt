@@ -15,10 +15,10 @@ class RedAlloyWireItem(settings: Settings) : Item(settings) {
     override fun useOnBlock(context: ItemUsageContext): ActionResult {
         val world = context.world
         if (world.isClient) {
-            return ActionResult.PASS
+            return ActionResult.CONSUME
         }
 
-        val offer = PlacementUtils.tryPlaceWire(context, ::creator) ?: return ActionResult.FAIL
+        val offer = PlacementUtils.tryPlaceSidedWire(context, ::creator) ?: return ActionResult.FAIL
 
         PlacementUtils.finishPlacement(context, offer, Blocks.REDSTONE_BLOCK.defaultState)
 
