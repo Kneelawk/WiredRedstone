@@ -2,6 +2,7 @@ package com.kneelawk.wiredredstone.util
 
 import alexiil.mc.lib.multipart.api.MultipartUtil
 import com.kneelawk.wiredredstone.part.BlockNodeContainer
+import com.kneelawk.wiredredstone.util.bits.CenterConnectionUtils
 import net.minecraft.block.Block
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
@@ -37,6 +38,25 @@ object WorldUtils {
             for (dir in Direction.values()) {
                 if (dir != edge.opposite) {
                     updateNeighbor(world, offset.offset(dir), state.block, pos)
+                }
+            }
+        }
+    }
+
+    fun strongUpdateAllNeighbors(world: World, pos: BlockPos, connections: UByte) {
+        val state = world.getBlockState(pos)
+
+        updateNeighbors(world, pos, state.block)
+
+        for (side in Direction.values()) {
+            val offset = pos.offset(side)
+            if (CenterConnectionUtils.test(connections, side) && world.getBlockState(offset)
+                    .isSolidBlock(world, offset)
+            ) {
+                for (dir in Direction.values()) {
+                    if (dir != side.opposite) {
+                        updateNeighbor(world, offset.offset(dir), state.block, pos)
+                    }
                 }
             }
         }

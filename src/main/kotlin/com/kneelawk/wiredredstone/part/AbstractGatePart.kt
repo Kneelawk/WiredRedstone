@@ -73,7 +73,7 @@ abstract class AbstractGatePart : AbstractRotatedPart {
         return SHAPES[side]!!
     }
 
-    override fun getConnectionBlockingShape(): VoxelShape {
+    override fun getExternalConnectionBlockingShape(): VoxelShape {
         return CONNECTION_BLOCKING_SHAPES[side]!!
     }
 

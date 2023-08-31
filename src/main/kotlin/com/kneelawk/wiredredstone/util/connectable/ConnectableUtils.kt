@@ -2,18 +2,19 @@ package com.kneelawk.wiredredstone.util.connectable
 
 import alexiil.mc.lib.multipart.api.MultipartUtil
 import com.kneelawk.graphlib.api.graph.GraphView
-import com.kneelawk.graphlib.api.graph.GraphWorld
 import com.kneelawk.graphlib.api.graph.user.BlockNode
 import com.kneelawk.graphlib.api.graph.user.SidedBlockNode
+import com.kneelawk.graphlib.api.wire.CenterWireBlockNode
 import com.kneelawk.graphlib.api.wire.SidedWireBlockNode
 import com.kneelawk.graphlib.api.wire.WireConnectionType
 import com.kneelawk.wiredredstone.config.CommonConfig
 import com.kneelawk.wiredredstone.node.WRBlockNodes.WIRE_NET
-import com.kneelawk.wiredredstone.part.BlockablePart
-import com.kneelawk.wiredredstone.part.ConnectablePart
-import com.kneelawk.wiredredstone.part.RedrawablePart
-import com.kneelawk.wiredredstone.util.*
+import com.kneelawk.wiredredstone.part.*
+import com.kneelawk.wiredredstone.util.BoundingBoxUtils
+import com.kneelawk.wiredredstone.util.DirectionUtils
+import com.kneelawk.wiredredstone.util.RotationUtils
 import com.kneelawk.wiredredstone.util.bits.BlockageUtils
+import com.kneelawk.wiredredstone.util.bits.CenterConnectionUtils
 import com.kneelawk.wiredredstone.util.bits.ConnectionUtils
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.BlockPos
@@ -52,6 +53,25 @@ object ConnectableUtils {
         updateConnectionsImpl(part, net, blockage)
     }
 
+    fun updateBlockageAndConnections(
+        world: ServerWorld, part: CenterBlockablePart, wireDiameter: Double
+    ) {
+        val blockPos = part.getPos()
+        val net = WIRE_NET.getGraphView(world)
+
+        var blockage = 0u.toUByte()
+        for (dir in Direction.values()) {
+            val inside = BoundingBoxUtils.getCenterWireInsideConnectionShape(dir, wireDiameter)
+            if (checkInside(world, blockPos, inside)) {
+                blockage = CenterConnectionUtils.set(blockage, dir)
+            }
+        }
+
+        part.updateBlockage(blockage)
+
+        updateConnectionsImpl(part, net, blockage)
+    }
+
     /**
      * Updates connections of the LMP part and asking it to update the client.
      */
@@ -64,12 +84,11 @@ object ConnectableUtils {
     /**
      * Updates visual connections, updating the LMP part and asking it to update the client.
      */
-    private fun updateConnectionsImpl(
-        part: ConnectablePart, net: GraphView, blockage: UByte
-    ) {
+    private fun updateConnectionsImpl(part: ConnectablePart, net: GraphView, blockage: UByte) {
         val side = part.side
         val pos = part.getSidedPos()
 
+        // FIXME: this just assumes all nodes at the pos are the nodes we care about. There should be a filter.
         val connections = net.getNodesAt(pos).asSequence().filter { it.node is SidedWireBlockNode }
             // The fold here causes entire parts to visually connect, even if only one of their network-nodes is
             // actually connected. The first byte represents the actual connection value. The second byte keeps track of
@@ -84,7 +103,8 @@ object ConnectableUtils {
                             ConnectionUtils::isInternal
                         )
                     } else {
-                        val cornerEdge = other.blockPos.subtract(node.blockPos.offset(side)).let(DirectionUtils::fromVector)
+                        val cornerEdge =
+                            other.blockPos.subtract(node.blockPos.offset(side)).let(DirectionUtils::fromVector)
                         if (cornerEdge != null) {
                             newConn = setSingularConnection(
                                 newConn, blockage, side, cornerEdge, ConnectionUtils::setCorner,
@@ -109,6 +129,43 @@ object ConnectableUtils {
         (part as? RedrawablePart)?.let {
             it.redraw()
             it.reshape()
+        }
+    }
+
+    private fun updateConnectionsImpl(part: CenterConnectablePart, net: GraphView, blockage: UByte) {
+        val pos = part.getPos()
+
+        // FIXME: this just assumes all nodes at the pos are the nodes we care about. There should be a filter.
+        var connections = 0u.toUByte()
+        for (holder in net.getNodesAt(pos)) {
+            if (holder.node !is CenterWireBlockNode) continue
+
+            for (link in holder.connections) {
+                val other = link.other(holder)
+                val otherPos = other.blockPos
+                if (otherPos == pos) {
+                    val node = other.node as? SidedBlockNode ?: continue
+                    val dir = node.side
+
+                    if (!CenterConnectionUtils.test(blockage, dir)) {
+                        connections = CenterConnectionUtils.set(connections, dir)
+                    }
+                } else {
+                    val dir = DirectionUtils.fromVector(otherPos.subtract(pos)) ?: continue
+
+                    if (!CenterConnectionUtils.test(blockage, dir)) {
+                        connections = CenterConnectionUtils.set(connections, dir)
+                    }
+                }
+            }
+        }
+
+        val newConnections = part.overrideConnections(connections)
+
+        part.updateConnections(newConnections)
+        if (part is RedrawablePart) {
+            part.redraw()
+            part.reshape()
         }
     }
 
@@ -214,8 +271,8 @@ object ConnectableUtils {
      */
     fun checkInside(world: BlockView, pos: BlockPos, shape: Box): Boolean {
         return MultipartUtil.get(world, pos)?.allParts?.any {
-            val blocking = if (it is ConnectablePart) {
-                it.getConnectionBlockingShape()
+            val blocking = if (it is BlockingPart) {
+                it.getInternalConnectionBlockingShape()
             } else {
                 it.shape
             }
@@ -237,8 +294,8 @@ object ConnectableUtils {
         val multipart = MultipartUtil.get(world, pos)
         return if (multipart != null) {
             multipart.allParts.any {
-                val blocking = if (it is ConnectablePart) {
-                    it.getConnectionBlockingShape()
+                val blocking = if (it is BlockingPart) {
+                    it.getExternalConnectionBlockingShape()
                 } else {
                     it.shape
                 }

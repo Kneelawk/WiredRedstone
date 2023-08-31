@@ -3,13 +3,14 @@ package com.kneelawk.wiredredstone.util
 import com.google.common.cache.CacheBuilder
 import com.google.common.cache.CacheLoader
 import com.google.common.cache.LoadingCache
+import com.kneelawk.wiredredstone.util.bits.CenterConnectionUtils
 import com.kneelawk.wiredredstone.util.bits.ConnectionUtils
 import net.minecraft.util.math.Box
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Vec3d
 import net.minecraft.util.shape.VoxelShape
 import net.minecraft.util.shape.VoxelShapes
-import java.util.*
+import java.util.EnumMap
 
 object BoundingBoxUtils {
     data class ShapeKey(val side: Direction, val connections: UByte)
@@ -83,8 +84,34 @@ object BoundingBoxUtils {
         }
     }
 
+    private fun getCenterWireShape(wireDiameter: Double, connections: UByte): VoxelShape {
+        val base = Box(
+            0.5 - wireDiameter / 32.0, 0.5 - wireDiameter / 32.0, 0.5 - wireDiameter / 32.0, 0.5 + wireDiameter / 32.0,
+            0.5 + wireDiameter / 32.0, 0.5 + wireDiameter / 32.0
+        ).vs()
+
+        val limb = Box(
+            0.5 - wireDiameter / 32.0, 0.0, 0.5 - wireDiameter / 32.0, 0.5 + wireDiameter / 32.0,
+            0.5 - wireDiameter / 32.0, 0.5 + wireDiameter / 32.0
+        )
+
+        var shape = base
+        for (dir in Direction.values()) {
+            if (CenterConnectionUtils.test(connections, dir)) {
+                shape = VoxelShapes.union(shape, RotationUtils.rotatedBox(dir, limb).vs())
+            }
+        }
+
+        return shape
+    }
+
     fun getWireOutlineShapes(wireWidth: Double, wireHeight: Double): LoadingCache<ShapeKey, VoxelShape> {
         return CacheBuilder.newBuilder().build(CacheLoader.from { key -> getWireShape(wireWidth, wireHeight, key) })
+    }
+
+    fun getCenterWireOutlineShapes(wireDiameter: Double): LoadingCache<UByte, VoxelShape> {
+        return CacheBuilder.newBuilder()
+            .build(CacheLoader.from { connections -> getCenterWireShape(wireDiameter, connections) })
     }
 
     fun getRotatedShapes(base: Box): EnumMap<Direction, VoxelShape> {
@@ -136,6 +163,15 @@ object BoundingBoxUtils {
                 cardinal, Box(
                     0.5 - wireWidth / 32.0, 0.0, 0.0, 0.5 + wireWidth / 32.0, wireHeight / 16.0, 0.5 - wireWidth / 32.0
                 )
+            )
+        )
+    }
+
+    fun getCenterWireInsideConnectionShape(dir: Direction, wireDiameter: Double): Box {
+        return RotationUtils.rotatedBox(
+            dir, Box(
+                0.5 - wireDiameter / 32.0, 0.0, 0.5 - wireDiameter / 32.0, 0.5 + wireDiameter / 32.0,
+                0.5 - wireDiameter / 32.0, 0.5 + wireDiameter / 32.0
             )
         )
     }

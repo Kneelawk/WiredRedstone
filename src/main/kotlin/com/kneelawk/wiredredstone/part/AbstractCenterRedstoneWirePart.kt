@@ -2,7 +2,6 @@ package com.kneelawk.wiredredstone.part
 
 import alexiil.mc.lib.multipart.api.MultipartEventBus
 import alexiil.mc.lib.multipart.api.MultipartHolder
-import alexiil.mc.lib.multipart.api.MultipartUtil
 import alexiil.mc.lib.multipart.api.PartDefinition
 import alexiil.mc.lib.multipart.api.event.NeighbourUpdateEvent
 import alexiil.mc.lib.multipart.api.event.PartAddedEvent
@@ -13,8 +12,6 @@ import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
 import com.kneelawk.wiredredstone.logic.RedstoneLogic
 import com.kneelawk.wiredredstone.util.*
-import com.kneelawk.wiredredstone.util.bits.BlockageUtils
-import com.kneelawk.wiredredstone.util.bits.ConnectionUtils
 import com.kneelawk.wiredredstone.util.connectable.ConnectableUtils
 import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
@@ -22,31 +19,27 @@ import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.Direction
-import net.minecraft.util.shape.VoxelShape
-import net.minecraft.util.shape.VoxelShapes
 
-abstract class AbstractRedstoneWirePart : AbstractBlockablePart, PowerablePart {
+abstract class AbstractCenterRedstoneWirePart : AbstractCenterBlockablePart, PowerablePart {
     var power: Int
         private set
 
     private val redstoneCache = mutableMapOf<BlockPos, Boolean>()
 
-    abstract val wireWidth: Double
-    abstract val wireHeight: Double
+    abstract val wireDiameter: Double
 
     constructor(
-        definition: PartDefinition, holder: MultipartHolder, side: Direction, connections: UByte, power: Int,
-        blockage: UByte
-    ) : super(definition, holder, side, connections, blockage) {
+        definition: PartDefinition, holder: MultipartHolder, connections: UByte, blockage: UByte, power: Int
+    ) : super(
+        definition, holder, connections, blockage
+    ) {
         this.power = power
     }
 
     constructor(definition: PartDefinition, holder: MultipartHolder, tag: NbtCompound) : super(
         definition, holder, tag
     ) {
-        power = tag.maybeGetByte("power")?.toInt()?.coerceIn(0..15)
-            ?: if (tag.maybeGetByte("powered") == 1.toByte()) 15 else 0
+        power = tag.getByte("power").toInt().coerceIn(0..15)
     }
 
     constructor(definition: PartDefinition, holder: MultipartHolder, buffer: NetByteBuf, ctx: IMsgReadCtx) : super(
@@ -132,19 +125,15 @@ abstract class AbstractRedstoneWirePart : AbstractBlockablePart, PowerablePart {
     }
 
     fun updateInternalConnections(world: ServerWorld) {
-        ConnectableUtils.updateBlockageAndConnections(world, this, wireWidth, wireHeight)
+        ConnectableUtils.updateBlockageAndConnections(world, this, wireDiameter)
     }
 
     override fun onRemoved() {
         super.onRemoved()
 
         if (!isClientSide()) {
-            WorldUtils.strongUpdateAllNeighbors(getWorld(), getPos(), side)
+            WorldUtils.strongUpdateAllNeighbors(getWorld(), getPos(), connections)
         }
-    }
-
-    override fun getCollisionShape(): VoxelShape {
-        return VoxelShapes.empty()
     }
 
     override fun getClosestBlockState(): BlockState {
@@ -156,34 +145,12 @@ abstract class AbstractRedstoneWirePart : AbstractBlockablePart, PowerablePart {
         return super.calculateBreakingDelta(player, Blocks.REDSTONE_WIRE)
     }
 
-    override fun getCullingShape(): VoxelShape {
-        return VoxelShapes.empty()
-    }
-
     override fun overrideConnections(connections: UByte): UByte {
         val world = getWorld()
         val pos = getPos()
         var newConn = connections
 
-        for (cardinal in DirectionUtils.HORIZONTALS) {
-            // Blockage gets updated before this gets called, so checking blockage here is ok
-            if (ConnectionUtils.isDisconnected(newConn, cardinal) && !BlockageUtils.isBlocked(blockage, cardinal)) {
-                val edge = RotationUtils.rotatedDirection(side, cardinal)
-                val offset = pos.offset(edge)
-                val state = world.getBlockState(offset)
-                val otherPart = MultipartUtil.get(world, offset)
-                if (otherPart != null) {
-                    // TODO: implement better multipart redstone connection
-                    if (state.isRedstonePowerSource && otherPart.allParts.none { it is WRPart }) {
-                        newConn = ConnectionUtils.setExternal(newConn, cardinal)
-                    }
-                } else {
-                    if (RedstoneLogic.shouldWireConnect(state)) {
-                        newConn = ConnectionUtils.setExternal(newConn, cardinal)
-                    }
-                }
-            }
-        }
+        // TODO
 
         return newConn
     }
@@ -197,7 +164,7 @@ abstract class AbstractRedstoneWirePart : AbstractBlockablePart, PowerablePart {
             // update neighbors
             val world = getWorld()
             val pos = getPos()
-            WorldUtils.strongUpdateAllNeighbors(world, pos, side)
+            WorldUtils.strongUpdateAllNeighbors(world, pos, connections)
         }
     }
 }

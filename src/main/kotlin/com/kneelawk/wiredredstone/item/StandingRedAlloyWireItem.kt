@@ -15,7 +15,7 @@ class StandingRedAlloyWireItem(settings: Settings) : Item(settings) {
         }
 
         val offer = PlacementUtils.tryPlaceCenterWire(context) {
-            StandingRedAlloyWirePart(WRParts.STANDING_RED_ALLOY_WIRE, it)
+            StandingRedAlloyWirePart(WRParts.STANDING_RED_ALLOY_WIRE, it, 0u, 0u, 0)
         } ?: return ActionResult.FAIL
 
         PlacementUtils.finishPlacement(context, offer, Blocks.REDSTONE_BLOCK.defaultState)

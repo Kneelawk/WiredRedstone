@@ -3,27 +3,26 @@ package com.kneelawk.wiredredstone.part
 import alexiil.mc.lib.multipart.api.MultipartHolder
 import alexiil.mc.lib.multipart.api.PartDefinition
 import alexiil.mc.lib.net.*
-import com.kneelawk.wiredredstone.WRConstants.str
-import com.kneelawk.wiredredstone.util.*
+import com.kneelawk.wiredredstone.WRConstants
+import com.kneelawk.wiredredstone.util.getBlockEntity
+import com.kneelawk.wiredredstone.util.isClientSide
+import com.kneelawk.wiredredstone.util.isRemoved
+import com.kneelawk.wiredredstone.util.setRecv
 import net.minecraft.nbt.NbtCompound
-import net.minecraft.util.math.Direction
 import net.minecraft.util.shape.VoxelShape
 import net.minecraft.util.shape.VoxelShapes
 
-/**
- * A part that is some kind of wire. It can have connections that are visible on the client.
- *
- * Subtypes for this could be redstone wires, bundle cables, or ribbon cables.
- */
-abstract class AbstractConnectablePart : AbstractSidedPart, ConnectablePart, RedrawablePart {
+abstract class AbstractCenterConnectablePart : AbstractWRPart, CenterConnectablePart, RedrawablePart {
 
     companion object {
         fun initNetworking() {}
 
-        private val NET_PARENT: ParentNetIdSingle<AbstractConnectablePart> =
-            NET_ID.subType(AbstractConnectablePart::class.java, str("abstract_connectable_part"))
+        private val NET_PARENT: ParentNetIdSingle<AbstractCenterConnectablePart> =
+            NET_ID.subType(
+                AbstractCenterConnectablePart::class.java, WRConstants.str("abstract_center_connectable_part")
+            )
 
-        private val NET_RECALCULATE_SHAPE: NetIdSignalK<AbstractConnectablePart> =
+        private val NET_RECALCULATE_SHAPE: NetIdSignalK<AbstractCenterConnectablePart> =
             NET_PARENT.idSignal("recalculate_shape").toClientOnly().setRecv {
                 reshape()
             }
@@ -36,22 +35,20 @@ abstract class AbstractConnectablePart : AbstractSidedPart, ConnectablePart, Red
     var connections: UByte
         private set
 
-    constructor(definition: PartDefinition, holder: MultipartHolder, side: Direction, connections: UByte) : super(
-        definition, holder, side
-    ) {
+    constructor(definition: PartDefinition, holder: MultipartHolder, connections: UByte) : super(definition, holder) {
         this.connections = connections
     }
 
     constructor(definition: PartDefinition, holder: MultipartHolder, tag: NbtCompound) : super(
         definition, holder, tag
     ) {
-        connections = tag.maybeGetByte("connections")?.toUByte() ?: 0u
+        connections = tag.getByte("connections").toUByte()
     }
 
     constructor(definition: PartDefinition, holder: MultipartHolder, buffer: NetByteBuf, ctx: IMsgReadCtx) : super(
-        definition, holder, buffer, ctx
+        definition, holder
     ) {
-        connections = buffer.readByte().toUByte()
+        connections = buffer.readFixedBits(6).toUByte()
     }
 
     override fun toTag(): NbtCompound {
@@ -62,17 +59,17 @@ abstract class AbstractConnectablePart : AbstractSidedPart, ConnectablePart, Red
 
     override fun writeCreationData(buffer: NetByteBuf, ctx: IMsgWriteCtx) {
         super.writeCreationData(buffer, ctx)
-        buffer.writeByte(connections.toInt())
+        buffer.writeFixedBits(connections.toInt(), 6)
     }
 
     override fun writeRenderData(buffer: NetByteBuf, ctx: IMsgWriteCtx) {
         super.writeRenderData(buffer, ctx)
-        buffer.writeByte(connections.toInt())
+        buffer.writeFixedBits(connections.toInt(), 6)
     }
 
     override fun readRenderData(buffer: NetByteBuf, ctx: IMsgReadCtx) {
         super.readRenderData(buffer, ctx)
-        connections = buffer.readByte().toUByte()
+        connections = buffer.readFixedBits(6).toUByte()
     }
 
     override fun redraw() {
@@ -98,12 +95,10 @@ abstract class AbstractConnectablePart : AbstractSidedPart, ConnectablePart, Red
         holder.container.recalculateShape()
     }
 
-    override fun overrideConnections(connections: UByte): UByte {
-        return connections
-    }
-
     override fun updateConnections(connections: UByte) {
         this.connections = connections
         getBlockEntity().markDirty()
     }
+
+    override fun overrideConnections(connections: UByte): UByte = connections
 }

@@ -7,6 +7,7 @@ import com.kneelawk.graphlib.api.util.HalfLink
 import com.kneelawk.graphlib.api.wire.CenterWireBlockNode
 import com.kneelawk.graphlib.api.wire.WireConnectionDiscoverers
 import com.kneelawk.wiredredstone.logic.RedstoneCarrierFilter
+import com.kneelawk.wiredredstone.logic.RedstoneLogic
 import com.kneelawk.wiredredstone.logic.RedstoneWireType
 import com.kneelawk.wiredredstone.part.StandingRedAlloyWirePart
 import com.kneelawk.wiredredstone.util.RedstoneNode
@@ -33,10 +34,17 @@ object StandingRedAlloyBlockNode : CenterWireBlockNode, RedstoneCarrierBlockNode
     }
 
     override fun onConnectionsChanged(self: NodeHolder<BlockNode>) {
+        val world = self.blockWorld
+        if (world is ServerWorld) {
+            RedstoneLogic.scheduleUpdate(world, self.graphId)
+            self.getCenterPart<StandingRedAlloyWirePart>()?.updateInternalConnections(world)
+        }
     }
 
     override fun putPower(world: ServerWorld, self: RedstoneNode, power: Int) {
-        // TODO
+        val part = self.getCenterPart<StandingRedAlloyWirePart>() ?: return
+        part.updatePower(power)
+        part.redraw()
     }
 
     override fun sourcePower(world: ServerWorld, self: RedstoneNode): Int {

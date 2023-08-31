@@ -8,12 +8,12 @@ import com.kneelawk.graphlib.api.util.SidedPos
 import com.kneelawk.wiredredstone.part.CenterPart
 import com.kneelawk.wiredredstone.part.SidedPart
 
-inline fun <reified T : SidedPart> NodeHolder<BlockNode>.getSidedPart(): T? {
+inline fun <reified T : SidedPart> NodeHolder<*>.getSidedPart(): T? {
     val node = this.node as? SidedBlockNode ?: return null
     return SidedPart.getPart<T>(blockWorld, SidedPos(blockPos, node.side))
 }
 
-inline fun <reified T : CenterPart> NodeHolder<BlockNode>.getCenterPart(): T? {
+inline fun <reified T : CenterPart> NodeHolder<*>.getCenterPart(): T? {
     val container = MultipartUtil.get(blockWorld, blockPos) ?: return null
     return container.getFirstPart(T::class.java)
 }
