@@ -13,6 +13,7 @@ import com.kneelawk.wiredredstone.logic.RedstoneLogic
 import com.kneelawk.wiredredstone.node.InsulatedWireBlockNode
 import com.kneelawk.wiredredstone.part.key.InsulatedWirePartKey
 import com.kneelawk.wiredredstone.util.*
+import com.kneelawk.wiredredstone.util.bits.BlockageUtils
 import com.kneelawk.wiredredstone.util.bits.ConnectionUtils
 import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
@@ -93,7 +94,8 @@ class InsulatedWirePart : AbstractRedstoneWirePart {
         return if (RedstoneLogic.wiresGivePower
             && (powerSide == side
                     || (DirectionUtils.isHorizontal(cardinal)
-                    && !ConnectionUtils.isDisconnected(connections, cardinal)))
+                    && !ConnectionUtils.isDisconnected(connections, cardinal)
+                    && !BlockageUtils.isBlocked(blockage, cardinal)))
         ) power else 0
     }
 
