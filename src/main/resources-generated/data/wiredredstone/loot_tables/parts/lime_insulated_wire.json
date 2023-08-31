@@ -1,0 +1,20 @@
+{
+  "type": "libmultipart:part",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "wiredredstone:lime_insulated_wire"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ]
+}

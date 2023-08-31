@@ -8,4 +8,5 @@ fun init(gen: FabricDataGenerator) {
 
     val pack = gen.createPack()
     pack.addProvider(::WRModelGen)
+    pack.addProvider(::WRPartLootTableGen)
 }

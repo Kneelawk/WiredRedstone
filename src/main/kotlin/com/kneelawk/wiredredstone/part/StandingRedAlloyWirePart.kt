@@ -6,12 +6,17 @@ import alexiil.mc.lib.multipart.api.render.PartModelKey
 import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.NetByteBuf
 import com.kneelawk.graphlib.api.graph.user.BlockNode
+import com.kneelawk.wiredredstone.item.WRItems
 import com.kneelawk.wiredredstone.node.StandingRedAlloyBlockNode
 import com.kneelawk.wiredredstone.part.key.StandingRedAlloyWirePartKey
 import com.kneelawk.wiredredstone.util.BoundingBoxUtils
+import com.kneelawk.wiredredstone.util.LootTableUtil
 import com.kneelawk.wiredredstone.util.PixelBox
 import com.kneelawk.wiredredstone.util.vs
+import net.minecraft.item.ItemStack
+import net.minecraft.loot.context.LootContextParameterSet
 import net.minecraft.nbt.NbtCompound
+import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.shape.VoxelShape
 
 class StandingRedAlloyWirePart : AbstractCenterRedstoneWirePart, CenterPart {
@@ -61,5 +66,13 @@ class StandingRedAlloyWirePart : AbstractCenterRedstoneWirePart, CenterPart {
 
     override fun createBlockNodes(): Collection<BlockNode> {
         return listOf(StandingRedAlloyBlockNode)
+    }
+
+    override fun getPickStack(hitResult: BlockHitResult?): ItemStack {
+        return ItemStack(WRItems.STANDING_RED_ALLOY_WIRE)
+    }
+
+    override fun addDrops(target: ItemDropTarget, params: LootContextParameterSet) {
+        LootTableUtil.addPartDrops(this, target, params, WRParts.STANDING_RED_ALLOY_WIRE.identifier)
     }
 }
