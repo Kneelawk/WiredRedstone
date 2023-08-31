@@ -20,6 +20,7 @@ object WRPartRenderers {
         register(RedAlloyWirePartBaker, RedAlloyWirePartKey::class)
         register(InsulatedWirePartBaker, InsulatedWirePartKey::class)
         register(BundledCablePartBaker, BundledCablePartKey::class)
+        register(StandingRedAlloyWirePartBaker, StandingRedAlloyWirePartKey::class)
         register(GateAndPartBaker, GateAndPartKey::class)
         register(GateDiodePartBaker, GateDiodePartKey::class)
         register(GateNandPartBaker, GateNandPartKey::class)

@@ -7,6 +7,7 @@ import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.NetByteBuf
 import com.kneelawk.graphlib.api.graph.user.BlockNode
 import com.kneelawk.wiredredstone.node.StandingRedAlloyBlockNode
+import com.kneelawk.wiredredstone.part.key.StandingRedAlloyWirePartKey
 import com.kneelawk.wiredredstone.util.BoundingBoxUtils
 import com.kneelawk.wiredredstone.util.PixelBox
 import com.kneelawk.wiredredstone.util.vs
@@ -54,8 +55,8 @@ class StandingRedAlloyWirePart : AbstractCenterRedstoneWirePart, CenterPart {
         return OUTLINE_SHAPES[connections]
     }
 
-    override fun getModelKey(): PartModelKey? {
-        return null
+    override fun getModelKey(): PartModelKey {
+        return StandingRedAlloyWirePartKey(connections, power != 0)
     }
 
     override fun createBlockNodes(): Collection<BlockNode> {

@@ -17,6 +17,10 @@ class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Fl
                 min(x1, x2), 0f, min(z1, z2), max(x1, x2), height, max(z1, z2)
             )
         }
+
+        fun of(x1: Float, y1: Float, z1: Float, x2: Float, y2: Float, z2: Float): BoxEmitter {
+            return BoxEmitter(min(x1, x2), min(y1, y2), min(z1, z2), max(x1, x2), max(y1, y2), max(z1, z2))
+        }
     }
 
     class TexCoords(var minU: Float, var minV: Float, var maxU: Float, var maxV: Float) {
@@ -135,10 +139,10 @@ class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Fl
 
     private var downTexCoords: TexCoords = TexCoords(minX, 1f - maxZ, maxX, 1f - minZ)
     private var upTexCoords: TexCoords = TexCoords(minX, minZ, maxX, maxZ)
-    private var northTexCoords: TexCoords = TexCoords(1f - maxX, minY, 1f - minX, maxY)
-    private var southTexCoords: TexCoords = TexCoords(minX, minY, maxX, maxY)
-    private var westTexCoords: TexCoords = TexCoords(minZ, minY, maxZ, maxY)
-    private var eastTexCoords: TexCoords = TexCoords(1f - maxZ, minY, 1f - minZ, maxY)
+    private var northTexCoords: TexCoords = TexCoords(1f - maxX, 1f - maxY, 1f - minX, 1f - minY)
+    private var southTexCoords: TexCoords = TexCoords(minX, 1f - maxY, maxX, 1f - minY)
+    private var westTexCoords: TexCoords = TexCoords(minZ, 1f - maxY, maxZ, 1f - minY)
+    private var eastTexCoords: TexCoords = TexCoords(1f - maxZ, 1f - maxY, 1f - minZ, 1f - minY)
 
     private var downRotation: Rotation = Rotation.DEGREES_0
     private var upRotation: Rotation = Rotation.DEGREES_0
