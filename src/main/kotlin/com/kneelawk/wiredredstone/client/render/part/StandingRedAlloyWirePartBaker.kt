@@ -14,7 +14,7 @@ import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Direction.*
 
 object StandingRedAlloyWirePartBaker : AbstractPartBaker<StandingRedAlloyWirePartKey>() {
-    private const val WIRE_CLEARANCE = 0.0001f
+    private const val WIRE_CLEARANCE = 0.0005f
 
     override fun makeMesh(key: StandingRedAlloyWirePartKey): Mesh {
         val spriteId = if (key.powered) {
@@ -79,9 +79,13 @@ object StandingRedAlloyWirePartBaker : AbstractPartBaker<StandingRedAlloyWirePar
             if (doYNeg || doYPos) {
                 val others = doZNeg || doXNeg || doZPos || doXPos
                 BoxEmitter.of(
-                    0.5f - wireDiameter / 2f, yNegEnd, 0.5f - wireDiameter / 2f, 0.5f + wireDiameter / 2f, yPosEnd,
-                    0.5f + wireDiameter / 2f
+                    0.5f - wireDiameter / 2f, yNegEnd, 0.5f - wireDiameter / 2f,
+                    0.5f + wireDiameter / 2f, yPosEnd, 0.5f + wireDiameter / 2f
                 )
+                    .widenX(WIRE_CLEARANCE * 2f)
+                    .widenZ(WIRE_CLEARANCE)
+                    .extendDown(if (doYNeg || !others) 0f else WIRE_CLEARANCE * 2f)
+                    .extendUp(if (doYPos || !others) 0f else WIRE_CLEARANCE * 2f)
                     .downSprite(if (doYNeg || !others) endSprite else null)
                     .downDecal1(if (doYNeg || !others) endDecalSprite else null)
                     .upSprite(if (doYPos || !others) endSprite else null)
@@ -98,9 +102,13 @@ object StandingRedAlloyWirePartBaker : AbstractPartBaker<StandingRedAlloyWirePar
             if (doZNeg || doZPos) {
                 val others = doYNeg || doXNeg || doYPos || doXPos
                 BoxEmitter.of(
-                    0.5f - wireDiameter / 2f, 0.5f - wireDiameter / 2f, zNegEnd, 0.5f + wireDiameter / 2f,
-                    0.5f + wireDiameter / 2f, zPosEnd
+                    0.5f - wireDiameter / 2f, 0.5f - wireDiameter / 2f, zNegEnd,
+                    0.5f + wireDiameter / 2f, 0.5f + wireDiameter / 2f, zPosEnd
                 )
+                    .widenX(WIRE_CLEARANCE)
+                    .widenY(WIRE_CLEARANCE * 2f)
+                    .extendNorth(if (doZNeg || !others) 0f else WIRE_CLEARANCE * 2f)
+                    .extendSouth(if (doZPos || !others) 0f else WIRE_CLEARANCE * 2f)
                     .downSprite(if (doXNeg || doXPos) crossSprite else verticalSprite)
                     .upSprite(if (doXNeg || doXPos) crossSprite else verticalSprite)
                     .northSprite(if (doZNeg || !others) endSprite else null)
@@ -117,9 +125,13 @@ object StandingRedAlloyWirePartBaker : AbstractPartBaker<StandingRedAlloyWirePar
             if (doXNeg || doXPos) {
                 val others = doYNeg || doZNeg || doYPos || doZPos
                 BoxEmitter.of(
-                    xNegEnd, 0.5f - wireDiameter / 2f, 0.5f - wireDiameter / 2f, xPosEnd, 0.5f + wireDiameter / 2f,
-                    0.5f + wireDiameter / 2f
+                    xNegEnd, 0.5f - wireDiameter / 2f, 0.5f - wireDiameter / 2f,
+                    xPosEnd, 0.5f + wireDiameter / 2f, 0.5f + wireDiameter / 2f
                 )
+                    .widenY(WIRE_CLEARANCE)
+                    .widenZ(WIRE_CLEARANCE * 2f)
+                    .extendWest(if (doXNeg || !others) 0f else WIRE_CLEARANCE * 2f)
+                    .extendEast(if (doXPos || !others) 0f else WIRE_CLEARANCE * 2f)
                     .downSprite(if (doZNeg || doZPos) crossSprite else horizontalSprite)
                     .upSprite(if (doZNeg || doZPos) crossSprite else horizontalSprite)
                     .northSprite(if (doYNeg || doYPos) crossSprite else horizontalSprite)

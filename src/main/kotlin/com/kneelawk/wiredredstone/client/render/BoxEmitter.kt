@@ -10,7 +10,7 @@ import kotlin.math.min
 /**
  * This thing is an eldritch abomination.
  */
-class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Float, val maxY: Float, val maxZ: Float) {
+class BoxEmitter(var minX: Float, var minY: Float, var minZ: Float, var maxX: Float, var maxY: Float, var maxZ: Float) {
     companion object {
         fun onGround(x1: Float, z1: Float, x2: Float, z2: Float, height: Float): BoxEmitter {
             return BoxEmitter(
@@ -474,6 +474,54 @@ class BoxEmitter(val minX: Float, val minY: Float, val minZ: Float, val maxX: Fl
 
     fun eastCullFace(cullFace: Direction?): BoxEmitter {
         eastCullFace = cullFace
+        return this
+    }
+
+    fun widenX(amount: Float): BoxEmitter {
+        minX -= amount
+        maxX += amount
+        return this
+    }
+
+    fun widenY(amount: Float): BoxEmitter {
+        minY -= amount
+        maxY += amount
+        return this
+    }
+
+    fun widenZ(amount: Float): BoxEmitter {
+        minZ -= amount
+        maxZ += amount
+        return this
+    }
+
+    fun extendDown(amount: Float): BoxEmitter {
+        minY -= amount
+        return this
+    }
+
+    fun extendUp(amount: Float): BoxEmitter {
+        maxY += amount
+        return this
+    }
+
+    fun extendNorth(amount: Float): BoxEmitter {
+        minZ -= amount
+        return this
+    }
+
+    fun extendSouth(amount: Float): BoxEmitter {
+        maxZ += amount
+        return this
+    }
+
+    fun extendWest(amount: Float): BoxEmitter {
+        minX -= amount
+        return this
+    }
+
+    fun extendEast(amount: Float): BoxEmitter {
+        maxX += amount
         return this
     }
 
