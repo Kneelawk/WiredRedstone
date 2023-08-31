@@ -1,10 +1,10 @@
 package com.kneelawk.wiredredstone.datagen
 
-import alexiil.mc.lib.multipart.api.PartDefinition
 import alexiil.mc.lib.multipart.api.PartLootParams
 import com.kneelawk.wiredredstone.item.WRItems
 import com.kneelawk.wiredredstone.part.WRParts
 import com.kneelawk.wiredredstone.util.DyeColorUtil
+import com.kneelawk.wiredredstone.util.LootTableUtil
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider
 import net.minecraft.item.ItemConvertible
@@ -39,15 +39,17 @@ class WRPartLootTableGen(dataOutput: FabricDataOutput) :
 
     override fun generate(biConsumer: BiConsumer<Identifier, LootTable.Builder>) {
         for ((part, item) in REGULAR_PARTS) {
-            biConsumer.accept(part.identifier.withPrefix("parts/"), singleDrop(item))
+            biConsumer.accept(LootTableUtil.getLootTableId(part.identifier), singleDrop(item))
         }
 
         for (dyeColor in DyeColor.values()) {
             val insulatedId = WRParts.INSULATED_WIRE.identifier.withPrefix(dyeColor.getName() + "_")
             val bundledId = WRParts.BUNDLED_CABLE.identifier.withPrefix(dyeColor.getName() + "_")
 
-            biConsumer.accept(insulatedId.withPrefix("parts/"), singleDrop(DyeColorUtil.insulatedWire(dyeColor)))
-            biConsumer.accept(bundledId.withPrefix("parts/"), singleDrop(DyeColorUtil.bundledCable(dyeColor)))
+            biConsumer.accept(
+                LootTableUtil.getLootTableId(insulatedId), singleDrop(DyeColorUtil.insulatedWire(dyeColor))
+            )
+            biConsumer.accept(LootTableUtil.getLootTableId(bundledId), singleDrop(DyeColorUtil.bundledCable(dyeColor)))
         }
     }
 

@@ -124,8 +124,7 @@ class InsulatedWirePart : AbstractRedstoneWirePart {
     }
 
     override fun addDrops(target: ItemDropTarget, params: LootContextParameterSet) {
-        val base = WRParts.INSULATED_WIRE.identifier
-        val identifier = Identifier(base.namespace, "${color.getName()}_${base.path}")
+        val identifier = WRParts.INSULATED_WIRE.identifier.withPrefix(color.getName() + "_")
         LootTableUtil.addPartDrops(this, target, params, identifier)
     }
 }

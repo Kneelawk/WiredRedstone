@@ -1,4 +1,4 @@
-// 1.20.1	2023-08-31T15:12:21.055187835	Wired Redstone/Model Definitions
+// 1.20.1	2023-08-31T15:27:14.279965919	Wired Redstone/Model Definitions
 8826b7cc212551d12fd4eeefd986741f04fd16d5 assets/wiredredstone/models/block/gate_rs_latch/redstone_anode_reset_off.json
 a8ad0567c81f8f2b445fcd060e628e8cb58ca731 assets/wiredredstone/models/block/gate_not/background.json
 6339fec6d90999003c8f27bdd7cc9a2c0c39b8e2 assets/wiredredstone/models/block/gate_or/redstone_anode_on.json
@@ -20,8 +20,8 @@ f5bbfb18f5c841109ac842e6c37a417b95943c44 assets/wiredredstone/models/block/gate_
 7fef4df5b8e6d10c6dfc4d722da24dbfae539726 assets/wiredredstone/models/block/gate_nand/background.json
 aa11305daccd8e974727c9ab15cf0e45a26cc504 assets/wiredredstone/models/block/gate_or/redstone_input_left_disabled.json
 3aab0e842b87a91ffd159ee7b1a36b51e6662e6d assets/wiredredstone/models/block/gate_and/torch_input_back_off.json
-76a570de55d87075f7ac856904ba7f5312079abc assets/wiredredstone/models/block/gate_rs_latch/redstone_anode_reset_on.json
 bc4f314dcf4967b071b9cbbcc56353772b6100c8 assets/wiredredstone/models/block/gate_diode/background.json
+76a570de55d87075f7ac856904ba7f5312079abc assets/wiredredstone/models/block/gate_rs_latch/redstone_anode_reset_on.json
 2952e8128306664ac6f945025d135c5b75e11bf1 assets/wiredredstone/models/block/gate_not/redstone_input_off.json
 4acda5474de8ca28300c045fc514357036aabc20 assets/wiredredstone/models/block/gate_and/torch_input_left_off.json
 727f967fff8546cd0267597b1eb8008b184e089d assets/wiredredstone/models/block/gate_nand/torch_input_left_off.json

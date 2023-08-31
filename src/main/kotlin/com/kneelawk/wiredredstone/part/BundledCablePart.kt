@@ -188,7 +188,7 @@ class BundledCablePart : AbstractBlockablePart, BundledPowerablePart {
 
     override fun addDrops(target: ItemDropTarget, params: LootContextParameterSet) {
         val base = WRParts.BUNDLED_CABLE.identifier
-        val identifier = color?.let { Identifier(base.namespace, "${it.getName()}_${base.path}") } ?: base
+        val identifier = color?.let { base.withPrefix(it.getName() + "_") } ?: base
         LootTableUtil.addPartDrops(this, target, params, identifier)
     }
 

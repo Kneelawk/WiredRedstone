@@ -12,10 +12,12 @@ object LootTableUtil {
     ) {
         val world = part.getWorld()
         if (world is ServerWorld) {
-            val lootTableId = Identifier(partId.namespace, "parts/${partId.path}")
+            val lootTableId = getLootTableId(partId)
             val lootTable = world.server.lootManager.getLootTable(lootTableId)
             val dropPos = Vec3d.ofCenter(part.container.multipartPos)
             lootTable.generateLoot(params) { target.drop(it, dropPos, Vec3d.ZERO) }
         }
     }
+
+    fun getLootTableId(partId: Identifier): Identifier = partId.withPrefix("parts/")
 }
