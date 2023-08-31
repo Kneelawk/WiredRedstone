@@ -95,18 +95,22 @@ abstract class AbstractCenterRedstoneWirePart : AbstractCenterBlockablePart, Pow
         }
 
         bus.addListener(this, PartAddedEvent::class.java) { e ->
-            // NetNodeContainers update our connections directly when changed
+            // NetNodeContainers update our connections directly when changed.
+            // However, BlockNodeContainers can sometimes also block our connection without connecting to us, just due
+            // to their shape.
             val world = getWorld()
-            if (world is ServerWorld && e.part !is BlockNodeContainer) {
+            if (world is ServerWorld && e.part !== this) {
                 updateInternalConnections(world)
                 maybeScheduleUpdate(world)
             }
         }
 
         bus.addListener(this, PartRemovedEvent::class.java) { e ->
-            // NetNodeContainers update our connections directly when changed
+            // NetNodeContainers update our connections directly when changed.
+            // However, BlockNodeContainers can sometimes also block our connection without connecting to us, just due
+            // to their shape.
             val world = getWorld()
-            if (world is ServerWorld && e.removed !is BlockNodeContainer) {
+            if (world is ServerWorld && e.removed !== this) {
                 updateInternalConnections(world)
                 maybeScheduleUpdate(world)
             }
