@@ -148,11 +148,11 @@ object ConnectableUtils {
                     val node = other.node as? SidedBlockNode ?: continue
                     val dir = node.side
 
-                        connections = CenterConnectionUtils.set(connections, dir)
+                    connections = CenterConnectionUtils.set(connections, dir)
                 } else {
                     val dir = DirectionUtils.fromVector(otherPos.subtract(pos)) ?: continue
 
-                        connections = CenterConnectionUtils.set(connections, dir)
+                    connections = CenterConnectionUtils.set(connections, dir)
                 }
             }
         }

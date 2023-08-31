@@ -49,8 +49,8 @@ object StandingRedAlloyBlockNode : CenterWireBlockNode, RedstoneCarrierBlockNode
     }
 
     override fun sourcePower(world: ServerWorld, self: RedstoneNode): Int {
-        // TODO
-        return 0
+        val part = self.getCenterPart<StandingRedAlloyWirePart>() ?: return 0
+        return part.getReceivingPower()
     }
 
     override fun isValid(self: NodeHolder<BlockNode>): Boolean {

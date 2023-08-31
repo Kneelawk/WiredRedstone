@@ -6,6 +6,7 @@ import com.kneelawk.wiredredstone.node.WRBlockNodes
 import com.kneelawk.wiredredstone.tag.WRBlockTags
 import com.kneelawk.wiredredstone.util.RotationUtils
 import com.kneelawk.wiredredstone.util.bits.BlockageUtils
+import com.kneelawk.wiredredstone.util.bits.CenterConnectionUtils
 import com.kneelawk.wiredredstone.util.bits.ConnectionUtils
 import com.kneelawk.wiredredstone.util.constrainedMaxOf
 import com.kneelawk.wiredredstone.util.threadLocal
@@ -110,5 +111,25 @@ object RedstoneLogic {
     fun shouldWireConnect(state: BlockState): Boolean {
         return (state.isRedstonePowerSource || state.isIn(WRBlockTags.WIRE_FORCE_CONNECTABLE))
                 && !state.isIn(WRBlockTags.WIRE_FORCE_NOT_CONNECTABLE)
+    }
+
+    fun getCenterReceivingPower(world: World, pos: BlockPos, connections: UByte, blockage: UByte): Int {
+        var max = 0
+
+        for (dir in Direction.values()) {
+            if (CenterConnectionUtils.test(connections, dir) && !CenterConnectionUtils.test(blockage, dir)) {
+                val otherPos = pos.offset(dir)
+                val otherState = world.getBlockState(otherPos)
+                if (otherState.block == Blocks.REDSTONE_WIRE) continue
+
+                val redstone = max(
+                    otherState.getWeakRedstonePower(world, otherPos, dir),
+                    otherState.getStrongRedstonePower(world, otherPos, dir)
+                )
+                if (redstone > max) max = redstone
+            }
+        }
+
+        return max
     }
 }

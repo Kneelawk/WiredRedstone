@@ -1,4 +1,4 @@
-// 1.20.1	2023-08-31T15:27:14.283961773	Wired Redstone/libmultipart:part Loot Table
+// 1.20.1	2023-08-31T16:21:43.318878715	Wired Redstone/libmultipart:part Loot Table
 9e68a0a4d7db3ccf87ea132c205121be8bca492d data/wiredredstone/loot_tables/parts/yellow_insulated_wire.json
 c3c52c7a55faaab9fe9f1ef4a9e56c066f30a68c data/wiredredstone/loot_tables/parts/light_gray_bundled_cable.json
 2ab44e432f736ce3455d0af90ec34107d6866b2b data/wiredredstone/loot_tables/parts/gate_projector_simple.json

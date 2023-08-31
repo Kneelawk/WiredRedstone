@@ -2,6 +2,7 @@ package com.kneelawk.wiredredstone.part
 
 import alexiil.mc.lib.multipart.api.MultipartEventBus
 import alexiil.mc.lib.multipart.api.MultipartHolder
+import alexiil.mc.lib.multipart.api.MultipartUtil
 import alexiil.mc.lib.multipart.api.PartDefinition
 import alexiil.mc.lib.multipart.api.event.NeighbourUpdateEvent
 import alexiil.mc.lib.multipart.api.event.PartAddedEvent
@@ -12,6 +13,7 @@ import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
 import com.kneelawk.wiredredstone.logic.RedstoneLogic
 import com.kneelawk.wiredredstone.util.*
+import com.kneelawk.wiredredstone.util.bits.CenterConnectionUtils
 import com.kneelawk.wiredredstone.util.connectable.ConnectableUtils
 import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
@@ -19,6 +21,7 @@ import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.Direction
 
 abstract class AbstractCenterRedstoneWirePart : AbstractCenterBlockablePart, PowerablePart {
     var power: Int
@@ -47,8 +50,6 @@ abstract class AbstractCenterRedstoneWirePart : AbstractCenterBlockablePart, Pow
     ) {
         power = buffer.readFixedBits(4).coerceIn(0..15)
     }
-
-    abstract fun getReceivingPower(): Int
 
     override fun toTag(): NbtCompound {
         val tag = super.toTag()
@@ -128,6 +129,10 @@ abstract class AbstractCenterRedstoneWirePart : AbstractCenterBlockablePart, Pow
         RedstoneLogic.wiresGivePower = true
     }
 
+    open fun getReceivingPower(): Int {
+        return RedstoneLogic.getCenterReceivingPower(getWorld(), getPos(), connections, blockage)
+    }
+
     fun updateInternalConnections(world: ServerWorld) {
         ConnectableUtils.updateBlockageAndConnections(world, this, wireDiameter)
     }
@@ -154,7 +159,23 @@ abstract class AbstractCenterRedstoneWirePart : AbstractCenterBlockablePart, Pow
         val pos = getPos()
         var newConn = connections
 
-        // TODO
+        for (dir in Direction.values()) {
+            if (!CenterConnectionUtils.test(connections, dir) && !CenterConnectionUtils.test(blockage, dir)) {
+                val otherPos = pos.offset(dir)
+                val otherState = world.getBlockState(otherPos)
+                val otherPart = MultipartUtil.get(world, otherPos)
+                if (otherPart != null) {
+                    // TODO: implement better multipart redstone connection
+                    if (otherState.isRedstonePowerSource && otherPart.allParts.none { it is WRPart }) {
+                        newConn = CenterConnectionUtils.set(newConn, dir)
+                    }
+                } else {
+                    if (RedstoneLogic.shouldWireConnect(otherState)) {
+                        newConn = CenterConnectionUtils.set(newConn, dir)
+                    }
+                }
+            }
+        }
 
         return newConn
     }
