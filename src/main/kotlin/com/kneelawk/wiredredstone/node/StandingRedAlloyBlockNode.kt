@@ -1,5 +1,6 @@
 package com.kneelawk.wiredredstone.node
 
+import alexiil.mc.lib.multipart.api.AbstractPart
 import com.kneelawk.graphlib.api.graph.NodeHolder
 import com.kneelawk.graphlib.api.graph.user.BlockNode
 import com.kneelawk.graphlib.api.graph.user.BlockNodeType
@@ -15,7 +16,7 @@ import com.kneelawk.wiredredstone.util.getCenterPart
 import net.minecraft.nbt.NbtElement
 import net.minecraft.server.world.ServerWorld
 
-object StandingRedAlloyBlockNode : CenterWireBlockNode, RedstoneCarrierBlockNode {
+object StandingRedAlloyBlockNode : CenterWireBlockNode, RedstoneCarrierBlockNode, PartBlockNode {
     private val filter = RedstoneCarrierFilter
 
     override val redstoneType: RedstoneWireType
@@ -54,5 +55,9 @@ object StandingRedAlloyBlockNode : CenterWireBlockNode, RedstoneCarrierBlockNode
 
     override fun isValid(self: NodeHolder<BlockNode>): Boolean {
         return self.getCenterPart<StandingRedAlloyWirePart>() != null
+    }
+
+    override fun getPart(self: NodeHolder<BlockNode>): AbstractPart? {
+        return self.getCenterPart<StandingRedAlloyWirePart>()
     }
 }

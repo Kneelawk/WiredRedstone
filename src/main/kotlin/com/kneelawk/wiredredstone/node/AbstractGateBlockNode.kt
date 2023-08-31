@@ -1,5 +1,6 @@
 package com.kneelawk.wiredredstone.node
 
+import alexiil.mc.lib.multipart.api.AbstractPart
 import com.kneelawk.graphlib.api.graph.NodeHolder
 import com.kneelawk.graphlib.api.graph.user.BlockNode
 import com.kneelawk.graphlib.api.util.HalfLink
@@ -21,7 +22,7 @@ import kotlin.reflect.KClass
 import kotlin.reflect.safeCast
 
 abstract class AbstractGateBlockNode<P : AbstractGatePart>(private val partClass: KClass<P>) : SidedWireBlockNode,
-    RedstoneCarrierBlockNode {
+    RedstoneCarrierBlockNode, PartBlockNode {
     protected abstract val filter: SidedWireConnectionFilter
 
     protected abstract fun getConnectDirection(part: P): Direction
@@ -58,5 +59,9 @@ abstract class AbstractGateBlockNode<P : AbstractGatePart>(private val partClass
 
     override fun isValid(self: NodeHolder<BlockNode>): Boolean {
         return self.getSidedPart<AbstractGatePart>() != null
+    }
+
+    override fun getPart(self: NodeHolder<BlockNode>): AbstractPart? {
+        return self.getSidedPart<AbstractGatePart>()
     }
 }

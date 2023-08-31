@@ -13,11 +13,10 @@ class WireBlockageFilter(
 ) : SidedWireConnectionFilter {
     override fun canConnect(
         self: SidedWireBlockNode, ctx: NodeHolder<BlockNode>, inDirection: Direction,
-        connectionType: WireConnectionType,
-        link: HalfLink
+        connectionType: WireConnectionType, link: HalfLink
     ): Boolean {
         return ConnectableUtils.canWireConnect(
-            ctx.blockWorld, ctx.blockPos, inDirection, connectionType, wireSide, wireWidth, wireHeight
+            ctx.blockWorld, ctx.blockPos, inDirection, connectionType, wireSide, wireWidth, wireHeight, link
         )
     }
 }

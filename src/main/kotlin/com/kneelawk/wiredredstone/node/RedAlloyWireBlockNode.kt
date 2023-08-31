@@ -1,5 +1,6 @@
 package com.kneelawk.wiredredstone.node
 
+import alexiil.mc.lib.multipart.api.AbstractPart
 import com.kneelawk.graphlib.api.graph.NodeHolder
 import com.kneelawk.graphlib.api.graph.user.BlockNode
 import com.kneelawk.graphlib.api.graph.user.BlockNodeDecoder
@@ -22,7 +23,8 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.world.BlockView
 
-data class RedAlloyWireBlockNode(private val side: Direction) : SidedWireBlockNode, RedstoneCarrierBlockNode {
+data class RedAlloyWireBlockNode(private val side: Direction) : SidedWireBlockNode, RedstoneCarrierBlockNode,
+    PartBlockNode {
 
     private val filter =
         RedstoneCarrierFilter.and(WireBlockageFilter(side, RedAlloyWirePart.WIRE_WIDTH, RedAlloyWirePart.WIRE_HEIGHT))
@@ -34,6 +36,10 @@ data class RedAlloyWireBlockNode(private val side: Direction) : SidedWireBlockNo
 
     private fun getPart(world: BlockView, pos: BlockPos): RedAlloyWirePart? {
         return SidedPart.getPart(world, SidedPos(pos, side))
+    }
+
+    override fun getPart(self: NodeHolder<BlockNode>): AbstractPart? {
+        return getPart(self.blockWorld, self.blockPos)
     }
 
     override fun findConnections(ctx: NodeHolder<BlockNode>): MutableCollection<HalfLink> {

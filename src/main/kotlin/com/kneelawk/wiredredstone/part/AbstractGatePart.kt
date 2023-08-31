@@ -26,8 +26,6 @@ abstract class AbstractGatePart : AbstractRotatedPart {
         const val CONNECTION_WIDTH = 2.0
         const val CONNECTION_HEIGHT = 2.0
 
-        val CONNECTION_BLOCKING_SHAPES =
-            BoundingBoxUtils.getRotatedShapes(Box(4.0 / 16.0, 0.0, 4.0 / 16.0, 12.0 / 16.0, 2.0 / 16.0, 12.0 / 16.0))
         val SHAPES = BoundingBoxUtils.getRotatedShapes(Box(0.0, 0.0, 0.0, 1.0, 2.0 / 16.0, 1.0))
     }
 
@@ -71,10 +69,6 @@ abstract class AbstractGatePart : AbstractRotatedPart {
 
     override fun getShape(): VoxelShape {
         return SHAPES[side]!!
-    }
-
-    override fun getExternalConnectionBlockingShape(): VoxelShape {
-        return CONNECTION_BLOCKING_SHAPES[side]!!
     }
 
     override fun getClosestBlockState(): BlockState {

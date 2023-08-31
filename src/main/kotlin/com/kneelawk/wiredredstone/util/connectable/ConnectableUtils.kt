@@ -1,13 +1,16 @@
 package com.kneelawk.wiredredstone.util.connectable
 
+import alexiil.mc.lib.multipart.api.AbstractPart
 import alexiil.mc.lib.multipart.api.MultipartUtil
 import com.kneelawk.graphlib.api.graph.GraphView
 import com.kneelawk.graphlib.api.graph.user.BlockNode
 import com.kneelawk.graphlib.api.graph.user.SidedBlockNode
+import com.kneelawk.graphlib.api.util.HalfLink
 import com.kneelawk.graphlib.api.wire.CenterWireBlockNode
 import com.kneelawk.graphlib.api.wire.SidedWireBlockNode
 import com.kneelawk.graphlib.api.wire.WireConnectionType
 import com.kneelawk.wiredredstone.config.CommonConfig
+import com.kneelawk.wiredredstone.node.PartBlockNode
 import com.kneelawk.wiredredstone.node.WRBlockNodes.WIRE_NET
 import com.kneelawk.wiredredstone.part.*
 import com.kneelawk.wiredredstone.util.BoundingBoxUtils
@@ -50,7 +53,7 @@ object ConnectableUtils {
 
         part.updateBlockage(blockage)
 
-        updateConnectionsImpl(part, net, blockage)
+        updateConnectionsImpl(part, net)
     }
 
     fun updateBlockageAndConnections(
@@ -69,7 +72,7 @@ object ConnectableUtils {
 
         part.updateBlockage(blockage)
 
-        updateConnectionsImpl(part, net, blockage)
+        updateConnectionsImpl(part, net)
     }
 
     /**
@@ -78,13 +81,13 @@ object ConnectableUtils {
     fun updateConnections(world: ServerWorld, part: ConnectablePart) {
         val net = WIRE_NET.getGraphView(world)
 
-        updateConnectionsImpl(part, net, BlockageUtils.UNBLOCKED)
+        updateConnectionsImpl(part, net)
     }
 
     /**
      * Updates visual connections, updating the LMP part and asking it to update the client.
      */
-    private fun updateConnectionsImpl(part: ConnectablePart, net: GraphView, blockage: UByte) {
+    private fun updateConnectionsImpl(part: ConnectablePart, net: GraphView) {
         val side = part.side
         val pos = part.getSidedPos()
 
@@ -99,7 +102,7 @@ object ConnectableUtils {
                     val other = link.other(node.cast(BlockNode::class.java))
                     if (node.blockPos == other.blockPos && other.node is SidedBlockNode) {
                         newConn = setSingularConnection(
-                            newConn, blockage, side, (other.node as SidedBlockNode).side, ConnectionUtils::setInternal,
+                            newConn, side, (other.node as SidedBlockNode).side, ConnectionUtils::setInternal,
                             ConnectionUtils::isInternal
                         )
                     } else {
@@ -107,14 +110,12 @@ object ConnectableUtils {
                             other.blockPos.subtract(node.blockPos.offset(side)).let(DirectionUtils::fromVector)
                         if (cornerEdge != null) {
                             newConn = setSingularConnection(
-                                newConn, blockage, side, cornerEdge, ConnectionUtils::setCorner,
-                                ConnectionUtils::isCorner
+                                newConn, side, cornerEdge, ConnectionUtils::setCorner, ConnectionUtils::isCorner
                             )
                         } else {
                             other.blockPos.subtract(node.blockPos).let(DirectionUtils::fromVector)?.let {
                                 newConn = setSingularConnection(
-                                    newConn, blockage, side, it, ConnectionUtils::setExternal,
-                                    ConnectionUtils::isExternal
+                                    newConn, side, it, ConnectionUtils::setExternal, ConnectionUtils::isExternal
                                 )
                             }
                         }
@@ -132,7 +133,7 @@ object ConnectableUtils {
         }
     }
 
-    private fun updateConnectionsImpl(part: CenterConnectablePart, net: GraphView, blockage: UByte) {
+    private fun updateConnectionsImpl(part: CenterConnectablePart, net: GraphView) {
         val pos = part.getPos()
 
         // FIXME: this just assumes all nodes at the pos are the nodes we care about. There should be a filter.
@@ -147,15 +148,11 @@ object ConnectableUtils {
                     val node = other.node as? SidedBlockNode ?: continue
                     val dir = node.side
 
-                    if (!CenterConnectionUtils.test(blockage, dir)) {
                         connections = CenterConnectionUtils.set(connections, dir)
-                    }
                 } else {
                     val dir = DirectionUtils.fromVector(otherPos.subtract(pos)) ?: continue
 
-                    if (!CenterConnectionUtils.test(blockage, dir)) {
                         connections = CenterConnectionUtils.set(connections, dir)
-                    }
                 }
             }
         }
@@ -170,12 +167,12 @@ object ConnectableUtils {
     }
 
     private inline fun setSingularConnection(
-        connections: Pair<UByte, UByte>, blockage: UByte, side: Direction, edge: Direction,
-        set: (UByte, Direction) -> UByte, test: (UByte, Direction) -> Boolean
+        connections: Pair<UByte, UByte>, side: Direction, edge: Direction, set: (UByte, Direction) -> UByte,
+        test: (UByte, Direction) -> Boolean
     ): Pair<UByte, UByte> {
         val cardinal = RotationUtils.unrotatedDirection(side, edge)
 
-        if (!DirectionUtils.isHorizontal(cardinal) || BlockageUtils.isBlocked(blockage, cardinal)) {
+        if (!DirectionUtils.isHorizontal(cardinal)) {
             return connections
         }
 
@@ -244,12 +241,13 @@ object ConnectableUtils {
      */
     fun canWireConnect(
         world: BlockView, pos: BlockPos, inDirection: Direction, type: WireConnectionType, wireSide: Direction,
-        wireWidth: Double, wireHeight: Double
+        wireWidth: Double, wireHeight: Double, link: HalfLink
     ): Boolean {
         val cardinal = RotationUtils.unrotatedDirection(wireSide, inDirection)
         val inside =
             BoundingBoxUtils.getWireInsideConnectionShape(wireSide, cardinal, wireWidth, wireHeight) ?: return true
-        if (checkInside(world, pos, inside)) {
+        val part = (link.other.node as? PartBlockNode)?.getPart(link.other)
+        if (checkInside(world, pos, inside, part)) {
             return false
         }
 
@@ -269,10 +267,12 @@ object ConnectableUtils {
      * @param shape The part of the connection that is within the checking block's block-space.
      * @return True if the shape **does** conflict with anything.
      */
-    fun checkInside(world: BlockView, pos: BlockPos, shape: Box): Boolean {
+    fun checkInside(world: BlockView, pos: BlockPos, shape: Box, except: AbstractPart? = null): Boolean {
         return MultipartUtil.get(world, pos)?.allParts?.any {
+            if (except != null && it.holder.uniqueId == except.holder.uniqueId) return@any false
+
             val blocking = if (it is BlockingPart) {
-                it.getInternalConnectionBlockingShape()
+                it.getConnectionBlockingShape()
             } else {
                 it.shape
             }
@@ -295,7 +295,7 @@ object ConnectableUtils {
         return if (multipart != null) {
             multipart.allParts.any {
                 val blocking = if (it is BlockingPart) {
-                    it.getExternalConnectionBlockingShape()
+                    it.getConnectionBlockingShape()
                 } else {
                     it.shape
                 }

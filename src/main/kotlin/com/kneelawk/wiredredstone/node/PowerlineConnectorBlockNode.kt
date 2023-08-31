@@ -1,5 +1,6 @@
 package com.kneelawk.wiredredstone.node
 
+import alexiil.mc.lib.multipart.api.AbstractPart
 import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
@@ -19,7 +20,7 @@ import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.Direction
 
 data class PowerlineConnectorBlockNode(private val side: Direction) : SidedBlockNode, CenterWireBlockNode,
-    RedstoneCarrierBlockNode {
+    RedstoneCarrierBlockNode, PartBlockNode {
     override fun getType(): BlockNodeType = WRBlockNodes.POWERLINE_CONNECTOR
 
     override fun toTag(): NbtElement = NbtByte.of(side.id.toByte())
@@ -51,6 +52,10 @@ data class PowerlineConnectorBlockNode(private val side: Direction) : SidedBlock
 
     override fun isValid(self: NodeHolder<BlockNode>): Boolean {
         return self.getSidedPart<PowerlineConnectorPart>() != null
+    }
+
+    override fun getPart(self: NodeHolder<BlockNode>): AbstractPart? {
+        return self.getSidedPart<PowerlineConnectorPart>()
     }
 
     override val redstoneType = RedstoneWireType.RedAlloy
