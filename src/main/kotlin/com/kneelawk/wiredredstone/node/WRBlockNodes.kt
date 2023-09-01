@@ -18,6 +18,8 @@ object WRBlockNodes {
 
     val STANDING_RED_ALLOY_WIRE =
         BlockNodeType.of(id("standing_red_alloy_wire"), Supplier { StandingRedAlloyBlockNode })
+    val STANDING_INSULATED_WIRE =
+        BlockNodeType.of(id("standing_insulated_wire"), StandingInsulatedWireBlockNode.Decoder)
 
     val POWERLINE_CONNECTOR = BlockNodeType.of(
         id("powerline_connector"), PowerlineConnectorBlockNode.Decoder, PowerlineConnectorBlockNode.Decoder
@@ -53,6 +55,9 @@ object WRBlockNodes {
             RED_ALLOY_WIRE,
             INSULATED_WIRE,
             BUNDLED_CABLE,
+
+            STANDING_RED_ALLOY_WIRE,
+            STANDING_INSULATED_WIRE,
 
             POWERLINE_CONNECTOR,
 

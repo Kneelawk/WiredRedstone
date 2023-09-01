@@ -2,13 +2,23 @@ package com.kneelawk.wiredredstone.datagen
 
 import com.kneelawk.wiredredstone.WRConstants.id
 import com.kneelawk.wiredredstone.datagen.gate.gate
+import com.kneelawk.wiredredstone.item.WRItems
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider
 import net.minecraft.data.client.ItemModelGenerator
-import net.minecraft.data.client.model.BlockStateModelGenerator
+import net.minecraft.data.client.model.*
+import net.minecraft.util.DyeColor
 import net.minecraft.util.math.Vec3d
+import java.util.Optional
 
 class WRModelGen(output: FabricDataOutput) : FabricModelProvider(output) {
+    companion object {
+        private val STANDING_WIRE_MODEL = Model(
+            Optional.of(id("item/standing_insulated_wire_template")), Optional.empty(), TextureKey.PARTICLE,
+            TextureKey.CROSS, TextureKey.END
+        )
+    }
+
     override fun generateBlockStateModels(gen: BlockStateModelGenerator) {
         gen.gate("gate_and") {
             particle = id("block/gate_and/particle")
@@ -128,5 +138,17 @@ class WRModelGen(output: FabricDataOutput) : FabricModelProvider(output) {
     }
 
     override fun generateItemModels(gen: ItemModelGenerator) {
+        for (color in DyeColor.values()) {
+            val item = WRItems.STANDING_INSULATED_WIRES[color]!!
+            val textureId = id("block/standing_insulated_wire/${color.getName()}_")
+            val crossId = textureId.extendPath("cross")
+            val endId = textureId.extendPath("end")
+
+            STANDING_WIRE_MODEL.upload(
+                ModelIds.getItemModelId(item),
+                Texture().put(TextureKey.PARTICLE, crossId).put(TextureKey.CROSS, crossId).put(TextureKey.END, endId),
+                gen.writer
+            )
+        }
     }
 }

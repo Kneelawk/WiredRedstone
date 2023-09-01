@@ -9,7 +9,12 @@ object WRParts {
     val INSULATED_WIRE by lazy { definition("insulated_wire", ::InsulatedWirePart, ::InsulatedWirePart) }
     val BUNDLED_CABLE by lazy { definition("bundled_cable", ::BundledCablePart, ::BundledCablePart) }
 
-    val STANDING_RED_ALLOY_WIRE by lazy { definition("standing_red_alloy_wire", ::StandingRedAlloyWirePart, ::StandingRedAlloyWirePart) }
+    val STANDING_RED_ALLOY_WIRE by lazy {
+        definition("standing_red_alloy_wire", ::StandingRedAlloyWirePart, ::StandingRedAlloyWirePart)
+    }
+    val STANDING_INSULATED_WIRE by lazy {
+        definition("standing_insulated_wire", ::StandingInsulatedWirePart, ::StandingInsulatedWirePart)
+    }
 
     val POWERLINE_CONNECTOR by lazy {
         definition("powerline_connector", ::PowerlineConnectorPart, ::PowerlineConnectorPart)
@@ -40,6 +45,7 @@ object WRParts {
         BUNDLED_CABLE.register()
 
         STANDING_RED_ALLOY_WIRE.register()
+        STANDING_INSULATED_WIRE.register()
 
         POWERLINE_CONNECTOR.register()
 

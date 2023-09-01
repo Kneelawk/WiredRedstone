@@ -45,11 +45,13 @@ class WRPartLootTableGen(dataOutput: FabricDataOutput) :
         for (dyeColor in DyeColor.values()) {
             val insulatedId = WRParts.INSULATED_WIRE.identifier.withPrefix(dyeColor.getName() + "_")
             val bundledId = WRParts.BUNDLED_CABLE.identifier.withPrefix(dyeColor.getName() + "_")
+            val standingInsulatedId = WRParts.STANDING_INSULATED_WIRE.identifier.withPrefix(dyeColor.getName() + "_")
 
             biConsumer.accept(
                 LootTableUtil.getLootTableId(insulatedId), singleDrop(DyeColorUtil.insulatedWire(dyeColor))
             )
             biConsumer.accept(LootTableUtil.getLootTableId(bundledId), singleDrop(DyeColorUtil.bundledCable(dyeColor)))
+            biConsumer.accept(LootTableUtil.getLootTableId(standingInsulatedId), singleDrop(WRItems.STANDING_INSULATED_WIRES[dyeColor]!!))
         }
     }
 

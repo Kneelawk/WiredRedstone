@@ -1,0 +1,8 @@
+{
+  "parent": "wiredredstone:item/standing_insulated_wire_template",
+  "textures": {
+    "cross": "wiredredstone:block/standing_insulated_wire/yellow_cross",
+    "end": "wiredredstone:block/standing_insulated_wire/yellow_end",
+    "particle": "wiredredstone:block/standing_insulated_wire/yellow_cross"
+  }
+}
