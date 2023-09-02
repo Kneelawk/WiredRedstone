@@ -12,12 +12,13 @@ import com.kneelawk.wiredredstone.logic.RedstoneLogic
 import com.kneelawk.wiredredstone.logic.RedstoneWireType
 import com.kneelawk.wiredredstone.part.StandingRedAlloyWirePart
 import com.kneelawk.wiredredstone.util.RedstoneNode
+import com.kneelawk.wiredredstone.util.connectable.CenterWireBlockageFilter
 import com.kneelawk.wiredredstone.util.getCenterPart
 import net.minecraft.nbt.NbtElement
 import net.minecraft.server.world.ServerWorld
 
 object StandingRedAlloyBlockNode : CenterWireBlockNode, RedstoneCarrierBlockNode, PartBlockNode {
-    private val filter = RedstoneCarrierFilter
+    private val filter = RedstoneCarrierFilter.and(CenterWireBlockageFilter(StandingRedAlloyWirePart.WIRE_DIAMETER))
 
     override val redstoneType: RedstoneWireType
         get() = RedstoneWireType.RedAlloy

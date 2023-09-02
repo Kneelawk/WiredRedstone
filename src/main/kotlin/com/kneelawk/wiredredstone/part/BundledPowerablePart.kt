@@ -4,8 +4,6 @@ import net.minecraft.util.DyeColor
 import net.minecraft.util.math.Direction
 
 interface BundledPowerablePart {
-    val power: ULong
-
     fun updatePower(power: ULong)
 
     fun updatePower(inner: DyeColor, power: Int)

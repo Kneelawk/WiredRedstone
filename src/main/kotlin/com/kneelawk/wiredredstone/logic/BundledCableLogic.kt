@@ -6,13 +6,15 @@ import com.kneelawk.wiredredstone.part.BundledPowerablePart
 import com.kneelawk.wiredredstone.util.DirectionUtils
 import com.kneelawk.wiredredstone.util.RotationUtils
 import com.kneelawk.wiredredstone.util.bits.BlockageUtils
+import com.kneelawk.wiredredstone.util.bits.CenterConnectionUtils
 import com.kneelawk.wiredredstone.util.bits.ConnectionUtils
 import com.kneelawk.wiredredstone.util.constrainedMaxOf
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.DyeColor
+import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.world.World
-import java.util.*
+import java.util.OptionalLong
 
 object BundledCableLogic {
     private val powerSources = mutableListOf<BundledPowerSource>()
@@ -34,11 +36,25 @@ object BundledCableLogic {
         }.maxPower()
     }
 
+    fun getCenterBundledCableInput(world: ServerWorld, pos: BlockPos, connections: UByte, blockage: UByte): ULong {
+        return receivingSides(pos, connections, blockage).map {
+            getSingleBundledCableInput(world, SidedPos(pos, it))
+        }.maxPower()
+    }
+
     fun getBundledCableInput(
         world: ServerWorld, pos: SidedPos, inner: DyeColor, connections: UByte, blockage: UByte
     ): Int {
         return receivingSides(pos, connections, blockage).constrainedMaxOf(0, 15) {
             getSingleBundledCableInput(world, SidedPos(pos.pos, it), inner)
+        }
+    }
+
+    fun getCenterBundledCableInput(
+        world: ServerWorld, pos: BlockPos, inner: DyeColor, connections: UByte, blockage: UByte
+    ): Int {
+        return receivingSides(pos, connections, blockage).constrainedMaxOf(0, 15) {
+            getSingleBundledCableInput(world, SidedPos(pos, it), inner)
         }
     }
 
@@ -49,6 +65,11 @@ object BundledCableLogic {
                 connections, cardinal
             ) && !BlockageUtils.isBlocked(blockage, cardinal))
         }
+    }
+
+    private fun receivingSides(pos: BlockPos, connections: UByte, blockage: UByte): Sequence<Direction> {
+        return Direction.values().asSequence()
+            .filter { a -> CenterConnectionUtils.test(connections, a) && !CenterConnectionUtils.test(blockage, a) }
     }
 
     private fun getSingleBundledCableInput(world: ServerWorld, pos: SidedPos): ULong {

@@ -240,8 +240,9 @@ object ConnectableUtils {
      * Checks whether a wire on the given side, of the given dimensions, can connect in a given direction.
      */
     fun canWireConnect(
-        world: BlockView, pos: BlockPos, inDirection: Direction, type: WireConnectionType, wireSide: Direction,
-        wireWidth: Double, wireHeight: Double, link: HalfLink
+        world: BlockView, pos: BlockPos, inDirection: Direction, type: WireConnectionType, link: HalfLink,
+        wireSide: Direction,
+        wireWidth: Double, wireHeight: Double
     ): Boolean {
         val cardinal = RotationUtils.unrotatedDirection(wireSide, inDirection)
         val inside =
@@ -257,6 +258,17 @@ object ConnectableUtils {
                     ?: return true
             return !checkOutside(world, pos.offset(inDirection), outside)
         } else true
+    }
+
+    /**
+     * Checks whether a center wire of the given dimensions can connect in the given direction.
+     */
+    fun canCenterWireConnect(
+        world: BlockView, pos: BlockPos, inDirection: Direction, link: HalfLink, wireDiameter: Double
+    ): Boolean {
+        val inside = BoundingBoxUtils.getCenterWireInsideConnectionShape(inDirection, wireDiameter)
+        val part = (link.other.node as? PartBlockNode)?.getPart(link.other)
+        return !checkInside(world, pos, inside, part)
     }
 
     /**

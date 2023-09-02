@@ -63,6 +63,11 @@ object WRItems {
     val STANDING_INSULATED_WIRES by lazy {
         DyeColor.values().associateWith { StandingInsulatedWireItem(it, WIRED_REDSTONE_ITEM_SETTINGS) }
     }
+    val STANDING_BUNDLED_CABLES by lazy {
+        (listOf<DyeColor?>(null) + DyeColor.values()).associateWith {
+            StandingBundledCableItem(it, WIRED_REDSTONE_ITEM_SETTINGS)
+        }
+    }
 
     val POWERLINE_CONNECTOR by lazy { PowerlineConnectorItem(WIRED_REDSTONE_ITEM_SETTINGS) }
     val POWERLINE_WIRE by lazy { PowerlineWireItem(WIRED_REDSTONE_ITEM_SETTINGS) }
@@ -173,6 +178,9 @@ object WRItems {
         register(STANDING_RED_ALLOY_WIRE, "standing_red_alloy_wire")
         for ((color, item) in STANDING_INSULATED_WIRES) {
             register(item, color.getName() + "_standing_insulated_wire")
+        }
+        for ((color, item) in STANDING_BUNDLED_CABLES) {
+            register(item, (color?.let { it.getName() + "_" } ?: "") + "standing_bundled_cable")
         }
 
         register(POWERLINE_CONNECTOR, "powerline_connector", false)
