@@ -16,6 +16,7 @@ import com.kneelawk.wiredredstone.item.WRItems
 import com.kneelawk.wiredredstone.logic.BundledCableLogic
 import com.kneelawk.wiredredstone.logic.RedstoneLogic
 import com.kneelawk.wiredredstone.node.StandingBundledCableBlockNode
+import com.kneelawk.wiredredstone.part.key.StandingBundledCablePartKey
 import com.kneelawk.wiredredstone.util.*
 import com.kneelawk.wiredredstone.util.bits.CenterConnectionUtils
 import com.kneelawk.wiredredstone.util.connectable.ConnectableUtils
@@ -149,9 +150,8 @@ class StandingBundledCablePart : AbstractCenterBlockablePart, BundledPowerablePa
         return (color?.let(DyeColorUtil::wool) ?: Blocks.WHITE_WOOL).defaultState
     }
 
-    override fun getModelKey(): PartModelKey? {
-        // TODO
-        return null
+    override fun getModelKey(): PartModelKey {
+        return StandingBundledCablePartKey(color, connections)
     }
 
     override fun createBlockNodes(): Collection<BlockNode> {

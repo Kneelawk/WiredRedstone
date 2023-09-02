@@ -371,23 +371,29 @@ object WireRendering {
         }
 
     fun emitCenterWire(
-        conn: UByte, wireDiameter: Float, crossSprite: Sprite, verticalSprite: Sprite = crossSprite,
-        horizontalSprite: Sprite = crossSprite, endSprite: Sprite = crossSprite, endDecalSprite: Sprite? = null,
-        material: RenderMaterial, decalMaterial: RenderMaterial? = null, emitter: QuadEmitter
+        conn: UByte, wireDiameter: Float, topCrossSprite: Sprite, topXSprite: Sprite = topCrossSprite,
+        topZSprite: Sprite = topCrossSprite, bottomCrossSprite: Sprite = topCrossSprite,
+        bottomXSprite: Sprite = topXSprite, bottomZSprite: Sprite = topZSprite,
+        lowerCrossSprite: Sprite = topCrossSprite, lowerXSprite: Sprite = topXSprite, lowerZSprite: Sprite = topZSprite,
+        upperCrossSprite: Sprite = topCrossSprite, upperXSprite: Sprite = topXSprite, upperZSprite: Sprite = topZSprite,
+        endSprite: Sprite = topCrossSprite, endDecalSprite: Sprite? = null, material: RenderMaterial,
+        decalMaterial: RenderMaterial? = null, emitter: QuadEmitter
     ) {
         if (conn == 0u.toUByte()) {
             BoxEmitter.of(
                 0.5f - wireDiameter / 2f, 0.5f - wireDiameter / 2f, 0.5f - wireDiameter / 2f, 0.5f + wireDiameter / 2f,
                 0.5f + wireDiameter / 2f, 0.5f + wireDiameter / 2f
             )
-                .downSprite(horizontalSprite)
-                .upSprite(horizontalSprite)
-                .northSprite(horizontalSprite)
-                .southSprite(horizontalSprite)
+                .downSprite(bottomXSprite)
+                .upSprite(topXSprite)
+                .northSprite(lowerXSprite)
+                .southSprite(upperXSprite)
                 .westSprite(endSprite)
                 .eastSprite(endSprite)
                 .westDecal1(endDecalSprite)
                 .eastDecal1(endDecalSprite)
+                .eastFlipU()
+                .downFlipV()
                 .material(material)
                 .decal1Material(decalMaterial)
                 .emit(emitter)
@@ -415,10 +421,12 @@ object WireRendering {
                     .downDecal1(if (doYNeg || !others) endDecalSprite else null)
                     .upSprite(if (doYPos || !others) endSprite else null)
                     .upDecal1(if (doYPos || !others) endDecalSprite else null)
-                    .northSprite(if (doXNeg || doXPos) crossSprite else verticalSprite)
-                    .southSprite(if (doXNeg || doXPos) crossSprite else verticalSprite)
-                    .westSprite(if (doZNeg || doZPos) crossSprite else verticalSprite)
-                    .eastSprite(if (doZNeg || doZPos) crossSprite else verticalSprite)
+                    .northSprite(if (doXNeg || doXPos) topCrossSprite else topZSprite)
+                    .southSprite(if (doXNeg || doXPos) bottomCrossSprite else bottomZSprite)
+                    .westSprite(if (doZNeg || doZPos) lowerCrossSprite else lowerZSprite)
+                    .eastSprite(if (doZNeg || doZPos) upperCrossSprite else upperZSprite)
+                    .northFlipU()
+                    .eastFlipU()
                     .material(material)
                     .decal1Material(decalMaterial)
                     .emit(emitter)
@@ -434,14 +442,15 @@ object WireRendering {
                     .widenY(WIRE_CLEARANCE * 2f)
                     .extendNorth(if (doZNeg || !others) 0f else WIRE_CLEARANCE * 2f)
                     .extendSouth(if (doZPos || !others) 0f else WIRE_CLEARANCE * 2f)
-                    .downSprite(if (doXNeg || doXPos) crossSprite else verticalSprite)
-                    .upSprite(if (doXNeg || doXPos) crossSprite else verticalSprite)
+                    .downSprite(if (doXNeg || doXPos) bottomCrossSprite else bottomZSprite)
+                    .upSprite(if (doXNeg || doXPos) topCrossSprite else topZSprite)
                     .northSprite(if (doZNeg || !others) endSprite else null)
                     .northDecal1(if (doZNeg || !others) endDecalSprite else null)
                     .southSprite(if (doZPos || !others) endSprite else null)
                     .southDecal1(if (doZPos || !others) endDecalSprite else null)
-                    .westSprite(if (doYNeg || doYPos) crossSprite else horizontalSprite)
-                    .eastSprite(if (doYNeg || doYPos) crossSprite else horizontalSprite)
+                    .westSprite(if (doYNeg || doYPos) lowerCrossSprite else lowerXSprite)
+                    .eastSprite(if (doYNeg || doYPos) upperCrossSprite else upperXSprite)
+                    .northFlipU()
                     .material(material)
                     .decal1Material(decalMaterial)
                     .emit(emitter)
@@ -457,14 +466,16 @@ object WireRendering {
                     .widenZ(WIRE_CLEARANCE * 2f)
                     .extendWest(if (doXNeg || !others) 0f else WIRE_CLEARANCE * 2f)
                     .extendEast(if (doXPos || !others) 0f else WIRE_CLEARANCE * 2f)
-                    .downSprite(if (doZNeg || doZPos) crossSprite else horizontalSprite)
-                    .upSprite(if (doZNeg || doZPos) crossSprite else horizontalSprite)
-                    .northSprite(if (doYNeg || doYPos) crossSprite else horizontalSprite)
-                    .southSprite(if (doYNeg || doYPos) crossSprite else horizontalSprite)
+                    .downSprite(if (doZNeg || doZPos) bottomCrossSprite else bottomXSprite)
+                    .upSprite(if (doZNeg || doZPos) topCrossSprite else topXSprite)
+                    .northSprite(if (doYNeg || doYPos) lowerCrossSprite else lowerXSprite)
+                    .southSprite(if (doYNeg || doYPos) upperCrossSprite else upperXSprite)
                     .westSprite(if (doXNeg || !others) endSprite else null)
                     .westDecal1(if (doXNeg || !others) endDecalSprite else null)
                     .eastSprite(if (doXPos || !others) endSprite else null)
                     .eastDecal1(if (doXPos || !others) endDecalSprite else null)
+                    .eastFlipU()
+                    .downFlipV()
                     .material(material)
                     .decal1Material(decalMaterial)
                     .emit(emitter)

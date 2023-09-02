@@ -25,9 +25,9 @@ object StandingInsulatedWirePartBaker : AbstractPartBaker<StandingInsulatedWireP
         WireRendering.emitCenterWire(
             conn = key.connections,
             wireDiameter = 4f / 16f,
-            crossSprite = sprites.cross,
-            horizontalSprite = sprites.x,
-            verticalSprite = sprites.z,
+            topCrossSprite = sprites.cross,
+            topXSprite = sprites.x,
+            topZSprite = sprites.z,
             endSprite = sprites.end,
             endDecalSprite = endSprite,
             material = WRMaterials.UNPOWERED_MATERIAL,

@@ -29,7 +29,7 @@ object StandingRedAlloyWirePartBaker : AbstractPartBaker<StandingRedAlloyWirePar
         WireRendering.emitCenterWire(
             conn = key.connections,
             wireDiameter = 2f / 16f,
-            crossSprite = sprite,
+            topCrossSprite = sprite,
             material = material,
             emitter = emitter
         )
