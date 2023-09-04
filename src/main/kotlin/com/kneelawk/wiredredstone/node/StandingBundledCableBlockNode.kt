@@ -20,7 +20,7 @@ import net.minecraft.nbt.NbtElement
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.DyeColor
 
-class StandingBundledCableBlockNode(private val color: DyeColor?, private val inner: DyeColor) : CenterWireBlockNode,
+data class StandingBundledCableBlockNode(private val color: DyeColor?, private val inner: DyeColor) : CenterWireBlockNode,
     RedstoneCarrierBlockNode, PartBlockNode {
     private val filter = RedstoneCarrierFilter.and(CenterWireBlockageFilter(StandingBundledCablePart.WIRE_DIAMETER))
 
