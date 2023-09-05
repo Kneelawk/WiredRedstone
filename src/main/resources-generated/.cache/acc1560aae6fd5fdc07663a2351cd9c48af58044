@@ -1,4 +1,4 @@
-// 1.20.1	2023-08-31T19:32:35.172650666	Wired Redstone/libmultipart:part Loot Table
+// 1.20.1	2023-09-04T00:11:22.275913716	Wired Redstone/libmultipart:part Loot Table
 f3be487cd6b2bf10d87e1dd461d42af723cd63a6 data/wiredredstone/loot_tables/parts/gate_not.json
 52979dedc5bc5a7e4dca55f37b0423392874fc58 data/wiredredstone/loot_tables/parts/gate_nand.json
 b09606e90a0edeb4e9cf3876508c9a218b69fb12 data/wiredredstone/loot_tables/parts/lime_standing_insulated_wire.json
@@ -27,8 +27,8 @@ e69dfc084a2186c471df415b7db3fc8c29466a83 data/wiredredstone/loot_tables/parts/bu
 8e99235bb99d6d01f449ddb1d2aa34f089393f34 data/wiredredstone/loot_tables/parts/gate_rs_latch.json
 6170cdaee9ed1038094750b006034b7b588f1520 data/wiredredstone/loot_tables/parts/light_blue_standing_insulated_wire.json
 7e0e93413f2c7e44b75890db5f16b95b62a0e336 data/wiredredstone/loot_tables/parts/brown_insulated_wire.json
-9e68a0a4d7db3ccf87ea132c205121be8bca492d data/wiredredstone/loot_tables/parts/yellow_insulated_wire.json
 c3c52c7a55faaab9fe9f1ef4a9e56c066f30a68c data/wiredredstone/loot_tables/parts/light_gray_bundled_cable.json
+9e68a0a4d7db3ccf87ea132c205121be8bca492d data/wiredredstone/loot_tables/parts/yellow_insulated_wire.json
 2ab44e432f736ce3455d0af90ec34107d6866b2b data/wiredredstone/loot_tables/parts/gate_projector_simple.json
 3b7d983718c2351896e64279add34370dbb15150 data/wiredredstone/loot_tables/parts/green_insulated_wire.json
 2f95964cee28d7330f6eb92bf42313f5b2e318be data/wiredredstone/loot_tables/parts/light_blue_insulated_wire.json

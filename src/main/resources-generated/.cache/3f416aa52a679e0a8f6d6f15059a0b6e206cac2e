@@ -1,4 +1,4 @@
-// 1.20.1	2023-08-31T19:32:35.167758404	Wired Redstone/Model Definitions
+// 1.20.1	2023-09-04T00:11:22.271954449	Wired Redstone/Model Definitions
 8826b7cc212551d12fd4eeefd986741f04fd16d5 assets/wiredredstone/models/block/gate_rs_latch/redstone_anode_reset_off.json
 a8ad0567c81f8f2b445fcd060e628e8cb58ca731 assets/wiredredstone/models/block/gate_not/background.json
 bf9145f7f13591572896e840a5bc5ce14c3ddc24 assets/wiredredstone/models/item/blue_standing_insulated_wire.json
@@ -92,8 +92,8 @@ a3c15bfb734d0fdb219b4aa85f50b3bc5ab47dbe assets/wiredredstone/models/block/gate_
 b3a97e84abedebdb82f3d725773198560b438e4b assets/wiredredstone/models/block/gate_projector_simple/torch_base.json
 1e552cee6e2663788e485c6922918367d5014319 assets/wiredredstone/models/item/light_blue_standing_insulated_wire.json
 1debd5772ce055f9fe588b2a8dd3091aa9abb2bd assets/wiredredstone/models/block/gate_nor/redstone_input_back_disabled.json
-ff9f2289be6c85d8ba3ff9f6a300b2968e1b7697 assets/wiredredstone/models/block/gate_and/redstone_input_left_disabled.json
 b049f4e5c3226d386ec3b3d2d95db49884dbbe34 assets/wiredredstone/models/item/red_standing_insulated_wire.json
+ff9f2289be6c85d8ba3ff9f6a300b2968e1b7697 assets/wiredredstone/models/block/gate_and/redstone_input_left_disabled.json
 a38000a5d26766688e51a0c1bb7bcd59b0feab38 assets/wiredredstone/models/block/gate_and/redstone_input_left_on.json
 bb3359be52cecd149f744adc5b0409541c0e2968 assets/wiredredstone/models/block/gate_nand/redstone_input_left_disabled.json
 8d8f940e7f23ffc97a17b80e510ae02e01874b85 assets/wiredredstone/models/item/light_gray_standing_insulated_wire.json

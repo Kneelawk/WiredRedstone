@@ -312,6 +312,8 @@ dependencies {
     // Probably best to just use the IDEA plugin instead
 //    val quiltflowerVersion: String by project
 //    runtimeOnly("org.quiltmc:quiltflower:$quiltflowerVersion")
+
+//    implementation(kotlin("script-runtime"))
 }
 
 tasks {
