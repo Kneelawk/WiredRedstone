@@ -115,33 +115,33 @@ for (color in otherColors) {
     val dark = colorCross.getRGB(8, 7)
 
     fun makeImage(
-        display: String, file: String, draw: (Graphics2D, Int, Int, Int) -> Unit
+        display: String, file: String, base: BufferedImage, draw: (Graphics2D, Int, Int, Int) -> Unit
     ) {
         println("  Drawing $display image...")
         val outLowerCross = BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB)
         with(outLowerCross.createGraphics()) {
-            drawImage(baseLowerCross, 0, 0, null)
+            drawImage(base, 0, 0, null)
             draw(this, light, medium, dark)
         }
         println("  Writing $display image...")
         ImageIO.write(outLowerCross, "png", File(colorDir, "$file.png"))
     }
 
-    makeImage("top cross", "top_cross", ::drawCross)
-    makeImage("top x", "top_x", ::drawX)
-    makeImage("top z", "top_z", ::drawZ)
+    makeImage("top cross", "top_cross", baseTopCross, ::drawCross)
+    makeImage("top x", "top_x", baseTopX, ::drawX)
+    makeImage("top z", "top_z", baseTopZ, ::drawZ)
 
-    makeImage("lower cross", "lower_cross", ::drawCross)
-    makeImage("lower x", "lower_x", ::drawX)
-    makeImage("lower z", "lower_z", ::drawZ)
+    makeImage("lower cross", "lower_cross", baseLowerCross, ::drawCross)
+    makeImage("lower x", "lower_x", baseLowerX, ::drawX)
+    makeImage("lower z", "lower_z", baseLowerZ, ::drawZ)
 
-    makeImage("upper cross", "upper_cross", ::drawCross)
-    makeImage("upper x", "upper_x", ::drawX)
-    makeImage("upper z", "upper_z", ::drawZ)
+    makeImage("upper cross", "upper_cross", baseUpperCross, ::drawCross)
+    makeImage("upper x", "upper_x", baseUpperX, ::drawX)
+    makeImage("upper z", "upper_z", baseUpperZ, ::drawZ)
 
-    makeImage("bottom cross", "bottom_cross", ::drawCross)
-    makeImage("bottom x", "bottom_x", ::drawX)
-    makeImage("bottom z", "bottom_z", ::drawZ)
+    makeImage("bottom cross", "bottom_cross", baseBottomCross, ::drawCross)
+    makeImage("bottom x", "bottom_x", baseBottomX, ::drawX)
+    makeImage("bottom z", "bottom_z", baseBottomZ, ::drawZ)
 
     println()
 }
