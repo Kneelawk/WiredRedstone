@@ -24,6 +24,7 @@ class WRPartLootTableGen(dataOutput: FabricDataOutput) :
             WRParts.RED_ALLOY_WIRE to WRItems.RED_ALLOY_WIRE,
             WRParts.BUNDLED_CABLE to WRItems.BUNDLED_CABLE,
             WRParts.STANDING_RED_ALLOY_WIRE to WRItems.STANDING_RED_ALLOY_WIRE,
+            WRParts.STANDING_BUNDLED_CABLE to WRItems.STANDING_BUNDLED_CABLES[null]!!,
             WRParts.POWERLINE_CONNECTOR to WRItems.POWERLINE_CONNECTOR,
             WRParts.GATE_AND to WRItems.GATE_AND,
             WRParts.GATE_DIODE to WRItems.GATE_DIODE,
@@ -46,12 +47,20 @@ class WRPartLootTableGen(dataOutput: FabricDataOutput) :
             val insulatedId = WRParts.INSULATED_WIRE.identifier.withPrefix(dyeColor.getName() + "_")
             val bundledId = WRParts.BUNDLED_CABLE.identifier.withPrefix(dyeColor.getName() + "_")
             val standingInsulatedId = WRParts.STANDING_INSULATED_WIRE.identifier.withPrefix(dyeColor.getName() + "_")
+            val standingBundledCableId = WRParts.STANDING_BUNDLED_CABLE.identifier.withPrefix(dyeColor.getName() + "_")
 
             biConsumer.accept(
                 LootTableUtil.getLootTableId(insulatedId), singleDrop(DyeColorUtil.insulatedWire(dyeColor))
             )
             biConsumer.accept(LootTableUtil.getLootTableId(bundledId), singleDrop(DyeColorUtil.bundledCable(dyeColor)))
-            biConsumer.accept(LootTableUtil.getLootTableId(standingInsulatedId), singleDrop(WRItems.STANDING_INSULATED_WIRES[dyeColor]!!))
+            biConsumer.accept(
+                LootTableUtil.getLootTableId(standingInsulatedId),
+                singleDrop(WRItems.STANDING_INSULATED_WIRES[dyeColor]!!)
+            )
+            biConsumer.accept(
+                LootTableUtil.getLootTableId(standingBundledCableId),
+                singleDrop(WRItems.STANDING_BUNDLED_CABLES[dyeColor]!!)
+            )
         }
     }
 
