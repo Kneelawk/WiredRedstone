@@ -425,6 +425,7 @@ object WireRendering {
                     .southSprite(if (doXNeg || doXPos) bottomCrossSprite else bottomZSprite)
                     .westSprite(if (doZNeg || doZPos) lowerCrossSprite else lowerZSprite)
                     .eastSprite(if (doZNeg || doZPos) upperCrossSprite else upperZSprite)
+                    .downFlipV()
                     .northFlipU()
                     .eastFlipU()
                     .material(material)
