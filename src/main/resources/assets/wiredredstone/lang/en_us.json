@@ -76,6 +76,23 @@
   "item.wiredredstone.red_standing_insulated_wire": "Red Standing Insulated Wire",
   "item.wiredredstone.black_standing_insulated_wire": "Black Standing Insulated Wire",
 
+  "item.wiredredstone.white_standing_bundled_cable": "White Standing Bundled Cable",
+  "item.wiredredstone.orange_standing_bundled_cable": "Orange Standing Bundled Cable",
+  "item.wiredredstone.magenta_standing_bundled_cable": "Magenta Standing Bundled Cable",
+  "item.wiredredstone.light_blue_standing_bundled_cable": "Light Blue Standing Bundled Cable",
+  "item.wiredredstone.yellow_standing_bundled_cable": "Yellow Standing Bundled Cable",
+  "item.wiredredstone.lime_standing_bundled_cable": "Lime Standing Bundled Cable",
+  "item.wiredredstone.pink_standing_bundled_cable": "Pink Standing Bundled Cable",
+  "item.wiredredstone.gray_standing_bundled_cable": "Gray Standing Bundled Cable",
+  "item.wiredredstone.light_gray_standing_bundled_cable": "Light Gray Standing Bundled Cable",
+  "item.wiredredstone.cyan_standing_bundled_cable": "Cyan Standing Bundled Cable",
+  "item.wiredredstone.purple_standing_bundled_cable": "Purple Standing Bundled Cable",
+  "item.wiredredstone.blue_standing_bundled_cable": "Blue Standing Bundled Cable",
+  "item.wiredredstone.brown_standing_bundled_cable": "Brown Standing Bundled Cable",
+  "item.wiredredstone.green_standing_bundled_cable": "Green Standing Bundled Cable",
+  "item.wiredredstone.red_standing_bundled_cable": "Red Standing Bundled Cable",
+  "item.wiredredstone.black_standing_bundled_cable": "Black Standing Bundled Cable",
+
   "item.wiredredstone.projection_viewer": "Projection Viewer",
 
   "item.wiredredstone.redstone_alloy_ingot": "Redstone Alloy Ingot",

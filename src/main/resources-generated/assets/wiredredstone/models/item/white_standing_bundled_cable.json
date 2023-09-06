@@ -1,0 +1,11 @@
+{
+  "parent": "wiredredstone:item/standing_bundled_cable_template",
+  "textures": {
+    "bottom": "wiredredstone:block/standing_bundled_cable/white/bottom_cross",
+    "end": "wiredredstone:block/standing_bundled_cable/white/end",
+    "lower": "wiredredstone:block/standing_bundled_cable/white/lower_cross",
+    "particle": "wiredredstone:block/standing_bundled_cable/white/top_cross",
+    "top": "wiredredstone:block/standing_bundled_cable/white/top_cross",
+    "upper": "wiredredstone:block/standing_bundled_cable/white/upper_cross"
+  }
+}

@@ -7,15 +7,29 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider
 import net.minecraft.data.client.ItemModelGenerator
 import net.minecraft.data.client.model.*
+import net.minecraft.item.Item
 import net.minecraft.util.DyeColor
 import net.minecraft.util.math.Vec3d
 import java.util.Optional
 
 class WRModelGen(output: FabricDataOutput) : FabricModelProvider(output) {
     companion object {
+        private val LOWER = TextureKey.of("lower")
+        private val UPPER = TextureKey.of("upper")
+
         private val STANDING_WIRE_MODEL = Model(
             Optional.of(id("item/standing_insulated_wire_template")), Optional.empty(), TextureKey.PARTICLE,
             TextureKey.CROSS, TextureKey.END
+        )
+        private val STANDING_BUNDLED_CABLE_MODEL = Model(
+            Optional.of(id("item/standing_bundled_cable_template")),
+            Optional.empty(),
+            TextureKey.PARTICLE,
+            TextureKey.TOP,
+            LOWER,
+            UPPER,
+            TextureKey.BOTTOM,
+            TextureKey.END
         )
     }
 
@@ -150,5 +164,31 @@ class WRModelGen(output: FabricDataOutput) : FabricModelProvider(output) {
                 gen.writer
             )
         }
+
+        generateStandingBundledCableModel(gen, WRItems.STANDING_BUNDLED_CABLES[null]!!, "")
+        for (color in DyeColor.values()) {
+            generateStandingBundledCableModel(gen, WRItems.STANDING_BUNDLED_CABLES[color]!!, color.getName() + "/")
+        }
+    }
+
+    private fun generateStandingBundledCableModel(gen: ItemModelGenerator, item: Item, dirname: String) {
+        val textureId = id("block/standing_bundled_cable/$dirname")
+        val topId = textureId.extendPath("top_cross")
+        val lowerId = textureId.extendPath("lower_cross")
+        val upperId = textureId.extendPath("upper_cross")
+        val bottomId = textureId.extendPath("bottom_cross")
+        val endId = textureId.extendPath("end")
+
+        STANDING_BUNDLED_CABLE_MODEL.upload(
+            ModelIds.getItemModelId(item),
+            Texture()
+                .put(TextureKey.PARTICLE, topId)
+                .put(TextureKey.TOP, topId)
+                .put(LOWER, lowerId)
+                .put(UPPER, upperId)
+                .put(TextureKey.BOTTOM, bottomId)
+                .put(TextureKey.END, endId),
+            gen.writer
+        )
     }
 }
