@@ -3,7 +3,6 @@ package com.kneelawk.wiredredstone.datagen
 import alexiil.mc.lib.multipart.api.PartLootParams
 import com.kneelawk.wiredredstone.item.WRItems
 import com.kneelawk.wiredredstone.part.WRParts
-import com.kneelawk.wiredredstone.util.DyeColorUtil
 import com.kneelawk.wiredredstone.util.LootTableUtil
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider
@@ -22,7 +21,7 @@ class WRPartLootTableGen(dataOutput: FabricDataOutput) :
     companion object {
         private val REGULAR_PARTS = mapOf(
             WRParts.RED_ALLOY_WIRE to WRItems.RED_ALLOY_WIRE,
-            WRParts.BUNDLED_CABLE to WRItems.BUNDLED_CABLE,
+            WRParts.BUNDLED_CABLE to WRItems.BUNDLED_CABLES[null]!!,
             WRParts.STANDING_RED_ALLOY_WIRE to WRItems.STANDING_RED_ALLOY_WIRE,
             WRParts.STANDING_BUNDLED_CABLE to WRItems.STANDING_BUNDLED_CABLES[null]!!,
             WRParts.POWERLINE_CONNECTOR to WRItems.POWERLINE_CONNECTOR,
@@ -50,9 +49,9 @@ class WRPartLootTableGen(dataOutput: FabricDataOutput) :
             val standingBundledCableId = WRParts.STANDING_BUNDLED_CABLE.identifier.withPrefix(dyeColor.getName() + "_")
 
             biConsumer.accept(
-                LootTableUtil.getLootTableId(insulatedId), singleDrop(DyeColorUtil.insulatedWire(dyeColor))
+                LootTableUtil.getLootTableId(insulatedId), singleDrop(WRItems.INSULATED_WIRES[dyeColor]!!)
             )
-            biConsumer.accept(LootTableUtil.getLootTableId(bundledId), singleDrop(DyeColorUtil.bundledCable(dyeColor)))
+            biConsumer.accept(LootTableUtil.getLootTableId(bundledId), singleDrop(WRItems.BUNDLED_CABLES[dyeColor]!!))
             biConsumer.accept(
                 LootTableUtil.getLootTableId(standingInsulatedId),
                 singleDrop(WRItems.STANDING_INSULATED_WIRES[dyeColor]!!)

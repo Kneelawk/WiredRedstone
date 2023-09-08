@@ -12,6 +12,7 @@ import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
 import com.kneelawk.graphlib.api.graph.user.BlockNode
 import com.kneelawk.graphlib.api.util.SidedPos
+import com.kneelawk.wiredredstone.item.WRItems
 import com.kneelawk.wiredredstone.logic.BundledCableLogic
 import com.kneelawk.wiredredstone.logic.RedstoneLogic
 import com.kneelawk.wiredredstone.node.BundledCableBlockNode
@@ -181,7 +182,7 @@ class BundledCablePart : AbstractBlockablePart, BundledPowerablePart {
     }
 
     override fun getPickStack(hitResult: BlockHitResult?): ItemStack {
-        return ItemStack(DyeColorUtil.bundledCable(color))
+        return ItemStack(WRItems.BUNDLED_CABLES[color]!!)
     }
 
     override fun addDrops(target: ItemDropTarget, params: LootContextParameterSet) {

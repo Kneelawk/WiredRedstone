@@ -9,6 +9,7 @@ import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
 import com.kneelawk.graphlib.api.graph.user.BlockNode
+import com.kneelawk.wiredredstone.item.WRItems
 import com.kneelawk.wiredredstone.logic.RedstoneLogic
 import com.kneelawk.wiredredstone.node.InsulatedWireBlockNode
 import com.kneelawk.wiredredstone.part.key.InsulatedWirePartKey
@@ -120,7 +121,7 @@ class InsulatedWirePart : AbstractRedstoneWirePart {
     }
 
     override fun getPickStack(hitResult: BlockHitResult?): ItemStack {
-        return ItemStack(DyeColorUtil.insulatedWire(color))
+        return ItemStack(WRItems.INSULATED_WIRES[color]!!)
     }
 
     override fun addDrops(target: ItemDropTarget, params: LootContextParameterSet) {
