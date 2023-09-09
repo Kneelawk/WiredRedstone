@@ -108,8 +108,9 @@ object RedstoneLogic {
         )
     }
 
-    fun shouldWireConnect(state: BlockState): Boolean {
+    fun shouldWireConnect(state: BlockState, side: Direction?): Boolean {
         return (state.isRedstonePowerSource || state.isIn(WRBlockTags.WIRE_FORCE_CONNECTABLE))
+                && (!state.isIn(WRBlockTags.WIRE_GATE_CONNECTABLE) || (side != null && side.axis != Direction.Axis.Y))
                 && !state.isIn(WRBlockTags.WIRE_FORCE_NOT_CONNECTABLE)
     }
 

@@ -28,7 +28,7 @@ class WRRecipeGen(output: FabricDataOutput) : FabricRecipeProvider(output) {
 
         ShapedRARecipeJsonFactory.create(RecipeCategory.REDSTONE, plainStandingBundledCable)
             .cookTime(50)
-            .ingredient('W', WRTagGen.STANDING_INSULATED_WIRES)
+            .ingredient('W', WRItemTagGen.STANDING_INSULATED_WIRES)
             .ingredient('S', TagKey.of(RegistryKeys.ITEM, Identifier("c", "string")))
             .pattern("SWS")
             .pattern("WWW")
@@ -38,7 +38,7 @@ class WRRecipeGen(output: FabricDataOutput) : FabricRecipeProvider(output) {
             .offerTo(exporter)
 
         for (color in DyeColor.values()) {
-            val dyeTag = WRTagGen.DYE_TAGS[color]!!
+            val dyeTag = WRItemTagGen.DYE_TAGS[color]!!
             val bundledCable = WRItems.BUNDLED_CABLES[color]!!
             val insulatedWire = WRItems.INSULATED_WIRES[color]!!
             val insulatedWireId = Registries.ITEM.getId(insulatedWire)
@@ -54,7 +54,7 @@ class WRRecipeGen(output: FabricDataOutput) : FabricRecipeProvider(output) {
                 .criterion(hasItem(plainBundledCable), conditionsFromItem(plainBundledCable))
                 .offerTo(exporter)
 
-            recolor(exporter, "bundled_cable", bundledCable, dyeTag, WRTagGen.COLORED_BUNDLED_CABLES, plainBundledCable)
+            recolor(exporter, "bundled_cable", bundledCable, dyeTag, WRItemTagGen.COLORED_BUNDLED_CABLES, plainBundledCable)
 
             ShapedRARecipeJsonFactory.create(RecipeCategory.REDSTONE, insulatedWire, 12)
                 .cookTime(100)
@@ -68,7 +68,7 @@ class WRRecipeGen(output: FabricDataOutput) : FabricRecipeProvider(output) {
                 .offerTo(exporter)
 
             recolor(
-                exporter, "insulated_wire", insulatedWire, dyeTag, WRTagGen.INSULATED_WIRES,
+                exporter, "insulated_wire", insulatedWire, dyeTag, WRItemTagGen.INSULATED_WIRES,
                 WRItems.REDSTONE_ALLOY_INGOT
             )
 
@@ -85,10 +85,10 @@ class WRRecipeGen(output: FabricDataOutput) : FabricRecipeProvider(output) {
 
             recolor(
                 exporter, "standing_bundled_cable", standingBundledCable, dyeTag,
-                WRTagGen.COLORED_STANDING_BUNDLED_CABLES, plainBundledCable
+                WRItemTagGen.COLORED_STANDING_BUNDLED_CABLES, plainBundledCable
             )
             recolor(
-                exporter, "standing_insulated_wire", standingInsulatedWire, dyeTag, WRTagGen.STANDING_INSULATED_WIRES,
+                exporter, "standing_insulated_wire", standingInsulatedWire, dyeTag, WRItemTagGen.STANDING_INSULATED_WIRES,
                 WRItems.REDSTONE_ALLOY_INGOT
             )
 

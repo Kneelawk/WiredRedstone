@@ -12,4 +12,7 @@ object WRBlockTags {
     val WIRE_FORCE_NOT_CONNECTABLE: TagKey<Block> by lazy {
         TagKey.of(RegistryKeys.BLOCK, WRConstants.id("wire_force_not_connectable"))
     }
+    val WIRE_GATE_CONNECTABLE: TagKey<Block> by lazy {
+        TagKey.of(RegistryKeys.BLOCK, WRConstants.id("wire_gate_connectable"))
+    }
 }

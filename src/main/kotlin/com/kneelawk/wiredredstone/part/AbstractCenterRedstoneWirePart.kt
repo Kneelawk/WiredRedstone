@@ -82,10 +82,12 @@ abstract class AbstractCenterRedstoneWirePart : AbstractCenterBlockablePart, Pow
 
             val world = getWorld()
             if (world is ServerWorld) {
+                val pos = getPos()
+                val side = DirectionUtils.fromVector(it.pos.subtract(pos))
                 // updating connections, so we want to make sure we *really* need to do it first
                 if (ConnectableUtils.shouldUpdateForNeighborUpdate(
-                        redstoneCache, getPos(), it.pos,
-                        { RedstoneLogic.shouldWireConnect(world.getBlockState(it.pos)) },
+                        redstoneCache, pos, it.pos,
+                        { RedstoneLogic.shouldWireConnect(world.getBlockState(it.pos), side) },
                         { prev, cur -> prev != cur })
                 ) {
                     updateInternalConnections(world)
@@ -170,7 +172,7 @@ abstract class AbstractCenterRedstoneWirePart : AbstractCenterBlockablePart, Pow
                         newConn = CenterConnectionUtils.set(newConn, dir)
                     }
                 } else {
-                    if (RedstoneLogic.shouldWireConnect(otherState)) {
+                    if (RedstoneLogic.shouldWireConnect(otherState, dir)) {
                         newConn = CenterConnectionUtils.set(newConn, dir)
                     }
                 }

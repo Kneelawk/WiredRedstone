@@ -13,7 +13,7 @@ import net.minecraft.util.DyeColor
 import net.minecraft.util.Identifier
 import java.util.concurrent.CompletableFuture
 
-class WRTagGen(output: FabricDataOutput, registries: CompletableFuture<HolderLookup.Provider>) :
+class WRItemTagGen(output: FabricDataOutput, registries: CompletableFuture<HolderLookup.Provider>) :
     ItemTagProvider(output, registries) {
     companion object {
         val DYE_TAGS = DyeColor.values().associateWith {
