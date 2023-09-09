@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_standing_bundled_cable": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "wiredredstone:standing_bundled_cable"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "wiredredstone:orange_standing_bundled_cable"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_standing_bundled_cable",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "wiredredstone:orange_standing_bundled_cable"
+    ]
+  },
+  "sends_telemetry_event": false
+}

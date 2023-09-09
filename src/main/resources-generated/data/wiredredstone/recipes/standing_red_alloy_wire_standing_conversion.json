@@ -1,0 +1,25 @@
+{
+  "type": "wiredredstone:redstone_assembler_shaped",
+  "category": "redstone",
+  "cookingtime": 40,
+  "energypertick": 5,
+  "group": "standing_red_alloy_wire",
+  "key": {
+    "I": {
+      "tag": "c:iron_ingots"
+    },
+    "W": {
+      "item": "wiredredstone:red_alloy_wire"
+    }
+  },
+  "pattern": [
+    " W ",
+    "WIW",
+    " W "
+  ],
+  "result": {
+    "count": 4,
+    "item": "wiredredstone:standing_red_alloy_wire"
+  },
+  "show_notification": true
+}

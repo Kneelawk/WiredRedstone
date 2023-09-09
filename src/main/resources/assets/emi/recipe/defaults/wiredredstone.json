@@ -1,6 +1,7 @@
 {
   "recipes": [
     "wiredredstone:bundled_cable",
+    "wiredredstone:standing_bundled_cable_standing_conversion",
     "wiredredstone:white_insulated_wire",
     "wiredredstone:orange_insulated_wire",
     "wiredredstone:magenta_insulated_wire",

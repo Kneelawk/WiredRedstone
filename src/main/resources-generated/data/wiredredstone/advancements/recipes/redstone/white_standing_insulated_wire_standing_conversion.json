@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "wiredredstone:white_standing_insulated_wire_standing_conversion"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_white_insulated_wire": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "wiredredstone:white_insulated_wire"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_white_insulated_wire",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "wiredredstone:white_standing_insulated_wire_standing_conversion"
+    ]
+  },
+  "sends_telemetry_event": false
+}

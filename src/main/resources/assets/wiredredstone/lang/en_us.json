@@ -76,6 +76,7 @@
   "item.wiredredstone.red_standing_insulated_wire": "Red Standing Insulated Wire",
   "item.wiredredstone.black_standing_insulated_wire": "Black Standing Insulated Wire",
 
+  "item.wiredredstone.standing_bundled_cable": "Standing Bundled Cable",
   "item.wiredredstone.white_standing_bundled_cable": "White Standing Bundled Cable",
   "item.wiredredstone.orange_standing_bundled_cable": "Orange Standing Bundled Cable",
   "item.wiredredstone.magenta_standing_bundled_cable": "Magenta Standing Bundled Cable",
@@ -154,5 +155,7 @@
   "tag.c.obsidian_rods": "Obsidian Rods",
 
   "tag.wiredredstone.colored_bundled_cables": "Colored Bundled Cables",
-  "tag.wiredredstone.insulated_wires": "Insulated Wires"
+  "tag.wiredredstone.insulated_wires": "Insulated Wires",
+  "tag.wiredredstone.colored_standing_bundled_cables": "Colored Standing Bundled Cables",
+  "tag.wiredredstone.standing_insulated_wires": "Standing Insulated Wires"
 }

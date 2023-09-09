@@ -1,0 +1,18 @@
+{
+  "type": "wiredredstone:redstone_assembler_shapeless",
+  "category": "redstone",
+  "cookingtime": 10,
+  "energypertick": 5,
+  "group": "standing_bundled_cable",
+  "ingredients": [
+    {
+      "tag": "wiredredstone:colored_standing_bundled_cables"
+    },
+    {
+      "tag": "c:black_dyes"
+    }
+  ],
+  "result": {
+    "item": "wiredredstone:black_standing_bundled_cable"
+  }
+}

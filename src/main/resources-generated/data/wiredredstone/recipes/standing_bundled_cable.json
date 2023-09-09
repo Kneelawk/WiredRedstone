@@ -1,0 +1,24 @@
+{
+  "type": "wiredredstone:redstone_assembler_shaped",
+  "category": "redstone",
+  "cookingtime": 50,
+  "energypertick": 5,
+  "group": "standing_bundled_cable",
+  "key": {
+    "S": {
+      "tag": "c:string"
+    },
+    "W": {
+      "tag": "wiredredstone:standing_insulated_wires"
+    }
+  },
+  "pattern": [
+    "SWS",
+    "WWW",
+    "SWS"
+  ],
+  "result": {
+    "item": "wiredredstone:standing_bundled_cable"
+  },
+  "show_notification": true
+}

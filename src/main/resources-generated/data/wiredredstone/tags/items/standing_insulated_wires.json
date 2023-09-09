@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    "wiredredstone:white_standing_insulated_wire",
+    "wiredredstone:orange_standing_insulated_wire",
+    "wiredredstone:magenta_standing_insulated_wire",
+    "wiredredstone:light_blue_standing_insulated_wire",
+    "wiredredstone:yellow_standing_insulated_wire",
+    "wiredredstone:lime_standing_insulated_wire",
+    "wiredredstone:pink_standing_insulated_wire",
+    "wiredredstone:gray_standing_insulated_wire",
+    "wiredredstone:light_gray_standing_insulated_wire",
+    "wiredredstone:cyan_standing_insulated_wire",
+    "wiredredstone:purple_standing_insulated_wire",
+    "wiredredstone:blue_standing_insulated_wire",
+    "wiredredstone:brown_standing_insulated_wire",
+    "wiredredstone:green_standing_insulated_wire",
+    "wiredredstone:red_standing_insulated_wire",
+    "wiredredstone:black_standing_insulated_wire"
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_lime_bundled_cable": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "wiredredstone:lime_bundled_cable"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "wiredredstone:lime_standing_bundled_cable_standing_conversion"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_lime_bundled_cable",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "wiredredstone:lime_standing_bundled_cable_standing_conversion"
+    ]
+  },
+  "sends_telemetry_event": false
+}

@@ -1,4 +1,4 @@
-// 1.20.1	2023-09-08T17:53:28.615062858	Wired Redstone/Model Definitions
+// 1.20.1	2023-09-08T20:15:15.061210762	Wired Redstone/Model Definitions
 8826b7cc212551d12fd4eeefd986741f04fd16d5 assets/wiredredstone/models/block/gate_rs_latch/redstone_anode_reset_off.json
 a8ad0567c81f8f2b445fcd060e628e8cb58ca731 assets/wiredredstone/models/block/gate_not/background.json
 bf9145f7f13591572896e840a5bc5ce14c3ddc24 assets/wiredredstone/models/item/blue_standing_insulated_wire.json
@@ -138,6 +138,6 @@ aa5a198af488bea2f445b03fa5fbcfd29036393d assets/wiredredstone/models/block/gate_
 4250baca970f2e30cd1566beae1eee656e28218b assets/wiredredstone/models/block/gate_and/torch_input_left_on.json
 2612c955ccee16de8bc3cdb64a30ddc74cb55761 assets/wiredredstone/models/block/gate_nor/redstone_input_left_off.json
 f767ed19a7228a070b26f833062e38390dd259b3 assets/wiredredstone/models/block/gate_and/redstone_input_back_on.json
-dc6165709582a5cb75b7fb881f027f38e7753318 assets/wiredredstone/models/block/gate_and/redstone_input_back_disabled.json
 40b94d23eea4ad720e27ea4b28a779081ee8f6c6 assets/wiredredstone/models/block/gate_nor/redstone_input_left_disabled.json
+dc6165709582a5cb75b7fb881f027f38e7753318 assets/wiredredstone/models/block/gate_and/redstone_input_back_disabled.json
 8674764c981ef20e5c8e2166f5ce40b77ed6b22c assets/wiredredstone/models/block/gate_rs_latch/torch_set_on.json

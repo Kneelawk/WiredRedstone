@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    "wiredredstone:white_standing_bundled_cable",
+    "wiredredstone:orange_standing_bundled_cable",
+    "wiredredstone:magenta_standing_bundled_cable",
+    "wiredredstone:light_blue_standing_bundled_cable",
+    "wiredredstone:yellow_standing_bundled_cable",
+    "wiredredstone:lime_standing_bundled_cable",
+    "wiredredstone:pink_standing_bundled_cable",
+    "wiredredstone:gray_standing_bundled_cable",
+    "wiredredstone:light_gray_standing_bundled_cable",
+    "wiredredstone:cyan_standing_bundled_cable",
+    "wiredredstone:purple_standing_bundled_cable",
+    "wiredredstone:blue_standing_bundled_cable",
+    "wiredredstone:brown_standing_bundled_cable",
+    "wiredredstone:green_standing_bundled_cable",
+    "wiredredstone:red_standing_bundled_cable",
+    "wiredredstone:black_standing_bundled_cable"
+  ]
+}

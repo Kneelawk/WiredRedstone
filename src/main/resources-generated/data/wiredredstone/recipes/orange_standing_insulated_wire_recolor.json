@@ -1,0 +1,18 @@
+{
+  "type": "wiredredstone:redstone_assembler_shapeless",
+  "category": "redstone",
+  "cookingtime": 10,
+  "energypertick": 5,
+  "group": "standing_insulated_wire",
+  "ingredients": [
+    {
+      "tag": "wiredredstone:standing_insulated_wires"
+    },
+    {
+      "tag": "c:orange_dyes"
+    }
+  ],
+  "result": {
+    "item": "wiredredstone:orange_standing_insulated_wire"
+  }
+}

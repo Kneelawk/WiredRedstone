@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_redstone_alloy_ingot": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "wiredredstone:redstone_alloy_ingot"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "wiredredstone:gray_standing_insulated_wire_recolor"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_redstone_alloy_ingot",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "wiredredstone:gray_standing_insulated_wire_recolor"
+    ]
+  },
+  "sends_telemetry_event": false
+}

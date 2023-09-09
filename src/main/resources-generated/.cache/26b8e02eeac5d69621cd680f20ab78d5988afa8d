@@ -1,8 +1,10 @@
-// 1.20.1	2023-09-08T17:53:28.613420018	Wired Redstone/Tags for minecraft:item
+// 1.20.1	2023-09-08T20:15:15.059581197	Wired Redstone/Tags for minecraft:item
 7fd4162247fb4b8b13cfdaa5d69d22a103119ba1 data/c/tags/items/blue_dyes.json
+d452726265047a5002a7e95ac2930ae2967e8350 data/wiredredstone/tags/items/standing_insulated_wires.json
 864e9856f4ec02b3693396f15c182e82a73382e2 data/wiredredstone/tags/items/colored_bundled_cables.json
 ef347f6724a4e2743851d8ddf77b8424e340de90 data/c/tags/items/white_dyes.json
 d69d941de0a6bcda643f0238cfcfc17f5ac15be9 data/c/tags/items/pink_dyes.json
+686ad24ff70f1d90556be38ecd12ada866d3fd47 data/wiredredstone/tags/items/colored_standing_bundled_cables.json
 36b1daf8718ecd0d431c0ba1eb4030b96cc92762 data/c/tags/items/cyan_dyes.json
 003eb34c7b3ab128392f7233f6b756f8f5d5cc20 data/c/tags/items/black_dyes.json
 2eb0fc4e7d42b7890482293ff6470cd6cd486f0d data/c/tags/items/purple_dyes.json
