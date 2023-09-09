@@ -1,0 +1,25 @@
+{
+  "type": "wiredredstone:redstone_assembler_shaped",
+  "category": "redstone",
+  "cookingtime": 100,
+  "energypertick": 5,
+  "group": "insulated_wire",
+  "key": {
+    "I": {
+      "tag": "c:red_alloy_ingots"
+    },
+    "W": {
+      "item": "minecraft:red_wool"
+    }
+  },
+  "pattern": [
+    "WIW",
+    "WIW",
+    "WIW"
+  ],
+  "result": {
+    "count": 12,
+    "item": "wiredredstone:red_insulated_wire"
+  },
+  "show_notification": true
+}

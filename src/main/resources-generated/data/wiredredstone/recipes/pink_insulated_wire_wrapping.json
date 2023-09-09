@@ -1,0 +1,22 @@
+{
+  "type": "wiredredstone:redstone_assembler_shapeless",
+  "category": "redstone",
+  "cookingtime": 10,
+  "energypertick": 5,
+  "group": "insulated_wire",
+  "ingredients": [
+    {
+      "item": "wiredredstone:red_alloy_wire"
+    },
+    {
+      "item": "wiredredstone:red_alloy_wire"
+    },
+    {
+      "item": "minecraft:pink_wool"
+    }
+  ],
+  "result": {
+    "count": 2,
+    "item": "wiredredstone:pink_insulated_wire"
+  }
+}

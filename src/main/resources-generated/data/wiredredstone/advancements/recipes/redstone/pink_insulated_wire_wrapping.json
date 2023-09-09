@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_red_alloy_wire": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "wiredredstone:red_alloy_wire"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "wiredredstone:pink_insulated_wire_wrapping"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_red_alloy_wire",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "wiredredstone:pink_insulated_wire_wrapping"
+    ]
+  },
+  "sends_telemetry_event": false
+}

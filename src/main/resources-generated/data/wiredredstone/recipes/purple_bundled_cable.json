@@ -1,0 +1,21 @@
+{
+  "type": "wiredredstone:redstone_assembler_shapeless",
+  "category": "redstone",
+  "cookingtime": 20,
+  "energypertick": 5,
+  "group": "bundled_cable",
+  "ingredients": [
+    {
+      "item": "wiredredstone:bundled_cable"
+    },
+    {
+      "item": "minecraft:paper"
+    },
+    {
+      "tag": "c:purple_dyes"
+    }
+  ],
+  "result": {
+    "item": "wiredredstone:purple_bundled_cable"
+  }
+}

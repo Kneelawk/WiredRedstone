@@ -1,0 +1,18 @@
+{
+  "type": "wiredredstone:redstone_assembler_shapeless",
+  "category": "redstone",
+  "cookingtime": 10,
+  "energypertick": 5,
+  "group": "insulated_wire",
+  "ingredients": [
+    {
+      "tag": "wiredredstone:insulated_wires"
+    },
+    {
+      "tag": "c:light_gray_dyes"
+    }
+  ],
+  "result": {
+    "item": "wiredredstone:light_gray_insulated_wire"
+  }
+}

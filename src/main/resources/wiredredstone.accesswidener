@@ -3,3 +3,24 @@ accessWidener   v1      named
 # RenderLayer access wideners
 accessible      class   net/minecraft/client/render/RenderLayer$MultiPhase
 accessible      class   net/minecraft/client/render/RenderLayer$MultiPhaseParameters
+
+# Dategen
+accessible field net/minecraft/data/server/recipe/ShapelessRecipeJsonFactory category Lnet/minecraft/recipe/RecipeCategory;
+accessible field net/minecraft/data/server/recipe/ShapelessRecipeJsonFactory result Lnet/minecraft/item/Item;
+accessible field net/minecraft/data/server/recipe/ShapelessRecipeJsonFactory resultCount I
+accessible field net/minecraft/data/server/recipe/ShapelessRecipeJsonFactory ingredients Ljava/util/List;
+accessible field net/minecraft/data/server/recipe/ShapelessRecipeJsonFactory builder Lnet/minecraft/advancement/Advancement$Task;
+accessible field net/minecraft/data/server/recipe/ShapelessRecipeJsonFactory group Ljava/lang/String;
+accessible method net/minecraft/data/server/recipe/ShapelessRecipeJsonFactory validate (Lnet/minecraft/util/Identifier;)V
+accessible class net/minecraft/data/server/recipe/ShapelessRecipeJsonFactory$ShapelessRecipeJsonProvider
+
+accessible field net/minecraft/data/server/recipe/ShapedRecipeJsonFactory category Lnet/minecraft/recipe/RecipeCategory;
+accessible field net/minecraft/data/server/recipe/ShapedRecipeJsonFactory result Lnet/minecraft/item/Item;
+accessible field net/minecraft/data/server/recipe/ShapedRecipeJsonFactory resultCount I
+accessible field net/minecraft/data/server/recipe/ShapedRecipeJsonFactory pattern Ljava/util/List;
+accessible field net/minecraft/data/server/recipe/ShapedRecipeJsonFactory ingredients Ljava/util/Map;
+accessible field net/minecraft/data/server/recipe/ShapedRecipeJsonFactory builder Lnet/minecraft/advancement/Advancement$Task;
+accessible field net/minecraft/data/server/recipe/ShapedRecipeJsonFactory group Ljava/lang/String;
+accessible field net/minecraft/data/server/recipe/ShapedRecipeJsonFactory showNotification Z
+accessible method net/minecraft/data/server/recipe/ShapedRecipeJsonFactory validate (Lnet/minecraft/util/Identifier;)V
+accessible class net/minecraft/data/server/recipe/ShapedRecipeJsonFactory$ShapedRecipeJsonProvider

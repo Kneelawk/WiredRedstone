@@ -1,0 +1,18 @@
+{
+  "type": "wiredredstone:redstone_assembler_shapeless",
+  "category": "redstone",
+  "cookingtime": 10,
+  "energypertick": 5,
+  "group": "bundled_cable",
+  "ingredients": [
+    {
+      "tag": "wiredredstone:colored_bundled_cables"
+    },
+    {
+      "tag": "c:magenta_dyes"
+    }
+  ],
+  "result": {
+    "item": "wiredredstone:magenta_bundled_cable"
+  }
+}
