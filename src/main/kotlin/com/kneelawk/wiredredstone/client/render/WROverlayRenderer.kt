@@ -1,9 +1,11 @@
 package com.kneelawk.wiredredstone.client.render
 
 import com.kneelawk.wiredredstone.client.render.WROverlayRenderer.RenderToOverlay
+import com.kneelawk.wiredredstone.mixin.api.MatrixHelper
 import com.mojang.blaze3d.framebuffer.SimpleFramebuffer
 import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.blaze3d.vertex.BufferBuilder
+import com.mojang.blaze3d.vertex.VertexSorting
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
@@ -47,6 +49,9 @@ object WROverlayRenderer : VertexConsumerProvider by immediate {
             override fun consumers(): VertexConsumerProvider = immediate
         }
 
+        // Fix up the projection matrix in case someone else has messed with it
+        MatrixHelper.setupProjectionMatrix(context)
+
         val window = MC.window
 
         if (window.framebufferWidth != framebuffer.textureWidth || window.framebufferHeight != framebuffer.textureHeight) {
@@ -68,7 +73,7 @@ object WROverlayRenderer : VertexConsumerProvider by immediate {
         RenderSystem.enableBlend()
         framebuffer.draw(window.framebufferWidth, window.framebufferHeight, false)
         RenderSystem.disableBlend()
-        RenderSystem.setProjectionMatrix(projBackup, RenderSystem.getVertexSorting())
+        RenderSystem.setProjectionMatrix(projBackup, VertexSorting.DISTANCE_TO_ORIGIN)
     }
 
     fun interface RenderToOverlay {

@@ -7,6 +7,7 @@
   },
   "client": [
     "ClientRecipeBookMixin",
+    "GameRendererAccessor",
     "RenderLayerAccessor"
   ],
   "mixins": [

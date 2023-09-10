@@ -3,6 +3,7 @@ package com.kneelawk.wiredredstone.client.render
 import alexiil.mc.lib.multipart.api.MultipartContainer
 import com.kneelawk.wiredredstone.client.render.part.WRPartRenderers
 import com.kneelawk.wiredredstone.item.GateItem
+import com.kneelawk.wiredredstone.mixin.api.MatrixHelper
 import com.mojang.blaze3d.vertex.BufferBuilder
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
@@ -41,6 +42,7 @@ object WRGhostRenderer {
                             }
 
                             if (mesh != null) {
+                                MatrixHelper.setupProjectionMatrix(context)
                                 renderPlacementGhost(context, offer, mesh)
                             }
 
