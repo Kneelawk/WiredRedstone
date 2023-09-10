@@ -42,7 +42,6 @@ object WRGhostRenderer {
                             }
 
                             if (mesh != null) {
-                                MatrixHelper.setupProjectionMatrix(context)
                                 renderPlacementGhost(context, offer, mesh)
                             }
 
@@ -59,6 +58,7 @@ object WRGhostRenderer {
         offer: MultipartContainer.PartOffer,
         mesh: Mesh
     ) {
+        MatrixHelper.setupProjectionMatrix(context)
         val camera = context.camera()
         val matrices = context.matrixStack()
 
