@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    { "id": "create:redstone_link", "required": false }
+    { "id": "create:redstone_link", "required": false },
+    { "id": "create:nixie_tube", "required": false }
   ]
 }
