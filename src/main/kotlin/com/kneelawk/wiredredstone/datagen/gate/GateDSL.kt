@@ -13,71 +13,97 @@ private val GATE_BASE = id("block/gate_base")
 private val REDSTONE_TORCH_OFF = id("block/redstone_torch_off")
 private val REDSTONE_TORCH = id("block/redstone_torch")
 
-class GateBuilder(private val path: Identifier, private val gen: BlockStateModelGenerator) {
+class GateBuilder(
+    private val blockPath: Identifier, private val itemPath: Identifier, private val gen: BlockStateModelGenerator
+) {
+    private val itemBuilder = ModelBuilderImpl()
     var particle: Identifier = GATE_BASE
 
-    fun model(name: String, configure: ModelBuilder.() -> Unit) {
+    fun finish() {
+        itemBuilder.particle(particle)
+        gen.modelCollector.accept(itemPath, itemBuilder::toJson)
+    }
+
+    fun model(name: String, addToItem: Boolean = true, configure: ModelBuilder.() -> Unit) {
         val builder = ModelBuilderImpl()
         builder.particle(particle)
         builder.configure()
 
-        val backgroundPath = path.extendPath("/$name")
+        val backgroundPath = blockPath.extendPath("/$name")
         gen.modelCollector.accept(backgroundPath, builder::toJson)
+
+        if (addToItem) {
+            itemBuilder.configure()
+        }
     }
 
-    fun background(background: Identifier, height: Double = 2.0, configure: ModelBuilder.() -> Unit = {}) {
-        model("background") {
+    fun background(
+        background: Identifier, height: Double = 2.0, addToItem: Boolean = true, configure: ModelBuilder.() -> Unit = {}
+    ) {
+        model("background", addToItem) {
             base(background, height)
             configure()
         }
     }
 
-    fun torchOff(name: String, pos: Vec3d, height: Double = 1.0, texture: Identifier = REDSTONE_TORCH_OFF) {
-        model(name) {
+    fun torchOff(
+        name: String, pos: Vec3d, height: Double = 1.0, texture: Identifier = REDSTONE_TORCH_OFF,
+        addToItem: Boolean = false
+    ) {
+        model(name, addToItem) {
             torchOff(pos, height, texture)
         }
     }
 
-    fun torchOn(name: String, pos: Vec3d, height: Double = 1.0, texture: Identifier = REDSTONE_TORCH) {
-        model(name) {
+    fun torchOn(
+        name: String, pos: Vec3d, height: Double = 1.0, texture: Identifier = REDSTONE_TORCH, addToItem: Boolean = false
+    ) {
+        model(name, addToItem) {
             torchOn(pos, height, texture)
         }
     }
 
-    fun torch(name: String, pos: Vec3d, height: Double = 1.0) {
-        torchOff("${name}_off", pos, height)
-        torchOn("${name}_on", pos, height)
+    fun torch(
+        name: String, pos: Vec3d, height: Double = 1.0, onTexture: Identifier = REDSTONE_TORCH,
+        offTexture: Identifier = REDSTONE_TORCH_OFF, itemOn: Boolean = false
+    ) {
+        torchOff("${name}_off", pos, height, offTexture, addToItem = !itemOn)
+        torchOn("${name}_on", pos, height, onTexture, addToItem = itemOn)
     }
 
     fun surface(
-        name: String, textureName: String, texture: Identifier, height: Double = 2.0,
+        name: String, textureName: String, texture: Identifier, height: Double = 2.0, addToItem: Boolean = true,
         configure: ModelBuilder.() -> Unit = {}
     ) {
-        model(name) {
+        model(name, addToItem) {
             surface(textureName, texture, height)
             configure()
         }
     }
 
-    fun redstone(name: String, off: Identifier, on: Identifier, disabled: Identifier? = null, height: Double = 2.0) {
-        surface("${name}_off", "redstone", off, height)
-        surface("${name}_on", "redstone", on, height)
+    fun redstone(
+        name: String, off: Identifier, on: Identifier, disabled: Identifier? = null, height: Double = 2.0,
+        itemOn: Boolean = false
+    ) {
+        surface("${name}_off", name, off, height, addToItem = !itemOn)
+        surface("${name}_on", name, on, height, addToItem = itemOn)
         if (disabled != null) {
-            surface("${name}_disabled", "redstone", disabled, height)
+            surface("${name}_disabled", name, disabled, height, addToItem = false)
         }
     }
 
-    fun redstone(name: String, texture: Identifier, disableable: Boolean = false, height: Double = 2.0) {
+    fun redstone(
+        name: String, texture: Identifier, disableable: Boolean = false, height: Double = 2.0, itemOn: Boolean = false
+    ) {
         redstone(
             name, texture.extendPath("_off"), texture.extendPath("_on"),
-            if (disableable) texture.extendPath("_disabled") else null, height
+            if (disableable) texture.extendPath("_disabled") else null, height, itemOn = itemOn
         )
     }
 }
 
 fun BlockStateModelGenerator.gate(gateName: String, configure: GateBuilder.() -> Unit) {
-    val path = id("block/$gateName")
-    GateBuilder(path, this).apply(configure)
+    GateBuilder(id("block/$gateName"), id("item/$gateName"), this).apply(configure).finish()
 }
 
 interface ModelBuilder {

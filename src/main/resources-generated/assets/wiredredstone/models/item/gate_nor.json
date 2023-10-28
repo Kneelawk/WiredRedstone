@@ -1,0 +1,313 @@
+{
+  "parent": "wiredredstone:block/flat",
+  "elements": [
+    {
+      "faces": {
+        "down": {
+          "texture": "#base",
+          "uv": [
+            0.0,
+            0.0,
+            16.0,
+            16.0
+          ]
+        },
+        "east": {
+          "texture": "#base",
+          "uv": [
+            0.0,
+            14.0,
+            16.0,
+            16.0
+          ]
+        },
+        "north": {
+          "texture": "#base",
+          "uv": [
+            0.0,
+            14.0,
+            16.0,
+            16.0
+          ]
+        },
+        "south": {
+          "texture": "#base",
+          "uv": [
+            0.0,
+            14.0,
+            16.0,
+            16.0
+          ]
+        },
+        "up": {
+          "texture": "#background",
+          "uv": [
+            0.0,
+            0.0,
+            16.0,
+            16.0
+          ]
+        },
+        "west": {
+          "texture": "#base",
+          "uv": [
+            0.0,
+            14.0,
+            16.0,
+            16.0
+          ]
+        }
+      },
+      "from": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "to": [
+        16.0,
+        2.0,
+        16.0
+      ]
+    },
+    {
+      "faces": {
+        "east": {
+          "texture": "#torch_base",
+          "uv": [
+            7.0,
+            9.0,
+            9.0,
+            10.0
+          ]
+        },
+        "north": {
+          "texture": "#torch_base",
+          "uv": [
+            7.0,
+            9.0,
+            9.0,
+            10.0
+          ]
+        },
+        "south": {
+          "texture": "#torch_base",
+          "uv": [
+            7.0,
+            9.0,
+            9.0,
+            10.0
+          ]
+        },
+        "west": {
+          "texture": "#torch_base",
+          "uv": [
+            7.0,
+            9.0,
+            9.0,
+            10.0
+          ]
+        }
+      },
+      "from": [
+        7.0,
+        2.0,
+        8.0
+      ],
+      "to": [
+        9.0,
+        3.0,
+        10.0
+      ]
+    },
+    {
+      "faces": {
+        "north": {
+          "texture": "#torch_on",
+          "uv": [
+            0.0,
+            0.0,
+            16.0,
+            9.0
+          ]
+        },
+        "south": {
+          "texture": "#torch_on",
+          "uv": [
+            0.0,
+            0.0,
+            16.0,
+            9.0
+          ]
+        }
+      },
+      "from": [
+        0.0,
+        3.0,
+        8.0
+      ],
+      "to": [
+        16.0,
+        12.0,
+        10.0
+      ]
+    },
+    {
+      "faces": {
+        "east": {
+          "texture": "#torch_on",
+          "uv": [
+            0.0,
+            0.0,
+            16.0,
+            9.0
+          ]
+        },
+        "west": {
+          "texture": "#torch_on",
+          "uv": [
+            0.0,
+            0.0,
+            16.0,
+            9.0
+          ]
+        }
+      },
+      "from": [
+        7.0,
+        3.0,
+        1.0
+      ],
+      "to": [
+        9.0,
+        12.0,
+        17.0
+      ]
+    },
+    {
+      "faces": {
+        "up": {
+          "texture": "#torch_on",
+          "uv": [
+            7.0,
+            6.0,
+            9.0,
+            8.0
+          ]
+        }
+      },
+      "from": [
+        7.0,
+        3.0,
+        8.0
+      ],
+      "to": [
+        9.0,
+        6.0,
+        10.0
+      ]
+    },
+    {
+      "faces": {
+        "up": {
+          "texture": "#redstone_output",
+          "uv": [
+            0.0,
+            0.0,
+            16.0,
+            16.0
+          ]
+        }
+      },
+      "from": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "to": [
+        16.0,
+        2.0,
+        16.0
+      ]
+    },
+    {
+      "faces": {
+        "up": {
+          "texture": "#redstone_input_back",
+          "uv": [
+            0.0,
+            0.0,
+            16.0,
+            16.0
+          ]
+        }
+      },
+      "from": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "to": [
+        16.0,
+        2.0,
+        16.0
+      ]
+    },
+    {
+      "faces": {
+        "up": {
+          "texture": "#redstone_input_right",
+          "uv": [
+            0.0,
+            0.0,
+            16.0,
+            16.0
+          ]
+        }
+      },
+      "from": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "to": [
+        16.0,
+        2.0,
+        16.0
+      ]
+    },
+    {
+      "faces": {
+        "up": {
+          "texture": "#redstone_input_left",
+          "uv": [
+            0.0,
+            0.0,
+            16.0,
+            16.0
+          ]
+        }
+      },
+      "from": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "to": [
+        16.0,
+        2.0,
+        16.0
+      ]
+    }
+  ],
+  "textures": {
+    "background": "wiredredstone:block/gate_nor/background",
+    "base": "wiredredstone:block/gate_base",
+    "particle": "wiredredstone:block/gate_nor/particle",
+    "redstone_input_back": "wiredredstone:block/gate_nor/redstone_input_back_off",
+    "redstone_input_left": "wiredredstone:block/gate_nor/redstone_input_left_off",
+    "redstone_input_right": "wiredredstone:block/gate_nor/redstone_input_right_off",
+    "redstone_output": "wiredredstone:block/gate_nor/redstone_output_on",
+    "torch_base": "wiredredstone:block/redstone_torch_off",
+    "torch_on": "wiredredstone:block/redstone_torch"
+  }
+}

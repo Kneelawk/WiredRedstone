@@ -35,6 +35,7 @@ object WRBlockNodes {
     val GATE_NOR = BlockNodeType.of(id("gate_nor"), GateNorBlockNode.Decoder)
     val GATE_NOT = BlockNodeType.of(id("gate_not"), GateNotBlockNode.Decoder)
     val GATE_OR = BlockNodeType.of(id("gate_or"), GateOrBlockNode.Decoder)
+    val GATE_XNOR = BlockNodeType.of(id("gate_xnor"), GateXnorBlockNode.Decoder)
     val GATE_PROJECTOR_SIMPLE = BlockNodeType.of(id("gate_projector_simple"), GateProjectorSimpleBlockNode.Decoder)
     val GATE_REPEATER = BlockNodeType.of(id("gate_repeater"), GateRepeaterBlockNode.Decoder)
     val GATE_RS_LATCH = BlockNodeType.of(id("gate_rs_latch"), GateRSLatchBlockNode.Decoder)
@@ -69,6 +70,7 @@ object WRBlockNodes {
             GATE_NOR,
             GATE_NOT,
             GATE_OR,
+            GATE_XNOR,
             GATE_PROJECTOR_SIMPLE,
             GATE_REPEATER,
             GATE_RS_LATCH

@@ -1,0 +1,32 @@
+{
+  "parent": "wiredredstone:block/flat",
+  "elements": [
+    {
+      "faces": {
+        "up": {
+          "texture": "#redstone_anode_left",
+          "uv": [
+            0.0,
+            0.0,
+            16.0,
+            16.0
+          ]
+        }
+      },
+      "from": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "to": [
+        16.0,
+        2.0,
+        16.0
+      ]
+    }
+  ],
+  "textures": {
+    "particle": "wiredredstone:block/gate_xnor/particle",
+    "redstone_anode_left": "wiredredstone:block/gate_xnor/redstone_anode_left_off"
+  }
+}

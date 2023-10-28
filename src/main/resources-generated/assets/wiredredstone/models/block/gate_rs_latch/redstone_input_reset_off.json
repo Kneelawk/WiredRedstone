@@ -4,7 +4,7 @@
     {
       "faces": {
         "up": {
-          "texture": "#redstone",
+          "texture": "#redstone_input_reset",
           "uv": [
             0.0,
             0.0,
@@ -27,6 +27,6 @@
   ],
   "textures": {
     "particle": "wiredredstone:block/gate_rs_latch/particle",
-    "redstone": "wiredredstone:block/gate_rs_latch/redstone_input_reset_off"
+    "redstone_input_reset": "wiredredstone:block/gate_rs_latch/redstone_input_reset_off"
   }
 }

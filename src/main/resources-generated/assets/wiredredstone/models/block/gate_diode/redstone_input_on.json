@@ -4,7 +4,7 @@
     {
       "faces": {
         "up": {
-          "texture": "#redstone",
+          "texture": "#redstone_input",
           "uv": [
             0.0,
             0.0,
@@ -27,6 +27,6 @@
   ],
   "textures": {
     "particle": "wiredredstone:block/gate_diode/particle",
-    "redstone": "wiredredstone:block/gate_diode/redstone_input_on"
+    "redstone_input": "wiredredstone:block/gate_diode/redstone_input_on"
   }
 }

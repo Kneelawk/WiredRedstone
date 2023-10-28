@@ -31,6 +31,7 @@ class WRPartLootTableGen(dataOutput: FabricDataOutput) :
             WRParts.GATE_NOR to WRItems.GATE_NOR,
             WRParts.GATE_NOT to WRItems.GATE_NOT,
             WRParts.GATE_OR to WRItems.GATE_OR,
+            WRParts.GATE_XNOR to WRItems.GATE_XNOR,
             WRParts.GATE_PROJECTOR_SIMPLE to WRItems.GATE_PROJECTOR_SIMPLE,
             WRParts.GATE_REPEATER to WRItems.GATE_REPEATER,
             WRParts.GATE_RS_LATCH to WRItems.GATE_RS_LATCH

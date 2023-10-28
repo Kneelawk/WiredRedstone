@@ -19,7 +19,7 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 object WRNetworking {
-    const val NETWORKING_VERSION: Int = 1
+    const val NETWORKING_VERSION: Int = 2
 
     val HELLO_CHANNEL = id("hello")
     val CONFIG_SYNC_CHANNEL = id("config_sync")

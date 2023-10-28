@@ -4,7 +4,7 @@
     {
       "faces": {
         "up": {
-          "texture": "#redstone",
+          "texture": "#redstone_input_back",
           "uv": [
             0.0,
             0.0,
@@ -27,6 +27,6 @@
   ],
   "textures": {
     "particle": "wiredredstone:block/gate_nand/particle",
-    "redstone": "wiredredstone:block/gate_nand/redstone_input_back_off"
+    "redstone_input_back": "wiredredstone:block/gate_nand/redstone_input_back_off"
   }
 }
