@@ -29,6 +29,7 @@ object WRParts {
     val GATE_NOT by lazy { definition("gate_not", ::GateNotPart, ::GateNotPart) }
     val GATE_OR by lazy { definition("gate_or", ::GateOrPart, ::GateOrPart) }
     val GATE_XNOR by lazy { definition("gate_xnor", ::GateXnorPart, ::GateXnorPart) }
+    val GATE_XOR by lazy { definition("gate_xor", ::GateXorPart, ::GateXorPart) }
     val GATE_PROJECTOR_SIMPLE by lazy {
         definition("gate_projector_simple", ::GateProjectorSimplePart, ::GateProjectorSimplePart)
     }
@@ -59,6 +60,7 @@ object WRParts {
         GATE_NOT.register()
         GATE_OR.register()
         GATE_XNOR.register()
+        GATE_XOR.register()
         GATE_PROJECTOR_SIMPLE.register()
         GATE_REPEATER.register()
         GATE_RS_LATCH.register()

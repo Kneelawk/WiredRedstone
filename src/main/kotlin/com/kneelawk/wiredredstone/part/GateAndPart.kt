@@ -67,7 +67,7 @@ class GateAndPart : AbstractDisableableThreeInputGatePart {
     override fun getModelKey(): PartModelKey {
         return GateAndPartKey(
             side, direction, connections, inputRightPower != 0, inputBackPower != 0, inputLeftPower != 0,
-            outputPower != 0, inputRightEnabled, inputBackEnabled, inputLeftEnabled
+            outputPower != 0, getTotalOutputPower() != 0, inputRightEnabled, inputBackEnabled, inputLeftEnabled
         )
     }
 

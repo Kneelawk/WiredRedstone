@@ -66,6 +66,22 @@ class WRModelGen(output: FabricDataOutput) : FabricModelProvider(output) {
             redstone("redstone_input_left", id("block/gate_or/redstone_input_left"), disableable = true)
         }
 
+        gen.gate("gate_xor") {
+            particle = id("block/gate_xor/particle")
+            background(id("block/gate_xor/background")) {
+                torchBase(Vec3d(5.0, 2.0, 8.0))
+                torchBase(Vec3d(11.0, 2.0, 8.0))
+                torchBase(Vec3d(8.0, 2.0, 13.0))
+            }
+            torch("torch_input_left", Vec3d(5.0, 2.0, 8.0))
+            torch("torch_input_right", Vec3d(11.0, 2.0, 8.0))
+            torch("torch_bottom", Vec3d(8.0, 2.0, 13.0), itemOn = true)
+            redstone("redstone_input_left", id("block/gate_xor/redstone_input_left"))
+            redstone("redstone_input_right", id("block/gate_xor/redstone_input_right"))
+            redstone("redstone_anode_bottom", id("block/gate_xor/redstone_anode_bottom"), itemOn = true)
+            redstone("redstone_output", id("block/gate_xor/redstone_output"))
+        }
+
         gen.gate("gate_nand") {
             particle = id("block/gate_nand/particle")
             background(id("block/gate_nand/background")) {

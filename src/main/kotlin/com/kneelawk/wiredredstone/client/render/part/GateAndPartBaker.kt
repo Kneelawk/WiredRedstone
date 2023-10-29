@@ -61,8 +61,8 @@ object GateAndPartBaker : AbstractPartBaker<GateAndPartKey>() {
         val torchRightModelId = if (!key.inputRightPowered && key.inputRightEnabled) TORCH_RIGHT_ON else TORCH_RIGHT_OFF
         val torchBackModelId = if (!key.inputBackPowered && key.inputBackEnabled) TORCH_BACK_ON else TORCH_BACK_OFF
         val torchLeftModelId = if (!key.inputLeftPowered && key.inputLeftEnabled) TORCH_LEFT_ON else TORCH_LEFT_OFF
-        val anodeModelId = if (!key.outputPowered) ANODE_ON else ANODE_OFF
-        val torchOutputModelId = if (key.outputPowered) TORCH_OUTPUT_ON else TORCH_OUTPUT_OFF
+        val anodeModelId = if (!key.outputTorchPowered) ANODE_ON else ANODE_OFF
+        val torchOutputModelId = if (key.outputTorchPowered) TORCH_OUTPUT_ON else TORCH_OUTPUT_OFF
 
         val backgroundModel = RenderUtils.getModel(BACKGROUND)
         val inputRightModel = RenderUtils.getModel(inputRightModelId)
@@ -87,8 +87,8 @@ object GateAndPartBaker : AbstractPartBaker<GateAndPartKey>() {
             if (!key.inputBackPowered && key.inputBackEnabled) POWERED_MATERIAL else UNPOWERED_MATERIAL
         val torchLeftMaterial =
             if (!key.inputLeftPowered && key.inputLeftEnabled) POWERED_MATERIAL else UNPOWERED_MATERIAL
-        val anodeMaterial = if (!key.outputPowered) POWERED_MATERIAL else UNPOWERED_MATERIAL
-        val torchOutputMaterial = if (key.outputPowered) POWERED_MATERIAL else UNPOWERED_MATERIAL
+        val anodeMaterial = if (!key.outputTorchPowered) POWERED_MATERIAL else UNPOWERED_MATERIAL
+        val torchOutputMaterial = if (key.outputTorchPowered) POWERED_MATERIAL else UNPOWERED_MATERIAL
 
         val builder = RenderUtils.MESH_BUILDER
         val emitter = TransformingQuadEmitter.Multi(

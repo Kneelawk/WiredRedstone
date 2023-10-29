@@ -54,9 +54,9 @@ object GateOrPartBaker : AbstractPartBaker<GateOrPartKey>() {
             if (key.inputBackEnabled) if (key.inputBackPowered) INPUT_BACK_ON else INPUT_BACK_OFF else INPUT_BACK_DISABLED
         val inputLeftModelId =
             if (key.inputLeftEnabled) if (key.inputLeftPowered) INPUT_LEFT_ON else INPUT_LEFT_OFF else INPUT_LEFT_DISABLED
-        val torchInputModelId = if (!key.outputPowered) TORCH_INPUT_ON else TORCH_INPUT_OFF
-        val anodeModelId = if (!key.outputPowered) ANODE_ON else ANODE_OFF
-        val torchOutputModelId = if (key.outputPowered) TORCH_OUTPUT_ON else TORCH_OUTPUT_OFF
+        val torchInputModelId = if (!key.outputTorchPowered) TORCH_INPUT_ON else TORCH_INPUT_OFF
+        val anodeModelId = if (!key.outputTorchPowered) ANODE_ON else ANODE_OFF
+        val torchOutputModelId = if (key.outputTorchPowered) TORCH_OUTPUT_ON else TORCH_OUTPUT_OFF
 
         val backgroundModel = RenderUtils.getModel(BACKGROUND)
         val inputRightModel = RenderUtils.getModel(inputRightModelId)
@@ -73,9 +73,9 @@ object GateOrPartBaker : AbstractPartBaker<GateOrPartKey>() {
             if (key.inputBackPowered && key.inputBackEnabled) POWERED_MATERIAL else UNPOWERED_MATERIAL
         val inputLeftMaterial =
             if (key.inputLeftPowered && key.inputLeftEnabled) POWERED_MATERIAL else UNPOWERED_MATERIAL
-        val torchInputMaterial = if (!key.outputPowered) POWERED_MATERIAL else UNPOWERED_MATERIAL
-        val anodeMaterial = if (!key.outputPowered) POWERED_MATERIAL else UNPOWERED_MATERIAL
-        val torchOutputMaterial = if (key.outputPowered) POWERED_MATERIAL else UNPOWERED_MATERIAL
+        val torchInputMaterial = if (!key.outputTorchPowered) POWERED_MATERIAL else UNPOWERED_MATERIAL
+        val anodeMaterial = if (!key.outputTorchPowered) POWERED_MATERIAL else UNPOWERED_MATERIAL
+        val torchOutputMaterial = if (key.outputTorchPowered) POWERED_MATERIAL else UNPOWERED_MATERIAL
 
         val builder = RenderUtils.MESH_BUILDER
         val emitter = TransformingQuadEmitter.Multi(
