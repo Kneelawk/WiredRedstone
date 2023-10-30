@@ -126,7 +126,8 @@
   "tooltip.wiredredstone.redstone_assembler.shaped": "Shaped Recipe",
   "tooltip.wiredredstone.redstone_assembler.shapeless": "Shapeless Recipe",
   "tooltip.wiredredstone.redstone_assembler.recipes": "Redstone Assembler Recipes",
-  "tooltip.wiredredstone.screwdriver.description": "Right-Click on a gate to set that edge as its output.\nShift-Right-Click on a gate to mirror the gate along the selected axis.",
+  "tooltip.wiredredstone.screwdriver.description": "Right-Click on a gate to rotate it so that edge is its output.",
+  "tooltip.wiredredstone.screwdriver.description.1": "Shift-Right-Click on a gate to mirror the gate along the selected axis.",
 
   "overlay.wiredredstone.gate_and.in": "IN",
   "overlay.wiredredstone.gate_and.out": "OUT",

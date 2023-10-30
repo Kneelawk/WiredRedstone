@@ -22,7 +22,7 @@ object WRItems {
     val WIRED_REDSTONE_TOOL_SETTINGS: Item.Settings by lazy { Item.Settings().maxCount(1) }
 
     // Tools
-    val SCREWDRIVER by lazy { ToolItem(WIRED_REDSTONE_TOOL_SETTINGS, "screwdriver.description") }
+    val SCREWDRIVER by lazy { ToolItem(WIRED_REDSTONE_TOOL_SETTINGS, "screwdriver.description", 2) }
     val PROJECTION_VIEWER by lazy { ToolItem(WIRED_REDSTONE_TOOL_SETTINGS, "projection_viewer.description") }
 
     // Wires
