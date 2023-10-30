@@ -1,4 +1,4 @@
-// 1.20.1	2023-10-29T22:19:05.817389985	Wired Redstone/Tags for minecraft:item
+// 1.20.1	2023-10-30T15:43:37.736119545	Wired Redstone/Tags for minecraft:item
 7fd4162247fb4b8b13cfdaa5d69d22a103119ba1 data/c/tags/items/blue_dyes.json
 d452726265047a5002a7e95ac2930ae2967e8350 data/wiredredstone/tags/items/standing_insulated_wires.json
 864e9856f4ec02b3693396f15c182e82a73382e2 data/wiredredstone/tags/items/colored_bundled_cables.json
@@ -16,8 +16,8 @@ f4dc6f8b07aa2793cbc1a0feade5513ec4fafa2f data/c/tags/items/brown_dyes.json
 a425733455cf12a61e1d9b16fecba535ada80b09 data/c/tags/items/light_blue_dyes.json
 4ced4d96f748da71a379cd6446cd281aa75ad6d7 data/c/tags/items/orange_dyes.json
 24e7185fba953d874b7d9622056b097327951f7f data/c/tags/items/yellow_dyes.json
+dd2eae15c85cfc4fcc0de381b2c82f67f2c01636 data/c/tags/items/glass_blocks.json
 a169713f7a939477e25aa44aa7fddf03ba87ad93 data/c/tags/items/lime_dyes.json
 6fc3474e06391e3634baf60e49f426d61ede1877 data/c/tags/items/gray_dyes.json
 83cd1c14c434b6b9f23a2cfa9f26b4976cca8b0b data/wiredredstone/tags/items/insulated_wires.json
 c5f1d87eb377b409499e387727f8e891afbd237c data/c/tags/items/light_gray_dyes.json
-dd2eae15c85cfc4fcc0de381b2c82f67f2c01636 data/c/tags/items/glass.json

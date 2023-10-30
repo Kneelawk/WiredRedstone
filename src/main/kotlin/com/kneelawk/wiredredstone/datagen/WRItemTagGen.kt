@@ -26,7 +26,7 @@ class WRItemTagGen(output: FabricDataOutput, registries: CompletableFuture<Holde
         val COLORED_STANDING_BUNDLED_CABLES: TagKey<Item> =
             TagKey.of(RegistryKeys.ITEM, id("colored_standing_bundled_cables"))
         val STANDING_INSULATED_WIRES: TagKey<Item> = TagKey.of(RegistryKeys.ITEM, id("standing_insulated_wires"))
-        val GLASS: TagKey<Item> = TagKey.of(RegistryKeys.ITEM, Identifier("c", "glass"))
+        val GLASS: TagKey<Item> = TagKey.of(RegistryKeys.ITEM, Identifier("c", "glass_blocks"))
     }
 
     override fun configure(arg: HolderLookup.Provider) {
