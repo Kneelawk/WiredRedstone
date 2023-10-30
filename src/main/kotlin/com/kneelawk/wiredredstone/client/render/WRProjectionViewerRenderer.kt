@@ -1,6 +1,6 @@
 package com.kneelawk.wiredredstone.client.render
 
-import com.kneelawk.wiredredstone.item.ProjectionViewerItem
+import com.kneelawk.wiredredstone.item.ProjectionViewerUtil
 import com.kneelawk.wiredredstone.item.WRItems
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.minecraft.client.MinecraftClient
@@ -20,7 +20,7 @@ object WRProjectionViewerRenderer {
             player.offHandStack
         } else return
 
-        val ref = ProjectionViewerItem.getRef(stack) ?: return
+        val ref = ProjectionViewerUtil.getRef(stack) ?: return
 
         ref.renderProjection(context)
     }

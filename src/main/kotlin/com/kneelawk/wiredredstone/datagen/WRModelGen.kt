@@ -2,6 +2,7 @@ package com.kneelawk.wiredredstone.datagen
 
 import com.kneelawk.wiredredstone.WRConstants.id
 import com.kneelawk.wiredredstone.datagen.gate.gate
+import com.kneelawk.wiredredstone.datagen.gate.o
 import com.kneelawk.wiredredstone.item.WRItems
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider
@@ -34,9 +35,9 @@ class WRModelGen(output: FabricDataOutput) : FabricModelProvider(output) {
     }
 
     override fun generateBlockStateModels(gen: BlockStateModelGenerator) {
-        gen.gate("gate_and") {
-            particle = id("block/gate_and/particle")
-            background(id("block/gate_and/background")) {
+        gen.gate("gate_and", id("block/gate_and")) {
+            particle = "particle".o
+            background("background".o) {
                 torchBase(Vec3d(8.0, 2.0, 3.0))
                 torchBase(Vec3d(8.0, 2.0, 9.0))
                 torchBase(Vec3d(11.0, 2.0, 9.0))
@@ -46,29 +47,29 @@ class WRModelGen(output: FabricDataOutput) : FabricModelProvider(output) {
             torch("torch_input_back", Vec3d(8.0, 2.0, 9.0), itemOn = true)
             torch("torch_input_right", Vec3d(11.0, 2.0, 9.0), itemOn = true)
             torch("torch_input_left", Vec3d(5.0, 2.0, 9.0), itemOn = true)
-            redstone("redstone_anode", id("block/gate_and/redstone_anode"), itemOn = true)
-            redstone("redstone_input_back", id("block/gate_and/redstone_input_back"), disableable = true)
-            redstone("redstone_input_right", id("block/gate_and/redstone_input_right"), disableable = true)
-            redstone("redstone_input_left", id("block/gate_and/redstone_input_left"), disableable = true)
+            redstone("redstone_anode", "redstone_anode".o, itemOn = true)
+            redstone("redstone_input_back", "redstone_input_back".o, disableable = true)
+            redstone("redstone_input_right", "redstone_input_right".o, disableable = true)
+            redstone("redstone_input_left", "redstone_input_left".o, disableable = true)
         }
 
-        gen.gate("gate_or") {
-            particle = id("block/gate_or/particle")
-            background(id("block/gate_or/background")) {
+        gen.gate("gate_or", id("block/gate_or")) {
+            particle = "particle".o
+            background("background".o) {
                 torchBase(Vec3d(8.0, 2.0, 3.0))
                 torchBase(Vec3d(8.0, 2.0, 9.0))
             }
             torch("torch_output", Vec3d(8.0, 2.0, 3.0))
             torch("torch_input", Vec3d(8.0, 2.0, 9.0), itemOn = true)
-            redstone("redstone_anode", id("block/gate_or/redstone_anode"), itemOn = true)
-            redstone("redstone_input_back", id("block/gate_or/redstone_input_back"), disableable = true)
-            redstone("redstone_input_right", id("block/gate_or/redstone_input_right"), disableable = true)
-            redstone("redstone_input_left", id("block/gate_or/redstone_input_left"), disableable = true)
+            redstone("redstone_anode", "redstone_anode".o, itemOn = true)
+            redstone("redstone_input_back", "redstone_input_back".o, disableable = true)
+            redstone("redstone_input_right", "redstone_input_right".o, disableable = true)
+            redstone("redstone_input_left", "redstone_input_left".o, disableable = true)
         }
 
-        gen.gate("gate_xor") {
-            particle = id("block/gate_xor/particle")
-            background(id("block/gate_xor/background")) {
+        gen.gate("gate_xor", id("block/gate_xor")) {
+            particle = "particle".o
+            background("background".o) {
                 torchBase(Vec3d(5.0, 2.0, 8.0))
                 torchBase(Vec3d(11.0, 2.0, 8.0))
                 torchBase(Vec3d(8.0, 2.0, 13.0))
@@ -76,15 +77,15 @@ class WRModelGen(output: FabricDataOutput) : FabricModelProvider(output) {
             torch("torch_input_left", Vec3d(5.0, 2.0, 8.0))
             torch("torch_input_right", Vec3d(11.0, 2.0, 8.0))
             torch("torch_bottom", Vec3d(8.0, 2.0, 13.0), itemOn = true)
-            redstone("redstone_input_left", id("block/gate_xor/redstone_input_left"))
-            redstone("redstone_input_right", id("block/gate_xor/redstone_input_right"))
-            redstone("redstone_anode_bottom", id("block/gate_xor/redstone_anode_bottom"), itemOn = true)
-            redstone("redstone_output", id("block/gate_xor/redstone_output"))
+            redstone("redstone_input_left", "redstone_input_left".o)
+            redstone("redstone_input_right", "redstone_input_right".o)
+            redstone("redstone_anode_bottom", "redstone_anode_bottom".o, itemOn = true)
+            redstone("redstone_output", "redstone_output".o)
         }
 
-        gen.gate("gate_nand") {
-            particle = id("block/gate_nand/particle")
-            background(id("block/gate_nand/background")) {
+        gen.gate("gate_nand", id("block/gate_nand")) {
+            particle = "particle".o
+            background("background".o) {
                 torchBase(Vec3d(8.0, 2.0, 9.0))
                 torchBase(Vec3d(11.0, 2.0, 9.0))
                 torchBase(Vec3d(5.0, 2.0, 9.0))
@@ -92,27 +93,27 @@ class WRModelGen(output: FabricDataOutput) : FabricModelProvider(output) {
             torch("torch_input_back", Vec3d(8.0, 2.0, 9.0), itemOn = true)
             torch("torch_input_right", Vec3d(11.0, 2.0, 9.0), itemOn = true)
             torch("torch_input_left", Vec3d(5.0, 2.0, 9.0), itemOn = true)
-            redstone("redstone_output", id("block/gate_nand/redstone_output"), itemOn = true)
-            redstone("redstone_input_back", id("block/gate_nand/redstone_input_back"), disableable = true)
-            redstone("redstone_input_right", id("block/gate_nand/redstone_input_right"), disableable = true)
-            redstone("redstone_input_left", id("block/gate_nand/redstone_input_left"), disableable = true)
+            redstone("redstone_output", "redstone_output".o, itemOn = true)
+            redstone("redstone_input_back", "redstone_input_back".o, disableable = true)
+            redstone("redstone_input_right", "redstone_input_right".o, disableable = true)
+            redstone("redstone_input_left", "redstone_input_left".o, disableable = true)
         }
 
-        gen.gate("gate_nor") {
-            particle = id("block/gate_nor/particle")
-            background(id("block/gate_nor/background")) {
+        gen.gate("gate_nor", id("block/gate_nor")) {
+            particle = "particle".o
+            background("background".o) {
                 torchBase(Vec3d(8.0, 2.0, 9.0))
             }
             torch("torch", Vec3d(8.0, 2.0, 9.0), itemOn = true)
-            redstone("redstone_output", id("block/gate_nor/redstone_output"), itemOn = true)
-            redstone("redstone_input_back", id("block/gate_nor/redstone_input_back"), disableable = true)
-            redstone("redstone_input_right", id("block/gate_nor/redstone_input_right"), disableable = true)
-            redstone("redstone_input_left", id("block/gate_nor/redstone_input_left"), disableable = true)
+            redstone("redstone_output", "redstone_output".o, itemOn = true)
+            redstone("redstone_input_back", "redstone_input_back".o, disableable = true)
+            redstone("redstone_input_right", "redstone_input_right".o, disableable = true)
+            redstone("redstone_input_left", "redstone_input_left".o, disableable = true)
         }
 
-        gen.gate("gate_xnor") {
-            particle = id("block/gate_xnor/particle")
-            background(id("block/gate_xnor/background")) {
+        gen.gate("gate_xnor", id("block/gate_xnor")) {
+            particle = "particle".o
+            background("background".o) {
                 torchBase(Vec3d(5.0, 2.0, 8.0))
                 torchBase(Vec3d(11.0, 2.0, 8.0))
                 torchBase(Vec3d(8.0, 2.0, 13.0))
@@ -122,33 +123,33 @@ class WRModelGen(output: FabricDataOutput) : FabricModelProvider(output) {
             torch("torch_input_right", Vec3d(11.0, 2.0, 8.0))
             torch("torch_bottom", Vec3d(8.0, 2.0, 13.0), itemOn = true)
             torch("torch_output", Vec3d(8.0, 2.0, 3.0), itemOn = true)
-            redstone("redstone_input_left", id("block/gate_xnor/redstone_input_left"))
-            redstone("redstone_input_right", id("block/gate_xnor/redstone_input_right"))
-            redstone("redstone_anode_bottom", id("block/gate_xnor/redstone_anode_bottom"), itemOn = true)
-            redstone("redstone_anode_left", id("block/gate_xnor/redstone_anode_left"))
-            redstone("redstone_anode_right", id("block/gate_xnor/redstone_anode_right"))
+            redstone("redstone_input_left", "redstone_input_left".o)
+            redstone("redstone_input_right", "redstone_input_right".o)
+            redstone("redstone_anode_bottom", "redstone_anode_bottom".o, itemOn = true)
+            redstone("redstone_anode_left", "redstone_anode_left".o)
+            redstone("redstone_anode_right", "redstone_anode_right".o)
         }
 
-        gen.gate("gate_diode") {
-            particle = id("block/gate_diode/particle")
-            background(id("block/gate_diode/background"))
-            redstone("redstone_output", id("block/gate_diode/redstone_output"))
-            redstone("redstone_input", id("block/gate_diode/redstone_input"))
+        gen.gate("gate_diode", id("block/gate_diode")) {
+            particle = "particle".o
+            background("background".o)
+            redstone("redstone_output", "redstone_output".o)
+            redstone("redstone_input", "redstone_input".o)
         }
 
-        gen.gate("gate_not") {
-            particle = id("block/gate_not/particle")
-            background(id("block/gate_not/background")) {
+        gen.gate("gate_not", id("block/gate_not")) {
+            particle = "particle".o
+            background("background".o) {
                 torchBase(Vec3d(8.0, 2.0, 9.0))
             }
             torch("torch", Vec3d(8.0, 2.0, 9.0), itemOn = true)
-            redstone("redstone_output", id("block/gate_not/redstone_output"), itemOn = true)
-            redstone("redstone_input", id("block/gate_not/redstone_input"))
+            redstone("redstone_output", "redstone_output".o, itemOn = true)
+            redstone("redstone_input", "redstone_input".o)
         }
 
-        gen.gate("gate_repeater") {
-            particle = id("block/gate_repeater/particle")
-            background(id("block/gate_repeater/background")) {
+        gen.gate("gate_repeater", id("block/gate_repeater")) {
+            particle = "particle".o
+            background("background".o) {
                 torchBase(Vec3d(8.0, 2.0, 2.0))
             }
             model("torch_input_base") {
@@ -156,33 +157,33 @@ class WRModelGen(output: FabricDataOutput) : FabricModelProvider(output) {
             }
             torch("torch_output", Vec3d(8.0, 2.0, 2.0))
             torch("torch_input", Vec3d(3.0, 2.0, 9.0), itemOn = true)
-            redstone("redstone_anode", id("block/gate_repeater/redstone_anode"), itemOn = true)
-            redstone("redstone_input", id("block/gate_repeater/redstone_input"))
+            redstone("redstone_anode", "redstone_anode".o, itemOn = true)
+            redstone("redstone_input", "redstone_input".o)
         }
 
-        gen.gate("gate_rs_latch") {
-            particle = id("block/gate_rs_latch/particle")
-            background(id("block/gate_rs_latch/background")) {
+        gen.gate("gate_rs_latch", id("block/gate_rs_latch"), doFlipped = true) {
+            particle = "particle".o
+            background("background".o) {
                 torchBase(Vec3d(8.0, 2.0, 3.0))
                 torchBase(Vec3d(8.0, 2.0, 13.0))
             }
             torch("torch_set", Vec3d(8.0, 2.0, 3.0))
             torch("torch_reset", Vec3d(8.0, 2.0, 13.0), itemOn = true)
-            redstone("redstone_anode_set", id("block/gate_rs_latch/redstone_anode_set"))
-            redstone("redstone_anode_reset", id("block/gate_rs_latch/redstone_anode_reset"), itemOn = true)
-            redstone("redstone_input_set", id("block/gate_rs_latch/redstone_input_set"))
-            redstone("redstone_input_reset", id("block/gate_rs_latch/redstone_input_reset"))
+            redstone("redstone_anode_set", "redstone_anode_set".o)
+            redstone("redstone_anode_reset", "redstone_anode_reset".o, itemOn = true)
+            redstone("redstone_input_set", "redstone_input_set".o)
+            redstone("redstone_input_reset", "redstone_input_reset".o)
         }
 
-        gen.gate("gate_projector_simple") {
-            particle = id("block/gate_projector_simple/particle")
-            background(id("block/gate_projector_simple/background"))
+        gen.gate("gate_projector_simple", id("block/gate_projector_simple")) {
+            particle = "particle".o
+            background("background".o)
             model("torch_base") {
-                torchBase(Vec3d(8.0, 2.0, 11.0), texture = id("block/projector_torch_off"))
+                torchBase(Vec3d(8.0, 2.0, 11.0), texture = id("block/projector_torch_off").o)
             }
-            torchOff("torch_off", Vec3d(8.0, 2.0, 11.0), texture = id("block/projector_torch_off"), addToItem = true)
-            torchOn("torch_on", Vec3d(8.0, 2.0, 11.0), texture = id("block/projector_torch"))
-            redstone("redstone_input", id("block/gate_projector_simple/redstone_input"))
+            torchOff("torch_off", Vec3d(8.0, 2.0, 11.0), texture = id("block/projector_torch_off").o, addToItem = true)
+            torchOn("torch_on", Vec3d(8.0, 2.0, 11.0), texture = id("block/projector_torch").o)
+            redstone("redstone_input", "redstone_input".o)
         }
     }
 

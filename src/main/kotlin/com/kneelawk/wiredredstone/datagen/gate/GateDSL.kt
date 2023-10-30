@@ -13,24 +13,56 @@ private val GATE_BASE = id("block/gate_base")
 private val REDSTONE_TORCH_OFF = id("block/redstone_torch_off")
 private val REDSTONE_TORCH = id("block/redstone_torch")
 
-class GateBuilder(
-    private val blockPath: Identifier, private val itemPath: Identifier, private val gen: BlockStateModelGenerator
-) {
-    private val itemBuilder = ModelBuilderImpl()
-    var particle: Identifier = GATE_BASE
+sealed interface IdentifierOrString {
+    fun toIdentifier(prefix: Identifier): Identifier
+    fun extendPath(extension: String): IdentifierOrString
 
-    fun finish() {
-        itemBuilder.particle(particle)
-        gen.modelCollector.accept(itemPath, itemBuilder::toJson)
+    data class Id(val id: Identifier) : IdentifierOrString {
+        override fun toIdentifier(prefix: Identifier) = id
+        override fun extendPath(extension: String) = id.extendPath(extension).o
+    }
+
+    data class Str(val str: String) : IdentifierOrString {
+        override fun toIdentifier(prefix: Identifier): Identifier = prefix.extendPath(str)
+        override fun extendPath(extension: String) = (str + extension).o
+    }
+}
+
+val Identifier.o: IdentifierOrString
+    get() = IdentifierOrString.Id(this)
+val String.o: IdentifierOrString
+    get() = IdentifierOrString.Str(this)
+
+class GateBuilder(
+    private val blockPath: Identifier, private val itemPath: Identifier, private val texturePrefix: Identifier,
+    private val doFlipped: Boolean, private val gen: BlockStateModelGenerator
+) {
+    private val itemBuilder = ModelBuilderImpl(false, texturePrefix)
+    var particle: IdentifierOrString = GATE_BASE.o
+
+    fun finish(item: Boolean) {
+        if (item) {
+            itemBuilder.particle(particle)
+            gen.modelCollector.accept(itemPath, itemBuilder::toJson)
+        }
     }
 
     fun model(name: String, addToItem: Boolean = true, configure: ModelBuilder.() -> Unit) {
-        val builder = ModelBuilderImpl()
+        val builder = ModelBuilderImpl(false, texturePrefix)
         builder.particle(particle)
         builder.configure()
 
         val backgroundPath = blockPath.extendPath("/$name")
         gen.modelCollector.accept(backgroundPath, builder::toJson)
+
+        if (doFlipped) {
+            val flippedBuilder = ModelBuilderImpl(true, texturePrefix.extendPath("_flipped"))
+            flippedBuilder.particle(particle)
+            flippedBuilder.configure()
+
+            val flippedModelPath = blockPath.extendPath("_flipped/$name")
+            gen.modelCollector.accept(flippedModelPath, flippedBuilder::toJson)
+        }
 
         if (addToItem) {
             itemBuilder.configure()
@@ -38,7 +70,8 @@ class GateBuilder(
     }
 
     fun background(
-        background: Identifier, height: Double = 2.0, addToItem: Boolean = true, configure: ModelBuilder.() -> Unit = {}
+        background: IdentifierOrString, height: Double = 2.0, addToItem: Boolean = true,
+        configure: ModelBuilder.() -> Unit = {}
     ) {
         model("background", addToItem) {
             base(background, height)
@@ -47,7 +80,7 @@ class GateBuilder(
     }
 
     fun torchOff(
-        name: String, pos: Vec3d, height: Double = 1.0, texture: Identifier = REDSTONE_TORCH_OFF,
+        name: String, pos: Vec3d, height: Double = 1.0, texture: IdentifierOrString = REDSTONE_TORCH_OFF.o,
         addToItem: Boolean = false
     ) {
         model(name, addToItem) {
@@ -56,7 +89,8 @@ class GateBuilder(
     }
 
     fun torchOn(
-        name: String, pos: Vec3d, height: Double = 1.0, texture: Identifier = REDSTONE_TORCH, addToItem: Boolean = false
+        name: String, pos: Vec3d, height: Double = 1.0, texture: IdentifierOrString = REDSTONE_TORCH.o,
+        addToItem: Boolean = false
     ) {
         model(name, addToItem) {
             torchOn(pos, height, texture)
@@ -64,15 +98,15 @@ class GateBuilder(
     }
 
     fun torch(
-        name: String, pos: Vec3d, height: Double = 1.0, onTexture: Identifier = REDSTONE_TORCH,
-        offTexture: Identifier = REDSTONE_TORCH_OFF, itemOn: Boolean = false
+        name: String, pos: Vec3d, height: Double = 1.0, onTexture: IdentifierOrString = REDSTONE_TORCH.o,
+        offTexture: IdentifierOrString = REDSTONE_TORCH_OFF.o, itemOn: Boolean = false
     ) {
         torchOff("${name}_off", pos, height, offTexture, addToItem = !itemOn)
         torchOn("${name}_on", pos, height, onTexture, addToItem = itemOn)
     }
 
     fun surface(
-        name: String, textureName: String, texture: Identifier, height: Double = 2.0, addToItem: Boolean = true,
+        name: String, textureName: String, texture: IdentifierOrString, height: Double = 2.0, addToItem: Boolean = true,
         configure: ModelBuilder.() -> Unit = {}
     ) {
         model(name, addToItem) {
@@ -82,8 +116,8 @@ class GateBuilder(
     }
 
     fun redstone(
-        name: String, off: Identifier, on: Identifier, disabled: Identifier? = null, height: Double = 2.0,
-        itemOn: Boolean = false
+        name: String, off: IdentifierOrString, on: IdentifierOrString, disabled: IdentifierOrString? = null,
+        height: Double = 2.0, itemOn: Boolean = false
     ) {
         surface("${name}_off", name, off, height, addToItem = !itemOn)
         surface("${name}_on", name, on, height, addToItem = itemOn)
@@ -93,7 +127,8 @@ class GateBuilder(
     }
 
     fun redstone(
-        name: String, texture: Identifier, disableable: Boolean = false, height: Double = 2.0, itemOn: Boolean = false
+        name: String, texture: IdentifierOrString, disableable: Boolean = false, height: Double = 2.0,
+        itemOn: Boolean = false
     ) {
         redstone(
             name, texture.extendPath("_off"), texture.extendPath("_on"),
@@ -102,23 +137,29 @@ class GateBuilder(
     }
 }
 
-fun BlockStateModelGenerator.gate(gateName: String, configure: GateBuilder.() -> Unit) {
-    GateBuilder(id("block/$gateName"), id("item/$gateName"), this).apply(configure).finish()
+fun BlockStateModelGenerator.gate(
+    gateName: String, texturePrefix: Identifier, item: Boolean = true, doFlipped: Boolean = false,
+    configure: GateBuilder.() -> Unit
+) {
+    GateBuilder(id("block/$gateName"), id("item/$gateName"), texturePrefix, doFlipped, this).apply(configure)
+        .finish(item)
 }
 
 interface ModelBuilder {
+    val flip: Boolean
+
     fun parent(parent: Identifier)
 
-    fun texture(name: String, path: Identifier)
+    fun texture(name: String, path: IdentifierOrString)
 
     fun element(element: Element)
 
-    fun particle(particle: Identifier) {
+    fun particle(particle: IdentifierOrString) {
         texture("particle", particle)
     }
 
-    fun base(background: Identifier, height: Double = 2.0) {
-        texture("base", GATE_BASE)
+    fun base(background: IdentifierOrString, height: Double = 2.0) {
+        texture("base", GATE_BASE.o)
         texture("background", background)
 
         val v0 = 16.0 - height
@@ -136,7 +177,7 @@ interface ModelBuilder {
         )
     }
 
-    fun surface(name: String, texture: Identifier, height: Double = 2.0) {
+    fun surface(name: String, texture: IdentifierOrString, height: Double = 2.0) {
         texture(name, texture)
 
         element(
@@ -148,14 +189,16 @@ interface ModelBuilder {
         )
     }
 
-    fun torchBase(pos: Vec3d, height: Double = 1.0, texture: Identifier = REDSTONE_TORCH_OFF) {
+    fun torchBase(pos: Vec3d, height: Double = 1.0, texture: IdentifierOrString = REDSTONE_TORCH_OFF.o) {
         texture("torch_base", texture)
+
+        val newPos = if (flip) Vec3d(16.0 - pos.x, pos.y, pos.z) else pos
 
         val v1 = 9.0 + height
         element(
             Element(
-                pos.subtract(1.0, 0.0, 1.0),
-                pos.add(1.0, height, 1.0),
+                newPos.subtract(1.0, 0.0, 1.0),
+                newPos.add(1.0, height, 1.0),
                 north = Face(7.0, 9.0, 9.0, v1, "#torch_base"),
                 south = Face(7.0, 9.0, 9.0, v1, "#torch_base"),
                 west = Face(7.0, 9.0, 9.0, v1, "#torch_base"),
@@ -164,13 +207,15 @@ interface ModelBuilder {
         )
     }
 
-    fun torchOff(pos: Vec3d, height: Double = 1.0, texture: Identifier = REDSTONE_TORCH_OFF) {
+    fun torchOff(pos: Vec3d, height: Double = 1.0, texture: IdentifierOrString = REDSTONE_TORCH_OFF.o) {
         texture("torch_off", texture)
+
+        val newPos = if (flip) Vec3d(16.0 - pos.x, pos.y, pos.z) else pos
 
         element(
             Element(
-                pos.add(-1.0, height, -1.0),
-                pos.add(1.0, height + 3.0, 1.0),
+                newPos.add(-1.0, height, -1.0),
+                newPos.add(1.0, height + 3.0, 1.0),
                 up = Face(7.0, 6.0, 9.0, 8.0, "#torch_off"),
                 north = Face(7.0, 6.0, 9.0, 9.0, "#torch_off"),
                 south = Face(7.0, 6.0, 9.0, 9.0, "#torch_off"),
@@ -180,29 +225,31 @@ interface ModelBuilder {
         )
     }
 
-    fun torchOn(pos: Vec3d, height: Double = 1.0, texture: Identifier = REDSTONE_TORCH) {
+    fun torchOn(pos: Vec3d, height: Double = 1.0, texture: IdentifierOrString = REDSTONE_TORCH.o) {
         texture("torch_on", texture)
+
+        val newPos = if (flip) Vec3d(16.0 - pos.x, pos.y, pos.z) else pos
 
         element(
             Element(
-                pos.add(-8.0, height, -1.0),
-                pos.add(8.0, height + 9.0, 1.0),
+                newPos.add(-8.0, height, -1.0),
+                newPos.add(8.0, height + 9.0, 1.0),
                 north = Face(0.0, 0.0, 16.0, 9.0, "#torch_on"),
                 south = Face(0.0, 0.0, 16.0, 9.0, "#torch_on"),
             )
         )
         element(
             Element(
-                pos.add(-1.0, height, -8.0),
-                pos.add(1.0, height + 9.0, 8.0),
+                newPos.add(-1.0, height, -8.0),
+                newPos.add(1.0, height + 9.0, 8.0),
                 west = Face(0.0, 0.0, 16.0, 9.0, "#torch_on"),
                 east = Face(0.0, 0.0, 16.0, 9.0, "#torch_on"),
             )
         )
         element(
             Element(
-                pos.add(-1.0, height, -1.0),
-                pos.add(1.0, height + 3.0, 1.0),
+                newPos.add(-1.0, height, -1.0),
+                newPos.add(1.0, height + 3.0, 1.0),
                 up = Face(7.0, 6.0, 9.0, 8.0, "#torch_on"),
             )
         )
@@ -251,7 +298,7 @@ class Element(
     }
 }
 
-class ModelBuilderImpl : ModelBuilder {
+class ModelBuilderImpl(override val flip: Boolean, private val prefix: Identifier) : ModelBuilder {
     var parent: Identifier = FLAT
     val textures = mutableMapOf<String, Identifier>()
     val elements = mutableListOf<Element>()
@@ -260,8 +307,8 @@ class ModelBuilderImpl : ModelBuilder {
         this.parent = parent
     }
 
-    override fun texture(name: String, path: Identifier) {
-        textures[name] = path
+    override fun texture(name: String, path: IdentifierOrString) {
+        textures[name] = path.toIdentifier(prefix.extendPath("/"))
     }
 
     override fun element(element: Element) {

@@ -2,10 +2,12 @@ package com.kneelawk.wiredredstone.datagen
 
 import com.kneelawk.wiredredstone.WRConstants.id
 import com.kneelawk.wiredredstone.item.WRItems
+import com.kneelawk.wiredredstone.tag.WRItemTags
 import com.kneelawk.wiredredstone.util.DyeColorUtil
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider.ItemTagProvider
 import net.minecraft.item.Item
+import net.minecraft.item.Items
 import net.minecraft.registry.HolderLookup
 import net.minecraft.registry.RegistryKeys
 import net.minecraft.registry.tag.TagKey
@@ -24,6 +26,7 @@ class WRItemTagGen(output: FabricDataOutput, registries: CompletableFuture<Holde
         val COLORED_STANDING_BUNDLED_CABLES: TagKey<Item> =
             TagKey.of(RegistryKeys.ITEM, id("colored_standing_bundled_cables"))
         val STANDING_INSULATED_WIRES: TagKey<Item> = TagKey.of(RegistryKeys.ITEM, id("standing_insulated_wires"))
+        val GLASS: TagKey<Item> = TagKey.of(RegistryKeys.ITEM, Identifier("c", "glass"))
     }
 
     override fun configure(arg: HolderLookup.Provider) {
@@ -41,6 +44,13 @@ class WRItemTagGen(output: FabricDataOutput, registries: CompletableFuture<Holde
         }
         getOrCreateTagBuilder(STANDING_INSULATED_WIRES).let {
             for (color in DyeColor.values()) it.add(WRItems.STANDING_INSULATED_WIRES[color]!!)
+        }
+
+        getOrCreateTagBuilder(WRItemTags.SCREW_DRIVERS).add(WRItems.SCREWDRIVER)
+
+        getOrCreateTagBuilder(GLASS).let {
+            it.add(Items.GLASS)
+            for (color in DyeColor.values()) it.add(DyeColorUtil.glass(color))
         }
     }
 }

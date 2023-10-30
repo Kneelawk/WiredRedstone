@@ -1,0 +1,32 @@
+{
+  "parent": "wiredredstone:block/flat",
+  "elements": [
+    {
+      "faces": {
+        "up": {
+          "texture": "#redstone_input_reset",
+          "uv": [
+            0.0,
+            0.0,
+            16.0,
+            16.0
+          ]
+        }
+      },
+      "from": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "to": [
+        16.0,
+        2.0,
+        16.0
+      ]
+    }
+  ],
+  "textures": {
+    "particle": "wiredredstone:block/gate_rs_latch_flipped/particle",
+    "redstone_input_reset": "wiredredstone:block/gate_rs_latch_flipped/redstone_input_reset_off"
+  }
+}

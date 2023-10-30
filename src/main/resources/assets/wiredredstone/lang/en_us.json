@@ -97,6 +97,7 @@
   "item.wiredredstone.black_standing_bundled_cable": "Black Standing Bundled Cable",
 
   "item.wiredredstone.projection_viewer": "Projection Viewer",
+  "item.wiredredstone.screwdriver": "Screwdriver",
 
   "item.wiredredstone.redstone_alloy_ingot": "Redstone Alloy Ingot",
   "item.wiredredstone.stone_plate": "Stone Plate",
@@ -125,6 +126,7 @@
   "tooltip.wiredredstone.redstone_assembler.shaped": "Shaped Recipe",
   "tooltip.wiredredstone.redstone_assembler.shapeless": "Shapeless Recipe",
   "tooltip.wiredredstone.redstone_assembler.recipes": "Redstone Assembler Recipes",
+  "tooltip.wiredredstone.screwdriver.description": "Right-Click on a gate to set that edge as its output.\nShift-Right-Click on a gate to mirror the gate along the selected axis.",
 
   "overlay.wiredredstone.gate_and.in": "IN",
   "overlay.wiredredstone.gate_and.out": "OUT",
@@ -163,5 +165,6 @@
   "tag.wiredredstone.colored_bundled_cables": "Colored Bundled Cables",
   "tag.wiredredstone.insulated_wires": "Insulated Wires",
   "tag.wiredredstone.colored_standing_bundled_cables": "Colored Standing Bundled Cables",
-  "tag.wiredredstone.standing_insulated_wires": "Standing Insulated Wires"
+  "tag.wiredredstone.standing_insulated_wires": "Standing Insulated Wires",
+  "tag.wiredredstone.screwdrivers": "Screwdrivers"
 }

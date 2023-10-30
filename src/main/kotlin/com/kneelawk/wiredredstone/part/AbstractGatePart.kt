@@ -48,15 +48,25 @@ abstract class AbstractGatePart : AbstractRotatedPart {
             // Sometimes this gets called after this part has been removed already
             if (isRemoved()) return@addListener
 
-            val world = getWorld()
-            if (world is ServerWorld) {
-                updateConnections()
-                RedstoneLogic.wiresGivePower = false
-                if (shouldScheduleUpdate()) {
-                    RedstoneLogic.scheduleUpdate(world, getPos())
-                }
-                RedstoneLogic.wiresGivePower = true
+            updateGate()
+        }
+    }
+
+    override fun onPostScrewDriver() {
+        super.onPostScrewDriver()
+
+        updateGate()
+    }
+
+    private fun updateGate() {
+        val world = getWorld()
+        if (world is ServerWorld) {
+            updateConnections()
+            RedstoneLogic.wiresGivePower = false
+            if (shouldScheduleUpdate()) {
+                RedstoneLogic.scheduleUpdate(world, getPos())
             }
+            RedstoneLogic.wiresGivePower = true
         }
     }
 

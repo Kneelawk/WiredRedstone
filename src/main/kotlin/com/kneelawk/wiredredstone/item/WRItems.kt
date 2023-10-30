@@ -21,6 +21,10 @@ object WRItems {
     val WIRED_REDSTONE_ITEM_SETTINGS: Item.Settings by lazy { Item.Settings() }
     val WIRED_REDSTONE_TOOL_SETTINGS: Item.Settings by lazy { Item.Settings().maxCount(1) }
 
+    // Tools
+    val SCREWDRIVER by lazy { ToolItem(WIRED_REDSTONE_TOOL_SETTINGS, "screwdriver.description") }
+    val PROJECTION_VIEWER by lazy { ToolItem(WIRED_REDSTONE_TOOL_SETTINGS, "projection_viewer.description") }
+
     // Wires
     val RED_ALLOY_WIRE by lazy { RedAlloyWireItem(WIRED_REDSTONE_ITEM_SETTINGS) }
     val INSULATED_WIRES by lazy {
@@ -94,7 +98,8 @@ object WRItems {
     val GATE_RS_LATCH by lazy {
         SimpleGateItem(WIRED_REDSTONE_ITEM_SETTINGS) { holder, side, direction ->
             GateRSLatchPart(
-                WRParts.GATE_RS_LATCH, holder, side, 0u, direction, GateRSLatchPart.LatchState.RESET, true, 0, 0, 0, 0
+                WRParts.GATE_RS_LATCH, holder, side, 0u, direction, false, GateRSLatchPart.LatchState.RESET, true, 0, 0,
+                0, 0
             )
         }
     }
@@ -103,9 +108,6 @@ object WRItems {
             GateProjectorSimplePart(WRParts.GATE_PROJECTOR_SIMPLE, holder, side, 0u, direction, 0, 0)
         }
     }
-
-    // Tools
-    val PROJECTION_VIEWER by lazy { ProjectionViewerItem(WIRED_REDSTONE_TOOL_SETTINGS) }
 
     // Crafting Materials
     val REDSTONE_ALLOY_INGOT by lazy { Item(WIRED_REDSTONE_ITEM_SETTINGS) }
@@ -121,6 +123,8 @@ object WRItems {
     val REDSTONE_PROJECTOR_CATHODE by lazy { Item(WIRED_REDSTONE_ITEM_SETTINGS) }
 
     fun init() {
+        register(SCREWDRIVER, "screwdriver")
+
         register(RED_ALLOY_WIRE, "red_alloy_wire")
         for ((color, item) in INSULATED_WIRES) {
             register(item, color.getName() + "_insulated_wire")
@@ -151,7 +155,6 @@ object WRItems {
         register(GATE_REPEATER, "gate_repeater")
         register(GATE_RS_LATCH, "gate_rs_latch")
         register(GATE_PROJECTOR_SIMPLE, "gate_projector_simple")
-
         register(PROJECTION_VIEWER, "projection_viewer")
 
         register(REDSTONE_ALLOY_INGOT, "redstone_alloy_ingot")

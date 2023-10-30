@@ -24,7 +24,7 @@ import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Direction.*
 import kotlin.math.max
 
-class GateRSLatchPart : AbstractGatePart {
+class GateRSLatchPart : AbstractAsymmetricGatePart {
 
     var latchState: LatchState
         private set
@@ -41,9 +41,9 @@ class GateRSLatchPart : AbstractGatePart {
 
     constructor(
         definition: PartDefinition, holder: MultipartHolder, side: Direction, connections: UByte, direction: Direction,
-        latchState: LatchState, outputEnabled: Boolean, inputSetPower: Int, inputResetPower: Int,
+        flipped: Boolean, latchState: LatchState, outputEnabled: Boolean, inputSetPower: Int, inputResetPower: Int,
         outputSetReversePower: Int, outputResetReversePower: Int
-    ) : super(definition, holder, side, connections, direction) {
+    ) : super(definition, holder, side, connections, direction, flipped) {
         this.latchState = latchState
         this.outputEnabled = outputEnabled
         this.inputSetPower = inputSetPower
@@ -185,7 +185,7 @@ class GateRSLatchPart : AbstractGatePart {
 
     override fun getModelKey(): PartModelKey {
         return GateRSLatchPartKey(
-            side, direction, connections, latchState == LatchState.SET, outputEnabled, inputSetPower != 0,
+            side, direction, connections, flipped, latchState == LatchState.SET, outputEnabled, inputSetPower != 0,
             inputResetPower != 0, getTotalOutputPower(LatchState.SET) != 0, getTotalOutputPower(LatchState.RESET) != 0
         )
     }
@@ -212,8 +212,10 @@ class GateRSLatchPart : AbstractGatePart {
 
     fun calculateOutputReversePower(state: LatchState): Int = calculatePortPower(getOutputSide(state))
 
-    fun getInputSide(state: LatchState): Direction =
-        RotationUtils.cardinalRotatedDirection(direction, state.inputCardinal)
+    fun getInputSide(state: LatchState): Direction {
+        val inputCardinal = if (flipped) state.inputCardinal.opposite else state.inputCardinal
+        return RotationUtils.cardinalRotatedDirection(direction, inputCardinal)
+    }
 
     fun getOutputSide(state: LatchState): Direction =
         RotationUtils.cardinalRotatedDirection(direction, state.outputCardinal)

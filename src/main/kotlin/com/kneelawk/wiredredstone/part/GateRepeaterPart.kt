@@ -138,7 +138,10 @@ class GateRepeaterPart : AbstractInputOutputGatePart {
         LootTableUtil.addPartDrops(this, target, params, WRParts.GATE_REPEATER.identifier)
     }
 
-    override fun onUse(player: PlayerEntity?, hand: Hand?, hit: BlockHitResult?): ActionResult {
+    override fun onUse(player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
+        val superRes = super.onUse(player, hand, hit)
+        if (superRes != ActionResult.PASS) return superRes
+
         return if (isClientSide()) {
             ActionResult.SUCCESS
         } else {

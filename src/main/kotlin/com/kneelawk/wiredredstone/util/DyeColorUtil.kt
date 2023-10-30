@@ -46,11 +46,34 @@ object DyeColorUtil {
         BLACK to Items.BLACK_DYE
     )
 
+    private val DYE_COLORS_TO_GLASS = mapOf(
+        WHITE to Items.WHITE_STAINED_GLASS,
+        ORANGE to Items.ORANGE_STAINED_GLASS,
+        MAGENTA to Items.MAGENTA_STAINED_GLASS,
+        LIGHT_BLUE to Items.LIGHT_BLUE_STAINED_GLASS,
+        YELLOW to Items.YELLOW_STAINED_GLASS,
+        LIME to Items.LIME_STAINED_GLASS,
+        PINK to Items.PINK_STAINED_GLASS,
+        GRAY to Items.GRAY_STAINED_GLASS,
+        LIGHT_GRAY to Items.LIGHT_GRAY_STAINED_GLASS,
+        CYAN to Items.CYAN_STAINED_GLASS,
+        PURPLE to Items.PURPLE_STAINED_GLASS,
+        BLUE to Items.BLUE_STAINED_GLASS,
+        BROWN to Items.BROWN_STAINED_GLASS,
+        GREEN to Items.GREEN_STAINED_GLASS,
+        RED to Items.RED_STAINED_GLASS,
+        BLACK to Items.BLACK_STAINED_GLASS,
+    )
+
     fun wool(color: DyeColor): Block {
         return DYE_COLORS_TO_WOOL[color]!!
     }
 
     fun dye(color: DyeColor): Item {
         return DYE_COLORS_TO_ITEM[color]!!
+    }
+
+    fun glass(color: DyeColor): Item {
+        return DYE_COLORS_TO_GLASS[color]!!
     }
 }

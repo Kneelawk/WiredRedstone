@@ -1,0 +1,25 @@
+{
+  "type": "wiredredstone:redstone_assembler_shaped",
+  "pattern": [
+    " I ",
+    " I ",
+    "DGD"
+  ],
+  "key": {
+    "I": {
+      "tag": "c:iron_ingots"
+    },
+    "G": {
+      "tag": "c:glass"
+    },
+    "D": {
+      "tag": "c:yellow_dyes"
+    }
+  },
+  "result": {
+    "item": "wiredredstone:screwdriver",
+    "count": 1
+  },
+  "cookingtime": 40,
+  "energypertick": 5
+}

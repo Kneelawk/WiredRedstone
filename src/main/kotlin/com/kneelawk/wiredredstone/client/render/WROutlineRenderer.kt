@@ -1,6 +1,10 @@
 package com.kneelawk.wiredredstone.client.render
 
+import alexiil.mc.lib.multipart.api.MultipartUtil
 import com.kneelawk.wiredredstone.item.GateItem
+import com.kneelawk.wiredredstone.part.RotatedPart
+import com.kneelawk.wiredredstone.part.SidedPart
+import com.kneelawk.wiredredstone.tag.WRItemTags
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 import net.minecraft.client.MinecraftClient
@@ -10,6 +14,7 @@ import net.minecraft.util.Hand
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.MathHelper
+import net.minecraft.util.math.Vec3d
 import org.joml.Vector3f
 import org.joml.Vector3fc
 
@@ -22,6 +27,8 @@ object WROutlineRenderer {
         Line(Vector3f(0f, 1f, 0f), Vector3f(1f, 1f, 1f)),
         Line(Vector3f(1f, 1f, 0f), Vector3f(0f, 1f, 1f))
     )
+
+    private val SCREW_DRIVER_OUTLINE = PLACEMENT_OUTLINE
 
     private data class Line(val start: Vector3fc, val end: Vector3fc)
 
@@ -37,12 +44,25 @@ object WROutlineRenderer {
         client.player?.let { player ->
             (client.crosshairTarget as? BlockHitResult)?.let { target ->
                 for (hand in Hand.values()) {
-                    val item = player.getStackInHand(hand).item
+                    val stack = player.getStackInHand(hand)
+                    val item = stack.item
 
                     if (item is GateItem) {
-                        renderPlacementOutline(renderCtx, outlineCtx, target)
+                        renderPlacementOutline(renderCtx, outlineCtx, target, PLACEMENT_OUTLINE)
 
                         return true
+                    }
+
+                    if (stack.isIn(WRItemTags.SCREW_DRIVERS)) {
+                        val hitPos = target.pos.subtract(Vec3d.of(target.blockPos))
+                        val part = MultipartUtil.get(player.world, target.blockPos)?.getPart(hitPos)
+                        if (part is RotatedPart && (part !is SidedPart || part.side.opposite == target.side)) {
+                            renderPlacementOutline(renderCtx, outlineCtx, target, SCREW_DRIVER_OUTLINE)
+
+                            // Doesn't actually do anything because LMP's outlines are rendered using this same event.
+                            // Instead, AbstractRotatedPart handles screwdrivers specifically.
+                            return false
+                        }
                     }
                 }
             }
@@ -52,7 +72,8 @@ object WROutlineRenderer {
     }
 
     private fun renderPlacementOutline(
-        renderCtx: WorldRenderContext, outlineCtx: WorldRenderContext.BlockOutlineContext, target: BlockHitResult
+        renderCtx: WorldRenderContext, outlineCtx: WorldRenderContext.BlockOutlineContext, target: BlockHitResult,
+        outline: Array<Line>
     ) {
         val lines = renderCtx.consumers()!!.getBuffer(RenderLayer.LINES)
 
@@ -68,7 +89,7 @@ object WROutlineRenderer {
         val model = stack.peek().model
         val normal = stack.peek().normal
 
-        for (line in PLACEMENT_OUTLINE) {
+        for (line in outline) {
             var dx = line.end.x() - line.start.x()
             var dy = line.end.y() - line.start.y()
             var dz = line.end.z() - line.start.z()

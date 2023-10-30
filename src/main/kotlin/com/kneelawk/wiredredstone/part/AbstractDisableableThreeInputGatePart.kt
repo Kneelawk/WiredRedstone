@@ -1,14 +1,21 @@
 package com.kneelawk.wiredredstone.part
 
+import alexiil.mc.lib.multipart.api.MultipartEventBus
 import alexiil.mc.lib.multipart.api.MultipartHolder
 import alexiil.mc.lib.multipart.api.PartDefinition
+import alexiil.mc.lib.multipart.api.event.PartTransformEvent
 import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
 import com.kneelawk.wiredredstone.node.WRBlockNodes
+import com.kneelawk.wiredredstone.tag.WRItemTags
 import com.kneelawk.wiredredstone.util.BoundingBoxMap
 import com.kneelawk.wiredredstone.util.getBoolean
 import com.kneelawk.wiredredstone.util.getWorld
+import com.kneelawk.wiredredstone.util.isClientSide
+import net.fabricmc.api.EnvType
+import net.fabricmc.api.Environment
+import net.minecraft.client.MinecraftClient
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.server.world.ServerWorld
@@ -18,7 +25,7 @@ import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Vec3d
 import net.minecraft.util.shape.VoxelShape
-import java.util.*
+import java.util.EnumSet
 
 abstract class AbstractDisableableThreeInputGatePart : AbstractThreeInputGatePart {
     val enabledInputs = EnumSet.noneOf(InputType::class.java)
@@ -101,7 +108,38 @@ abstract class AbstractDisableableThreeInputGatePart : AbstractThreeInputGatePar
         inputLeftEnabled = buffer.readBoolean()
     }
 
+    override fun onAdded(bus: MultipartEventBus) {
+        super.onAdded(bus)
+
+        if (isClientSide()) return
+
+        bus.addListener(this, PartTransformEvent::class.java) { e ->
+            val trans = e.transformation
+            if (trans.shouldFlipDirection(Direction.Axis.X)
+                xor trans.shouldFlipDirection(Direction.Axis.Y)
+                xor trans.shouldFlipDirection(Direction.Axis.Z)
+            ) {
+                flipInputs()
+            }
+        }
+    }
+
+    override fun onMirror(axis: Direction.Axis) {
+        super.onMirror(axis)
+        flipInputs()
+    }
+
+    @Environment(EnvType.CLIENT)
     override fun getDynamicShape(partialTicks: Float, hitVec: Vec3d): VoxelShape {
+        if (isClientSide()) {
+            val player = MinecraftClient.getInstance().player
+            if (player != null) {
+                for (item in player.itemsHand) {
+                    if (item.isIn(WRItemTags.SCREW_DRIVERS)) return super.getDynamicShape(partialTicks, hitVec)
+                }
+            }
+        }
+
         val hit = hitVec.subtract(Vec3d.of(getPos()))
 
         inputShapes.getTouching(hit, orientation)?.let { touching ->
@@ -112,6 +150,9 @@ abstract class AbstractDisableableThreeInputGatePart : AbstractThreeInputGatePar
     }
 
     override fun onUse(player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
+        val superRes = super.onUse(player, hand, hit)
+        if (superRes != ActionResult.PASS) return superRes
+
         val pos = getPos()
         val hitVec = hit.pos.subtract(Vec3d.of(pos))
 
@@ -135,6 +176,22 @@ abstract class AbstractDisableableThreeInputGatePart : AbstractThreeInputGatePar
             return ActionResult.CONSUME
         }
 
-        return super.onUse(player, hand, hit)
+        return ActionResult.PASS
+    }
+
+    private fun flipInputs() {
+        val oldRight = enabledInputs.contains(InputType.RIGHT)
+
+        if (enabledInputs.contains(InputType.LEFT)) {
+            enabledInputs.add(InputType.RIGHT)
+        } else {
+            enabledInputs.remove(InputType.RIGHT)
+        }
+
+        if (oldRight) {
+            enabledInputs.add(InputType.LEFT)
+        } else {
+            enabledInputs.remove(InputType.LEFT)
+        }
     }
 }

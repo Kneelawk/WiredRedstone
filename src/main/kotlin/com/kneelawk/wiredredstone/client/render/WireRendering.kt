@@ -161,6 +161,19 @@ object WireRendering {
         }
     }
 
+    fun emitWireCorner(
+        direction: Direction, conn: UByte, side: Direction, rotationAxis: Axis, wireHeight: Float, wireWidth: Float,
+        sprite: Sprite, sideV: Float, material: RenderMaterial, emitter: QuadEmitter
+    ) {
+        when (direction) {
+            NORTH -> emitNorthWireCorner(conn, side, rotationAxis, wireHeight, wireWidth, sprite, sideV, material, emitter)
+            SOUTH -> emitSouthWireCorner(conn, side, rotationAxis, wireHeight, wireWidth, sprite, sideV, material, emitter)
+            WEST -> emitWestWireCorner(conn, side, rotationAxis, wireHeight, wireWidth, sprite, sideV, material, emitter)
+            EAST -> emitEastWireCorner(conn, side, rotationAxis, wireHeight, wireWidth, sprite, sideV, material, emitter)
+            else -> throw IllegalArgumentException("Emitting wire corner for illegal direction $direction")
+        }
+    }
+
     fun emitNorthWireCorner(
         conn: UByte, side: Direction, rotationAxis: Axis, wireHeight: Float, wireWidth: Float,
         sprite: Sprite, sideV: Float, material: RenderMaterial, emitter: QuadEmitter

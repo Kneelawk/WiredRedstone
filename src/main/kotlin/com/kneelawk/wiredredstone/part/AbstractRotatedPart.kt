@@ -8,11 +8,21 @@ import alexiil.mc.lib.multipart.api.event.PartTransformEvent
 import alexiil.mc.lib.net.IMsgReadCtx
 import alexiil.mc.lib.net.IMsgWriteCtx
 import alexiil.mc.lib.net.NetByteBuf
-import com.kneelawk.wiredredstone.util.DirectionUtils
-import com.kneelawk.wiredredstone.util.RotationUtils
-import com.kneelawk.wiredredstone.util.SidedOrientation
+import com.kneelawk.wiredredstone.node.WRBlockNodes
+import com.kneelawk.wiredredstone.tag.WRItemTags
+import com.kneelawk.wiredredstone.util.*
+import net.minecraft.client.MinecraftClient
+import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.nbt.NbtCompound
+import net.minecraft.server.world.ServerWorld
+import net.minecraft.util.ActionResult
+import net.minecraft.util.Hand
+import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.Direction
+import net.minecraft.util.math.Direction.Axis
+import net.minecraft.util.math.Vec3d
+import net.minecraft.util.shape.VoxelShape
+import net.minecraft.util.shape.VoxelShapes
 
 abstract class AbstractRotatedPart : AbstractConnectablePart, RotatedPart {
     var direction: Direction
@@ -87,6 +97,69 @@ abstract class AbstractRotatedPart : AbstractConnectablePart, RotatedPart {
                         "New Un-Rotated: $new\n" +
                         "New Direction : $direction"
             }
+        }
+    }
+
+    override fun getDynamicShape(partialTicks: Float, hitVec: Vec3d): VoxelShape {
+        if (isClientSide()) {
+            val player = MinecraftClient.getInstance().player
+            if (player != null) {
+                for (item in player.itemsHand) {
+                    if (item.isIn(WRItemTags.SCREW_DRIVERS)) return VoxelShapes.empty()
+                }
+            }
+        }
+
+        return super.getDynamicShape(partialTicks, hitVec)
+    }
+
+    override fun onUse(player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
+        val superRes = super.onUse(player, hand, hit)
+        if (superRes != ActionResult.PASS) return superRes
+
+        if (!player.canModifyBlocks()) return ActionResult.PASS
+
+        for (item in player.itemsHand) {
+            if (item.isIn(WRItemTags.SCREW_DRIVERS)) {
+                if (hit.side != side.opposite) return ActionResult.FAIL
+
+                if (isClientSide()) return ActionResult.SUCCESS
+
+                val hitPosOffset = hit.pos.subtract(Vec3d.ofCenter(hit.blockPos))
+                val zeroed = hitPosOffset.withAxis(side.axis, 0.0)
+                val sideSide = Direction.getFacing(zeroed.x, zeroed.y, zeroed.z)
+                val hitDir = DirectionUtils.makeHorizontal(RotationUtils.unrotatedDirection(side, sideSide))
+
+                if (player.isSneaking) {
+                    onMirror(hitDir.axis)
+                } else {
+                    onRotate(hitDir)
+                }
+
+                onPostScrewDriver()
+
+                return ActionResult.CONSUME
+            }
+        }
+
+        return ActionResult.PASS
+    }
+
+    open fun onRotate(to: Direction) {
+        direction = to
+    }
+
+    open fun onMirror(axis: Axis) {
+        if (direction.axis == axis) {
+            direction = direction.opposite
+        }
+    }
+
+    open fun onPostScrewDriver() {
+        val world = getWorld()
+        if (world is ServerWorld) {
+            redraw()
+            WRBlockNodes.WIRE_NET.getServerGraphWorld(world).updateConnections(getSidedPos())
         }
     }
 }
